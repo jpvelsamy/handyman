@@ -15,7 +15,7 @@
 	<modules>
 		<module>handyman</module>
 		<module>handyman.ide</module>
-		<module>handyman.server</module>
+		
 	</modules>
 	<build>
 		<pluginManagement>
