@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>handyman</groupId>
+		<groupId>in.handyman</groupId>
 		<artifactId>handyman.parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
@@ -102,8 +102,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>handyman</artifactId>
+			<groupId>in.handyman</groupId>
+			<artifactId>handyman.server</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
