@@ -5,10 +5,13 @@ import java.sql.DriverManager
 import java.sql.Statement
 import in.handyman.util.ResourceAccess
 import com.typesafe.scalalogging.LazyLogging
+import org.slf4j.MarkerFactory
 
 object AuditService extends LazyLogging{
 
   val auditService = ConfigurationService.getGlobalconfig().getOrElse("audit", "audit/spw-audit")
+  val auditMarker = "AUDIT";
+  val aMarker = MarkerFactory.getMarker(auditMarker);
   
   def insertInstanceAudit(instanceName: String, runMode: String, machine: String, file: String): Integer = {
 
@@ -27,7 +30,7 @@ object AuditService extends LazyLogging{
       val rs = st.getGeneratedKeys
       rs.next
       val pk = rs.getInt(1)
-      logger.info("Retrieved process id post process start as $pk for process $instanceName with file $file")
+      logger.info(aMarker, "Retrieved process id post process start as {} for process {} with file {}",pk.toString, instanceName, file)
       
       rs.close()
       conn.commit
@@ -45,7 +48,7 @@ object AuditService extends LazyLogging{
   def updateProcessAudit(processId: Integer, status: Int, contextLog: String, instanceName:String): Unit = {
     val conn = ResourceAccess.rdbmsConn(auditService)
     conn.setAutoCommit(false)
-    logger.info("Obtained Connection for handle #{} for updating the audit for processid #{} for process #{} ", auditService, processId, instanceName)
+    logger.info(aMarker, "Obtained Connection for handle #{} for updating the audit for processid #{} for process #{} ", auditService, processId, instanceName)
     val st = conn.prepareStatement("update instance_audit set end=now(), status=?, context_log=? where instance_id=?")
     try {
       st.setInt(1, status)
@@ -96,7 +99,7 @@ object AuditService extends LazyLogging{
 
   def updateCommandAudit(actionId: Integer, status: Integer, commandDetail:String): Unit = {
     val conn = ResourceAccess.rdbmsConn(auditService)
-    logger.info("Obtained Connection for actionid #{} with status #{} ", actionId, status)
+    logger.info(aMarker, "Obtained Connection for actionid #{} with status #{} ", actionId, status)
     val st = conn.prepareStatement("update command_audit set end=now(), status=?, command_config=?  where command_id=?")
     try {
       st.setInt(1, status)

@@ -22,6 +22,8 @@ import com.google.api.services.people.v1.model.Source
 import com.google.api.services.people.v1.model.Address
 import com.google.api.services.people.v1.model.ProfileMetadata
 import com.google.api.services.people.v1.model.Url
+import org.slf4j.MarkerFactory
+import in.handyman.util.ExceptionUtil
 
 class GContactCreateAction extends in.handyman.command.Action with LazyLogging {
   val detailMap = new java.util.HashMap[String, String]
@@ -41,6 +43,8 @@ class GContactCreateAction extends in.handyman.command.Action with LazyLogging {
     val stmt = conn.createStatement
     val rs = stmt.executeQuery(sql)
     val httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    val gcontactCreateMarker = "GCONTACT-CREATE";
+    val gMarker = MarkerFactory.getMarker(gcontactCreateMarker);
 
     val credential: GoogleCredential = new GoogleCredential.Builder().setTransport(httpTransport).
       setJsonFactory(JSON_FACTORY).
@@ -50,7 +54,7 @@ class GContactCreateAction extends in.handyman.command.Action with LazyLogging {
       setServiceAccountProjectId(project).
       setServiceAccountScopes(Collections.singleton(PeopleServiceScopes.CONTACTS)).
       setServiceAccountUser(mail).build()
-      
+
     val peopleService: PeopleService =
       new PeopleService.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(project).build();
 
@@ -58,6 +62,7 @@ class GContactCreateAction extends in.handyman.command.Action with LazyLogging {
     val addedContactCounter: AtomicInteger = new AtomicInteger
     try {
       while (rs.next()) {
+
         incomingContactCounter.incrementAndGet
 
         val name = rs.getString("name")
@@ -65,41 +70,47 @@ class GContactCreateAction extends in.handyman.command.Action with LazyLogging {
         val location = rs.getString("location")
         val mobile = rs.getString("mobile")
         val orderUrl = rs.getString("source")
+        try {
+          val person = new Person
+          val phoneList = new java.util.ArrayList[PhoneNumber]
+          val phone = new PhoneNumber
+          phone.setValue(mobile)
+          phoneList.add(phone)
 
-        val person = new Person
-        val phoneList = new java.util.ArrayList[PhoneNumber]
-        val phone = new PhoneNumber
-        phone.setValue(mobile)
-        phoneList.add(phone)
+          val nameList = new java.util.ArrayList[Name]
+          val personName = new Name
+          personName.setDisplayName(name)
+          personName.setFamilyName(location)
+          personName.setGivenName(name)
 
-        val nameList = new java.util.ArrayList[Name]
-        val personName = new Name
-        personName.setDisplayName(name)
-        personName.setFamilyName(location)
-        personName.setGivenName(name)
+          nameList.add(personName)
 
-        nameList.add(personName)
+          val emailList = new java.util.ArrayList[EmailAddress]
+          val personEmail = new EmailAddress
+          personEmail.setDisplayName(email)
+          personEmail.setValue(email)
+          emailList.add(personEmail)
 
-        val emailList = new java.util.ArrayList[EmailAddress]
-        val personEmail = new EmailAddress
-        personEmail.setDisplayName(email)
-        personEmail.setValue(email)
-        emailList.add(personEmail)
-        
-        val sourceList = new java.util.ArrayList[Url]
-        val source = new Url
-        source.setValue(orderUrl)
-        sourceList.add(source)
+          val sourceList = new java.util.ArrayList[Url]
+          val source = new Url
+          source.setValue(orderUrl)
+          sourceList.add(source)
 
-        person.setPhoneNumbers(phoneList)
-        person.setNames(nameList)
-        person.setEmailAddresses(emailList)
-        person.setUrls(sourceList)
+          person.setPhoneNumbers(phoneList)
+          person.setNames(nameList)
+          person.setEmailAddresses(emailList)
+          person.setUrls(sourceList)
 
-        val contact = peopleService.people.createContact(person)
-        val output = contact.execute()
-        addedContactCounter.incrementAndGet
-        logger.info("Adding lead $personName with for number $mobile from $location with counter $addedContactCounter.get")
+          val contact = peopleService.people.createContact(person)
+          val output = contact.execute()
+          addedContactCounter.incrementAndGet
+          logger.info(gMarker, "Adding lead {} with for number {} from {} with counter {}", name, mobile, location, addedContactCounter.get.toString)
+        } catch {
+          case ex: Throwable => {
+            logger.error("Error Adding lead {} with for number {} from {} with counter {}", name, mobile, location, addedContactCounter.get.toString, ex)
+            detailMap.put("exception", ExceptionUtil.completeStackTraceex(ex))
+          }
+        }
       }
     } finally {
       detailMap.put("accountId", accountId)
@@ -127,8 +138,8 @@ class GContactCreateAction extends in.handyman.command.Action with LazyLogging {
       detailMap.putIfAbsent("condition-output", output.toString())
       output
     } finally {
-       if(expression!=null)
-      detailMap.putIfAbsent("condition", "LHS=" + expression.getLhs + ", Operator=" + expression.getOperator + ", RHS=" + expression.getRhs)
+      if (expression != null)
+        detailMap.putIfAbsent("condition", "LHS=" + expression.getLhs + ", Operator=" + expression.getOperator + ", RHS=" + expression.getRhs)
 
     }
   }

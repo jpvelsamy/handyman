@@ -23,6 +23,7 @@
 		<squareup.http.version>3.11.0</squareup.http.version>
 		<google.people.version>v1-rev224-1.23.0</google.people.version>
 		<google.cal.version>v3-rev87-1.19.0</google.cal.version>
+		<logback.classic.version>1.1.7</logback.classic.version>
 	</properties>
 	<repositories>
 		<repository>
@@ -255,6 +256,13 @@
 			<artifactId>scala-logging_2.12</artifactId>
 			<version>${scala.logging.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.classic.version}</version>
+		</dependency>
+		
 		<!-- https://mvnrepository.com/artifact/org.scala-lang.modules/scala-xml -->
 		<dependency>
 			<groupId>org.scala-lang.modules</groupId>

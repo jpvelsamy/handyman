@@ -24,6 +24,7 @@ import in.handyman.command.CommandProxy
 import in.handyman.util.ParameterisationEngine
 import java.util.concurrent.atomic.AtomicInteger
 import in.handyman.config.ConfigurationService
+import org.slf4j.MarkerFactory
 
 class GoogleCalendarAction extends in.handyman.command.Action with LazyLogging {
   val DEFAULT_TIMEZONE = "Asia/Kolkata"
@@ -68,6 +69,8 @@ class GoogleCalendarAction extends in.handyman.command.Action with LazyLogging {
     val addedCalenderEvent: AtomicInteger = new AtomicInteger
     val timeZoneLabel = ConfigurationService.getGlobalconfig().get("timeZone").getOrElse(DEFAULT_TIMEZONE)
     val timeZone = TimeZone.getTimeZone(timeZoneLabel);
+    val gcalCreateMarker = "GCALENDART-CREATE";
+    val gMarker = MarkerFactory.getMarker(gcalCreateMarker);
     
     try {
       while (rs.next()) {
@@ -103,7 +106,7 @@ class GoogleCalendarAction extends in.handyman.command.Action with LazyLogging {
 
         val result = client.events().insert(calId, event).execute();
         addedCalenderEvent.incrementAndGet
-        logger.info("Adding event $startDate with for location $location title $title with counter $addedCalenderEvent.get with description $description with final date $endDateForRecur")
+        logger.info(gMarker,"Adding event {} with for location {} title {} with counter {} with description $description with final date $endDateForRecur",startDate, location, title, addedCalenderEvent.get.toString)
       }
     } finally {
       detailMap.put("accountId", accountId)

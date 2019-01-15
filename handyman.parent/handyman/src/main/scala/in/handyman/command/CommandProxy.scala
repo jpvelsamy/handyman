@@ -42,7 +42,7 @@ object CommandProxy extends LazyLogging {
               }
             }
           }
-          case "in.handyman.sparrow.Expression" => {
+          case "in.handyman.dsl.Expression" => {
             method.getName match {
               case "getCondition" => {
                 val interim = method.invoke(proxee, args: _*)

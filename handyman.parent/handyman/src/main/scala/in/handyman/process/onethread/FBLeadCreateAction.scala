@@ -16,6 +16,7 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import in.handyman.config.ConfigurationService
 import in.handyman.util.ExceptionUtil
+import org.slf4j.MarkerFactory
 
 /**
  * //https://developers.facebook.com/docs/marketing-api/guides/lead-ads/retrieving/v2.9
@@ -53,6 +54,8 @@ class FBLeadCreateAction extends in.handyman.command.Action with LazyLogging {
 
   val InsertSql = "replace into leads_soft (  name, email, mobile, alt_mobile, locality, targeted_city, leadsource_campaign, leadsource_channel, company, leadgen_date, coa_aprox, profession, budget, leadsource_metadata, intent_metadata, batch_id, updated_date) values (?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?,?,now());"
   val detailMap = new java.util.HashMap[String, String]
+  val fbMarkerText = "FB-LEAD-INGESTION";
+  val fbMarker = MarkerFactory.getMarker(fbMarkerText);
   
   def execute(context: in.handyman.command.Context, action: in.handyman.dsl.Action): in.handyman.command.Context = {
     val fbAsIs: in.handyman.dsl.FBCLead = action.asInstanceOf[in.handyman.dsl.FBCLead]
@@ -79,6 +82,7 @@ class FBLeadCreateAction extends in.handyman.command.Action with LazyLogging {
     val incomingLeadCount:AtomicInteger=new AtomicInteger
     val insertedLeadCount:AtomicInteger = new AtomicInteger
     
+    logger.info(fbMarker, "Campaign id list as is {} with account id {} and with db {}" , campaignIdList, accountId, dbTarget)
     campaignIdList.foreach {
       campaignId =>
         {
@@ -95,13 +99,15 @@ class FBLeadCreateAction extends in.handyman.command.Action with LazyLogging {
               if (!leadList.isEmpty()) {
 
                 val leadListIter = leadList.withAutoPaginationIterator(true).iterator()
-                //logger.info("Total leads available from this campaign {} is {}", campaignId, leadList.size())
+                logger.info(fbMarker, "Iterating through campaign {} for account {}", campaignId, accountId)
+                
                 val leadCounter: AtomicInteger = new AtomicInteger;
                 while (leadListIter.hasNext()) {
 
                   val lead = leadListIter.next
                   val createdAt = lead.getFieldCreatedTime
-                  logger.info("inserting data for $leadCounter.incrementAndGet with for campaign $campaign")
+                  
+                  
                   incomingLeadCount.incrementAndGet()
                   val leadSourceMeta = "ad_id=" + lead.getFieldAdId + ",<br/> ad_name=" + lead.getFieldAdName + "<br/>, adset_id=" + lead.getFieldAdsetId +
                     "<br/>, adset_name=" + lead.getFieldAdsetName + "<br/>, campaign_id=" + lead.getFieldCampaignId + "<br/>,form_id=" +
@@ -190,17 +196,18 @@ class FBLeadCreateAction extends in.handyman.command.Action with LazyLogging {
                   val processid = context.getValue("process-id")
                   stmt.setInt(BATCH_ID, Integer.parseInt(processid))
                   try {
-
+                    logger.info(fbMarker, "Adding lead with name {} , phone {}, email {}, location {}",myLead.fullName, myLead.mobile, myLead.email, myLead.city)
                     stmt.executeUpdate
                     tgtConn.commit
                     insertedLeadCount.incrementAndGet()
                   } catch {
+
                     case ex: SQLException => {
-                      logger.error(" SQL Error inserting data for $leadCounter.incrementAndGet() with for campaign $campaignId", ex)                      
+                      logger.error("Error inserting name {} , phone {}, email {}, location {} with campaign {} and conter {}",myLead.fullName, myLead.mobile, myLead.email, myLead.city, campaignId, leadCounter.incrementAndGet.toString, ex)
                       detailMap.put("exception", ExceptionUtil.completeStackTraceex(ex))
                     }
                     case ex: Throwable => {
-                      logger.error(" General Error inserting data for $leadCounter.incrementAndGet() with for campaign  $campaignId", ex)
+                      logger.error("Error inserting name {} , phone {}, email {}, location {} with campaign {} and conter {}",myLead.fullName, myLead.mobile, myLead.email, myLead.city, campaignId, leadCounter.incrementAndGet.toString, ex)
                       detailMap.put("exception", ExceptionUtil.completeStackTraceex(ex))
                     }                    
                   }
@@ -231,7 +238,7 @@ class FBLeadCreateAction extends in.handyman.command.Action with LazyLogging {
   def executeIf(context: in.handyman.command.Context, action: in.handyman.dsl.Action): Boolean = {
     val fbAsIs: in.handyman.dsl.FBCLead = action.asInstanceOf[in.handyman.dsl.FBCLead]
     val fb: in.handyman.dsl.FBCLead = CommandProxy.createProxy(fbAsIs, classOf[in.handyman.dsl.FBCLead], context)
-    val expression = fb.getCondition
+    val expression:in.handyman.dsl.Expression = fb.getCondition
      try {
       val output=ParameterisationEngine.doYieldtoTrue(expression)
       detailMap.putIfAbsent("condition-output", output.toString())
