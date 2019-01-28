@@ -12,12 +12,17 @@ object CommandFactory {
       case "transform" => new TransformAction
       case "assign" => new FetchVariableAction
       case "callprocess" => new CallProcessAction
-      case "doozle"=>new DoozleAction     
+      case "doozle"=>new DoozleAction
+      case "rest"=>new RestAction
       case "fbclead"=>new FBLeadCreateAction
       case "googlecontactput"=>new GContactCreateAction
-      case "googlecalput"=>new GoogleCalendarAction     
+      case "googlecalput"=>new GoogleCalendarAction
       case "fetch"=>new FetchVariableAction
-      case "smsleadsms"=>new SmsLeadsAction          
+      case "smsleadsms"=>new SmsLeadsAction
+      case "writecsvandtsv"=> new WriteCsvAndTsvAction
+      case "copydata" => new CopydataAction
+      case "mahout" => new ModelTrainingAction
+      case "runr" => new RunRAction          
     }
   }
 }

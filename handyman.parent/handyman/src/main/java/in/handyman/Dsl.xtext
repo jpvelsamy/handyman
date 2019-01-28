@@ -35,7 +35,7 @@ Catch:
 Action:
 	(Copydata
 	|LoadCsv
-	|WriteCsv
+	|WriteCsvAndTsv
 	|Transform
 	|GooglecalPUT
 	|SlackPUT
@@ -54,6 +54,8 @@ Action:
 	|GooglecontactSelectAll
 	|Abort
 	|SmsLeadSms
+	|Mahout
+	|RunR
 	)
 ;
 
@@ -76,6 +78,13 @@ Abort:
 
 GooglecontactSelectAll:
 	'gcontact-fetchall' 'as' name=STRING 'through-account' account=STRING 'secured-by' privateKey=STRING 'with-key' ptwelveFile=STRING 'for-project' project=STRING 'on-behalf-of' impersonatedUser=STRING 'to-target' dbSrc=STRING 'using'
+	'{'
+		value=STRING
+	'}' 'on-condition' condition=Expression
+;
+
+RunR:
+	'runR' name=STRING 'mode-as' executeMode=RunMode 
 	'{'
 		value=STRING
 	'}' 'on-condition' condition=Expression
@@ -196,18 +205,23 @@ SlackPUT:
 	'}' 'on-condition' condition=Expression
 ;
 
-
-	
 Copydata:
-	'copydata' 'as' name= STRING 'from' source= STRING 'to' to= STRING 'using'
+	'copydata' 'as' name= STRING 'from' source= STRING 'to' to= STRING 'by-batch' limit=STRING 'using'
 	'{'
 		value=SelectStatement
 	'}' 'on-condition' condition=Expression
 ;
 
+Mahout:
+	'mahout' 'as' name= STRING 'id' id=STRING 'using'
+	'{'
+		value=STRING
+	'}' 'on-condition' condition=Expression
+;
 
-WriteCsv:
-	'writecsv' 'as' name= STRING 'from' source= STRING 'to' to= STRING 'with'  delim= STRING 'using'
+
+WriteCsvAndTsv:
+	'writecsvandtsv' 'as' name= STRING 'from' source= STRING 'to' to= STRING 'with'  delim= STRING 'using'
 	'{'
 		value=SelectStatement
 	'}' 'on-condition' condition=Expression
@@ -254,4 +268,8 @@ Expression :
 
 Operator:
 	'<'|'>'|'=='|'contains'	
+;
+
+RunMode:
+	'local'|'remote'	
 ;

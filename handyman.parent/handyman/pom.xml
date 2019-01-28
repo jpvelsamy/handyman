@@ -167,8 +167,8 @@
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
-				</plugin>			
-				
+				</plugin>
+
 				<plugin>
 					<groupId>net.alchim31.maven</groupId>
 					<artifactId>scala-maven-plugin</artifactId>
@@ -245,6 +245,13 @@
 			<version>2.9.1.201705291010</version>
 			<optional>true</optional>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.2</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-library</artifactId>
@@ -256,13 +263,13 @@
 			<artifactId>scala-logging_2.12</artifactId>
 			<version>${scala.logging.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>${logback.classic.version}</version>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/org.scala-lang.modules/scala-xml -->
 		<dependency>
 			<groupId>org.scala-lang.modules</groupId>
@@ -326,24 +333,24 @@
 			<artifactId>okhttp</artifactId>
 			<version>${squareup.http.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.google.apis</groupId>
 			<artifactId>google-api-services-people</artifactId>
 			<version>${google.people.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.google.apis</groupId>
 			<artifactId>google-api-services-calendar</artifactId>
 			<version>${google.cal.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.restlet.jee</groupId>
 			<artifactId>org.restlet.ext.jackson</artifactId>
 			<version>${restlet.core.version}</version>
 		</dependency>
-		
+
 	</dependencies>
 </project>
