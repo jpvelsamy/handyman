@@ -206,7 +206,7 @@ SlackPUT:
 ;
 
 Copydata:
-	'copydata' 'as' name= STRING 'from' source= STRING 'to' to= STRING 'by-batch' limit=STRING 'using'
+	'copydata' 'as' name= STRING 'from' source= STRING 'to' to= STRING 'target' target= STRING 'by-batch' limit=STRING 'using'
 	'{'
 		value=SelectStatement
 	'}' 'on-condition' condition=Expression

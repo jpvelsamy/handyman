@@ -23,6 +23,7 @@ class CopydataAction extends in.handyman.command.Action with LazyLogging {
     val name = copydata.getName
     val ddlSql: String = copydata.getValue.replaceAll("\"", "")
     val id = context.getValue("process-id")
+    val table = copydata.getTarget
 
     val copydataDbConnfrom = ResourceAccess.rdbmsConn(source)
     val copydataStmtfrom = copydataDbConnfrom.createStatement
@@ -39,6 +40,18 @@ class CopydataAction extends in.handyman.command.Action with LazyLogging {
     val rs = copydataStmtfrom.executeQuery(select)
 
     val cols: Int = rs.getMetaData().getColumnCount()
+
+    var tcolumn: String = ""
+    var column: String = ""
+
+    val i: Int = 0
+    for (i <- 1 to cols) {
+      tcolumn = rs.getMetaData().getColumnName(i)
+      column = column + tcolumn + ","
+    }
+
+    column = column.substring(0, column.length() - 1)
+
     var query: String = ""
     var j: Int = 0
     try {
@@ -62,7 +75,7 @@ class CopydataAction extends in.handyman.command.Action with LazyLogging {
           query = query.replace("\"null\"", "null")
           logger.info("WriteCsv id#{}, name#{}, from#{}, sqlList#{}", id, name, source, query)
 
-          var insert: String = output(1) + query.substring(0, query.length() - 1) + ";"
+          var insert: String = "insert ignore into " + table + " (" + column + ")" + " values " + query.substring(0, query.length() - 1) + ";"
           logger.info("WriteCsv id#{}, name#{}, from#{}, sqlList#{}", id, name, source, insert)
 
           copydataStmtto.execute(insert)
@@ -77,7 +90,7 @@ class CopydataAction extends in.handyman.command.Action with LazyLogging {
       }
 
       query = query.replace("\"null\"", "null")
-      var insert: String = output(1) + query.substring(0, query.length() - 1) + ";"
+      var insert: String = "insert ignore into " + table + " (" + column + ")" + "values " + query.substring(0, query.length() - 1) + ";"
       logger.info("WriteCsv id#{}, name#{}, from#{}, sqlList#{}", id, name, source, insert)
       copydataStmtto.execute(insert)
       copydataDbConnto.commit()
