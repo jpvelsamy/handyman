@@ -23,6 +23,7 @@ object CommandFactory {
       case "copydata" => new CopydataAction
       case "mahout" => new ModelTrainingAction
       case "runr" => new RunRAction          
+      case "loadcsv" => new LoadCsvIntoDbAction
     }
   }
 }
