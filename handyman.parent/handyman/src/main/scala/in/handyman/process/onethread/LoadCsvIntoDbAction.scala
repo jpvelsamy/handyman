@@ -104,7 +104,7 @@ class LoadCsvIntoDbAction extends in.handyman.command.Action with LazyLogging {
 
         while ({ nextLine = reader.readNext(); nextLine != null }) {
           var row: String = nextLine.mkString("")
-          row = row.replace("\t", ",")
+          row = row.replace("\t", ", ")
           val rowa: Array[String] = row.split(",")
           values = convertArrayToInsertLine(rowa, "','")
           count += 1
@@ -154,8 +154,9 @@ class LoadCsvIntoDbAction extends in.handyman.command.Action with LazyLogging {
     firstLine: Array[String],
     delimiter: String): String = {
     val sb: StringBuilder = new StringBuilder()
+    if(firstLine !=null)
     for (str <- firstLine)
-      sb.append(str).append(delimiter)
+      sb.append(str.replace(" ", "")).append(delimiter)
     sb.substring(0, sb.length - 2)
   }
 
