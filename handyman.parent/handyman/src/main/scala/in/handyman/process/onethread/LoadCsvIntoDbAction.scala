@@ -104,8 +104,8 @@ class LoadCsvIntoDbAction extends in.handyman.command.Action with LazyLogging {
 
         while ({ nextLine = reader.readNext(); nextLine != null }) {
           var row: String = nextLine.mkString("")
-          row = row.replace("\t", ", ")
-          val rowa: Array[String] = row.split(",")
+          row = row.replace("\t", "~ ").replace("\"\"","\\\"")
+          val rowa: Array[String] = row.split("~")
           values = convertArrayToInsertLine(rowa, "','")
           count += 1
           totalcount += 1
