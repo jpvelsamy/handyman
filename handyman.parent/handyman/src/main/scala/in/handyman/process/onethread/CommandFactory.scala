@@ -24,6 +24,7 @@ object CommandFactory {
       case "mahout" => new ModelTrainingAction
       case "runr" => new RunRAction          
       case "loadcsv" => new LoadCsvIntoDbAction
+      case "terminal" => new TerminalAction
     }
   }
 }

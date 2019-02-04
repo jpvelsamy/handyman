@@ -55,6 +55,7 @@ Action:
 	|Abort
 	|SmsLeadSms
 	|Mahout
+	|Terminal
 	|RunR
 	)
 ;
@@ -214,6 +215,13 @@ Copydata:
 
 Mahout:
 	'mahout' 'as' name= STRING 'id' id=STRING 'using'
+	'{'
+		value=STRING
+	'}' 'on-condition' condition=Expression
+;
+
+Terminal:
+	'terminal' 'as' name= STRING 'id' id=STRING 'using'
 	'{'
 		value=STRING
 	'}' 'on-condition' condition=Expression
