@@ -60,6 +60,27 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>net.alchim31.maven</groupId>
+				<artifactId>scala-maven-plugin</artifactId>
+				<configuration>
+					<launchers>
+						<launcher>
+							<id>spw</id>
+							<mainClass>in.handyman.server.HandymanServer</mainClass>
+							<!-- args are optional -->
+							<args>
+								<arg>2909</arg>
+							</args>
+							<!-- jvmArgs are optional -->
+							<jvmArgs>
+								<jvmArg>-Xmx1024m</jvmArg>
+							</jvmArgs>
+						</launcher>
+						<!-- you could define other launcher -->
+					</launchers>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.eclipse.xtend</groupId>
 				<artifactId>xtend-maven-plugin</artifactId>
 			</plugin>
