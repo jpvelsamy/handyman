@@ -76,6 +76,7 @@ class LoadCsvIntoDbAction extends in.handyman.command.Action with LazyLogging {
           values = convertArrayToInsertLine(nextLine, "','")
           count += 1
           totalcount += 1
+          values = values.replace("''", "'NULL'")
           iquery = iquery + "('" + values + "),"
 
           if (count % limit == 0) {
@@ -109,6 +110,7 @@ class LoadCsvIntoDbAction extends in.handyman.command.Action with LazyLogging {
           values = convertArrayToInsertLine(rowa, "','")
           count += 1
           totalcount += 1
+          values = values.replace("''", "'NULL'")
           iquery = iquery + "('" + values + "),"
           if (count % limit == 0) {
             iquery = "INSERT IGNORE INTO  `" + fileName.replace(".tsv", "") + "`  (" + "`" + column + ")" + "VALUES " + iquery
