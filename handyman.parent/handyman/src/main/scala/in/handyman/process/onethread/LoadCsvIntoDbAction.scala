@@ -30,6 +30,7 @@ class LoadCsvIntoDbAction extends in.handyman.command.Action with LazyLogging {
     val loadcsvAsIs = action.asInstanceOf[in.handyman.dsl.LoadCsv]
     val loadcsv: in.handyman.dsl.LoadCsv = CommandProxy.createProxy(loadcsvAsIs, classOf[in.handyman.dsl.LoadCsv], context)
 
+    val date = new Date
     val csvFile = loadcsv.getSource
     val db = loadcsv.getTo
     val name = loadcsv.getName
@@ -66,7 +67,7 @@ class LoadCsvIntoDbAction extends in.handyman.command.Action with LazyLogging {
       if (fileName.contains(".csv")) {
         val column: String = convertArrayToInsertLine(firstLine, "`,`")
         ct = convertArrayToInsertLine(firstLine, "`VARCHAR(344),`")
-        dquery = "drop table if exists " + fileName.replace(".csv", "") + ";"
+        dquery = "drop table if exists `" + fileName.replace(".csv", "") + "`;"
         logger.info("LoadCsv id#{}, name#{}, from#{}, sqlList#{}", id, name, db, dquery)
         st.execute(dquery)
         cquery = "CREATE TABLE `" + fileName.replace(".csv", "") + "` (" + "`" + ct + ");"

@@ -8,7 +8,7 @@ object ParameterisationEngine {
   def resolve(inputString: String, context: Context): String = {
     val configMap = context.getMe
     val paramEngine = new StrSubstitutor(configMap)
-    val output = paramEngine.replace(inputString).replace("0_", configMap.getOrDefault("process-id", "0_")+"_")
+    val output = paramEngine.replace(inputString).replace("process-id", configMap.getOrDefault("process-id", "process-id")+"_")
     output
   }
 
