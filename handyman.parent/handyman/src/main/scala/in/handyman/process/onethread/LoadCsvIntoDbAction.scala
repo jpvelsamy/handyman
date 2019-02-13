@@ -77,7 +77,7 @@ class LoadCsvIntoDbAction extends in.handyman.command.Action with LazyLogging {
           values = convertArrayToInsertLine(nextLine, "','")
           count += 1
           totalcount += 1
-          values = values.replace("''", "'NULL'")
+          values = values.replace("''", "'NULL'").replace("00:00:00.0", "")
           iquery = iquery + "('" + values + "),"
 
           if (count % limit == 0) {
