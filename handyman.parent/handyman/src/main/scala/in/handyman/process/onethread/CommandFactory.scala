@@ -25,6 +25,7 @@ object CommandFactory {
       case "runr" => new RunRAction          
       case "loadcsv" => new LoadCsvIntoDbAction
       case "terminal" => new TerminalAction
+      case "python" => new PythonAction
     }
   }
 }

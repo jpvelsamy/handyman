@@ -56,6 +56,7 @@ Action:
 	|SmsLeadSms
 	|Mahout
 	|Terminal
+	|Python
 	|RunR
 	)
 ;
@@ -227,6 +228,12 @@ Terminal:
 	'}' 'on-condition' condition=Expression
 ;
 
+Python:
+	'python' 'as' name= STRING 'id' id=STRING 'using'
+	'{'
+		value=STRING
+	'}' 'on-condition' condition=Expression
+;
 
 WriteCsvAndTsv:
 	'writecsvandtsv' 'as' name= STRING 'from' source= STRING 'to' to= STRING 'with'  delim= STRING 'using'
