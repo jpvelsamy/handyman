@@ -22,7 +22,7 @@ class RunRAction extends in.handyman.command.Action with LazyLogging {
       val postData = PostData(script)
       val gson = new Gson
       // create an HttpPost object
-      val post = new HttpPost("http://172.18.0.3:8008")
+      val post = new HttpPost("http://localhost:8008")
 
       // set the Content-type
       post.setHeader("Content-type", "application/json")
@@ -59,7 +59,8 @@ class RunRAction extends in.handyman.command.Action with LazyLogging {
   def execute(context: in.handyman.command.Context, action: in.handyman.dsl.Action): in.handyman.command.Context = {
     val runR: in.handyman.dsl.RunR = action.asInstanceOf[in.handyman.dsl.RunR]
     val runRActual: in.handyman.dsl.RunR = CommandProxy.createProxy(runR, classOf[in.handyman.dsl.RunR], context)
-    val script = runRActual.getValue
+    var script = runRActual.getValue
+    script = script.replace("\"", "")
     val result = restCaller(script)
     context
   }

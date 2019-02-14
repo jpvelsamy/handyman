@@ -17,8 +17,12 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         body = self.rfile.read(content_length)
         y = json.loads(body.decode('utf-8'))
         print(y)
+        with open('/home/sid/refjson.py', 'w') as f:
+            f.write(y)
         try:
-            os.system(y)  # generate x at R 
+            # generate x at R 
+            os.system('python /home/sid/refjson.py')
+
             message = {   
             "message":"success"
             }
