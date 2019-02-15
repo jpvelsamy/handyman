@@ -29,7 +29,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             "message":"success"
             }
             else:
-                os.system('python /home/sid/refjson.py')
+                os.system('python3 /home/sid/refjson.py')
                 message = {   
             "message":"success"
             }

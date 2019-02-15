@@ -26,7 +26,8 @@ class PythonAction extends in.handyman.command.Action with LazyLogging {
     val python: in.handyman.dsl.Python = CommandProxy.createProxy(pythonAsIs, classOf[in.handyman.dsl.Python], context)
 
     try {
-      val postData = python.getValue
+      var postData = python.getValue
+      postData = postData.replace("~", "\"")
       val gson = new Gson
       // create an HttpPost object
       // val url = python.getUrl
