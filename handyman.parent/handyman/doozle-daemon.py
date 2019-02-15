@@ -16,14 +16,21 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         content_length = int(self.headers['Content-Length'])
         body = self.rfile.read(content_length)
         y = json.loads(body.decode('utf-8'))
-        print(y)
-        with open('/home/sid/refjson.py', 'w') as f:
-            f.write(y)
+        if "import" in y:
+            with open('/home/sid/refjson.py', 'w') as f:
+                f.write(y)
+        else:
+            print(y)    
         try:
             # generate x at R 
-            os.system('python /home/sid/refjson.py')
-
-            message = {   
+            if "import" not in y:
+                os.system(y)
+                message = {   
+            "message":"success"
+            }
+            else:
+                os.system('python /home/sid/refjson.py')
+                message = {   
             "message":"success"
             }
         except rpy2.rinterface.RRuntimeError as e:
