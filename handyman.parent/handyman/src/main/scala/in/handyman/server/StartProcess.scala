@@ -10,7 +10,8 @@ import org.restlet.representation.Representation;
 class StartProcess extends ServerResource with LazyLogging {
   val runMode = "in.handyman.process.onethread"
   
-
+  
+  //
   @Post("json")
   def doPost(entity:Representation):String = {
     val inboundValue = getRequest.getAttributes.get("instance");

@@ -14,6 +14,7 @@ import in.handyman.dsl.Dropfile;
 import in.handyman.dsl.DslPackage;
 import in.handyman.dsl.Expression;
 import in.handyman.dsl.FBCLead;
+import in.handyman.dsl.FBFormDownload;
 import in.handyman.dsl.Fetch;
 import in.handyman.dsl.Finally;
 import in.handyman.dsl.GoogleSendMail;
@@ -161,6 +162,11 @@ public class DslAdapterFactory extends AdapterFactoryImpl
       public Adapter caseFBCLead(FBCLead object)
       {
         return createFBCLeadAdapter();
+      }
+      @Override
+      public Adapter caseFBFormDownload(FBFormDownload object)
+      {
+        return createFBFormDownloadAdapter();
       }
       @Override
       public Adapter caseDropfile(Dropfile object)
@@ -440,6 +446,21 @@ public class DslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createFBCLeadAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link in.handyman.dsl.FBFormDownload <em>FB Form Download</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see in.handyman.dsl.FBFormDownload
+   * @generated
+   */
+  public Adapter createFBFormDownloadAdapter()
   {
     return null;
   }

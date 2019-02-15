@@ -15,6 +15,7 @@ import in.handyman.dsl.DslFactory;
 import in.handyman.dsl.DslPackage;
 import in.handyman.dsl.Expression;
 import in.handyman.dsl.FBCLead;
+import in.handyman.dsl.FBFormDownload;
 import in.handyman.dsl.Fetch;
 import in.handyman.dsl.Finally;
 import in.handyman.dsl.GoogleSendMail;
@@ -131,6 +132,13 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * @generated
    */
   private EClass fbcLeadEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass fbFormDownloadEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -965,6 +973,76 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
   public EAttribute getFBCLead_Value()
   {
     return (EAttribute)fbcLeadEClass.getEStructuralFeatures().get(5);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getFBFormDownload()
+  {
+    return fbFormDownloadEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getFBFormDownload_AccessToken()
+  {
+    return (EAttribute)fbFormDownloadEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getFBFormDownload_AppSecret()
+  {
+    return (EAttribute)fbFormDownloadEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getFBFormDownload_AccountId()
+  {
+    return (EAttribute)fbFormDownloadEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getFBFormDownload_FormId()
+  {
+    return (EAttribute)fbFormDownloadEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getFBFormDownload_Target()
+  {
+    return (EAttribute)fbFormDownloadEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getFBFormDownload_Value()
+  {
+    return (EAttribute)fbFormDownloadEClass.getEStructuralFeatures().get(5);
   }
 
   /**
@@ -1865,6 +1943,14 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     createEAttribute(fbcLeadEClass, FBC_LEAD__TARGET);
     createEAttribute(fbcLeadEClass, FBC_LEAD__VALUE);
 
+    fbFormDownloadEClass = createEClass(FB_FORM_DOWNLOAD);
+    createEAttribute(fbFormDownloadEClass, FB_FORM_DOWNLOAD__ACCESS_TOKEN);
+    createEAttribute(fbFormDownloadEClass, FB_FORM_DOWNLOAD__APP_SECRET);
+    createEAttribute(fbFormDownloadEClass, FB_FORM_DOWNLOAD__ACCOUNT_ID);
+    createEAttribute(fbFormDownloadEClass, FB_FORM_DOWNLOAD__FORM_ID);
+    createEAttribute(fbFormDownloadEClass, FB_FORM_DOWNLOAD__TARGET);
+    createEAttribute(fbFormDownloadEClass, FB_FORM_DOWNLOAD__VALUE);
+
     dropfileEClass = createEClass(DROPFILE);
     createEAttribute(dropfileEClass, DROPFILE__TARGET);
 
@@ -1997,6 +2083,7 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     googlecontactPUTEClass.getESuperTypes().add(this.getAction());
     googlecalPUTEClass.getESuperTypes().add(this.getAction());
     fbcLeadEClass.getESuperTypes().add(this.getAction());
+    fbFormDownloadEClass.getESuperTypes().add(this.getAction());
     dropfileEClass.getESuperTypes().add(this.getAction());
     doozleEClass.getESuperTypes().add(this.getAction());
     restEClass.getESuperTypes().add(this.getAction());
@@ -2090,6 +2177,14 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     initEAttribute(getFBCLead_CampaignId(), ecorePackage.getEString(), "campaignId", null, 0, 1, FBCLead.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getFBCLead_Target(), ecorePackage.getEString(), "target", null, 0, 1, FBCLead.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getFBCLead_Value(), ecorePackage.getEString(), "value", null, 0, 1, FBCLead.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(fbFormDownloadEClass, FBFormDownload.class, "FBFormDownload", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getFBFormDownload_AccessToken(), ecorePackage.getEString(), "accessToken", null, 0, 1, FBFormDownload.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getFBFormDownload_AppSecret(), ecorePackage.getEString(), "appSecret", null, 0, 1, FBFormDownload.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getFBFormDownload_AccountId(), ecorePackage.getEString(), "accountId", null, 0, 1, FBFormDownload.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getFBFormDownload_FormId(), ecorePackage.getEString(), "formId", null, 0, 1, FBFormDownload.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getFBFormDownload_Target(), ecorePackage.getEString(), "target", null, 0, 1, FBFormDownload.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getFBFormDownload_Value(), ecorePackage.getEString(), "value", null, 0, 1, FBFormDownload.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(dropfileEClass, Dropfile.class, "Dropfile", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getDropfile_Target(), ecorePackage.getEString(), "target", null, 0, 1, Dropfile.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

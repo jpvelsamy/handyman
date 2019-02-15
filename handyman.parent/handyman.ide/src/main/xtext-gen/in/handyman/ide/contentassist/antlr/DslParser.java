@@ -44,6 +44,7 @@ public class DslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getGooglecontactPUTAccess().getGroup(), "rule__GooglecontactPUT__Group__0");
 			builder.put(grammarAccess.getGooglecalPUTAccess().getGroup(), "rule__GooglecalPUT__Group__0");
 			builder.put(grammarAccess.getFBCLeadAccess().getGroup(), "rule__FBCLead__Group__0");
+			builder.put(grammarAccess.getFBFormDownloadAccess().getGroup(), "rule__FBFormDownload__Group__0");
 			builder.put(grammarAccess.getDropfileAccess().getGroup(), "rule__Dropfile__Group__0");
 			builder.put(grammarAccess.getDoozleAccess().getGroup(), "rule__Doozle__Group__0");
 			builder.put(grammarAccess.getRestAccess().getGroup(), "rule__Rest__Group__0");
@@ -126,6 +127,14 @@ public class DslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getFBCLeadAccess().getTargetAssignment_12(), "rule__FBCLead__TargetAssignment_12");
 			builder.put(grammarAccess.getFBCLeadAccess().getValueAssignment_15(), "rule__FBCLead__ValueAssignment_15");
 			builder.put(grammarAccess.getFBCLeadAccess().getConditionAssignment_18(), "rule__FBCLead__ConditionAssignment_18");
+			builder.put(grammarAccess.getFBFormDownloadAccess().getNameAssignment_2(), "rule__FBFormDownload__NameAssignment_2");
+			builder.put(grammarAccess.getFBFormDownloadAccess().getAccessTokenAssignment_4(), "rule__FBFormDownload__AccessTokenAssignment_4");
+			builder.put(grammarAccess.getFBFormDownloadAccess().getAppSecretAssignment_6(), "rule__FBFormDownload__AppSecretAssignment_6");
+			builder.put(grammarAccess.getFBFormDownloadAccess().getAccountIdAssignment_8(), "rule__FBFormDownload__AccountIdAssignment_8");
+			builder.put(grammarAccess.getFBFormDownloadAccess().getFormIdAssignment_10(), "rule__FBFormDownload__FormIdAssignment_10");
+			builder.put(grammarAccess.getFBFormDownloadAccess().getTargetAssignment_12(), "rule__FBFormDownload__TargetAssignment_12");
+			builder.put(grammarAccess.getFBFormDownloadAccess().getValueAssignment_15(), "rule__FBFormDownload__ValueAssignment_15");
+			builder.put(grammarAccess.getFBFormDownloadAccess().getConditionAssignment_18(), "rule__FBFormDownload__ConditionAssignment_18");
 			builder.put(grammarAccess.getDropfileAccess().getNameAssignment_2(), "rule__Dropfile__NameAssignment_2");
 			builder.put(grammarAccess.getDropfileAccess().getTargetAssignment_4(), "rule__Dropfile__TargetAssignment_4");
 			builder.put(grammarAccess.getDropfileAccess().getConditionAssignment_6(), "rule__Dropfile__ConditionAssignment_6");

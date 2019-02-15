@@ -71,42 +71,82 @@ class GoogleCalendarAction extends in.handyman.command.Action with LazyLogging {
     val timeZone = TimeZone.getTimeZone(timeZoneLabel);
     val gcalCreateMarker = "GCALENDART-CREATE";
     val gMarker = MarkerFactory.getMarker(gcalCreateMarker);
-    
+
+    val eventMap: java.util.Map[Date, CalendarEvent] = new java.util.HashMap[Date, CalendarEvent]()
+
     try {
       while (rs.next()) {
-        incomingCalenderEvent.incrementAndGet()
-        val calId = rs.getString("event_calendar_id")
-        val interval = rs.getInt("event_interval")
-        val startDate = rs.getDate("event_start")
-        val endDate = rs.getString("event_end")
-        val time = rs.getString("event_alert_time")
-        val title = rs.getString("event_title")
-        val description = rs.getString("description")
-        val location = rs.getString("event_location")
-        val event = new Event();
-        val startDateG = new Date(startDate.getTime+36000)
-        
 
-        val start = new DateTime(startDateG, timeZone)
-        val startEventDateTime = new EventDateTime()
-        startEventDateTime.setTimeZone(timeZoneLabel).setDateTime(start)
-        event.setStart(startEventDateTime)
-        
+        val calEvent = new CalendarEvent
 
-        val eventEnd = new Date(startDate.getTime + 60 * 60 * 1000)
-        val dailyEnd = new DateTime(eventEnd, TimeZone.getTimeZone(timeZoneLabel));
-        event.setEnd(new EventDateTime().setDateTime(dailyEnd).setTimeZone(timeZoneLabel))
+        calEvent.startDate = rs.getDate("event_start")
 
-        event.setLocation(location)
-        event.setSummary(title)
-        event.setDescription(description)
+        if (eventMap.containsKey(calEvent.startDate)) {
+          val title = rs.getString("event_title")
+          val description = rs.getString("description")
+          val location = rs.getString("event_location")
+          val info = title + " " + location
+          eventMap.get(calEvent.startDate).contactDetails.add(info)
+        } else {
+          calEvent.calId = rs.getString("event_calendar_id")
+          calEvent.interval = rs.getInt("event_interval")
+          calEvent.endDate = rs.getString("event_end")
+          calEvent.eventAlertTime = rs.getString("event_alert_time")
+          val title = rs.getString("event_title")
+          val description = rs.getString("description")
+          val location = rs.getString("event_location")
+          val info = title + " " + location
+          calEvent.contactDetails.add(info)
+          eventMap.put(calEvent.startDate, calEvent)
+        }
+      }
+      if (!eventMap.isEmpty) {
+        val iter = eventMap.keySet().iterator()
+        while (iter.hasNext) {
+          incomingCalenderEvent.incrementAndGet()
+          val startDateAsKey = iter.next
+          val eventPojo: CalendarEvent = eventMap.get(startDateAsKey)
+          val calId = eventPojo.calId
+          val interval = eventPojo.interval
+          val endDate = eventPojo.endDate
+          val time = eventPojo.eventAlertTime
+          val title = "Schedule to call Juno contacts"
+          val contactList = eventPojo.contactDetails
+          val location = "NA"
 
-        val endDateForRecur = endDate.replaceAll("-", "") + "T170000Z"
-        event.setRecurrence(Arrays.asList("RRULE:FREQ=DAILY;UNTIL=" + endDateForRecur));
+          val event = new Event();
+          val startDateG = new Date(startDateAsKey.getTime + 36000)
 
-        val result = client.events().insert(calId, event).execute();
-        addedCalenderEvent.incrementAndGet
-        logger.info(gMarker,"Adding event {} with for location {} title {} with counter {} with description $description with final date $endDateForRecur",startDate, location, title, addedCalenderEvent.get.toString)
+          val start = new DateTime(startDateG, timeZone)
+          val startEventDateTime = new EventDateTime()
+          startEventDateTime.setTimeZone(timeZoneLabel).setDateTime(start)
+          event.setStart(startEventDateTime)
+
+          val eventEnd = new Date(startDateAsKey.getTime + 60 * 60 * 1000)
+          val dailyEnd = new DateTime(eventEnd, TimeZone.getTimeZone(timeZoneLabel));
+          event.setEnd(new EventDateTime().setDateTime(dailyEnd).setTimeZone(timeZoneLabel))
+
+          event.setLocation(location)
+          event.setSummary(title)
+          val descBuilder: StringBuilder = new StringBuilder()
+          val description = {
+            //contactList.foreach(contact => descBuilder.append(contact).append("<br/>"))
+            val iter = contactList.iterator()
+            while (iter.hasNext()) {
+              descBuilder.append(iter.next()).append("<br/>")              
+            }
+            descBuilder.toString()
+          }
+          event.setDescription(description)
+
+          val endDateForRecur = endDate.replaceAll("-", "") + "T170000Z"
+          event.setRecurrence(Arrays.asList("RRULE:FREQ=DAILY;UNTIL=" + endDateForRecur));
+
+          val result = client.events().insert(calId, event).execute();
+          addedCalenderEvent.incrementAndGet
+          logger.info("Adding event  {} with for location {} title {} with counter {} with description {} with final date{}", startDateAsKey.toString(), location, title, addedCalenderEvent.get.toString(), description, endDateForRecur)
+
+        }
       }
     } finally {
       detailMap.put("accountId", accountId)
@@ -135,8 +175,8 @@ class GoogleCalendarAction extends in.handyman.command.Action with LazyLogging {
       detailMap.putIfAbsent("condition-output", output.toString())
       output
     } finally {
-       if(expression!=null)
-      detailMap.putIfAbsent("condition", "LHS=" + expression.getLhs + ", Operator=" + expression.getOperator + ", RHS=" + expression.getRhs)
+      if (expression != null)
+        detailMap.putIfAbsent("condition", "LHS=" + expression.getLhs + ", Operator=" + expression.getOperator + ", RHS=" + expression.getRhs)
 
     }
   }

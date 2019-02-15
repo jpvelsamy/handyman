@@ -898,6 +898,97 @@ public interface DslPackage extends EPackage
   int FBC_LEAD_FEATURE_COUNT = ACTION_FEATURE_COUNT + 6;
 
   /**
+   * The meta object id for the '{@link in.handyman.dsl.impl.FBFormDownloadImpl <em>FB Form Download</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see in.handyman.dsl.impl.FBFormDownloadImpl
+   * @see in.handyman.dsl.impl.DslPackageImpl#getFBFormDownload()
+   * @generated
+   */
+  int FB_FORM_DOWNLOAD = 12;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FB_FORM_DOWNLOAD__NAME = ACTION__NAME;
+
+  /**
+   * The feature id for the '<em><b>Condition</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FB_FORM_DOWNLOAD__CONDITION = ACTION__CONDITION;
+
+  /**
+   * The feature id for the '<em><b>Access Token</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FB_FORM_DOWNLOAD__ACCESS_TOKEN = ACTION_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>App Secret</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FB_FORM_DOWNLOAD__APP_SECRET = ACTION_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Account Id</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FB_FORM_DOWNLOAD__ACCOUNT_ID = ACTION_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Form Id</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FB_FORM_DOWNLOAD__FORM_ID = ACTION_FEATURE_COUNT + 3;
+
+  /**
+   * The feature id for the '<em><b>Target</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FB_FORM_DOWNLOAD__TARGET = ACTION_FEATURE_COUNT + 4;
+
+  /**
+   * The feature id for the '<em><b>Value</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FB_FORM_DOWNLOAD__VALUE = ACTION_FEATURE_COUNT + 5;
+
+  /**
+   * The number of structural features of the '<em>FB Form Download</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FB_FORM_DOWNLOAD_FEATURE_COUNT = ACTION_FEATURE_COUNT + 6;
+
+  /**
    * The meta object id for the '{@link in.handyman.dsl.impl.DropfileImpl <em>Dropfile</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -905,7 +996,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getDropfile()
    * @generated
    */
-  int DROPFILE = 12;
+  int DROPFILE = 13;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -951,7 +1042,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getDoozle()
    * @generated
    */
-  int DOOZLE = 13;
+  int DOOZLE = 14;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1015,7 +1106,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getRest()
    * @generated
    */
-  int REST = 14;
+  int REST = 15;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1169,7 +1260,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getRestPart()
    * @generated
    */
-  int REST_PART = 15;
+  int REST_PART = 16;
 
   /**
    * The feature id for the '<em><b>Part Name</b></em>' attribute.
@@ -1206,7 +1297,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getTrelloGET()
    * @generated
    */
-  int TRELLO_GET = 16;
+  int TRELLO_GET = 17;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1297,7 +1388,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getTrelloPUT()
    * @generated
    */
-  int TRELLO_PUT = 17;
+  int TRELLO_PUT = 18;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1388,7 +1479,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getFetch()
    * @generated
    */
-  int FETCH = 18;
+  int FETCH = 19;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1443,7 +1534,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getCallprocess()
    * @generated
    */
-  int CALLPROCESS = 19;
+  int CALLPROCESS = 20;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1516,7 +1607,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getUpdatedaudit()
    * @generated
    */
-  int UPDATEDAUDIT = 20;
+  int UPDATEDAUDIT = 21;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1580,7 +1671,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getClickSendSms()
    * @generated
    */
-  int CLICK_SEND_SMS = 21;
+  int CLICK_SEND_SMS = 22;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1653,7 +1744,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getSlackPUT()
    * @generated
    */
-  int SLACK_PUT = 22;
+  int SLACK_PUT = 23;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1717,7 +1808,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getCopydata()
    * @generated
    */
-  int COPYDATA = 23;
+  int COPYDATA = 24;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1781,7 +1872,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getWriteCsv()
    * @generated
    */
-  int WRITE_CSV = 24;
+  int WRITE_CSV = 25;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1854,7 +1945,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getLoadCsv()
    * @generated
    */
-  int LOAD_CSV = 25;
+  int LOAD_CSV = 26;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1927,7 +2018,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getTransform()
    * @generated
    */
-  int TRANSFORM = 26;
+  int TRANSFORM = 27;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1982,7 +2073,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getExpression()
    * @generated
    */
-  int EXPRESSION = 27;
+  int EXPRESSION = 28;
 
   /**
    * The feature id for the '<em><b>Lhs</b></em>' attribute.
@@ -2734,6 +2825,82 @@ public interface DslPackage extends EPackage
    * @generated
    */
   EAttribute getFBCLead_Value();
+
+  /**
+   * Returns the meta object for class '{@link in.handyman.dsl.FBFormDownload <em>FB Form Download</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>FB Form Download</em>'.
+   * @see in.handyman.dsl.FBFormDownload
+   * @generated
+   */
+  EClass getFBFormDownload();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.FBFormDownload#getAccessToken <em>Access Token</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Access Token</em>'.
+   * @see in.handyman.dsl.FBFormDownload#getAccessToken()
+   * @see #getFBFormDownload()
+   * @generated
+   */
+  EAttribute getFBFormDownload_AccessToken();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.FBFormDownload#getAppSecret <em>App Secret</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>App Secret</em>'.
+   * @see in.handyman.dsl.FBFormDownload#getAppSecret()
+   * @see #getFBFormDownload()
+   * @generated
+   */
+  EAttribute getFBFormDownload_AppSecret();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.FBFormDownload#getAccountId <em>Account Id</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Account Id</em>'.
+   * @see in.handyman.dsl.FBFormDownload#getAccountId()
+   * @see #getFBFormDownload()
+   * @generated
+   */
+  EAttribute getFBFormDownload_AccountId();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.FBFormDownload#getFormId <em>Form Id</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Form Id</em>'.
+   * @see in.handyman.dsl.FBFormDownload#getFormId()
+   * @see #getFBFormDownload()
+   * @generated
+   */
+  EAttribute getFBFormDownload_FormId();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.FBFormDownload#getTarget <em>Target</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Target</em>'.
+   * @see in.handyman.dsl.FBFormDownload#getTarget()
+   * @see #getFBFormDownload()
+   * @generated
+   */
+  EAttribute getFBFormDownload_Target();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.FBFormDownload#getValue <em>Value</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Value</em>'.
+   * @see in.handyman.dsl.FBFormDownload#getValue()
+   * @see #getFBFormDownload()
+   * @generated
+   */
+  EAttribute getFBFormDownload_Value();
 
   /**
    * Returns the meta object for class '{@link in.handyman.dsl.Dropfile <em>Dropfile</em>}'.
@@ -4162,6 +4329,64 @@ public interface DslPackage extends EPackage
      * @generated
      */
     EAttribute FBC_LEAD__VALUE = eINSTANCE.getFBCLead_Value();
+
+    /**
+     * The meta object literal for the '{@link in.handyman.dsl.impl.FBFormDownloadImpl <em>FB Form Download</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see in.handyman.dsl.impl.FBFormDownloadImpl
+     * @see in.handyman.dsl.impl.DslPackageImpl#getFBFormDownload()
+     * @generated
+     */
+    EClass FB_FORM_DOWNLOAD = eINSTANCE.getFBFormDownload();
+
+    /**
+     * The meta object literal for the '<em><b>Access Token</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FB_FORM_DOWNLOAD__ACCESS_TOKEN = eINSTANCE.getFBFormDownload_AccessToken();
+
+    /**
+     * The meta object literal for the '<em><b>App Secret</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FB_FORM_DOWNLOAD__APP_SECRET = eINSTANCE.getFBFormDownload_AppSecret();
+
+    /**
+     * The meta object literal for the '<em><b>Account Id</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FB_FORM_DOWNLOAD__ACCOUNT_ID = eINSTANCE.getFBFormDownload_AccountId();
+
+    /**
+     * The meta object literal for the '<em><b>Form Id</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FB_FORM_DOWNLOAD__FORM_ID = eINSTANCE.getFBFormDownload_FormId();
+
+    /**
+     * The meta object literal for the '<em><b>Target</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FB_FORM_DOWNLOAD__TARGET = eINSTANCE.getFBFormDownload_Target();
+
+    /**
+     * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FB_FORM_DOWNLOAD__VALUE = eINSTANCE.getFBFormDownload_Value();
 
     /**
      * The meta object literal for the '{@link in.handyman.dsl.impl.DropfileImpl <em>Dropfile</em>}' class.

@@ -14,6 +14,7 @@ import in.handyman.dsl.Dropfile;
 import in.handyman.dsl.DslPackage;
 import in.handyman.dsl.Expression;
 import in.handyman.dsl.FBCLead;
+import in.handyman.dsl.FBFormDownload;
 import in.handyman.dsl.Fetch;
 import in.handyman.dsl.Finally;
 import in.handyman.dsl.GoogleSendMail;
@@ -83,6 +84,9 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 				return; 
 			case DslPackage.FBC_LEAD:
 				sequence_FBCLead(context, (FBCLead) semanticObject); 
+				return; 
+			case DslPackage.FB_FORM_DOWNLOAD:
+				sequence_FBFormDownload(context, (FBFormDownload) semanticObject); 
 				return; 
 			case DslPackage.FETCH:
 				sequence_Fetch(context, (Fetch) semanticObject); 
@@ -418,6 +422,55 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 		feeder.accept(grammarAccess.getFBCLeadAccess().getTargetSTRINGTerminalRuleCall_12_0(), semanticObject.getTarget());
 		feeder.accept(grammarAccess.getFBCLeadAccess().getValueSTRINGTerminalRuleCall_15_0(), semanticObject.getValue());
 		feeder.accept(grammarAccess.getFBCLeadAccess().getConditionExpressionParserRuleCall_18_0(), semanticObject.getCondition());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Action returns FBFormDownload
+	 *     FBFormDownload returns FBFormDownload
+	 *
+	 * Constraint:
+	 *     (
+	 *         name=STRING 
+	 *         accessToken=STRING 
+	 *         appSecret=STRING 
+	 *         accountId=STRING 
+	 *         formId=STRING 
+	 *         target=STRING 
+	 *         value=STRING 
+	 *         condition=Expression
+	 *     )
+	 */
+	protected void sequence_FBFormDownload(ISerializationContext context, FBFormDownload semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.ACTION__NAME) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.ACTION__NAME));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.FB_FORM_DOWNLOAD__ACCESS_TOKEN) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FB_FORM_DOWNLOAD__ACCESS_TOKEN));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.FB_FORM_DOWNLOAD__APP_SECRET) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FB_FORM_DOWNLOAD__APP_SECRET));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.FB_FORM_DOWNLOAD__ACCOUNT_ID) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FB_FORM_DOWNLOAD__ACCOUNT_ID));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.FB_FORM_DOWNLOAD__FORM_ID) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FB_FORM_DOWNLOAD__FORM_ID));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.FB_FORM_DOWNLOAD__TARGET) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FB_FORM_DOWNLOAD__TARGET));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.FB_FORM_DOWNLOAD__VALUE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FB_FORM_DOWNLOAD__VALUE));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.ACTION__CONDITION) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.ACTION__CONDITION));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getFBFormDownloadAccess().getNameSTRINGTerminalRuleCall_2_0(), semanticObject.getName());
+		feeder.accept(grammarAccess.getFBFormDownloadAccess().getAccessTokenSTRINGTerminalRuleCall_4_0(), semanticObject.getAccessToken());
+		feeder.accept(grammarAccess.getFBFormDownloadAccess().getAppSecretSTRINGTerminalRuleCall_6_0(), semanticObject.getAppSecret());
+		feeder.accept(grammarAccess.getFBFormDownloadAccess().getAccountIdSTRINGTerminalRuleCall_8_0(), semanticObject.getAccountId());
+		feeder.accept(grammarAccess.getFBFormDownloadAccess().getFormIdSTRINGTerminalRuleCall_10_0(), semanticObject.getFormId());
+		feeder.accept(grammarAccess.getFBFormDownloadAccess().getTargetSTRINGTerminalRuleCall_12_0(), semanticObject.getTarget());
+		feeder.accept(grammarAccess.getFBFormDownloadAccess().getValueSTRINGTerminalRuleCall_15_0(), semanticObject.getValue());
+		feeder.accept(grammarAccess.getFBFormDownloadAccess().getConditionExpressionParserRuleCall_18_0(), semanticObject.getCondition());
 		feeder.finish();
 	}
 	

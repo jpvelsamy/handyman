@@ -132,6 +132,15 @@ public interface DslFactory extends EFactory
   FBCLead createFBCLead();
 
   /**
+   * Returns a new object of class '<em>FB Form Download</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>FB Form Download</em>'.
+   * @generated
+   */
+  FBFormDownload createFBFormDownload();
+
+  /**
    * Returns a new object of class '<em>Dropfile</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

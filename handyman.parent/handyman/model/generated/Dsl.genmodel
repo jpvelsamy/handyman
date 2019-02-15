@@ -84,6 +84,14 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FBCLead/target"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FBCLead/value"/>
     </genClasses>
+    <genClasses ecoreClass="Dsl.ecore#//FBFormDownload">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FBFormDownload/accessToken"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FBFormDownload/appSecret"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FBFormDownload/accountId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FBFormDownload/formId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FBFormDownload/target"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FBFormDownload/value"/>
+    </genClasses>
     <genClasses ecoreClass="Dsl.ecore#//Dropfile">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Dropfile/target"/>
     </genClasses>

@@ -17,6 +17,7 @@ object HandymanServer extends Application with LazyLogging{
     component.getDefaultHost().attach(this)
     // Start the component.    
     component.start()
+     logger.info("Successfully started the restlet server to take in commands, at port 2909")
     
   }
   override def createInboundRoot: Router = {

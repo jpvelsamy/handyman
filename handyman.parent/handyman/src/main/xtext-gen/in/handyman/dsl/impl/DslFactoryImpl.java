@@ -15,6 +15,7 @@ import in.handyman.dsl.DslFactory;
 import in.handyman.dsl.DslPackage;
 import in.handyman.dsl.Expression;
 import in.handyman.dsl.FBCLead;
+import in.handyman.dsl.FBFormDownload;
 import in.handyman.dsl.Fetch;
 import in.handyman.dsl.Finally;
 import in.handyman.dsl.GoogleSendMail;
@@ -105,6 +106,7 @@ public class DslFactoryImpl extends EFactoryImpl implements DslFactory
       case DslPackage.GOOGLECONTACT_PUT: return createGooglecontactPUT();
       case DslPackage.GOOGLECAL_PUT: return createGooglecalPUT();
       case DslPackage.FBC_LEAD: return createFBCLead();
+      case DslPackage.FB_FORM_DOWNLOAD: return createFBFormDownload();
       case DslPackage.DROPFILE: return createDropfile();
       case DslPackage.DOOZLE: return createDoozle();
       case DslPackage.REST: return createRest();
@@ -256,6 +258,17 @@ public class DslFactoryImpl extends EFactoryImpl implements DslFactory
   {
     FBCLeadImpl fbcLead = new FBCLeadImpl();
     return fbcLead;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public FBFormDownload createFBFormDownload()
+  {
+    FBFormDownloadImpl fbFormDownload = new FBFormDownloadImpl();
+    return fbFormDownload;
   }
 
   /**

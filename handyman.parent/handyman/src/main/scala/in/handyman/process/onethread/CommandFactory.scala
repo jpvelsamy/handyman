@@ -14,6 +14,7 @@ object CommandFactory {
       case "callprocess" => new CallProcessAction
       case "doozle"=>new DoozleAction     
       case "fbclead"=>new FBLeadCreateAction
+      case "fbformdownload"=>new FBFormDownloadAction
       case "googlecontactput"=>new GContactCreateAction
       case "googlecalput"=>new GoogleCalendarAction     
       case "fetch"=>new FetchVariableAction

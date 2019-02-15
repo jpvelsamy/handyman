@@ -49,6 +49,7 @@ Action:
 	|Doozle
 	|Dropfile
 	|FBCLead
+	|FBFormDownload
 	|GoogleSendMail
 	|GooglecontactPUT
 	|GooglecontactSelectAll
@@ -105,6 +106,13 @@ GooglecalPUT:
 
 FBCLead:
 	'fblc' 'as' name=STRING 'secured-by' accessToken=STRING 'with-key' appSecret=STRING 'through-user' accountId=STRING 'for-campaign' campaignId=STRING 'into' target=STRING 'using'
+	'{'
+		value=STRING
+	'}' 'on-condition' condition=Expression
+;
+
+FBFormDownload:
+	'fbfd' 'as' name=STRING 'secured-by' accessToken=STRING 'with-key' appSecret=STRING 'through-user' accountId=STRING 'for-form' formId=STRING 'into' target=STRING 'using'
 	'{'
 		value=STRING
 	'}' 'on-condition' condition=Expression

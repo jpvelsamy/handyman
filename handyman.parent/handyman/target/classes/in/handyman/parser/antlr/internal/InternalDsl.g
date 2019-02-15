@@ -531,47 +531,56 @@ ruleAction returns [EObject current=null]
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getActionAccess().getGoogleSendMailParserRuleCall_16());
+			newCompositeNode(grammarAccess.getActionAccess().getFBFormDownloadParserRuleCall_16());
 		}
-		this_GoogleSendMail_16=ruleGoogleSendMail
+		this_FBFormDownload_16=ruleFBFormDownload
 		{
-			$current = $this_GoogleSendMail_16.current;
+			$current = $this_FBFormDownload_16.current;
 			afterParserOrEnumRuleCall();
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getActionAccess().getGooglecontactPUTParserRuleCall_17());
+			newCompositeNode(grammarAccess.getActionAccess().getGoogleSendMailParserRuleCall_17());
 		}
-		this_GooglecontactPUT_17=ruleGooglecontactPUT
+		this_GoogleSendMail_17=ruleGoogleSendMail
 		{
-			$current = $this_GooglecontactPUT_17.current;
+			$current = $this_GoogleSendMail_17.current;
 			afterParserOrEnumRuleCall();
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getActionAccess().getGooglecontactSelectAllParserRuleCall_18());
+			newCompositeNode(grammarAccess.getActionAccess().getGooglecontactPUTParserRuleCall_18());
 		}
-		this_GooglecontactSelectAll_18=ruleGooglecontactSelectAll
+		this_GooglecontactPUT_18=ruleGooglecontactPUT
 		{
-			$current = $this_GooglecontactSelectAll_18.current;
+			$current = $this_GooglecontactPUT_18.current;
 			afterParserOrEnumRuleCall();
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getActionAccess().getAbortParserRuleCall_19());
+			newCompositeNode(grammarAccess.getActionAccess().getGooglecontactSelectAllParserRuleCall_19());
 		}
-		this_Abort_19=ruleAbort
+		this_GooglecontactSelectAll_19=ruleGooglecontactSelectAll
 		{
-			$current = $this_Abort_19.current;
+			$current = $this_GooglecontactSelectAll_19.current;
 			afterParserOrEnumRuleCall();
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getActionAccess().getSmsLeadSmsParserRuleCall_20());
+			newCompositeNode(grammarAccess.getActionAccess().getAbortParserRuleCall_20());
 		}
-		this_SmsLeadSms_20=ruleSmsLeadSms
+		this_Abort_20=ruleAbort
 		{
-			$current = $this_SmsLeadSms_20.current;
+			$current = $this_Abort_20.current;
+			afterParserOrEnumRuleCall();
+		}
+		    |
+		{
+			newCompositeNode(grammarAccess.getActionAccess().getSmsLeadSmsParserRuleCall_21());
+		}
+		this_SmsLeadSms_21=ruleSmsLeadSms
+		{
+			$current = $this_SmsLeadSms_21.current;
 			afterParserOrEnumRuleCall();
 		}
 	)
@@ -2016,6 +2025,214 @@ ruleFBCLead returns [EObject current=null]
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getFBCLeadRule());
+					}
+					set(
+						$current,
+						"condition",
+						lv_condition_18_0,
+						"in.handyman.Dsl.Expression");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)
+	)
+;
+
+// Entry rule entryRuleFBFormDownload
+entryRuleFBFormDownload returns [EObject current=null]:
+	{ newCompositeNode(grammarAccess.getFBFormDownloadRule()); }
+	iv_ruleFBFormDownload=ruleFBFormDownload
+	{ $current=$iv_ruleFBFormDownload.current; }
+	EOF;
+
+// Rule FBFormDownload
+ruleFBFormDownload returns [EObject current=null]
+@init {
+	enterRule();
+}
+@after {
+	leaveRule();
+}:
+	(
+		otherlv_0='fbfd'
+		{
+			newLeafNode(otherlv_0, grammarAccess.getFBFormDownloadAccess().getFbfdKeyword_0());
+		}
+		otherlv_1='as'
+		{
+			newLeafNode(otherlv_1, grammarAccess.getFBFormDownloadAccess().getAsKeyword_1());
+		}
+		(
+			(
+				lv_name_2_0=RULE_STRING
+				{
+					newLeafNode(lv_name_2_0, grammarAccess.getFBFormDownloadAccess().getNameSTRINGTerminalRuleCall_2_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getFBFormDownloadRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"name",
+						lv_name_2_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_3='secured-by'
+		{
+			newLeafNode(otherlv_3, grammarAccess.getFBFormDownloadAccess().getSecuredByKeyword_3());
+		}
+		(
+			(
+				lv_accessToken_4_0=RULE_STRING
+				{
+					newLeafNode(lv_accessToken_4_0, grammarAccess.getFBFormDownloadAccess().getAccessTokenSTRINGTerminalRuleCall_4_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getFBFormDownloadRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"accessToken",
+						lv_accessToken_4_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_5='with-key'
+		{
+			newLeafNode(otherlv_5, grammarAccess.getFBFormDownloadAccess().getWithKeyKeyword_5());
+		}
+		(
+			(
+				lv_appSecret_6_0=RULE_STRING
+				{
+					newLeafNode(lv_appSecret_6_0, grammarAccess.getFBFormDownloadAccess().getAppSecretSTRINGTerminalRuleCall_6_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getFBFormDownloadRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"appSecret",
+						lv_appSecret_6_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_7='through-user'
+		{
+			newLeafNode(otherlv_7, grammarAccess.getFBFormDownloadAccess().getThroughUserKeyword_7());
+		}
+		(
+			(
+				lv_accountId_8_0=RULE_STRING
+				{
+					newLeafNode(lv_accountId_8_0, grammarAccess.getFBFormDownloadAccess().getAccountIdSTRINGTerminalRuleCall_8_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getFBFormDownloadRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"accountId",
+						lv_accountId_8_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_9='for-form'
+		{
+			newLeafNode(otherlv_9, grammarAccess.getFBFormDownloadAccess().getForFormKeyword_9());
+		}
+		(
+			(
+				lv_formId_10_0=RULE_STRING
+				{
+					newLeafNode(lv_formId_10_0, grammarAccess.getFBFormDownloadAccess().getFormIdSTRINGTerminalRuleCall_10_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getFBFormDownloadRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"formId",
+						lv_formId_10_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_11='into'
+		{
+			newLeafNode(otherlv_11, grammarAccess.getFBFormDownloadAccess().getIntoKeyword_11());
+		}
+		(
+			(
+				lv_target_12_0=RULE_STRING
+				{
+					newLeafNode(lv_target_12_0, grammarAccess.getFBFormDownloadAccess().getTargetSTRINGTerminalRuleCall_12_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getFBFormDownloadRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"target",
+						lv_target_12_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_13='using'
+		{
+			newLeafNode(otherlv_13, grammarAccess.getFBFormDownloadAccess().getUsingKeyword_13());
+		}
+		otherlv_14='{'
+		{
+			newLeafNode(otherlv_14, grammarAccess.getFBFormDownloadAccess().getLeftCurlyBracketKeyword_14());
+		}
+		(
+			(
+				lv_value_15_0=RULE_STRING
+				{
+					newLeafNode(lv_value_15_0, grammarAccess.getFBFormDownloadAccess().getValueSTRINGTerminalRuleCall_15_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getFBFormDownloadRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"value",
+						lv_value_15_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_16='}'
+		{
+			newLeafNode(otherlv_16, grammarAccess.getFBFormDownloadAccess().getRightCurlyBracketKeyword_16());
+		}
+		otherlv_17='on-condition'
+		{
+			newLeafNode(otherlv_17, grammarAccess.getFBFormDownloadAccess().getOnConditionKeyword_17());
+		}
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getFBFormDownloadAccess().getConditionExpressionParserRuleCall_18_0());
+				}
+				lv_condition_18_0=ruleExpression
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getFBFormDownloadRule());
 					}
 					set(
 						$current,

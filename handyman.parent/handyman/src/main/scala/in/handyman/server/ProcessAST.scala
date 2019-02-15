@@ -34,6 +34,9 @@ object ProcessAST extends LazyLogging {
     val process: in.handyman.dsl.Process = eRoot.asInstanceOf[in.handyman.dsl.Process]
     RuntimeContext(process, inputConfig, path, instanceName)
   }
+  
+ 
+
 
   def loadProcessAST(instanceName: String, fileRelativePath: String, context: in.handyman.command.Context) = {
     logger.info("filepath=" + fileRelativePath)

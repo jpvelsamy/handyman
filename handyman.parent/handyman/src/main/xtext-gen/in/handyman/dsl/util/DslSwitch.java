@@ -14,6 +14,7 @@ import in.handyman.dsl.Dropfile;
 import in.handyman.dsl.DslPackage;
 import in.handyman.dsl.Expression;
 import in.handyman.dsl.FBCLead;
+import in.handyman.dsl.FBFormDownload;
 import in.handyman.dsl.Fetch;
 import in.handyman.dsl.Finally;
 import in.handyman.dsl.GoogleSendMail;
@@ -188,6 +189,14 @@ public class DslSwitch<T> extends Switch<T>
         FBCLead fbcLead = (FBCLead)theEObject;
         T result = caseFBCLead(fbcLead);
         if (result == null) result = caseAction(fbcLead);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case DslPackage.FB_FORM_DOWNLOAD:
+      {
+        FBFormDownload fbFormDownload = (FBFormDownload)theEObject;
+        T result = caseFBFormDownload(fbFormDownload);
+        if (result == null) result = caseAction(fbFormDownload);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -509,6 +518,22 @@ public class DslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseFBCLead(FBCLead object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>FB Form Download</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>FB Form Download</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseFBFormDownload(FBFormDownload object)
   {
     return null;
   }

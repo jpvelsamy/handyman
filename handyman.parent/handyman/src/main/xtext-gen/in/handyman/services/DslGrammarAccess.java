@@ -227,11 +227,12 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cDoozleParserRuleCall_13 = (RuleCall)cAlternatives.eContents().get(13);
 		private final RuleCall cDropfileParserRuleCall_14 = (RuleCall)cAlternatives.eContents().get(14);
 		private final RuleCall cFBCLeadParserRuleCall_15 = (RuleCall)cAlternatives.eContents().get(15);
-		private final RuleCall cGoogleSendMailParserRuleCall_16 = (RuleCall)cAlternatives.eContents().get(16);
-		private final RuleCall cGooglecontactPUTParserRuleCall_17 = (RuleCall)cAlternatives.eContents().get(17);
-		private final RuleCall cGooglecontactSelectAllParserRuleCall_18 = (RuleCall)cAlternatives.eContents().get(18);
-		private final RuleCall cAbortParserRuleCall_19 = (RuleCall)cAlternatives.eContents().get(19);
-		private final RuleCall cSmsLeadSmsParserRuleCall_20 = (RuleCall)cAlternatives.eContents().get(20);
+		private final RuleCall cFBFormDownloadParserRuleCall_16 = (RuleCall)cAlternatives.eContents().get(16);
+		private final RuleCall cGoogleSendMailParserRuleCall_17 = (RuleCall)cAlternatives.eContents().get(17);
+		private final RuleCall cGooglecontactPUTParserRuleCall_18 = (RuleCall)cAlternatives.eContents().get(18);
+		private final RuleCall cGooglecontactSelectAllParserRuleCall_19 = (RuleCall)cAlternatives.eContents().get(19);
+		private final RuleCall cAbortParserRuleCall_20 = (RuleCall)cAlternatives.eContents().get(20);
+		private final RuleCall cSmsLeadSmsParserRuleCall_21 = (RuleCall)cAlternatives.eContents().get(21);
 		
 		//Action:
 		//	Copydata
@@ -250,6 +251,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		//	| Doozle
 		//	| Dropfile
 		//	| FBCLead
+		//	| FBFormDownload
 		//	| GoogleSendMail
 		//	| GooglecontactPUT
 		//	| GooglecontactSelectAll
@@ -258,7 +260,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		@Override public ParserRule getRule() { return rule; }
 		
 		//Copydata | LoadCsv | WriteCsv | Transform | GooglecalPUT | SlackPUT | ClickSendSms | Updatedaudit | Callprocess | Fetch
-		//| TrelloPUT | TrelloGET | Rest | Doozle | Dropfile | FBCLead | GoogleSendMail | GooglecontactPUT |
+		//| TrelloPUT | TrelloGET | Rest | Doozle | Dropfile | FBCLead | FBFormDownload | GoogleSendMail | GooglecontactPUT |
 		//GooglecontactSelectAll | Abort | SmsLeadSms
 		public Alternatives getAlternatives() { return cAlternatives; }
 		
@@ -310,20 +312,23 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		//FBCLead
 		public RuleCall getFBCLeadParserRuleCall_15() { return cFBCLeadParserRuleCall_15; }
 		
+		//FBFormDownload
+		public RuleCall getFBFormDownloadParserRuleCall_16() { return cFBFormDownloadParserRuleCall_16; }
+		
 		//GoogleSendMail
-		public RuleCall getGoogleSendMailParserRuleCall_16() { return cGoogleSendMailParserRuleCall_16; }
+		public RuleCall getGoogleSendMailParserRuleCall_17() { return cGoogleSendMailParserRuleCall_17; }
 		
 		//GooglecontactPUT
-		public RuleCall getGooglecontactPUTParserRuleCall_17() { return cGooglecontactPUTParserRuleCall_17; }
+		public RuleCall getGooglecontactPUTParserRuleCall_18() { return cGooglecontactPUTParserRuleCall_18; }
 		
 		//GooglecontactSelectAll
-		public RuleCall getGooglecontactSelectAllParserRuleCall_18() { return cGooglecontactSelectAllParserRuleCall_18; }
+		public RuleCall getGooglecontactSelectAllParserRuleCall_19() { return cGooglecontactSelectAllParserRuleCall_19; }
 		
 		//Abort
-		public RuleCall getAbortParserRuleCall_19() { return cAbortParserRuleCall_19; }
+		public RuleCall getAbortParserRuleCall_20() { return cAbortParserRuleCall_20; }
 		
 		//SmsLeadSms
-		public RuleCall getSmsLeadSmsParserRuleCall_20() { return cSmsLeadSmsParserRuleCall_20; }
+		public RuleCall getSmsLeadSmsParserRuleCall_21() { return cSmsLeadSmsParserRuleCall_21; }
 	}
 	public class SmsLeadSmsElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "in.handyman.Dsl.SmsLeadSms");
@@ -1162,6 +1167,130 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//STRING
 		public RuleCall getCampaignIdSTRINGTerminalRuleCall_10_0() { return cCampaignIdSTRINGTerminalRuleCall_10_0; }
+		
+		//'into'
+		public Keyword getIntoKeyword_11() { return cIntoKeyword_11; }
+		
+		//target=STRING
+		public Assignment getTargetAssignment_12() { return cTargetAssignment_12; }
+		
+		//STRING
+		public RuleCall getTargetSTRINGTerminalRuleCall_12_0() { return cTargetSTRINGTerminalRuleCall_12_0; }
+		
+		//'using'
+		public Keyword getUsingKeyword_13() { return cUsingKeyword_13; }
+		
+		//'{'
+		public Keyword getLeftCurlyBracketKeyword_14() { return cLeftCurlyBracketKeyword_14; }
+		
+		//value=STRING
+		public Assignment getValueAssignment_15() { return cValueAssignment_15; }
+		
+		//STRING
+		public RuleCall getValueSTRINGTerminalRuleCall_15_0() { return cValueSTRINGTerminalRuleCall_15_0; }
+		
+		//'}'
+		public Keyword getRightCurlyBracketKeyword_16() { return cRightCurlyBracketKeyword_16; }
+		
+		//'on-condition'
+		public Keyword getOnConditionKeyword_17() { return cOnConditionKeyword_17; }
+		
+		//condition=Expression
+		public Assignment getConditionAssignment_18() { return cConditionAssignment_18; }
+		
+		//Expression
+		public RuleCall getConditionExpressionParserRuleCall_18_0() { return cConditionExpressionParserRuleCall_18_0; }
+	}
+	public class FBFormDownloadElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "in.handyman.Dsl.FBFormDownload");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cFbfdKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Keyword cAsKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Assignment cNameAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cNameSTRINGTerminalRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
+		private final Keyword cSecuredByKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Assignment cAccessTokenAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cAccessTokenSTRINGTerminalRuleCall_4_0 = (RuleCall)cAccessTokenAssignment_4.eContents().get(0);
+		private final Keyword cWithKeyKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		private final Assignment cAppSecretAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final RuleCall cAppSecretSTRINGTerminalRuleCall_6_0 = (RuleCall)cAppSecretAssignment_6.eContents().get(0);
+		private final Keyword cThroughUserKeyword_7 = (Keyword)cGroup.eContents().get(7);
+		private final Assignment cAccountIdAssignment_8 = (Assignment)cGroup.eContents().get(8);
+		private final RuleCall cAccountIdSTRINGTerminalRuleCall_8_0 = (RuleCall)cAccountIdAssignment_8.eContents().get(0);
+		private final Keyword cForFormKeyword_9 = (Keyword)cGroup.eContents().get(9);
+		private final Assignment cFormIdAssignment_10 = (Assignment)cGroup.eContents().get(10);
+		private final RuleCall cFormIdSTRINGTerminalRuleCall_10_0 = (RuleCall)cFormIdAssignment_10.eContents().get(0);
+		private final Keyword cIntoKeyword_11 = (Keyword)cGroup.eContents().get(11);
+		private final Assignment cTargetAssignment_12 = (Assignment)cGroup.eContents().get(12);
+		private final RuleCall cTargetSTRINGTerminalRuleCall_12_0 = (RuleCall)cTargetAssignment_12.eContents().get(0);
+		private final Keyword cUsingKeyword_13 = (Keyword)cGroup.eContents().get(13);
+		private final Keyword cLeftCurlyBracketKeyword_14 = (Keyword)cGroup.eContents().get(14);
+		private final Assignment cValueAssignment_15 = (Assignment)cGroup.eContents().get(15);
+		private final RuleCall cValueSTRINGTerminalRuleCall_15_0 = (RuleCall)cValueAssignment_15.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_16 = (Keyword)cGroup.eContents().get(16);
+		private final Keyword cOnConditionKeyword_17 = (Keyword)cGroup.eContents().get(17);
+		private final Assignment cConditionAssignment_18 = (Assignment)cGroup.eContents().get(18);
+		private final RuleCall cConditionExpressionParserRuleCall_18_0 = (RuleCall)cConditionAssignment_18.eContents().get(0);
+		
+		//FBFormDownload:
+		//	'fbfd' 'as' name=STRING 'secured-by' accessToken=STRING 'with-key' appSecret=STRING 'through-user' accountId=STRING
+		//	'for-form' formId=STRING 'into' target=STRING 'using'
+		//	'{'
+		//	value=STRING
+		//	'}' 'on-condition' condition=Expression;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//'fbfd' 'as' name=STRING 'secured-by' accessToken=STRING 'with-key' appSecret=STRING 'through-user' accountId=STRING
+		//'for-form' formId=STRING 'into' target=STRING 'using' '{' value=STRING '}' 'on-condition' condition=Expression
+		public Group getGroup() { return cGroup; }
+		
+		//'fbfd'
+		public Keyword getFbfdKeyword_0() { return cFbfdKeyword_0; }
+		
+		//'as'
+		public Keyword getAsKeyword_1() { return cAsKeyword_1; }
+		
+		//name=STRING
+		public Assignment getNameAssignment_2() { return cNameAssignment_2; }
+		
+		//STRING
+		public RuleCall getNameSTRINGTerminalRuleCall_2_0() { return cNameSTRINGTerminalRuleCall_2_0; }
+		
+		//'secured-by'
+		public Keyword getSecuredByKeyword_3() { return cSecuredByKeyword_3; }
+		
+		//accessToken=STRING
+		public Assignment getAccessTokenAssignment_4() { return cAccessTokenAssignment_4; }
+		
+		//STRING
+		public RuleCall getAccessTokenSTRINGTerminalRuleCall_4_0() { return cAccessTokenSTRINGTerminalRuleCall_4_0; }
+		
+		//'with-key'
+		public Keyword getWithKeyKeyword_5() { return cWithKeyKeyword_5; }
+		
+		//appSecret=STRING
+		public Assignment getAppSecretAssignment_6() { return cAppSecretAssignment_6; }
+		
+		//STRING
+		public RuleCall getAppSecretSTRINGTerminalRuleCall_6_0() { return cAppSecretSTRINGTerminalRuleCall_6_0; }
+		
+		//'through-user'
+		public Keyword getThroughUserKeyword_7() { return cThroughUserKeyword_7; }
+		
+		//accountId=STRING
+		public Assignment getAccountIdAssignment_8() { return cAccountIdAssignment_8; }
+		
+		//STRING
+		public RuleCall getAccountIdSTRINGTerminalRuleCall_8_0() { return cAccountIdSTRINGTerminalRuleCall_8_0; }
+		
+		//'for-form'
+		public Keyword getForFormKeyword_9() { return cForFormKeyword_9; }
+		
+		//formId=STRING
+		public Assignment getFormIdAssignment_10() { return cFormIdAssignment_10; }
+		
+		//STRING
+		public RuleCall getFormIdSTRINGTerminalRuleCall_10_0() { return cFormIdSTRINGTerminalRuleCall_10_0; }
 		
 		//'into'
 		public Keyword getIntoKeyword_11() { return cIntoKeyword_11; }
@@ -2808,6 +2937,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	private final GooglecontactPUTElements pGooglecontactPUT;
 	private final GooglecalPUTElements pGooglecalPUT;
 	private final FBCLeadElements pFBCLead;
+	private final FBFormDownloadElements pFBFormDownload;
 	private final DropfileElements pDropfile;
 	private final DoozleElements pDoozle;
 	private final RestElements pRest;
@@ -2851,6 +2981,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		this.pGooglecontactPUT = new GooglecontactPUTElements();
 		this.pGooglecalPUT = new GooglecalPUTElements();
 		this.pFBCLead = new FBCLeadElements();
+		this.pFBFormDownload = new FBFormDownloadElements();
 		this.pDropfile = new DropfileElements();
 		this.pDoozle = new DoozleElements();
 		this.pRest = new RestElements();
@@ -2972,6 +3103,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	//	| Doozle
 	//	| Dropfile
 	//	| FBCLead
+	//	| FBFormDownload
 	//	| GoogleSendMail
 	//	| GooglecontactPUT
 	//	| GooglecontactSelectAll
@@ -3084,6 +3216,20 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	public ParserRule getFBCLeadRule() {
 		return getFBCLeadAccess().getRule();
+	}
+	
+	//FBFormDownload:
+	//	'fbfd' 'as' name=STRING 'secured-by' accessToken=STRING 'with-key' appSecret=STRING 'through-user' accountId=STRING
+	//	'for-form' formId=STRING 'into' target=STRING 'using'
+	//	'{'
+	//	value=STRING
+	//	'}' 'on-condition' condition=Expression;
+	public FBFormDownloadElements getFBFormDownloadAccess() {
+		return pFBFormDownload;
+	}
+	
+	public ParserRule getFBFormDownloadRule() {
+		return getFBFormDownloadAccess().getRule();
 	}
 	
 	//Dropfile:
