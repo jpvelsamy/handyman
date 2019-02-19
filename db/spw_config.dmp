@@ -1,0 +1,132 @@
+-- MySQL dump 10.16  Distrib 10.2.20-MariaDB, for debian-linux-gnu (x86_64)
+--
+-- Host: localhost    Database: spw_config
+-- ------------------------------------------------------
+-- Server version	10.2.20-MariaDB-10.2.20+maria~jessie
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `spw_common_config`
+--
+
+DROP TABLE IF EXISTS `spw_common_config`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `spw_common_config` (
+  `variable` varchar(150) DEFAULT NULL,
+  `value` varchar(500) DEFAULT NULL,
+  `active` enum('Y','N') DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `spw_common_config`
+--
+
+LOCK TABLES `spw_common_config` WRITE;
+/*!40000 ALTER TABLE `spw_common_config` DISABLE KEYS */;
+INSERT INTO `spw_common_config` VALUES ('ffsc-db','oltp/ffsc-db','Y'),('ffsc-schema','ffsc','Y'),('audit','audit/ffsc-audit','Y'),('csv.storagepath','/home/sid/','Y'),('basepath','root','Y'),('runmode','single','Y'),('test-db','oltp/test-db','Y'),('test-schema','test','Y'),('temp-db','oltp/temp-db','Y'),('temp-schema','temp','Y'),('ffsc_full-db','oltp/ffsc_full-db','Y'),('ffsc_full-schema','ffsc_full','Y'),('audit','audit/chimera-audit','Y'),('integration-db','oltp/chimera-intg','Y'),('mifos-db','oltp/mifos-intg','Y'),('integration-schema','chimera_integration','Y'),('lms-schema','mifostenant-default','Y'),('json.storagepath','/home/jpvel/docker-data/mariadb/test','Y'),('csv','/home/sid/Workspace/Geneva/cm','Y'),('cme-db','mi/cme-db','Y'),('json','/home/sid/Workspace/Geneva/cm','Y');
+/*!40000 ALTER TABLE `spw_common_config` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `spw_instance_config`
+--
+
+DROP TABLE IF EXISTS `spw_instance_config`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `spw_instance_config` (
+  `instance` varchar(150) DEFAULT NULL,
+  `process` varchar(150) DEFAULT NULL,
+  `variable` varchar(150) DEFAULT NULL,
+  `value` varchar(500) DEFAULT NULL,
+  `active` enum('Y','N') DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `spw_instance_config`
+--
+
+LOCK TABLES `spw_instance_config` WRITE;
+/*!40000 ALTER TABLE `spw_instance_config` DISABLE KEYS */;
+/*!40000 ALTER TABLE `spw_instance_config` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `spw_process_config`
+--
+
+DROP TABLE IF EXISTS `spw_process_config`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `spw_process_config` (
+  `process` varchar(150) DEFAULT NULL,
+  `variable` varchar(150) DEFAULT NULL,
+  `value` varchar(500) DEFAULT NULL,
+  `active` enum('Y','N') DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `spw_process_config`
+--
+
+LOCK TABLES `spw_process_config` WRITE;
+/*!40000 ALTER TABLE `spw_process_config` DISABLE KEYS */;
+INSERT INTO `spw_process_config` VALUES ('ffsc.copydata.betweendb','filepath','ffsc.copydata.betweendb.spw','Y'),('ffsc.copydata.betweendb','ffsc-db','oltp/ffsc-db','Y'),('ffsc.copydata.betweendb.spw','filepath','ffsc.copydata.betweendb.spw.spw','Y'),('ffsc.copydata.betweendb.spw','test-db','oltp/test-db','Y'),('ffsc.copydata.betweendb.spw','filepath','ffsc.copydata.betweendb.spw.spw','Y'),('ffsc.copydata.betweendb.spw','temp-db','oltp/temp-db','Y'),('ffsc.tar','filepath','ffsc.tar.spw','Y'),('ffsc.model.training','filepath','ffsc.model.training.spw','Y'),('ffsc.model.training','test-db','oltp/test-db','Y'),('ffsc.writecsv.fromdb','filepath','ffsc.writecsv.fromdb.spw','Y'),('ffsc.writecsv.fromdb','ffsc_full-db','oltp/ffsc_full-db','Y'),('inbound.jlgcollection.process','filepath','inbound.jlgcollection.process.spw','Y'),('inbound.jlgcollection.process','integration-db','oltp/chimera-intg','Y'),('outbound.jlgcollection.process','integration-schema','chimera_integration','Y'),('outbound.jlgcollection.process','lms-schema','mifostenant-default','Y'),('outbound.jlgcollection.process','filepath','outbound.jlgcollection.process.spw','Y'),('outbound.jlgcollection.process','integration-db','oltp/chimera-intg','Y'),('gt.loadcsv.todb','filepath','gt.loadcsv.todb.spw','Y'),('gt.loadcsv.todb','test-db','oltp/test-db','Y'),('com.geneva.checkinstrumentsymbol','filepath','com.geneva.checkinstrumentsymbol.spw',''),('com.geneva.checkinstrumentsymbol','filepath','com.geneva.checkinstrumentsymbol.spw','Y'),('com.geneva.checkinstrumentsymbol','test-db','oltp/test-db','Y'),('com.geneva.validate.refcsv','filepath','com.geneva.validate.refcsv.spw','Y'),('com.geneva.validate.refcsv','test-db','oltp/test-db','Y'),('com.geneva.rule.validate','test-db','oltp/test-db','Y'),('com.geneva.rule.validate','filepath','com.geneva.rule.validate.spw','Y'),('com.geneva.validate.refcsv','filepath','com.geneva.validate.refcsv.spw','Y'),('com.geneva.validate.refcsv','cme-db','mi/cme-db','Y'),('com.geneva.check.py','filepath','com.geneva.check.py.spw','Y'),('com.geneva.check.py','test-db','oltp/test-db','Y');
+/*!40000 ALTER TABLE `spw_process_config` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `spw_resource_config`
+--
+
+DROP TABLE IF EXISTS `spw_resource_config`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `spw_resource_config` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `config_type` varchar(50) DEFAULT NULL,
+  `config_name` varchar(50) DEFAULT NULL,
+  `auth_info` varchar(1000) DEFAULT NULL,
+  `resource_url` varchar(1000) DEFAULT NULL,
+  `active` enum('Y','N') DEFAULT NULL,
+  `created_date` timestamp NULL DEFAULT current_timestamp(),
+  `user_name` varchar(255) NOT NULL DEFAULT '',
+  `password` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COMMENT='utf8_general_ci';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `spw_resource_config`
+--
+
+LOCK TABLES `spw_resource_config` WRITE;
+/*!40000 ALTER TABLE `spw_resource_config` DISABLE KEYS */;
+INSERT INTO `spw_resource_config` VALUES (1,'1','oltp/ffsc-db','{ \"user\": \"root\", \"password\": \"password\"}','jdbc:mysql://bonsai-mariadb:3306/ffsc?useUnicode=true&characterEncoding=utf8&dumpQueriesOnException=true','Y','2018-11-24 12:50:05','root','password'),(2,'1','audit/ffsc-audit','{ \"user\": \"root\", \"password\": \"password\"}','jdbc:mysql://bonsai-mariadb:3306/spw_audit?useUnicode=true&characterEncoding=utf8&dumpQueriesOnException=true','Y','2017-09-24 18:42:29','root','password'),(3,'1','oltp/test-db','{ \"user\": \"root\", \"password\": \"password\"}','jdbc:mysql://bonsai-mariadb:3306/test?useUnicode=true&characterEncoding=utf8&dumpQueriesOnException=true','Y','2017-09-24 17:22:05','root','password'),(4,'1','oltp/temp-db','{ \"user\": \"root\", \"password\": \"password\"}','jdbc:mysql://35.240.231.61:3306/temp?useUnicode=true&characterEncoding=utf8&dumpQueriesOnException=true','Y','2017-09-24 17:22:05','root','password'),(5,'1','oltp/ffsc_full-db','{ \"user\": \"root\", \"password\": \"password\"}','jdbc:mysql://bonsai-mariadb:3306/ffsc_full?useUnicode=true&characterEncoding=utf8&dumpQueriesOnException=true','Y','2017-09-24 17:22:05','root','password'),(6,'1','oltp/chimera-intg','{ \"user\": \"root\", \"password\": \"password\"}','jdbc:mysql://bonsai-mariadb:3306/chimera_integration?useUnicode=true&characterEncoding=utf8&dumpQueriesOnException=true','Y','2017-09-24 17:22:05','root','password'),(7,'1','oltp/mifos-intg','{ \"user\": \"root\", \"password\": \"password\"}','jdbc:mysql://bonsai-mariadb:3306/mifostenant-default?useUnicode=true&characterEncoding=utf8&dumpQueriesOnException=true','Y','2017-09-24 17:22:05','root','password'),(8,'1','audit/chimera-audit','{ \"user\": \"root\", \"password\": \"password\"}','jdbc:mysql://bonsai-mariadb:3306/spw_audit?useUnicode=true&characterEncoding=utf8&dumpQueriesOnException=true','Y','2017-09-24 18:42:29','root','password'),(9,'1','mi/cme-db','{ \"user\": \"root\", \"password\": \"password\"}','jdbc:mysql://bonsai-mariadb:3306/cme?useUnicode=true&characterEncoding=utf8&dumpQueriesOnException=true','Y','2019-02-09 18:42:29','root','password');
+/*!40000 ALTER TABLE `spw_resource_config` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2019-02-19 18:13:07
