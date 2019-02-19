@@ -111,7 +111,7 @@ class LoadCsvIntoDbAction extends in.handyman.command.Action with LazyLogging {
           values = convertArrayToInsertLine(rowa, "','")
           count += 1
           totalcount += 1
-          values = values.replace("''", "'NULL'")
+          values = values.replace("''", "'NULL'").replace("00:00:00.0", "")
           iquery = iquery + "('" + values + "),"
           if (count % limit == 0) {
             iquery = "INSERT IGNORE INTO  `" + fileName.replace(".tsv", "") + "`  (" + "`" + column + ")" + "VALUES " + iquery
