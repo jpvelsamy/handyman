@@ -58,6 +58,7 @@ Action:
 	|Terminal
 	|Python
 	|RunR
+	|Archive
 	)
 ;
 
@@ -226,6 +227,13 @@ Terminal:
 	'{'
 		value=STRING
 	'}' 'on-condition' condition=Expression
+;
+
+Archive:
+	'archive' 'as' name= STRING 'type' type= STRING 'operation' work= STRING 'using'
+	'{'
+		value= STRING
+	'}' 'on-condition' condition=Expression	
 ;
 
 Python:
