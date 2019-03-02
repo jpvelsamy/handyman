@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -19,7 +18,7 @@
 		<commons.text.version>1.1</commons.text.version>
 		<commons.httpclient.version>4.3.6</commons.httpclient.version>
 		<commons.asynchttpclient.version>4.0.2</commons.asynchttpclient.version>
-		<facebook.sdk.version>3.1.0</facebook.sdk.version>
+		<facebook.sdk.version>3.2.8</facebook.sdk.version>
 		<squareup.http.version>3.11.0</squareup.http.version>
 		<google.people.version>v1-rev224-1.23.0</google.people.version>
 		<google.cal.version>v3-rev87-1.19.0</google.cal.version>
@@ -164,11 +163,31 @@
 										<ignore></ignore>
 									</action>
 								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.eclipse.xtend
+										</groupId>
+										<artifactId>
+											xtend-maven-plugin
+										</artifactId>
+										<versionRange>
+											[2.16.0,)
+										</versionRange>
+										<goals>
+											<goal>testCompile</goal>
+											<goal>compile</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
-				</plugin>			
-				
+				</plugin>
+
 				<plugin>
 					<groupId>net.alchim31.maven</groupId>
 					<artifactId>scala-maven-plugin</artifactId>
@@ -216,6 +235,12 @@
 	</build>
 
 	<dependencies>
+		<dependency>
+			<groupId>net.sf.flatpack</groupId>
+			<artifactId>flatpack-parent</artifactId>
+			<version>4.0.4</version>
+			<type>pom</type>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.typesafe/config -->
 		<dependency>
 			<groupId>com.typesafe</groupId>
@@ -256,13 +281,13 @@
 			<artifactId>scala-logging_2.12</artifactId>
 			<version>${scala.logging.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>${logback.classic.version}</version>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/org.scala-lang.modules/scala-xml -->
 		<dependency>
 			<groupId>org.scala-lang.modules</groupId>
@@ -326,24 +351,24 @@
 			<artifactId>okhttp</artifactId>
 			<version>${squareup.http.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.google.apis</groupId>
 			<artifactId>google-api-services-people</artifactId>
 			<version>${google.people.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.google.apis</groupId>
 			<artifactId>google-api-services-calendar</artifactId>
 			<version>${google.cal.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.restlet.jee</groupId>
 			<artifactId>org.restlet.ext.jackson</artifactId>
 			<version>${restlet.core.version}</version>
 		</dependency>
-		
+
 	</dependencies>
 </project>
