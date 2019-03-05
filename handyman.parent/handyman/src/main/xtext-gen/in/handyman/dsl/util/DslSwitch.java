@@ -17,14 +17,15 @@ import in.handyman.dsl.FBCLead;
 import in.handyman.dsl.FBFormDownload;
 import in.handyman.dsl.Fetch;
 import in.handyman.dsl.Finally;
+import in.handyman.dsl.FirebaseDatabasePut;
 import in.handyman.dsl.FirebaseReactiveNotification;
-import in.handyman.dsl.GoogleSendMail;
 import in.handyman.dsl.GooglecalPUT;
 import in.handyman.dsl.GooglecontactPUT;
 import in.handyman.dsl.GooglecontactSelectAll;
 import in.handyman.dsl.LoadCsv;
 import in.handyman.dsl.Rest;
 import in.handyman.dsl.RestPart;
+import in.handyman.dsl.SendMail;
 import in.handyman.dsl.SlackPUT;
 import in.handyman.dsl.SmsLeadSms;
 import in.handyman.dsl.Transform;
@@ -137,6 +138,14 @@ public class DslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case DslPackage.FIREBASE_DATABASE_PUT:
+      {
+        FirebaseDatabasePut firebaseDatabasePut = (FirebaseDatabasePut)theEObject;
+        T result = caseFirebaseDatabasePut(firebaseDatabasePut);
+        if (result == null) result = caseAction(firebaseDatabasePut);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case DslPackage.FIREBASE_REACTIVE_NOTIFICATION:
       {
         FirebaseReactiveNotification firebaseReactiveNotification = (FirebaseReactiveNotification)theEObject;
@@ -169,11 +178,11 @@ public class DslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case DslPackage.GOOGLE_SEND_MAIL:
+      case DslPackage.SEND_MAIL:
       {
-        GoogleSendMail googleSendMail = (GoogleSendMail)theEObject;
-        T result = caseGoogleSendMail(googleSendMail);
-        if (result == null) result = caseAction(googleSendMail);
+        SendMail sendMail = (SendMail)theEObject;
+        T result = caseSendMail(sendMail);
+        if (result == null) result = caseAction(sendMail);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -420,6 +429,22 @@ public class DslSwitch<T> extends Switch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>Firebase Database Put</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Firebase Database Put</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseFirebaseDatabasePut(FirebaseDatabasePut object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>Firebase Reactive Notification</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -484,17 +509,17 @@ public class DslSwitch<T> extends Switch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Google Send Mail</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Send Mail</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Google Send Mail</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Send Mail</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseGoogleSendMail(GoogleSendMail object)
+  public T caseSendMail(SendMail object)
   {
     return null;
   }

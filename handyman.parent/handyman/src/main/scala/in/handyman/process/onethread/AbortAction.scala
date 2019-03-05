@@ -17,7 +17,7 @@ class AbortAction extends in.handyman.command.Action with LazyLogging {
 
     logger.info("Abort action id#{}, name#{}, calledprocess#{}, message#{}", id, name, name, message)
     try {
-      throw new AbortException(message)
+      throw new AbortException(message, name, context)
     } finally {
       detailMap.putIfAbsent("message", message)
       detailMap.putIfAbsent("name", name)

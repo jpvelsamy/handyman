@@ -32,32 +32,10 @@ class SmsLeadsAction extends in.handyman.command.Action with LazyLogging {
 
     try {
       while (rs.next()) {
-        val comment = rs.getString("comment")
-        val targetName = rs.getString("target_full_name")
-        val targetStatus = rs.getString("target_status")
-        val targetId = rs.getInt("target_id")
-        val targetDescription = rs.getString("target_description")
-        val targetLocation = rs.getString("target_location")
+        
         val targetMobileNumber = rs.getString("target_mobile_number")
         val targetAltNumber = rs.getString("target_alternate_number")
-        val targetCity = rs.getString("target_city")
-        val targetBudget = rs.getString("target_budget")
-        val targetDomain = rs.getString("target_domain_name")
-
         val body = rs.getString("body")
-
-        val paramMap: java.util.Map[String, String] = new java.util.HashMap[String, String]
-        paramMap.put("target_full_name", targetName)
-        paramMap.put("target_status", targetStatus)
-        paramMap.put("target_id", targetId.toString())
-        paramMap.put("target_description", targetDescription)
-        paramMap.put("target_location", targetLocation)
-        paramMap.put("target_mobile_number", targetMobileNumber)
-        paramMap.put("target_alternate_number", targetAltNumber)
-        paramMap.put("target_city", targetCity)
-        paramMap.put("target_budget", targetBudget)
-        paramMap.put("target_domain_name", targetDomain)
-       
 
         val mobile = {
           if (dryRun!=null && !dryRun.isEmpty())
@@ -65,10 +43,9 @@ class SmsLeadsAction extends in.handyman.command.Action with LazyLogging {
           else
             rs.getString("mobile")
         }
-        
 
-        val paramEngine = new StrSubstitutor(paramMap)
-        val output = paramEngine.replace(body)
+        
+        val output = body
         val encodedMessage = URLEncoder.encode(output)
         val urlString = url + "username=" + user + "&password=" + password + "&sender=" + sender + "&numbers=" + mobile + "&message=" + encodedMessage
         val request = new HttpGet(urlString);

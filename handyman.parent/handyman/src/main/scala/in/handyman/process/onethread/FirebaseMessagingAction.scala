@@ -22,10 +22,12 @@ class FirebaseMessagingAction extends in.handyman.command.Action with LazyLoggin
     val groupPath = fbrn.getGroupPath
     val databaseFQNUrl = fbrn.getUrl
     val clazz = this.getClass.getClassLoader.loadClass(className)
+    val dbSrc = fbrn.getDbSrc
+    
     //Bso here means business specific object
     val fbrnBso = clazz.newInstance()
-    val method = clazz.getDeclaredMethod("", classOf[String],classOf[String], classOf[String],classOf[Context], classOf[HashMap[String, String]])
-    method.invoke(fbrnBso, jsonPath, groupPath, databaseFQNUrl, context, detailMap).asInstanceOf[Context]    
+    val method = clazz.getDeclaredMethod("execute", classOf[String],classOf[String], classOf[String], classOf[String], classOf[Context], classOf[HashMap[String, String]])
+    method.invoke(fbrnBso, jsonPath, groupPath, databaseFQNUrl, dbSrc, context, detailMap).asInstanceOf[Context]    
   }
 
   def executeIf(context: Context, action: Action): Boolean = {

@@ -10,7 +10,7 @@ import java.net.InetAddress
 object ProcessExecutor {
   
   @throws(classOf[Exception])
-  def execute(mode:String, runtimeContext:RuntimeContext):ProcessRuntime = {
+  def execute(mode:String, runtimeContext:RuntimeContext):ProcessResponse = {
     
     if(mode.equals("in.handyman.process.onethread"))
     {
@@ -22,8 +22,8 @@ object ProcessExecutor {
       
       tryContext.addValue("process-id", instanceId.toString)
       val runtime = new in.handyman.process.onethread.UniThreadProcessRuntime(runtimeContext.instanceName, instanceId)
-      runtime.execute(runtimeContext.process, tryContext)
-      runtime
+      val processResponse = runtime.execute(runtimeContext.process, tryContext)
+      processResponse
     }
     else
     {

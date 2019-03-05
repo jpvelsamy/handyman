@@ -18,14 +18,15 @@ import in.handyman.dsl.FBCLead;
 import in.handyman.dsl.FBFormDownload;
 import in.handyman.dsl.Fetch;
 import in.handyman.dsl.Finally;
+import in.handyman.dsl.FirebaseDatabasePut;
 import in.handyman.dsl.FirebaseReactiveNotification;
-import in.handyman.dsl.GoogleSendMail;
 import in.handyman.dsl.GooglecalPUT;
 import in.handyman.dsl.GooglecontactPUT;
 import in.handyman.dsl.GooglecontactSelectAll;
 import in.handyman.dsl.LoadCsv;
 import in.handyman.dsl.Rest;
 import in.handyman.dsl.RestPart;
+import in.handyman.dsl.SendMail;
 import in.handyman.dsl.SlackPUT;
 import in.handyman.dsl.SmsLeadSms;
 import in.handyman.dsl.Transform;
@@ -100,11 +101,12 @@ public class DslFactoryImpl extends EFactoryImpl implements DslFactory
       case DslPackage.FINALLY: return createFinally();
       case DslPackage.CATCH: return createCatch();
       case DslPackage.ACTION: return createAction();
+      case DslPackage.FIREBASE_DATABASE_PUT: return createFirebaseDatabasePut();
       case DslPackage.FIREBASE_REACTIVE_NOTIFICATION: return createFirebaseReactiveNotification();
       case DslPackage.SMS_LEAD_SMS: return createSmsLeadSms();
       case DslPackage.ABORT: return createAbort();
       case DslPackage.GOOGLECONTACT_SELECT_ALL: return createGooglecontactSelectAll();
-      case DslPackage.GOOGLE_SEND_MAIL: return createGoogleSendMail();
+      case DslPackage.SEND_MAIL: return createSendMail();
       case DslPackage.GOOGLECONTACT_PUT: return createGooglecontactPUT();
       case DslPackage.GOOGLECAL_PUT: return createGooglecalPUT();
       case DslPackage.FBC_LEAD: return createFBCLead();
@@ -190,6 +192,17 @@ public class DslFactoryImpl extends EFactoryImpl implements DslFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public FirebaseDatabasePut createFirebaseDatabasePut()
+  {
+    FirebaseDatabasePutImpl firebaseDatabasePut = new FirebaseDatabasePutImpl();
+    return firebaseDatabasePut;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public FirebaseReactiveNotification createFirebaseReactiveNotification()
   {
     FirebaseReactiveNotificationImpl firebaseReactiveNotification = new FirebaseReactiveNotificationImpl();
@@ -234,10 +247,10 @@ public class DslFactoryImpl extends EFactoryImpl implements DslFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public GoogleSendMail createGoogleSendMail()
+  public SendMail createSendMail()
   {
-    GoogleSendMailImpl googleSendMail = new GoogleSendMailImpl();
-    return googleSendMail;
+    SendMailImpl sendMail = new SendMailImpl();
+    return sendMail;
   }
 
   /**

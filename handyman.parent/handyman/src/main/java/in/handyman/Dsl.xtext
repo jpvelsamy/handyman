@@ -50,17 +50,26 @@ Action:
 	|Dropfile
 	|FBCLead
 	|FBFormDownload
-	|GoogleSendMail
+	|SendMail
 	|GooglecontactPUT
 	|GooglecontactSelectAll
 	|Abort
 	|SmsLeadSms
 	|FirebaseReactiveNotification
+	|FirebaseDatabasePut
 	)
 ;
 
+FirebaseDatabasePut:
+	'fbdp' 'as' name=STRING 'on' url=STRING 'auth-by' fbjson=STRING 'for-group' groupPath=STRING 'from-source' dbSrc=STRING 'with-class' classFqn=STRING 'using'
+	'{'
+		value=STRING
+	'}' 'on-condition' condition=Expression 
+;
+
 FirebaseReactiveNotification:
-	'fbrn' 'as' name=STRING 'on' url=STRING 'auth-by' fbjson=STRING 'for-group' groupPath=STRING 'with-class' classFqn=STRING 'on-condition' condition=Expression
+	'fbrn' 'as' name=STRING 'on' url=STRING 'auth-by' fbjson=STRING 'for-group' groupPath=STRING 'with-class' classFqn=STRING dbSrc=STRING 'on-condition' condition=Expression
+	
 ;
 
 SmsLeadSms:
@@ -87,11 +96,11 @@ GooglecontactSelectAll:
 	'}' 'on-condition' condition=Expression
 ;
 
-GoogleSendMail:
-	'gsendmail' 'as' name=STRING 'through-account' account=STRING 'secured-by' privateKey=STRING 'with-key' ptwelveFile=STRING 'for-project' project=STRING 'on-behalf-of' impersonatedUser=STRING 'from-source' dbSrc=STRING 'using'
+SendMail:
+	'sendmail' 'as' name=STRING 'secured-by' privateKey=STRING  'on-behalf-of' impersonatedUser=STRING 'from-source' dbSrc=STRING 'using'
 	'{'
 		value=STRING
-	'}' 'on-condition' condition=Expression
+	'}' 'on-condition' condition=Expression 'do-dryrun-with' dryrunMail=STRING
 ;
 
 

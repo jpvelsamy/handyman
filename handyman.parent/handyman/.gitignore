@@ -2,3 +2,4 @@
 /.cache-main
 /.classpath
 *.class
+/target/

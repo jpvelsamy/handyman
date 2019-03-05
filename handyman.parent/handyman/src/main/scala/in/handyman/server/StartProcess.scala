@@ -6,35 +6,34 @@ import com.typesafe.scalalogging.LazyLogging
 import org.restlet.resource.Post
 import org.restlet.ext.jackson.JacksonRepresentation;
 import org.restlet.representation.Representation;
+import com.fasterxml.jackson.databind.ObjectMapper
 
 class StartProcess extends ServerResource with LazyLogging {
   val runMode = "in.handyman.process.onethread"
-  
-  
+  val jsonSerializer = new ObjectMapper
   //
   @Post("json")
-  def doPost(entity:Representation):String = {
+  def doPost(entity: Representation): String = {
     val inboundValue = getRequest.getAttributes.get("instance");
     val alias = getRequest().getAttributes().get("alias");
     val instanceName: String = inboundValue.asInstanceOf[String] + "#" + alias.asInstanceOf[String]
-     logger.info("Starting the process=" + instanceName)
+    logger.info("Starting the process=" + instanceName)
     val runtimeContext = ProcessAST.loadProcessAST(instanceName, "{}")
 
     try {
 
-      ProcessExecutor.execute(runMode, runtimeContext)
-
+      val processResponse = ProcessExecutor.execute(runMode, runtimeContext)
+      jsonSerializer.writeValueAsString(processResponse)
     } catch {
       case ex: Throwable => {
         handleError(ex)
+        jsonSerializer.writeValueAsString(ex)
       }
     } finally {
-
       handleFinally()
     }
-    "{\"start_status\": \"SUCCESS\"}"
-    
   }
+  
   /*@Get("application/json")
   def represent(): String = {
     val inboundValue = getRequest.getAttributes.get("instance");
@@ -70,7 +69,7 @@ class StartProcess extends ServerResource with LazyLogging {
     val runtimeContext = ProcessAST.loadProcessAST(instanceName, jsonObject)
 
     try {
-      
+
       ProcessExecutor.execute(runMode, runtimeContext)
 
     } catch {

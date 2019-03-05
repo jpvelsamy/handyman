@@ -24,6 +24,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *   <li>{@link in.handyman.dsl.impl.FirebaseReactiveNotificationImpl#getFbjson <em>Fbjson</em>}</li>
  *   <li>{@link in.handyman.dsl.impl.FirebaseReactiveNotificationImpl#getGroupPath <em>Group Path</em>}</li>
  *   <li>{@link in.handyman.dsl.impl.FirebaseReactiveNotificationImpl#getClassFqn <em>Class Fqn</em>}</li>
+ *   <li>{@link in.handyman.dsl.impl.FirebaseReactiveNotificationImpl#getDbSrc <em>Db Src</em>}</li>
  * </ul>
  *
  * @generated
@@ -109,6 +110,26 @@ public class FirebaseReactiveNotificationImpl extends ActionImpl implements Fire
    * @ordered
    */
   protected String classFqn = CLASS_FQN_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getDbSrc() <em>Db Src</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDbSrc()
+   * @generated
+   * @ordered
+   */
+  protected static final String DB_SRC_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getDbSrc() <em>Db Src</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDbSrc()
+   * @generated
+   * @ordered
+   */
+  protected String dbSrc = DB_SRC_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -228,6 +249,29 @@ public class FirebaseReactiveNotificationImpl extends ActionImpl implements Fire
    * <!-- end-user-doc -->
    * @generated
    */
+  public String getDbSrc()
+  {
+    return dbSrc;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setDbSrc(String newDbSrc)
+  {
+    String oldDbSrc = dbSrc;
+    dbSrc = newDbSrc;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.FIREBASE_REACTIVE_NOTIFICATION__DB_SRC, oldDbSrc, dbSrc));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
@@ -241,6 +285,8 @@ public class FirebaseReactiveNotificationImpl extends ActionImpl implements Fire
         return getGroupPath();
       case DslPackage.FIREBASE_REACTIVE_NOTIFICATION__CLASS_FQN:
         return getClassFqn();
+      case DslPackage.FIREBASE_REACTIVE_NOTIFICATION__DB_SRC:
+        return getDbSrc();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -266,6 +312,9 @@ public class FirebaseReactiveNotificationImpl extends ActionImpl implements Fire
         return;
       case DslPackage.FIREBASE_REACTIVE_NOTIFICATION__CLASS_FQN:
         setClassFqn((String)newValue);
+        return;
+      case DslPackage.FIREBASE_REACTIVE_NOTIFICATION__DB_SRC:
+        setDbSrc((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -293,6 +342,9 @@ public class FirebaseReactiveNotificationImpl extends ActionImpl implements Fire
       case DslPackage.FIREBASE_REACTIVE_NOTIFICATION__CLASS_FQN:
         setClassFqn(CLASS_FQN_EDEFAULT);
         return;
+      case DslPackage.FIREBASE_REACTIVE_NOTIFICATION__DB_SRC:
+        setDbSrc(DB_SRC_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -315,6 +367,8 @@ public class FirebaseReactiveNotificationImpl extends ActionImpl implements Fire
         return GROUP_PATH_EDEFAULT == null ? groupPath != null : !GROUP_PATH_EDEFAULT.equals(groupPath);
       case DslPackage.FIREBASE_REACTIVE_NOTIFICATION__CLASS_FQN:
         return CLASS_FQN_EDEFAULT == null ? classFqn != null : !CLASS_FQN_EDEFAULT.equals(classFqn);
+      case DslPackage.FIREBASE_REACTIVE_NOTIFICATION__DB_SRC:
+        return DB_SRC_EDEFAULT == null ? dbSrc != null : !DB_SRC_EDEFAULT.equals(dbSrc);
     }
     return super.eIsSet(featureID);
   }
@@ -338,6 +392,8 @@ public class FirebaseReactiveNotificationImpl extends ActionImpl implements Fire
     result.append(groupPath);
     result.append(", classFqn: ");
     result.append(classFqn);
+    result.append(", dbSrc: ");
+    result.append(dbSrc);
     result.append(')');
     return result.toString();
   }

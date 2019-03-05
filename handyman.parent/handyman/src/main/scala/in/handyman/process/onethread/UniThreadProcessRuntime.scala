@@ -5,41 +5,53 @@ import in.handyman.server.ProcessRuntime
 import com.typesafe.scalalogging.LazyLogging
 import com.fasterxml.jackson.databind.ObjectMapper
 import in.handyman.command._
+import in.handyman.server.ProcessResponse
 
 
 
 class UniThreadProcessRuntime(name:String, id:Int) extends ProcessRuntime with LazyLogging{
   val jsonSerializer = new ObjectMapper
   @throws(classOf[Exception])
-  def execute(process:in.handyman.dsl.Process, context:Context): Unit={
+  def execute(process:in.handyman.dsl.Process, context:Context): ProcessResponse={
     var errorContext:ErrorContext=new ErrorContext(context.asInstanceOf[TryContext])
+    var processResponse  = new ProcessResponse
     try {
       
-     executeChain(process.getTry.getAction, context)
+       val detailMap = executeChain(process.getTry.getAction, context)
+       processResponse.detailMap=detailMap
+       processResponse.context=context
+       processResponse
     } catch {
       case ex: in.handyman.AbortException =>{
         logError(ex)
-        throw ex
+        processResponse.exception=ex        
+        processResponse
       }
       case ex: Throwable => {
         logError(ex)
         val onError = process.getCatch
         errorContext=executeCatch(onError, context.asInstanceOf[TryContext])
         errorContext.exception=ex
-        throw ex
+        processResponse.context=errorContext
+        processResponse.exception=ex
+        processResponse
       }
       
     } finally {
       val onFinally = process.getFinally
       executeFinally(onFinally, errorContext)
+      processResponse.context=errorContext
+      processResponse
     }
     //Send context + commandDetailAsMap + exception stack trace back to client
   }
   
   @throws(classOf[Exception])
-  def executeChain(actionList:org.eclipse.emf.common.util.EList[in.handyman.dsl.Action], context:Context)={
+  def executeChain(actionList:org.eclipse.emf.common.util.EList[in.handyman.dsl.Action], context:Context):java.util.HashMap[String, java.util.Map[String, String]]=
+  {
     
     val iterator = actionList.iterator
+    val detailMap:java.util.HashMap[String, java.util.Map[String, String]] = new java.util.HashMap[String, java.util.Map[String, String]]
     while(iterator.hasNext)
     {
       val action = iterator.next
@@ -51,10 +63,11 @@ class UniThreadProcessRuntime(name:String, id:Int) extends ProcessRuntime with L
         //TODO still need to fix the status part
         val commandDetailAsMap = actionRuntime.generateAudit()
         val commandDetail = jsonSerializer.writeValueAsString(commandDetailAsMap)
+        detailMap.put(action.getName+"."+actionId.toString(), commandDetailAsMap)
         in.handyman.audit.AuditService.updateCommandAudit(actionId, 1, commandDetail)
       }
     }
-    
+    detailMap
   }
   
   def logError(ex: Throwable) = {

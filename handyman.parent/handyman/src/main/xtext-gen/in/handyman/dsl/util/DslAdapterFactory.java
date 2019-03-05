@@ -17,14 +17,15 @@ import in.handyman.dsl.FBCLead;
 import in.handyman.dsl.FBFormDownload;
 import in.handyman.dsl.Fetch;
 import in.handyman.dsl.Finally;
+import in.handyman.dsl.FirebaseDatabasePut;
 import in.handyman.dsl.FirebaseReactiveNotification;
-import in.handyman.dsl.GoogleSendMail;
 import in.handyman.dsl.GooglecalPUT;
 import in.handyman.dsl.GooglecontactPUT;
 import in.handyman.dsl.GooglecontactSelectAll;
 import in.handyman.dsl.LoadCsv;
 import in.handyman.dsl.Rest;
 import in.handyman.dsl.RestPart;
+import in.handyman.dsl.SendMail;
 import in.handyman.dsl.SlackPUT;
 import in.handyman.dsl.SmsLeadSms;
 import in.handyman.dsl.Transform;
@@ -130,6 +131,11 @@ public class DslAdapterFactory extends AdapterFactoryImpl
         return createActionAdapter();
       }
       @Override
+      public Adapter caseFirebaseDatabasePut(FirebaseDatabasePut object)
+      {
+        return createFirebaseDatabasePutAdapter();
+      }
+      @Override
       public Adapter caseFirebaseReactiveNotification(FirebaseReactiveNotification object)
       {
         return createFirebaseReactiveNotificationAdapter();
@@ -150,9 +156,9 @@ public class DslAdapterFactory extends AdapterFactoryImpl
         return createGooglecontactSelectAllAdapter();
       }
       @Override
-      public Adapter caseGoogleSendMail(GoogleSendMail object)
+      public Adapter caseSendMail(SendMail object)
       {
-        return createGoogleSendMailAdapter();
+        return createSendMailAdapter();
       }
       @Override
       public Adapter caseGooglecontactPUT(GooglecontactPUT object)
@@ -352,6 +358,21 @@ public class DslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
+   * Creates a new adapter for an object of class '{@link in.handyman.dsl.FirebaseDatabasePut <em>Firebase Database Put</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see in.handyman.dsl.FirebaseDatabasePut
+   * @generated
+   */
+  public Adapter createFirebaseDatabasePutAdapter()
+  {
+    return null;
+  }
+
+  /**
    * Creates a new adapter for an object of class '{@link in.handyman.dsl.FirebaseReactiveNotification <em>Firebase Reactive Notification</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -412,16 +433,16 @@ public class DslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link in.handyman.dsl.GoogleSendMail <em>Google Send Mail</em>}'.
+   * Creates a new adapter for an object of class '{@link in.handyman.dsl.SendMail <em>Send Mail</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see in.handyman.dsl.GoogleSendMail
+   * @see in.handyman.dsl.SendMail
    * @generated
    */
-  public Adapter createGoogleSendMailAdapter()
+  public Adapter createSendMailAdapter()
   {
     return null;
   }

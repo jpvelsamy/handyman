@@ -69,6 +69,15 @@ public interface DslFactory extends EFactory
   Action createAction();
 
   /**
+   * Returns a new object of class '<em>Firebase Database Put</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Firebase Database Put</em>'.
+   * @generated
+   */
+  FirebaseDatabasePut createFirebaseDatabasePut();
+
+  /**
    * Returns a new object of class '<em>Firebase Reactive Notification</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -105,13 +114,13 @@ public interface DslFactory extends EFactory
   GooglecontactSelectAll createGooglecontactSelectAll();
 
   /**
-   * Returns a new object of class '<em>Google Send Mail</em>'.
+   * Returns a new object of class '<em>Send Mail</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Google Send Mail</em>'.
+   * @return a new object of class '<em>Send Mail</em>'.
    * @generated
    */
-  GoogleSendMail createGoogleSendMail();
+  SendMail createSendMail();
 
   /**
    * Returns a new object of class '<em>Googlecontact PUT</em>'.

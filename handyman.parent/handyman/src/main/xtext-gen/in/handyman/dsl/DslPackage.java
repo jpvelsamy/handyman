@@ -261,6 +261,97 @@ public interface DslPackage extends EPackage
   int ACTION_FEATURE_COUNT = 2;
 
   /**
+   * The meta object id for the '{@link in.handyman.dsl.impl.FirebaseDatabasePutImpl <em>Firebase Database Put</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see in.handyman.dsl.impl.FirebaseDatabasePutImpl
+   * @see in.handyman.dsl.impl.DslPackageImpl#getFirebaseDatabasePut()
+   * @generated
+   */
+  int FIREBASE_DATABASE_PUT = 5;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FIREBASE_DATABASE_PUT__NAME = ACTION__NAME;
+
+  /**
+   * The feature id for the '<em><b>Condition</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FIREBASE_DATABASE_PUT__CONDITION = ACTION__CONDITION;
+
+  /**
+   * The feature id for the '<em><b>Url</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FIREBASE_DATABASE_PUT__URL = ACTION_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Fbjson</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FIREBASE_DATABASE_PUT__FBJSON = ACTION_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Group Path</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FIREBASE_DATABASE_PUT__GROUP_PATH = ACTION_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Db Src</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FIREBASE_DATABASE_PUT__DB_SRC = ACTION_FEATURE_COUNT + 3;
+
+  /**
+   * The feature id for the '<em><b>Class Fqn</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FIREBASE_DATABASE_PUT__CLASS_FQN = ACTION_FEATURE_COUNT + 4;
+
+  /**
+   * The feature id for the '<em><b>Value</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FIREBASE_DATABASE_PUT__VALUE = ACTION_FEATURE_COUNT + 5;
+
+  /**
+   * The number of structural features of the '<em>Firebase Database Put</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FIREBASE_DATABASE_PUT_FEATURE_COUNT = ACTION_FEATURE_COUNT + 6;
+
+  /**
    * The meta object id for the '{@link in.handyman.dsl.impl.FirebaseReactiveNotificationImpl <em>Firebase Reactive Notification</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -268,7 +359,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getFirebaseReactiveNotification()
    * @generated
    */
-  int FIREBASE_REACTIVE_NOTIFICATION = 5;
+  int FIREBASE_REACTIVE_NOTIFICATION = 6;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -325,13 +416,22 @@ public interface DslPackage extends EPackage
   int FIREBASE_REACTIVE_NOTIFICATION__CLASS_FQN = ACTION_FEATURE_COUNT + 3;
 
   /**
+   * The feature id for the '<em><b>Db Src</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FIREBASE_REACTIVE_NOTIFICATION__DB_SRC = ACTION_FEATURE_COUNT + 4;
+
+  /**
    * The number of structural features of the '<em>Firebase Reactive Notification</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int FIREBASE_REACTIVE_NOTIFICATION_FEATURE_COUNT = ACTION_FEATURE_COUNT + 4;
+  int FIREBASE_REACTIVE_NOTIFICATION_FEATURE_COUNT = ACTION_FEATURE_COUNT + 5;
 
   /**
    * The meta object id for the '{@link in.handyman.dsl.impl.SmsLeadSmsImpl <em>Sms Lead Sms</em>}' class.
@@ -341,7 +441,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getSmsLeadSms()
    * @generated
    */
-  int SMS_LEAD_SMS = 6;
+  int SMS_LEAD_SMS = 7;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -441,7 +541,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getAbort()
    * @generated
    */
-  int ABORT = 7;
+  int ABORT = 8;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -487,7 +587,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getGooglecontactSelectAll()
    * @generated
    */
-  int GOOGLECONTACT_SELECT_ALL = 8;
+  int GOOGLECONTACT_SELECT_ALL = 9;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -580,14 +680,14 @@ public interface DslPackage extends EPackage
   int GOOGLECONTACT_SELECT_ALL_FEATURE_COUNT = ACTION_FEATURE_COUNT + 7;
 
   /**
-   * The meta object id for the '{@link in.handyman.dsl.impl.GoogleSendMailImpl <em>Google Send Mail</em>}' class.
+   * The meta object id for the '{@link in.handyman.dsl.impl.SendMailImpl <em>Send Mail</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see in.handyman.dsl.impl.GoogleSendMailImpl
-   * @see in.handyman.dsl.impl.DslPackageImpl#getGoogleSendMail()
+   * @see in.handyman.dsl.impl.SendMailImpl
+   * @see in.handyman.dsl.impl.DslPackageImpl#getSendMail()
    * @generated
    */
-  int GOOGLE_SEND_MAIL = 9;
+  int SEND_MAIL = 10;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -596,7 +696,7 @@ public interface DslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int GOOGLE_SEND_MAIL__NAME = ACTION__NAME;
+  int SEND_MAIL__NAME = ACTION__NAME;
 
   /**
    * The feature id for the '<em><b>Condition</b></em>' containment reference.
@@ -605,16 +705,7 @@ public interface DslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int GOOGLE_SEND_MAIL__CONDITION = ACTION__CONDITION;
-
-  /**
-   * The feature id for the '<em><b>Account</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int GOOGLE_SEND_MAIL__ACCOUNT = ACTION_FEATURE_COUNT + 0;
+  int SEND_MAIL__CONDITION = ACTION__CONDITION;
 
   /**
    * The feature id for the '<em><b>Private Key</b></em>' attribute.
@@ -623,25 +714,7 @@ public interface DslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int GOOGLE_SEND_MAIL__PRIVATE_KEY = ACTION_FEATURE_COUNT + 1;
-
-  /**
-   * The feature id for the '<em><b>Ptwelve File</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int GOOGLE_SEND_MAIL__PTWELVE_FILE = ACTION_FEATURE_COUNT + 2;
-
-  /**
-   * The feature id for the '<em><b>Project</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int GOOGLE_SEND_MAIL__PROJECT = ACTION_FEATURE_COUNT + 3;
+  int SEND_MAIL__PRIVATE_KEY = ACTION_FEATURE_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Impersonated User</b></em>' attribute.
@@ -650,7 +723,7 @@ public interface DslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int GOOGLE_SEND_MAIL__IMPERSONATED_USER = ACTION_FEATURE_COUNT + 4;
+  int SEND_MAIL__IMPERSONATED_USER = ACTION_FEATURE_COUNT + 1;
 
   /**
    * The feature id for the '<em><b>Db Src</b></em>' attribute.
@@ -659,7 +732,7 @@ public interface DslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int GOOGLE_SEND_MAIL__DB_SRC = ACTION_FEATURE_COUNT + 5;
+  int SEND_MAIL__DB_SRC = ACTION_FEATURE_COUNT + 2;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -668,16 +741,25 @@ public interface DslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int GOOGLE_SEND_MAIL__VALUE = ACTION_FEATURE_COUNT + 6;
+  int SEND_MAIL__VALUE = ACTION_FEATURE_COUNT + 3;
 
   /**
-   * The number of structural features of the '<em>Google Send Mail</em>' class.
+   * The feature id for the '<em><b>Dryrun Mail</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int GOOGLE_SEND_MAIL_FEATURE_COUNT = ACTION_FEATURE_COUNT + 7;
+  int SEND_MAIL__DRYRUN_MAIL = ACTION_FEATURE_COUNT + 4;
+
+  /**
+   * The number of structural features of the '<em>Send Mail</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SEND_MAIL_FEATURE_COUNT = ACTION_FEATURE_COUNT + 5;
 
   /**
    * The meta object id for the '{@link in.handyman.dsl.impl.GooglecontactPUTImpl <em>Googlecontact PUT</em>}' class.
@@ -687,7 +769,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getGooglecontactPUT()
    * @generated
    */
-  int GOOGLECONTACT_PUT = 10;
+  int GOOGLECONTACT_PUT = 11;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -787,7 +869,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getGooglecalPUT()
    * @generated
    */
-  int GOOGLECAL_PUT = 11;
+  int GOOGLECAL_PUT = 12;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -887,7 +969,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getFBCLead()
    * @generated
    */
-  int FBC_LEAD = 12;
+  int FBC_LEAD = 13;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -978,7 +1060,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getFBFormDownload()
    * @generated
    */
-  int FB_FORM_DOWNLOAD = 13;
+  int FB_FORM_DOWNLOAD = 14;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1069,7 +1151,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getDropfile()
    * @generated
    */
-  int DROPFILE = 14;
+  int DROPFILE = 15;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1115,7 +1197,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getDoozle()
    * @generated
    */
-  int DOOZLE = 15;
+  int DOOZLE = 16;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1179,7 +1261,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getRest()
    * @generated
    */
-  int REST = 16;
+  int REST = 17;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1333,7 +1415,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getRestPart()
    * @generated
    */
-  int REST_PART = 17;
+  int REST_PART = 18;
 
   /**
    * The feature id for the '<em><b>Part Name</b></em>' attribute.
@@ -1370,7 +1452,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getTrelloGET()
    * @generated
    */
-  int TRELLO_GET = 18;
+  int TRELLO_GET = 19;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1461,7 +1543,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getTrelloPUT()
    * @generated
    */
-  int TRELLO_PUT = 19;
+  int TRELLO_PUT = 20;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1552,7 +1634,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getFetch()
    * @generated
    */
-  int FETCH = 20;
+  int FETCH = 21;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1607,7 +1689,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getCallprocess()
    * @generated
    */
-  int CALLPROCESS = 21;
+  int CALLPROCESS = 22;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1680,7 +1762,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getUpdatedaudit()
    * @generated
    */
-  int UPDATEDAUDIT = 22;
+  int UPDATEDAUDIT = 23;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1744,7 +1826,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getClickSendSms()
    * @generated
    */
-  int CLICK_SEND_SMS = 23;
+  int CLICK_SEND_SMS = 24;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1817,7 +1899,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getSlackPUT()
    * @generated
    */
-  int SLACK_PUT = 24;
+  int SLACK_PUT = 25;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1881,7 +1963,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getCopydata()
    * @generated
    */
-  int COPYDATA = 25;
+  int COPYDATA = 26;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1945,7 +2027,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getWriteCsv()
    * @generated
    */
-  int WRITE_CSV = 26;
+  int WRITE_CSV = 27;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2018,7 +2100,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getLoadCsv()
    * @generated
    */
-  int LOAD_CSV = 27;
+  int LOAD_CSV = 28;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2091,7 +2173,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getTransform()
    * @generated
    */
-  int TRANSFORM = 28;
+  int TRANSFORM = 29;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2146,7 +2228,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getExpression()
    * @generated
    */
-  int EXPRESSION = 29;
+  int EXPRESSION = 30;
 
   /**
    * The feature id for the '<em><b>Lhs</b></em>' attribute.
@@ -2368,6 +2450,82 @@ public interface DslPackage extends EPackage
   EReference getAction_Condition();
 
   /**
+   * Returns the meta object for class '{@link in.handyman.dsl.FirebaseDatabasePut <em>Firebase Database Put</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Firebase Database Put</em>'.
+   * @see in.handyman.dsl.FirebaseDatabasePut
+   * @generated
+   */
+  EClass getFirebaseDatabasePut();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.FirebaseDatabasePut#getUrl <em>Url</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Url</em>'.
+   * @see in.handyman.dsl.FirebaseDatabasePut#getUrl()
+   * @see #getFirebaseDatabasePut()
+   * @generated
+   */
+  EAttribute getFirebaseDatabasePut_Url();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.FirebaseDatabasePut#getFbjson <em>Fbjson</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Fbjson</em>'.
+   * @see in.handyman.dsl.FirebaseDatabasePut#getFbjson()
+   * @see #getFirebaseDatabasePut()
+   * @generated
+   */
+  EAttribute getFirebaseDatabasePut_Fbjson();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.FirebaseDatabasePut#getGroupPath <em>Group Path</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Group Path</em>'.
+   * @see in.handyman.dsl.FirebaseDatabasePut#getGroupPath()
+   * @see #getFirebaseDatabasePut()
+   * @generated
+   */
+  EAttribute getFirebaseDatabasePut_GroupPath();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.FirebaseDatabasePut#getDbSrc <em>Db Src</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Db Src</em>'.
+   * @see in.handyman.dsl.FirebaseDatabasePut#getDbSrc()
+   * @see #getFirebaseDatabasePut()
+   * @generated
+   */
+  EAttribute getFirebaseDatabasePut_DbSrc();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.FirebaseDatabasePut#getClassFqn <em>Class Fqn</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Class Fqn</em>'.
+   * @see in.handyman.dsl.FirebaseDatabasePut#getClassFqn()
+   * @see #getFirebaseDatabasePut()
+   * @generated
+   */
+  EAttribute getFirebaseDatabasePut_ClassFqn();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.FirebaseDatabasePut#getValue <em>Value</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Value</em>'.
+   * @see in.handyman.dsl.FirebaseDatabasePut#getValue()
+   * @see #getFirebaseDatabasePut()
+   * @generated
+   */
+  EAttribute getFirebaseDatabasePut_Value();
+
+  /**
    * Returns the meta object for class '{@link in.handyman.dsl.FirebaseReactiveNotification <em>Firebase Reactive Notification</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2420,6 +2578,17 @@ public interface DslPackage extends EPackage
    * @generated
    */
   EAttribute getFirebaseReactiveNotification_ClassFqn();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.FirebaseReactiveNotification#getDbSrc <em>Db Src</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Db Src</em>'.
+   * @see in.handyman.dsl.FirebaseReactiveNotification#getDbSrc()
+   * @see #getFirebaseReactiveNotification()
+   * @generated
+   */
+  EAttribute getFirebaseReactiveNotification_DbSrc();
 
   /**
    * Returns the meta object for class '{@link in.handyman.dsl.SmsLeadSms <em>Sms Lead Sms</em>}'.
@@ -2617,91 +2786,69 @@ public interface DslPackage extends EPackage
   EAttribute getGooglecontactSelectAll_Value();
 
   /**
-   * Returns the meta object for class '{@link in.handyman.dsl.GoogleSendMail <em>Google Send Mail</em>}'.
+   * Returns the meta object for class '{@link in.handyman.dsl.SendMail <em>Send Mail</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Google Send Mail</em>'.
-   * @see in.handyman.dsl.GoogleSendMail
+   * @return the meta object for class '<em>Send Mail</em>'.
+   * @see in.handyman.dsl.SendMail
    * @generated
    */
-  EClass getGoogleSendMail();
+  EClass getSendMail();
 
   /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.GoogleSendMail#getAccount <em>Account</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Account</em>'.
-   * @see in.handyman.dsl.GoogleSendMail#getAccount()
-   * @see #getGoogleSendMail()
-   * @generated
-   */
-  EAttribute getGoogleSendMail_Account();
-
-  /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.GoogleSendMail#getPrivateKey <em>Private Key</em>}'.
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.SendMail#getPrivateKey <em>Private Key</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Private Key</em>'.
-   * @see in.handyman.dsl.GoogleSendMail#getPrivateKey()
-   * @see #getGoogleSendMail()
+   * @see in.handyman.dsl.SendMail#getPrivateKey()
+   * @see #getSendMail()
    * @generated
    */
-  EAttribute getGoogleSendMail_PrivateKey();
+  EAttribute getSendMail_PrivateKey();
 
   /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.GoogleSendMail#getPtwelveFile <em>Ptwelve File</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Ptwelve File</em>'.
-   * @see in.handyman.dsl.GoogleSendMail#getPtwelveFile()
-   * @see #getGoogleSendMail()
-   * @generated
-   */
-  EAttribute getGoogleSendMail_PtwelveFile();
-
-  /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.GoogleSendMail#getProject <em>Project</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Project</em>'.
-   * @see in.handyman.dsl.GoogleSendMail#getProject()
-   * @see #getGoogleSendMail()
-   * @generated
-   */
-  EAttribute getGoogleSendMail_Project();
-
-  /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.GoogleSendMail#getImpersonatedUser <em>Impersonated User</em>}'.
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.SendMail#getImpersonatedUser <em>Impersonated User</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Impersonated User</em>'.
-   * @see in.handyman.dsl.GoogleSendMail#getImpersonatedUser()
-   * @see #getGoogleSendMail()
+   * @see in.handyman.dsl.SendMail#getImpersonatedUser()
+   * @see #getSendMail()
    * @generated
    */
-  EAttribute getGoogleSendMail_ImpersonatedUser();
+  EAttribute getSendMail_ImpersonatedUser();
 
   /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.GoogleSendMail#getDbSrc <em>Db Src</em>}'.
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.SendMail#getDbSrc <em>Db Src</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Db Src</em>'.
-   * @see in.handyman.dsl.GoogleSendMail#getDbSrc()
-   * @see #getGoogleSendMail()
+   * @see in.handyman.dsl.SendMail#getDbSrc()
+   * @see #getSendMail()
    * @generated
    */
-  EAttribute getGoogleSendMail_DbSrc();
+  EAttribute getSendMail_DbSrc();
 
   /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.GoogleSendMail#getValue <em>Value</em>}'.
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.SendMail#getValue <em>Value</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Value</em>'.
-   * @see in.handyman.dsl.GoogleSendMail#getValue()
-   * @see #getGoogleSendMail()
+   * @see in.handyman.dsl.SendMail#getValue()
+   * @see #getSendMail()
    * @generated
    */
-  EAttribute getGoogleSendMail_Value();
+  EAttribute getSendMail_Value();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.SendMail#getDryrunMail <em>Dryrun Mail</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Dryrun Mail</em>'.
+   * @see in.handyman.dsl.SendMail#getDryrunMail()
+   * @see #getSendMail()
+   * @generated
+   */
+  EAttribute getSendMail_DryrunMail();
 
   /**
    * Returns the meta object for class '{@link in.handyman.dsl.GooglecontactPUT <em>Googlecontact PUT</em>}'.
@@ -4052,6 +4199,64 @@ public interface DslPackage extends EPackage
     EReference ACTION__CONDITION = eINSTANCE.getAction_Condition();
 
     /**
+     * The meta object literal for the '{@link in.handyman.dsl.impl.FirebaseDatabasePutImpl <em>Firebase Database Put</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see in.handyman.dsl.impl.FirebaseDatabasePutImpl
+     * @see in.handyman.dsl.impl.DslPackageImpl#getFirebaseDatabasePut()
+     * @generated
+     */
+    EClass FIREBASE_DATABASE_PUT = eINSTANCE.getFirebaseDatabasePut();
+
+    /**
+     * The meta object literal for the '<em><b>Url</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FIREBASE_DATABASE_PUT__URL = eINSTANCE.getFirebaseDatabasePut_Url();
+
+    /**
+     * The meta object literal for the '<em><b>Fbjson</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FIREBASE_DATABASE_PUT__FBJSON = eINSTANCE.getFirebaseDatabasePut_Fbjson();
+
+    /**
+     * The meta object literal for the '<em><b>Group Path</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FIREBASE_DATABASE_PUT__GROUP_PATH = eINSTANCE.getFirebaseDatabasePut_GroupPath();
+
+    /**
+     * The meta object literal for the '<em><b>Db Src</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FIREBASE_DATABASE_PUT__DB_SRC = eINSTANCE.getFirebaseDatabasePut_DbSrc();
+
+    /**
+     * The meta object literal for the '<em><b>Class Fqn</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FIREBASE_DATABASE_PUT__CLASS_FQN = eINSTANCE.getFirebaseDatabasePut_ClassFqn();
+
+    /**
+     * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FIREBASE_DATABASE_PUT__VALUE = eINSTANCE.getFirebaseDatabasePut_Value();
+
+    /**
      * The meta object literal for the '{@link in.handyman.dsl.impl.FirebaseReactiveNotificationImpl <em>Firebase Reactive Notification</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -4092,6 +4297,14 @@ public interface DslPackage extends EPackage
      * @generated
      */
     EAttribute FIREBASE_REACTIVE_NOTIFICATION__CLASS_FQN = eINSTANCE.getFirebaseReactiveNotification_ClassFqn();
+
+    /**
+     * The meta object literal for the '<em><b>Db Src</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FIREBASE_REACTIVE_NOTIFICATION__DB_SRC = eINSTANCE.getFirebaseReactiveNotification_DbSrc();
 
     /**
      * The meta object literal for the '{@link in.handyman.dsl.impl.SmsLeadSmsImpl <em>Sms Lead Sms</em>}' class.
@@ -4244,22 +4457,14 @@ public interface DslPackage extends EPackage
     EAttribute GOOGLECONTACT_SELECT_ALL__VALUE = eINSTANCE.getGooglecontactSelectAll_Value();
 
     /**
-     * The meta object literal for the '{@link in.handyman.dsl.impl.GoogleSendMailImpl <em>Google Send Mail</em>}' class.
+     * The meta object literal for the '{@link in.handyman.dsl.impl.SendMailImpl <em>Send Mail</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see in.handyman.dsl.impl.GoogleSendMailImpl
-     * @see in.handyman.dsl.impl.DslPackageImpl#getGoogleSendMail()
+     * @see in.handyman.dsl.impl.SendMailImpl
+     * @see in.handyman.dsl.impl.DslPackageImpl#getSendMail()
      * @generated
      */
-    EClass GOOGLE_SEND_MAIL = eINSTANCE.getGoogleSendMail();
-
-    /**
-     * The meta object literal for the '<em><b>Account</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute GOOGLE_SEND_MAIL__ACCOUNT = eINSTANCE.getGoogleSendMail_Account();
+    EClass SEND_MAIL = eINSTANCE.getSendMail();
 
     /**
      * The meta object literal for the '<em><b>Private Key</b></em>' attribute feature.
@@ -4267,23 +4472,7 @@ public interface DslPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute GOOGLE_SEND_MAIL__PRIVATE_KEY = eINSTANCE.getGoogleSendMail_PrivateKey();
-
-    /**
-     * The meta object literal for the '<em><b>Ptwelve File</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute GOOGLE_SEND_MAIL__PTWELVE_FILE = eINSTANCE.getGoogleSendMail_PtwelveFile();
-
-    /**
-     * The meta object literal for the '<em><b>Project</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute GOOGLE_SEND_MAIL__PROJECT = eINSTANCE.getGoogleSendMail_Project();
+    EAttribute SEND_MAIL__PRIVATE_KEY = eINSTANCE.getSendMail_PrivateKey();
 
     /**
      * The meta object literal for the '<em><b>Impersonated User</b></em>' attribute feature.
@@ -4291,7 +4480,7 @@ public interface DslPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute GOOGLE_SEND_MAIL__IMPERSONATED_USER = eINSTANCE.getGoogleSendMail_ImpersonatedUser();
+    EAttribute SEND_MAIL__IMPERSONATED_USER = eINSTANCE.getSendMail_ImpersonatedUser();
 
     /**
      * The meta object literal for the '<em><b>Db Src</b></em>' attribute feature.
@@ -4299,7 +4488,7 @@ public interface DslPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute GOOGLE_SEND_MAIL__DB_SRC = eINSTANCE.getGoogleSendMail_DbSrc();
+    EAttribute SEND_MAIL__DB_SRC = eINSTANCE.getSendMail_DbSrc();
 
     /**
      * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
@@ -4307,7 +4496,15 @@ public interface DslPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute GOOGLE_SEND_MAIL__VALUE = eINSTANCE.getGoogleSendMail_Value();
+    EAttribute SEND_MAIL__VALUE = eINSTANCE.getSendMail_Value();
+
+    /**
+     * The meta object literal for the '<em><b>Dryrun Mail</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute SEND_MAIL__DRYRUN_MAIL = eINSTANCE.getSendMail_DryrunMail();
 
     /**
      * The meta object literal for the '{@link in.handyman.dsl.impl.GooglecontactPUTImpl <em>Googlecontact PUT</em>}' class.

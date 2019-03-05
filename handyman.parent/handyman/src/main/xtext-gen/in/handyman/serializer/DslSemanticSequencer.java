@@ -17,14 +17,15 @@ import in.handyman.dsl.FBCLead;
 import in.handyman.dsl.FBFormDownload;
 import in.handyman.dsl.Fetch;
 import in.handyman.dsl.Finally;
+import in.handyman.dsl.FirebaseDatabasePut;
 import in.handyman.dsl.FirebaseReactiveNotification;
-import in.handyman.dsl.GoogleSendMail;
 import in.handyman.dsl.GooglecalPUT;
 import in.handyman.dsl.GooglecontactPUT;
 import in.handyman.dsl.GooglecontactSelectAll;
 import in.handyman.dsl.LoadCsv;
 import in.handyman.dsl.Rest;
 import in.handyman.dsl.RestPart;
+import in.handyman.dsl.SendMail;
 import in.handyman.dsl.SlackPUT;
 import in.handyman.dsl.SmsLeadSms;
 import in.handyman.dsl.Transform;
@@ -95,11 +96,11 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 			case DslPackage.FINALLY:
 				sequence_Finally(context, (Finally) semanticObject); 
 				return; 
+			case DslPackage.FIREBASE_DATABASE_PUT:
+				sequence_FirebaseDatabasePut(context, (FirebaseDatabasePut) semanticObject); 
+				return; 
 			case DslPackage.FIREBASE_REACTIVE_NOTIFICATION:
 				sequence_FirebaseReactiveNotification(context, (FirebaseReactiveNotification) semanticObject); 
-				return; 
-			case DslPackage.GOOGLE_SEND_MAIL:
-				sequence_GoogleSendMail(context, (GoogleSendMail) semanticObject); 
 				return; 
 			case DslPackage.GOOGLECAL_PUT:
 				sequence_GooglecalPUT(context, (GooglecalPUT) semanticObject); 
@@ -121,6 +122,9 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 				return; 
 			case DslPackage.REST_PART:
 				sequence_RestPart(context, (RestPart) semanticObject); 
+				return; 
+			case DslPackage.SEND_MAIL:
+				sequence_SendMail(context, (SendMail) semanticObject); 
 				return; 
 			case DslPackage.SLACK_PUT:
 				sequence_SlackPUT(context, (SlackPUT) semanticObject); 
@@ -521,6 +525,55 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 	
 	/**
 	 * Contexts:
+	 *     Action returns FirebaseDatabasePut
+	 *     FirebaseDatabasePut returns FirebaseDatabasePut
+	 *
+	 * Constraint:
+	 *     (
+	 *         name=STRING 
+	 *         url=STRING 
+	 *         fbjson=STRING 
+	 *         groupPath=STRING 
+	 *         dbSrc=STRING 
+	 *         classFqn=STRING 
+	 *         value=STRING 
+	 *         condition=Expression
+	 *     )
+	 */
+	protected void sequence_FirebaseDatabasePut(ISerializationContext context, FirebaseDatabasePut semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.ACTION__NAME) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.ACTION__NAME));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.FIREBASE_DATABASE_PUT__URL) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FIREBASE_DATABASE_PUT__URL));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.FIREBASE_DATABASE_PUT__FBJSON) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FIREBASE_DATABASE_PUT__FBJSON));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.FIREBASE_DATABASE_PUT__GROUP_PATH) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FIREBASE_DATABASE_PUT__GROUP_PATH));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.FIREBASE_DATABASE_PUT__DB_SRC) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FIREBASE_DATABASE_PUT__DB_SRC));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.FIREBASE_DATABASE_PUT__CLASS_FQN) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FIREBASE_DATABASE_PUT__CLASS_FQN));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.FIREBASE_DATABASE_PUT__VALUE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FIREBASE_DATABASE_PUT__VALUE));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.ACTION__CONDITION) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.ACTION__CONDITION));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getFirebaseDatabasePutAccess().getNameSTRINGTerminalRuleCall_2_0(), semanticObject.getName());
+		feeder.accept(grammarAccess.getFirebaseDatabasePutAccess().getUrlSTRINGTerminalRuleCall_4_0(), semanticObject.getUrl());
+		feeder.accept(grammarAccess.getFirebaseDatabasePutAccess().getFbjsonSTRINGTerminalRuleCall_6_0(), semanticObject.getFbjson());
+		feeder.accept(grammarAccess.getFirebaseDatabasePutAccess().getGroupPathSTRINGTerminalRuleCall_8_0(), semanticObject.getGroupPath());
+		feeder.accept(grammarAccess.getFirebaseDatabasePutAccess().getDbSrcSTRINGTerminalRuleCall_10_0(), semanticObject.getDbSrc());
+		feeder.accept(grammarAccess.getFirebaseDatabasePutAccess().getClassFqnSTRINGTerminalRuleCall_12_0(), semanticObject.getClassFqn());
+		feeder.accept(grammarAccess.getFirebaseDatabasePutAccess().getValueSTRINGTerminalRuleCall_15_0(), semanticObject.getValue());
+		feeder.accept(grammarAccess.getFirebaseDatabasePutAccess().getConditionExpressionParserRuleCall_18_0(), semanticObject.getCondition());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Contexts:
 	 *     Action returns FirebaseReactiveNotification
 	 *     FirebaseReactiveNotification returns FirebaseReactiveNotification
 	 *
@@ -531,6 +584,7 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 	 *         fbjson=STRING 
 	 *         groupPath=STRING 
 	 *         classFqn=STRING 
+	 *         dbSrc=STRING 
 	 *         condition=Expression
 	 *     )
 	 */
@@ -546,6 +600,8 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FIREBASE_REACTIVE_NOTIFICATION__GROUP_PATH));
 			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.FIREBASE_REACTIVE_NOTIFICATION__CLASS_FQN) == ValueTransient.YES)
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FIREBASE_REACTIVE_NOTIFICATION__CLASS_FQN));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.FIREBASE_REACTIVE_NOTIFICATION__DB_SRC) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FIREBASE_REACTIVE_NOTIFICATION__DB_SRC));
 			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.ACTION__CONDITION) == ValueTransient.YES)
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.ACTION__CONDITION));
 		}
@@ -555,60 +611,8 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 		feeder.accept(grammarAccess.getFirebaseReactiveNotificationAccess().getFbjsonSTRINGTerminalRuleCall_6_0(), semanticObject.getFbjson());
 		feeder.accept(grammarAccess.getFirebaseReactiveNotificationAccess().getGroupPathSTRINGTerminalRuleCall_8_0(), semanticObject.getGroupPath());
 		feeder.accept(grammarAccess.getFirebaseReactiveNotificationAccess().getClassFqnSTRINGTerminalRuleCall_10_0(), semanticObject.getClassFqn());
-		feeder.accept(grammarAccess.getFirebaseReactiveNotificationAccess().getConditionExpressionParserRuleCall_12_0(), semanticObject.getCondition());
-		feeder.finish();
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     Action returns GoogleSendMail
-	 *     GoogleSendMail returns GoogleSendMail
-	 *
-	 * Constraint:
-	 *     (
-	 *         name=STRING 
-	 *         account=STRING 
-	 *         privateKey=STRING 
-	 *         ptwelveFile=STRING 
-	 *         project=STRING 
-	 *         impersonatedUser=STRING 
-	 *         dbSrc=STRING 
-	 *         value=STRING 
-	 *         condition=Expression
-	 *     )
-	 */
-	protected void sequence_GoogleSendMail(ISerializationContext context, GoogleSendMail semanticObject) {
-		if (errorAcceptor != null) {
-			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.ACTION__NAME) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.ACTION__NAME));
-			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.GOOGLE_SEND_MAIL__ACCOUNT) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.GOOGLE_SEND_MAIL__ACCOUNT));
-			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.GOOGLE_SEND_MAIL__PRIVATE_KEY) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.GOOGLE_SEND_MAIL__PRIVATE_KEY));
-			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.GOOGLE_SEND_MAIL__PTWELVE_FILE) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.GOOGLE_SEND_MAIL__PTWELVE_FILE));
-			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.GOOGLE_SEND_MAIL__PROJECT) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.GOOGLE_SEND_MAIL__PROJECT));
-			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.GOOGLE_SEND_MAIL__IMPERSONATED_USER) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.GOOGLE_SEND_MAIL__IMPERSONATED_USER));
-			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.GOOGLE_SEND_MAIL__DB_SRC) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.GOOGLE_SEND_MAIL__DB_SRC));
-			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.GOOGLE_SEND_MAIL__VALUE) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.GOOGLE_SEND_MAIL__VALUE));
-			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.ACTION__CONDITION) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.ACTION__CONDITION));
-		}
-		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getGoogleSendMailAccess().getNameSTRINGTerminalRuleCall_2_0(), semanticObject.getName());
-		feeder.accept(grammarAccess.getGoogleSendMailAccess().getAccountSTRINGTerminalRuleCall_4_0(), semanticObject.getAccount());
-		feeder.accept(grammarAccess.getGoogleSendMailAccess().getPrivateKeySTRINGTerminalRuleCall_6_0(), semanticObject.getPrivateKey());
-		feeder.accept(grammarAccess.getGoogleSendMailAccess().getPtwelveFileSTRINGTerminalRuleCall_8_0(), semanticObject.getPtwelveFile());
-		feeder.accept(grammarAccess.getGoogleSendMailAccess().getProjectSTRINGTerminalRuleCall_10_0(), semanticObject.getProject());
-		feeder.accept(grammarAccess.getGoogleSendMailAccess().getImpersonatedUserSTRINGTerminalRuleCall_12_0(), semanticObject.getImpersonatedUser());
-		feeder.accept(grammarAccess.getGoogleSendMailAccess().getDbSrcSTRINGTerminalRuleCall_14_0(), semanticObject.getDbSrc());
-		feeder.accept(grammarAccess.getGoogleSendMailAccess().getValueSTRINGTerminalRuleCall_17_0(), semanticObject.getValue());
-		feeder.accept(grammarAccess.getGoogleSendMailAccess().getConditionExpressionParserRuleCall_20_0(), semanticObject.getCondition());
+		feeder.accept(grammarAccess.getFirebaseReactiveNotificationAccess().getDbSrcSTRINGTerminalRuleCall_11_0(), semanticObject.getDbSrc());
+		feeder.accept(grammarAccess.getFirebaseReactiveNotificationAccess().getConditionExpressionParserRuleCall_13_0(), semanticObject.getCondition());
 		feeder.finish();
 	}
 	
@@ -887,6 +891,51 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 	 */
 	protected void sequence_Rest(ISerializationContext context, Rest semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Action returns SendMail
+	 *     SendMail returns SendMail
+	 *
+	 * Constraint:
+	 *     (
+	 *         name=STRING 
+	 *         privateKey=STRING 
+	 *         impersonatedUser=STRING 
+	 *         dbSrc=STRING 
+	 *         value=STRING 
+	 *         condition=Expression 
+	 *         dryrunMail=STRING
+	 *     )
+	 */
+	protected void sequence_SendMail(ISerializationContext context, SendMail semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.ACTION__NAME) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.ACTION__NAME));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.SEND_MAIL__PRIVATE_KEY) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.SEND_MAIL__PRIVATE_KEY));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.SEND_MAIL__IMPERSONATED_USER) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.SEND_MAIL__IMPERSONATED_USER));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.SEND_MAIL__DB_SRC) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.SEND_MAIL__DB_SRC));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.SEND_MAIL__VALUE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.SEND_MAIL__VALUE));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.ACTION__CONDITION) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.ACTION__CONDITION));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.SEND_MAIL__DRYRUN_MAIL) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.SEND_MAIL__DRYRUN_MAIL));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getSendMailAccess().getNameSTRINGTerminalRuleCall_2_0(), semanticObject.getName());
+		feeder.accept(grammarAccess.getSendMailAccess().getPrivateKeySTRINGTerminalRuleCall_4_0(), semanticObject.getPrivateKey());
+		feeder.accept(grammarAccess.getSendMailAccess().getImpersonatedUserSTRINGTerminalRuleCall_6_0(), semanticObject.getImpersonatedUser());
+		feeder.accept(grammarAccess.getSendMailAccess().getDbSrcSTRINGTerminalRuleCall_8_0(), semanticObject.getDbSrc());
+		feeder.accept(grammarAccess.getSendMailAccess().getValueSTRINGTerminalRuleCall_11_0(), semanticObject.getValue());
+		feeder.accept(grammarAccess.getSendMailAccess().getConditionExpressionParserRuleCall_14_0(), semanticObject.getCondition());
+		feeder.accept(grammarAccess.getSendMailAccess().getDryrunMailSTRINGTerminalRuleCall_16_0(), semanticObject.getDryrunMail());
+		feeder.finish();
 	}
 	
 	

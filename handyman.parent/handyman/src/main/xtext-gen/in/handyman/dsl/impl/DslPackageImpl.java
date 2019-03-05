@@ -18,14 +18,15 @@ import in.handyman.dsl.FBCLead;
 import in.handyman.dsl.FBFormDownload;
 import in.handyman.dsl.Fetch;
 import in.handyman.dsl.Finally;
+import in.handyman.dsl.FirebaseDatabasePut;
 import in.handyman.dsl.FirebaseReactiveNotification;
-import in.handyman.dsl.GoogleSendMail;
 import in.handyman.dsl.GooglecalPUT;
 import in.handyman.dsl.GooglecontactPUT;
 import in.handyman.dsl.GooglecontactSelectAll;
 import in.handyman.dsl.LoadCsv;
 import in.handyman.dsl.Rest;
 import in.handyman.dsl.RestPart;
+import in.handyman.dsl.SendMail;
 import in.handyman.dsl.SlackPUT;
 import in.handyman.dsl.SmsLeadSms;
 import in.handyman.dsl.Transform;
@@ -90,6 +91,13 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass firebaseDatabasePutEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass firebaseReactiveNotificationEClass = null;
 
   /**
@@ -118,7 +126,7 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass googleSendMailEClass = null;
+  private EClass sendMailEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -498,6 +506,76 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getFirebaseDatabasePut()
+  {
+    return firebaseDatabasePutEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getFirebaseDatabasePut_Url()
+  {
+    return (EAttribute)firebaseDatabasePutEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getFirebaseDatabasePut_Fbjson()
+  {
+    return (EAttribute)firebaseDatabasePutEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getFirebaseDatabasePut_GroupPath()
+  {
+    return (EAttribute)firebaseDatabasePutEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getFirebaseDatabasePut_DbSrc()
+  {
+    return (EAttribute)firebaseDatabasePutEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getFirebaseDatabasePut_ClassFqn()
+  {
+    return (EAttribute)firebaseDatabasePutEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getFirebaseDatabasePut_Value()
+  {
+    return (EAttribute)firebaseDatabasePutEClass.getEStructuralFeatures().get(5);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getFirebaseReactiveNotification()
   {
     return firebaseReactiveNotificationEClass;
@@ -541,6 +619,16 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
   public EAttribute getFirebaseReactiveNotification_ClassFqn()
   {
     return (EAttribute)firebaseReactiveNotificationEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getFirebaseReactiveNotification_DbSrc()
+  {
+    return (EAttribute)firebaseReactiveNotificationEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -728,9 +816,9 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getGoogleSendMail()
+  public EClass getSendMail()
   {
-    return googleSendMailEClass;
+    return sendMailEClass;
   }
 
   /**
@@ -738,9 +826,9 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getGoogleSendMail_Account()
+  public EAttribute getSendMail_PrivateKey()
   {
-    return (EAttribute)googleSendMailEClass.getEStructuralFeatures().get(0);
+    return (EAttribute)sendMailEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -748,9 +836,9 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getGoogleSendMail_PrivateKey()
+  public EAttribute getSendMail_ImpersonatedUser()
   {
-    return (EAttribute)googleSendMailEClass.getEStructuralFeatures().get(1);
+    return (EAttribute)sendMailEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -758,9 +846,9 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getGoogleSendMail_PtwelveFile()
+  public EAttribute getSendMail_DbSrc()
   {
-    return (EAttribute)googleSendMailEClass.getEStructuralFeatures().get(2);
+    return (EAttribute)sendMailEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -768,9 +856,9 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getGoogleSendMail_Project()
+  public EAttribute getSendMail_Value()
   {
-    return (EAttribute)googleSendMailEClass.getEStructuralFeatures().get(3);
+    return (EAttribute)sendMailEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -778,29 +866,9 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getGoogleSendMail_ImpersonatedUser()
+  public EAttribute getSendMail_DryrunMail()
   {
-    return (EAttribute)googleSendMailEClass.getEStructuralFeatures().get(4);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getGoogleSendMail_DbSrc()
-  {
-    return (EAttribute)googleSendMailEClass.getEStructuralFeatures().get(5);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getGoogleSendMail_Value()
-  {
-    return (EAttribute)googleSendMailEClass.getEStructuralFeatures().get(6);
+    return (EAttribute)sendMailEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -1945,11 +2013,20 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     createEAttribute(actionEClass, ACTION__NAME);
     createEReference(actionEClass, ACTION__CONDITION);
 
+    firebaseDatabasePutEClass = createEClass(FIREBASE_DATABASE_PUT);
+    createEAttribute(firebaseDatabasePutEClass, FIREBASE_DATABASE_PUT__URL);
+    createEAttribute(firebaseDatabasePutEClass, FIREBASE_DATABASE_PUT__FBJSON);
+    createEAttribute(firebaseDatabasePutEClass, FIREBASE_DATABASE_PUT__GROUP_PATH);
+    createEAttribute(firebaseDatabasePutEClass, FIREBASE_DATABASE_PUT__DB_SRC);
+    createEAttribute(firebaseDatabasePutEClass, FIREBASE_DATABASE_PUT__CLASS_FQN);
+    createEAttribute(firebaseDatabasePutEClass, FIREBASE_DATABASE_PUT__VALUE);
+
     firebaseReactiveNotificationEClass = createEClass(FIREBASE_REACTIVE_NOTIFICATION);
     createEAttribute(firebaseReactiveNotificationEClass, FIREBASE_REACTIVE_NOTIFICATION__URL);
     createEAttribute(firebaseReactiveNotificationEClass, FIREBASE_REACTIVE_NOTIFICATION__FBJSON);
     createEAttribute(firebaseReactiveNotificationEClass, FIREBASE_REACTIVE_NOTIFICATION__GROUP_PATH);
     createEAttribute(firebaseReactiveNotificationEClass, FIREBASE_REACTIVE_NOTIFICATION__CLASS_FQN);
+    createEAttribute(firebaseReactiveNotificationEClass, FIREBASE_REACTIVE_NOTIFICATION__DB_SRC);
 
     smsLeadSmsEClass = createEClass(SMS_LEAD_SMS);
     createEAttribute(smsLeadSmsEClass, SMS_LEAD_SMS__URL);
@@ -1972,14 +2049,12 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     createEAttribute(googlecontactSelectAllEClass, GOOGLECONTACT_SELECT_ALL__DB_SRC);
     createEAttribute(googlecontactSelectAllEClass, GOOGLECONTACT_SELECT_ALL__VALUE);
 
-    googleSendMailEClass = createEClass(GOOGLE_SEND_MAIL);
-    createEAttribute(googleSendMailEClass, GOOGLE_SEND_MAIL__ACCOUNT);
-    createEAttribute(googleSendMailEClass, GOOGLE_SEND_MAIL__PRIVATE_KEY);
-    createEAttribute(googleSendMailEClass, GOOGLE_SEND_MAIL__PTWELVE_FILE);
-    createEAttribute(googleSendMailEClass, GOOGLE_SEND_MAIL__PROJECT);
-    createEAttribute(googleSendMailEClass, GOOGLE_SEND_MAIL__IMPERSONATED_USER);
-    createEAttribute(googleSendMailEClass, GOOGLE_SEND_MAIL__DB_SRC);
-    createEAttribute(googleSendMailEClass, GOOGLE_SEND_MAIL__VALUE);
+    sendMailEClass = createEClass(SEND_MAIL);
+    createEAttribute(sendMailEClass, SEND_MAIL__PRIVATE_KEY);
+    createEAttribute(sendMailEClass, SEND_MAIL__IMPERSONATED_USER);
+    createEAttribute(sendMailEClass, SEND_MAIL__DB_SRC);
+    createEAttribute(sendMailEClass, SEND_MAIL__VALUE);
+    createEAttribute(sendMailEClass, SEND_MAIL__DRYRUN_MAIL);
 
     googlecontactPUTEClass = createEClass(GOOGLECONTACT_PUT);
     createEAttribute(googlecontactPUTEClass, GOOGLECONTACT_PUT__ACCOUNT);
@@ -2140,11 +2215,12 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     // Set bounds for type parameters
 
     // Add supertypes to classes
+    firebaseDatabasePutEClass.getESuperTypes().add(this.getAction());
     firebaseReactiveNotificationEClass.getESuperTypes().add(this.getAction());
     smsLeadSmsEClass.getESuperTypes().add(this.getAction());
     abortEClass.getESuperTypes().add(this.getAction());
     googlecontactSelectAllEClass.getESuperTypes().add(this.getAction());
-    googleSendMailEClass.getESuperTypes().add(this.getAction());
+    sendMailEClass.getESuperTypes().add(this.getAction());
     googlecontactPUTEClass.getESuperTypes().add(this.getAction());
     googlecalPUTEClass.getESuperTypes().add(this.getAction());
     fbcLeadEClass.getESuperTypes().add(this.getAction());
@@ -2187,11 +2263,20 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     initEAttribute(getAction_Name(), ecorePackage.getEString(), "name", null, 0, 1, Action.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAction_Condition(), this.getExpression(), null, "condition", null, 0, 1, Action.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(firebaseDatabasePutEClass, FirebaseDatabasePut.class, "FirebaseDatabasePut", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getFirebaseDatabasePut_Url(), ecorePackage.getEString(), "url", null, 0, 1, FirebaseDatabasePut.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getFirebaseDatabasePut_Fbjson(), ecorePackage.getEString(), "fbjson", null, 0, 1, FirebaseDatabasePut.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getFirebaseDatabasePut_GroupPath(), ecorePackage.getEString(), "groupPath", null, 0, 1, FirebaseDatabasePut.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getFirebaseDatabasePut_DbSrc(), ecorePackage.getEString(), "dbSrc", null, 0, 1, FirebaseDatabasePut.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getFirebaseDatabasePut_ClassFqn(), ecorePackage.getEString(), "classFqn", null, 0, 1, FirebaseDatabasePut.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getFirebaseDatabasePut_Value(), ecorePackage.getEString(), "value", null, 0, 1, FirebaseDatabasePut.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     initEClass(firebaseReactiveNotificationEClass, FirebaseReactiveNotification.class, "FirebaseReactiveNotification", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getFirebaseReactiveNotification_Url(), ecorePackage.getEString(), "url", null, 0, 1, FirebaseReactiveNotification.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getFirebaseReactiveNotification_Fbjson(), ecorePackage.getEString(), "fbjson", null, 0, 1, FirebaseReactiveNotification.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getFirebaseReactiveNotification_GroupPath(), ecorePackage.getEString(), "groupPath", null, 0, 1, FirebaseReactiveNotification.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getFirebaseReactiveNotification_ClassFqn(), ecorePackage.getEString(), "classFqn", null, 0, 1, FirebaseReactiveNotification.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getFirebaseReactiveNotification_DbSrc(), ecorePackage.getEString(), "dbSrc", null, 0, 1, FirebaseReactiveNotification.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(smsLeadSmsEClass, SmsLeadSms.class, "SmsLeadSms", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getSmsLeadSms_Url(), ecorePackage.getEString(), "url", null, 0, 1, SmsLeadSms.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2214,14 +2299,12 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     initEAttribute(getGooglecontactSelectAll_DbSrc(), ecorePackage.getEString(), "dbSrc", null, 0, 1, GooglecontactSelectAll.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getGooglecontactSelectAll_Value(), ecorePackage.getEString(), "value", null, 0, 1, GooglecontactSelectAll.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(googleSendMailEClass, GoogleSendMail.class, "GoogleSendMail", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getGoogleSendMail_Account(), ecorePackage.getEString(), "account", null, 0, 1, GoogleSendMail.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getGoogleSendMail_PrivateKey(), ecorePackage.getEString(), "privateKey", null, 0, 1, GoogleSendMail.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getGoogleSendMail_PtwelveFile(), ecorePackage.getEString(), "ptwelveFile", null, 0, 1, GoogleSendMail.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getGoogleSendMail_Project(), ecorePackage.getEString(), "project", null, 0, 1, GoogleSendMail.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getGoogleSendMail_ImpersonatedUser(), ecorePackage.getEString(), "impersonatedUser", null, 0, 1, GoogleSendMail.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getGoogleSendMail_DbSrc(), ecorePackage.getEString(), "dbSrc", null, 0, 1, GoogleSendMail.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getGoogleSendMail_Value(), ecorePackage.getEString(), "value", null, 0, 1, GoogleSendMail.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEClass(sendMailEClass, SendMail.class, "SendMail", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getSendMail_PrivateKey(), ecorePackage.getEString(), "privateKey", null, 0, 1, SendMail.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getSendMail_ImpersonatedUser(), ecorePackage.getEString(), "impersonatedUser", null, 0, 1, SendMail.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getSendMail_DbSrc(), ecorePackage.getEString(), "dbSrc", null, 0, 1, SendMail.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getSendMail_Value(), ecorePackage.getEString(), "value", null, 0, 1, SendMail.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getSendMail_DryrunMail(), ecorePackage.getEString(), "dryrunMail", null, 0, 1, SendMail.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(googlecontactPUTEClass, GooglecontactPUT.class, "GooglecontactPUT", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getGooglecontactPUT_Account(), ecorePackage.getEString(), "account", null, 0, 1, GooglecontactPUT.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

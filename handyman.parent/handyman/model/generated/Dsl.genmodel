@@ -28,11 +28,20 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Action/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Dsl.ecore#//Action/condition"/>
     </genClasses>
+    <genClasses ecoreClass="Dsl.ecore#//FirebaseDatabasePut">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FirebaseDatabasePut/url"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FirebaseDatabasePut/fbjson"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FirebaseDatabasePut/groupPath"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FirebaseDatabasePut/dbSrc"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FirebaseDatabasePut/classFqn"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FirebaseDatabasePut/value"/>
+    </genClasses>
     <genClasses ecoreClass="Dsl.ecore#//FirebaseReactiveNotification">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FirebaseReactiveNotification/url"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FirebaseReactiveNotification/fbjson"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FirebaseReactiveNotification/groupPath"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FirebaseReactiveNotification/classFqn"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FirebaseReactiveNotification/dbSrc"/>
     </genClasses>
     <genClasses ecoreClass="Dsl.ecore#//SmsLeadSms">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//SmsLeadSms/url"/>
@@ -55,14 +64,12 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//GooglecontactSelectAll/dbSrc"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//GooglecontactSelectAll/value"/>
     </genClasses>
-    <genClasses ecoreClass="Dsl.ecore#//GoogleSendMail">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//GoogleSendMail/account"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//GoogleSendMail/privateKey"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//GoogleSendMail/ptwelveFile"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//GoogleSendMail/project"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//GoogleSendMail/impersonatedUser"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//GoogleSendMail/dbSrc"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//GoogleSendMail/value"/>
+    <genClasses ecoreClass="Dsl.ecore#//SendMail">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//SendMail/privateKey"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//SendMail/impersonatedUser"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//SendMail/dbSrc"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//SendMail/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//SendMail/dryrunMail"/>
     </genClasses>
     <genClasses ecoreClass="Dsl.ecore#//GooglecontactPUT">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//GooglecontactPUT/account"/>
