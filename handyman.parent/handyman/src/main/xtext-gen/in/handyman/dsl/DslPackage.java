@@ -261,6 +261,79 @@ public interface DslPackage extends EPackage
   int ACTION_FEATURE_COUNT = 2;
 
   /**
+   * The meta object id for the '{@link in.handyman.dsl.impl.FirebaseReactiveNotificationImpl <em>Firebase Reactive Notification</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see in.handyman.dsl.impl.FirebaseReactiveNotificationImpl
+   * @see in.handyman.dsl.impl.DslPackageImpl#getFirebaseReactiveNotification()
+   * @generated
+   */
+  int FIREBASE_REACTIVE_NOTIFICATION = 5;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FIREBASE_REACTIVE_NOTIFICATION__NAME = ACTION__NAME;
+
+  /**
+   * The feature id for the '<em><b>Condition</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FIREBASE_REACTIVE_NOTIFICATION__CONDITION = ACTION__CONDITION;
+
+  /**
+   * The feature id for the '<em><b>Url</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FIREBASE_REACTIVE_NOTIFICATION__URL = ACTION_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Fbjson</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FIREBASE_REACTIVE_NOTIFICATION__FBJSON = ACTION_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Group Path</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FIREBASE_REACTIVE_NOTIFICATION__GROUP_PATH = ACTION_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Class Fqn</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FIREBASE_REACTIVE_NOTIFICATION__CLASS_FQN = ACTION_FEATURE_COUNT + 3;
+
+  /**
+   * The number of structural features of the '<em>Firebase Reactive Notification</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FIREBASE_REACTIVE_NOTIFICATION_FEATURE_COUNT = ACTION_FEATURE_COUNT + 4;
+
+  /**
    * The meta object id for the '{@link in.handyman.dsl.impl.SmsLeadSmsImpl <em>Sms Lead Sms</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -268,7 +341,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getSmsLeadSms()
    * @generated
    */
-  int SMS_LEAD_SMS = 5;
+  int SMS_LEAD_SMS = 6;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -368,7 +441,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getAbort()
    * @generated
    */
-  int ABORT = 6;
+  int ABORT = 7;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -414,7 +487,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getGooglecontactSelectAll()
    * @generated
    */
-  int GOOGLECONTACT_SELECT_ALL = 7;
+  int GOOGLECONTACT_SELECT_ALL = 8;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -514,7 +587,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getGoogleSendMail()
    * @generated
    */
-  int GOOGLE_SEND_MAIL = 8;
+  int GOOGLE_SEND_MAIL = 9;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -614,7 +687,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getGooglecontactPUT()
    * @generated
    */
-  int GOOGLECONTACT_PUT = 9;
+  int GOOGLECONTACT_PUT = 10;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -714,7 +787,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getGooglecalPUT()
    * @generated
    */
-  int GOOGLECAL_PUT = 10;
+  int GOOGLECAL_PUT = 11;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -814,7 +887,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getFBCLead()
    * @generated
    */
-  int FBC_LEAD = 11;
+  int FBC_LEAD = 12;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -905,7 +978,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getFBFormDownload()
    * @generated
    */
-  int FB_FORM_DOWNLOAD = 12;
+  int FB_FORM_DOWNLOAD = 13;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -996,7 +1069,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getDropfile()
    * @generated
    */
-  int DROPFILE = 13;
+  int DROPFILE = 14;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1042,7 +1115,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getDoozle()
    * @generated
    */
-  int DOOZLE = 14;
+  int DOOZLE = 15;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1106,7 +1179,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getRest()
    * @generated
    */
-  int REST = 15;
+  int REST = 16;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1260,7 +1333,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getRestPart()
    * @generated
    */
-  int REST_PART = 16;
+  int REST_PART = 17;
 
   /**
    * The feature id for the '<em><b>Part Name</b></em>' attribute.
@@ -1297,7 +1370,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getTrelloGET()
    * @generated
    */
-  int TRELLO_GET = 17;
+  int TRELLO_GET = 18;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1388,7 +1461,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getTrelloPUT()
    * @generated
    */
-  int TRELLO_PUT = 18;
+  int TRELLO_PUT = 19;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1479,7 +1552,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getFetch()
    * @generated
    */
-  int FETCH = 19;
+  int FETCH = 20;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1534,7 +1607,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getCallprocess()
    * @generated
    */
-  int CALLPROCESS = 20;
+  int CALLPROCESS = 21;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1607,7 +1680,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getUpdatedaudit()
    * @generated
    */
-  int UPDATEDAUDIT = 21;
+  int UPDATEDAUDIT = 22;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1671,7 +1744,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getClickSendSms()
    * @generated
    */
-  int CLICK_SEND_SMS = 22;
+  int CLICK_SEND_SMS = 23;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1744,7 +1817,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getSlackPUT()
    * @generated
    */
-  int SLACK_PUT = 23;
+  int SLACK_PUT = 24;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1808,7 +1881,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getCopydata()
    * @generated
    */
-  int COPYDATA = 24;
+  int COPYDATA = 25;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1872,7 +1945,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getWriteCsv()
    * @generated
    */
-  int WRITE_CSV = 25;
+  int WRITE_CSV = 26;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1945,7 +2018,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getLoadCsv()
    * @generated
    */
-  int LOAD_CSV = 26;
+  int LOAD_CSV = 27;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2018,7 +2091,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getTransform()
    * @generated
    */
-  int TRANSFORM = 27;
+  int TRANSFORM = 28;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2073,7 +2146,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getExpression()
    * @generated
    */
-  int EXPRESSION = 28;
+  int EXPRESSION = 29;
 
   /**
    * The feature id for the '<em><b>Lhs</b></em>' attribute.
@@ -2293,6 +2366,60 @@ public interface DslPackage extends EPackage
    * @generated
    */
   EReference getAction_Condition();
+
+  /**
+   * Returns the meta object for class '{@link in.handyman.dsl.FirebaseReactiveNotification <em>Firebase Reactive Notification</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Firebase Reactive Notification</em>'.
+   * @see in.handyman.dsl.FirebaseReactiveNotification
+   * @generated
+   */
+  EClass getFirebaseReactiveNotification();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.FirebaseReactiveNotification#getUrl <em>Url</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Url</em>'.
+   * @see in.handyman.dsl.FirebaseReactiveNotification#getUrl()
+   * @see #getFirebaseReactiveNotification()
+   * @generated
+   */
+  EAttribute getFirebaseReactiveNotification_Url();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.FirebaseReactiveNotification#getFbjson <em>Fbjson</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Fbjson</em>'.
+   * @see in.handyman.dsl.FirebaseReactiveNotification#getFbjson()
+   * @see #getFirebaseReactiveNotification()
+   * @generated
+   */
+  EAttribute getFirebaseReactiveNotification_Fbjson();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.FirebaseReactiveNotification#getGroupPath <em>Group Path</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Group Path</em>'.
+   * @see in.handyman.dsl.FirebaseReactiveNotification#getGroupPath()
+   * @see #getFirebaseReactiveNotification()
+   * @generated
+   */
+  EAttribute getFirebaseReactiveNotification_GroupPath();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.FirebaseReactiveNotification#getClassFqn <em>Class Fqn</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Class Fqn</em>'.
+   * @see in.handyman.dsl.FirebaseReactiveNotification#getClassFqn()
+   * @see #getFirebaseReactiveNotification()
+   * @generated
+   */
+  EAttribute getFirebaseReactiveNotification_ClassFqn();
 
   /**
    * Returns the meta object for class '{@link in.handyman.dsl.SmsLeadSms <em>Sms Lead Sms</em>}'.
@@ -3923,6 +4050,48 @@ public interface DslPackage extends EPackage
      * @generated
      */
     EReference ACTION__CONDITION = eINSTANCE.getAction_Condition();
+
+    /**
+     * The meta object literal for the '{@link in.handyman.dsl.impl.FirebaseReactiveNotificationImpl <em>Firebase Reactive Notification</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see in.handyman.dsl.impl.FirebaseReactiveNotificationImpl
+     * @see in.handyman.dsl.impl.DslPackageImpl#getFirebaseReactiveNotification()
+     * @generated
+     */
+    EClass FIREBASE_REACTIVE_NOTIFICATION = eINSTANCE.getFirebaseReactiveNotification();
+
+    /**
+     * The meta object literal for the '<em><b>Url</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FIREBASE_REACTIVE_NOTIFICATION__URL = eINSTANCE.getFirebaseReactiveNotification_Url();
+
+    /**
+     * The meta object literal for the '<em><b>Fbjson</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FIREBASE_REACTIVE_NOTIFICATION__FBJSON = eINSTANCE.getFirebaseReactiveNotification_Fbjson();
+
+    /**
+     * The meta object literal for the '<em><b>Group Path</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FIREBASE_REACTIVE_NOTIFICATION__GROUP_PATH = eINSTANCE.getFirebaseReactiveNotification_GroupPath();
+
+    /**
+     * The meta object literal for the '<em><b>Class Fqn</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FIREBASE_REACTIVE_NOTIFICATION__CLASS_FQN = eINSTANCE.getFirebaseReactiveNotification_ClassFqn();
 
     /**
      * The meta object literal for the '{@link in.handyman.dsl.impl.SmsLeadSmsImpl <em>Sms Lead Sms</em>}' class.

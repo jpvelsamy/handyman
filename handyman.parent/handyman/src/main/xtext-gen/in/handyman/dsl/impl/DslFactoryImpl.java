@@ -18,6 +18,7 @@ import in.handyman.dsl.FBCLead;
 import in.handyman.dsl.FBFormDownload;
 import in.handyman.dsl.Fetch;
 import in.handyman.dsl.Finally;
+import in.handyman.dsl.FirebaseReactiveNotification;
 import in.handyman.dsl.GoogleSendMail;
 import in.handyman.dsl.GooglecalPUT;
 import in.handyman.dsl.GooglecontactPUT;
@@ -99,6 +100,7 @@ public class DslFactoryImpl extends EFactoryImpl implements DslFactory
       case DslPackage.FINALLY: return createFinally();
       case DslPackage.CATCH: return createCatch();
       case DslPackage.ACTION: return createAction();
+      case DslPackage.FIREBASE_REACTIVE_NOTIFICATION: return createFirebaseReactiveNotification();
       case DslPackage.SMS_LEAD_SMS: return createSmsLeadSms();
       case DslPackage.ABORT: return createAbort();
       case DslPackage.GOOGLECONTACT_SELECT_ALL: return createGooglecontactSelectAll();
@@ -181,6 +183,17 @@ public class DslFactoryImpl extends EFactoryImpl implements DslFactory
   {
     ActionImpl action = new ActionImpl();
     return action;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public FirebaseReactiveNotification createFirebaseReactiveNotification()
+  {
+    FirebaseReactiveNotificationImpl firebaseReactiveNotification = new FirebaseReactiveNotificationImpl();
+    return firebaseReactiveNotification;
   }
 
   /**

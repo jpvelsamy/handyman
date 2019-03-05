@@ -233,6 +233,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cGooglecontactSelectAllParserRuleCall_19 = (RuleCall)cAlternatives.eContents().get(19);
 		private final RuleCall cAbortParserRuleCall_20 = (RuleCall)cAlternatives.eContents().get(20);
 		private final RuleCall cSmsLeadSmsParserRuleCall_21 = (RuleCall)cAlternatives.eContents().get(21);
+		private final RuleCall cFirebaseReactiveNotificationParserRuleCall_22 = (RuleCall)cAlternatives.eContents().get(22);
 		
 		//Action:
 		//	Copydata
@@ -256,12 +257,13 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		//	| GooglecontactPUT
 		//	| GooglecontactSelectAll
 		//	| Abort
-		//	| SmsLeadSms;
+		//	| SmsLeadSms
+		//	| FirebaseReactiveNotification;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//Copydata | LoadCsv | WriteCsv | Transform | GooglecalPUT | SlackPUT | ClickSendSms | Updatedaudit | Callprocess | Fetch
 		//| TrelloPUT | TrelloGET | Rest | Doozle | Dropfile | FBCLead | FBFormDownload | GoogleSendMail | GooglecontactPUT |
-		//GooglecontactSelectAll | Abort | SmsLeadSms
+		//GooglecontactSelectAll | Abort | SmsLeadSms | FirebaseReactiveNotification
 		public Alternatives getAlternatives() { return cAlternatives; }
 		
 		//Copydata
@@ -329,6 +331,98 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//SmsLeadSms
 		public RuleCall getSmsLeadSmsParserRuleCall_21() { return cSmsLeadSmsParserRuleCall_21; }
+		
+		//FirebaseReactiveNotification
+		public RuleCall getFirebaseReactiveNotificationParserRuleCall_22() { return cFirebaseReactiveNotificationParserRuleCall_22; }
+	}
+	public class FirebaseReactiveNotificationElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "in.handyman.Dsl.FirebaseReactiveNotification");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cFbrnKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Keyword cAsKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Assignment cNameAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cNameSTRINGTerminalRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
+		private final Keyword cOnKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Assignment cUrlAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cUrlSTRINGTerminalRuleCall_4_0 = (RuleCall)cUrlAssignment_4.eContents().get(0);
+		private final Keyword cAuthByKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		private final Assignment cFbjsonAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final RuleCall cFbjsonSTRINGTerminalRuleCall_6_0 = (RuleCall)cFbjsonAssignment_6.eContents().get(0);
+		private final Keyword cForGroupKeyword_7 = (Keyword)cGroup.eContents().get(7);
+		private final Assignment cGroupPathAssignment_8 = (Assignment)cGroup.eContents().get(8);
+		private final RuleCall cGroupPathSTRINGTerminalRuleCall_8_0 = (RuleCall)cGroupPathAssignment_8.eContents().get(0);
+		private final Keyword cWithClassKeyword_9 = (Keyword)cGroup.eContents().get(9);
+		private final Assignment cClassFqnAssignment_10 = (Assignment)cGroup.eContents().get(10);
+		private final RuleCall cClassFqnSTRINGTerminalRuleCall_10_0 = (RuleCall)cClassFqnAssignment_10.eContents().get(0);
+		private final Keyword cOnConditionKeyword_11 = (Keyword)cGroup.eContents().get(11);
+		private final Assignment cConditionAssignment_12 = (Assignment)cGroup.eContents().get(12);
+		private final RuleCall cConditionExpressionParserRuleCall_12_0 = (RuleCall)cConditionAssignment_12.eContents().get(0);
+		
+		//FirebaseReactiveNotification:
+		//	'fbrn' 'as' name=STRING 'on' url=STRING 'auth-by' fbjson=STRING 'for-group' groupPath=STRING 'with-class'
+		//	classFqn=STRING 'on-condition' condition=Expression;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//'fbrn' 'as' name=STRING 'on' url=STRING 'auth-by' fbjson=STRING 'for-group' groupPath=STRING 'with-class'
+		//classFqn=STRING 'on-condition' condition=Expression
+		public Group getGroup() { return cGroup; }
+		
+		//'fbrn'
+		public Keyword getFbrnKeyword_0() { return cFbrnKeyword_0; }
+		
+		//'as'
+		public Keyword getAsKeyword_1() { return cAsKeyword_1; }
+		
+		//name=STRING
+		public Assignment getNameAssignment_2() { return cNameAssignment_2; }
+		
+		//STRING
+		public RuleCall getNameSTRINGTerminalRuleCall_2_0() { return cNameSTRINGTerminalRuleCall_2_0; }
+		
+		//'on'
+		public Keyword getOnKeyword_3() { return cOnKeyword_3; }
+		
+		//url=STRING
+		public Assignment getUrlAssignment_4() { return cUrlAssignment_4; }
+		
+		//STRING
+		public RuleCall getUrlSTRINGTerminalRuleCall_4_0() { return cUrlSTRINGTerminalRuleCall_4_0; }
+		
+		//'auth-by'
+		public Keyword getAuthByKeyword_5() { return cAuthByKeyword_5; }
+		
+		//fbjson=STRING
+		public Assignment getFbjsonAssignment_6() { return cFbjsonAssignment_6; }
+		
+		//STRING
+		public RuleCall getFbjsonSTRINGTerminalRuleCall_6_0() { return cFbjsonSTRINGTerminalRuleCall_6_0; }
+		
+		//'for-group'
+		public Keyword getForGroupKeyword_7() { return cForGroupKeyword_7; }
+		
+		//groupPath=STRING
+		public Assignment getGroupPathAssignment_8() { return cGroupPathAssignment_8; }
+		
+		//STRING
+		public RuleCall getGroupPathSTRINGTerminalRuleCall_8_0() { return cGroupPathSTRINGTerminalRuleCall_8_0; }
+		
+		//'with-class'
+		public Keyword getWithClassKeyword_9() { return cWithClassKeyword_9; }
+		
+		//classFqn=STRING
+		public Assignment getClassFqnAssignment_10() { return cClassFqnAssignment_10; }
+		
+		//STRING
+		public RuleCall getClassFqnSTRINGTerminalRuleCall_10_0() { return cClassFqnSTRINGTerminalRuleCall_10_0; }
+		
+		//'on-condition'
+		public Keyword getOnConditionKeyword_11() { return cOnConditionKeyword_11; }
+		
+		//condition=Expression
+		public Assignment getConditionAssignment_12() { return cConditionAssignment_12; }
+		
+		//Expression
+		public RuleCall getConditionExpressionParserRuleCall_12_0() { return cConditionExpressionParserRuleCall_12_0; }
 	}
 	public class SmsLeadSmsElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "in.handyman.Dsl.SmsLeadSms");
@@ -2930,6 +3024,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	private final FinallyElements pFinally;
 	private final CatchElements pCatch;
 	private final ActionElements pAction;
+	private final FirebaseReactiveNotificationElements pFirebaseReactiveNotification;
 	private final SmsLeadSmsElements pSmsLeadSms;
 	private final AbortElements pAbort;
 	private final GooglecontactSelectAllElements pGooglecontactSelectAll;
@@ -2974,6 +3069,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		this.pFinally = new FinallyElements();
 		this.pCatch = new CatchElements();
 		this.pAction = new ActionElements();
+		this.pFirebaseReactiveNotification = new FirebaseReactiveNotificationElements();
 		this.pSmsLeadSms = new SmsLeadSmsElements();
 		this.pAbort = new AbortElements();
 		this.pGooglecontactSelectAll = new GooglecontactSelectAllElements();
@@ -3108,13 +3204,25 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	//	| GooglecontactPUT
 	//	| GooglecontactSelectAll
 	//	| Abort
-	//	| SmsLeadSms;
+	//	| SmsLeadSms
+	//	| FirebaseReactiveNotification;
 	public ActionElements getActionAccess() {
 		return pAction;
 	}
 	
 	public ParserRule getActionRule() {
 		return getActionAccess().getRule();
+	}
+	
+	//FirebaseReactiveNotification:
+	//	'fbrn' 'as' name=STRING 'on' url=STRING 'auth-by' fbjson=STRING 'for-group' groupPath=STRING 'with-class'
+	//	classFqn=STRING 'on-condition' condition=Expression;
+	public FirebaseReactiveNotificationElements getFirebaseReactiveNotificationAccess() {
+		return pFirebaseReactiveNotification;
+	}
+	
+	public ParserRule getFirebaseReactiveNotificationRule() {
+		return getFirebaseReactiveNotificationAccess().getRule();
 	}
 	
 	//SmsLeadSms:

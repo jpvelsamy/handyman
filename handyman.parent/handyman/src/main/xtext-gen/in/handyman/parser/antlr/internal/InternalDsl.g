@@ -583,6 +583,171 @@ ruleAction returns [EObject current=null]
 			$current = $this_SmsLeadSms_21.current;
 			afterParserOrEnumRuleCall();
 		}
+		    |
+		{
+			newCompositeNode(grammarAccess.getActionAccess().getFirebaseReactiveNotificationParserRuleCall_22());
+		}
+		this_FirebaseReactiveNotification_22=ruleFirebaseReactiveNotification
+		{
+			$current = $this_FirebaseReactiveNotification_22.current;
+			afterParserOrEnumRuleCall();
+		}
+	)
+;
+
+// Entry rule entryRuleFirebaseReactiveNotification
+entryRuleFirebaseReactiveNotification returns [EObject current=null]:
+	{ newCompositeNode(grammarAccess.getFirebaseReactiveNotificationRule()); }
+	iv_ruleFirebaseReactiveNotification=ruleFirebaseReactiveNotification
+	{ $current=$iv_ruleFirebaseReactiveNotification.current; }
+	EOF;
+
+// Rule FirebaseReactiveNotification
+ruleFirebaseReactiveNotification returns [EObject current=null]
+@init {
+	enterRule();
+}
+@after {
+	leaveRule();
+}:
+	(
+		otherlv_0='fbrn'
+		{
+			newLeafNode(otherlv_0, grammarAccess.getFirebaseReactiveNotificationAccess().getFbrnKeyword_0());
+		}
+		otherlv_1='as'
+		{
+			newLeafNode(otherlv_1, grammarAccess.getFirebaseReactiveNotificationAccess().getAsKeyword_1());
+		}
+		(
+			(
+				lv_name_2_0=RULE_STRING
+				{
+					newLeafNode(lv_name_2_0, grammarAccess.getFirebaseReactiveNotificationAccess().getNameSTRINGTerminalRuleCall_2_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getFirebaseReactiveNotificationRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"name",
+						lv_name_2_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_3='on'
+		{
+			newLeafNode(otherlv_3, grammarAccess.getFirebaseReactiveNotificationAccess().getOnKeyword_3());
+		}
+		(
+			(
+				lv_url_4_0=RULE_STRING
+				{
+					newLeafNode(lv_url_4_0, grammarAccess.getFirebaseReactiveNotificationAccess().getUrlSTRINGTerminalRuleCall_4_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getFirebaseReactiveNotificationRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"url",
+						lv_url_4_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_5='auth-by'
+		{
+			newLeafNode(otherlv_5, grammarAccess.getFirebaseReactiveNotificationAccess().getAuthByKeyword_5());
+		}
+		(
+			(
+				lv_fbjson_6_0=RULE_STRING
+				{
+					newLeafNode(lv_fbjson_6_0, grammarAccess.getFirebaseReactiveNotificationAccess().getFbjsonSTRINGTerminalRuleCall_6_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getFirebaseReactiveNotificationRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"fbjson",
+						lv_fbjson_6_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_7='for-group'
+		{
+			newLeafNode(otherlv_7, grammarAccess.getFirebaseReactiveNotificationAccess().getForGroupKeyword_7());
+		}
+		(
+			(
+				lv_groupPath_8_0=RULE_STRING
+				{
+					newLeafNode(lv_groupPath_8_0, grammarAccess.getFirebaseReactiveNotificationAccess().getGroupPathSTRINGTerminalRuleCall_8_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getFirebaseReactiveNotificationRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"groupPath",
+						lv_groupPath_8_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_9='with-class'
+		{
+			newLeafNode(otherlv_9, grammarAccess.getFirebaseReactiveNotificationAccess().getWithClassKeyword_9());
+		}
+		(
+			(
+				lv_classFqn_10_0=RULE_STRING
+				{
+					newLeafNode(lv_classFqn_10_0, grammarAccess.getFirebaseReactiveNotificationAccess().getClassFqnSTRINGTerminalRuleCall_10_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getFirebaseReactiveNotificationRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"classFqn",
+						lv_classFqn_10_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_11='on-condition'
+		{
+			newLeafNode(otherlv_11, grammarAccess.getFirebaseReactiveNotificationAccess().getOnConditionKeyword_11());
+		}
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getFirebaseReactiveNotificationAccess().getConditionExpressionParserRuleCall_12_0());
+				}
+				lv_condition_12_0=ruleExpression
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getFirebaseReactiveNotificationRule());
+					}
+					set(
+						$current,
+						"condition",
+						lv_condition_12_0,
+						"in.handyman.Dsl.Expression");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)
 	)
 ;
 

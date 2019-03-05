@@ -17,6 +17,7 @@ import in.handyman.dsl.FBCLead;
 import in.handyman.dsl.FBFormDownload;
 import in.handyman.dsl.Fetch;
 import in.handyman.dsl.Finally;
+import in.handyman.dsl.FirebaseReactiveNotification;
 import in.handyman.dsl.GoogleSendMail;
 import in.handyman.dsl.GooglecalPUT;
 import in.handyman.dsl.GooglecontactPUT;
@@ -93,6 +94,9 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 				return; 
 			case DslPackage.FINALLY:
 				sequence_Finally(context, (Finally) semanticObject); 
+				return; 
+			case DslPackage.FIREBASE_REACTIVE_NOTIFICATION:
+				sequence_FirebaseReactiveNotification(context, (FirebaseReactiveNotification) semanticObject); 
 				return; 
 			case DslPackage.GOOGLE_SEND_MAIL:
 				sequence_GoogleSendMail(context, (GoogleSendMail) semanticObject); 
@@ -512,6 +516,47 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 	 */
 	protected void sequence_Finally(ISerializationContext context, Finally semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Action returns FirebaseReactiveNotification
+	 *     FirebaseReactiveNotification returns FirebaseReactiveNotification
+	 *
+	 * Constraint:
+	 *     (
+	 *         name=STRING 
+	 *         url=STRING 
+	 *         fbjson=STRING 
+	 *         groupPath=STRING 
+	 *         classFqn=STRING 
+	 *         condition=Expression
+	 *     )
+	 */
+	protected void sequence_FirebaseReactiveNotification(ISerializationContext context, FirebaseReactiveNotification semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.ACTION__NAME) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.ACTION__NAME));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.FIREBASE_REACTIVE_NOTIFICATION__URL) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FIREBASE_REACTIVE_NOTIFICATION__URL));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.FIREBASE_REACTIVE_NOTIFICATION__FBJSON) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FIREBASE_REACTIVE_NOTIFICATION__FBJSON));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.FIREBASE_REACTIVE_NOTIFICATION__GROUP_PATH) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FIREBASE_REACTIVE_NOTIFICATION__GROUP_PATH));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.FIREBASE_REACTIVE_NOTIFICATION__CLASS_FQN) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FIREBASE_REACTIVE_NOTIFICATION__CLASS_FQN));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.ACTION__CONDITION) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.ACTION__CONDITION));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getFirebaseReactiveNotificationAccess().getNameSTRINGTerminalRuleCall_2_0(), semanticObject.getName());
+		feeder.accept(grammarAccess.getFirebaseReactiveNotificationAccess().getUrlSTRINGTerminalRuleCall_4_0(), semanticObject.getUrl());
+		feeder.accept(grammarAccess.getFirebaseReactiveNotificationAccess().getFbjsonSTRINGTerminalRuleCall_6_0(), semanticObject.getFbjson());
+		feeder.accept(grammarAccess.getFirebaseReactiveNotificationAccess().getGroupPathSTRINGTerminalRuleCall_8_0(), semanticObject.getGroupPath());
+		feeder.accept(grammarAccess.getFirebaseReactiveNotificationAccess().getClassFqnSTRINGTerminalRuleCall_10_0(), semanticObject.getClassFqn());
+		feeder.accept(grammarAccess.getFirebaseReactiveNotificationAccess().getConditionExpressionParserRuleCall_12_0(), semanticObject.getCondition());
+		feeder.finish();
 	}
 	
 	

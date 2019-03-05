@@ -55,7 +55,12 @@ Action:
 	|GooglecontactSelectAll
 	|Abort
 	|SmsLeadSms
+	|FirebaseReactiveNotification
 	)
+;
+
+FirebaseReactiveNotification:
+	'fbrn' 'as' name=STRING 'on' url=STRING 'auth-by' fbjson=STRING 'for-group' groupPath=STRING 'with-class' classFqn=STRING 'on-condition' condition=Expression
 ;
 
 SmsLeadSms:

@@ -33,6 +33,7 @@ class UniThreadProcessRuntime(name:String, id:Int) extends ProcessRuntime with L
       val onFinally = process.getFinally
       executeFinally(onFinally, errorContext)
     }
+    //Send context + commandDetailAsMap + exception stack trace back to client
   }
   
   @throws(classOf[Exception])

@@ -57,6 +57,8 @@ class GContactCreateAction extends in.handyman.command.Action with LazyLogging {
 
     val peopleService: PeopleService =
       new PeopleService.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(project).build();
+    
+    
 
     val incomingContactCounter: AtomicInteger = new AtomicInteger
     val addedContactCounter: AtomicInteger = new AtomicInteger

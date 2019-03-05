@@ -17,6 +17,7 @@ import in.handyman.dsl.FBCLead;
 import in.handyman.dsl.FBFormDownload;
 import in.handyman.dsl.Fetch;
 import in.handyman.dsl.Finally;
+import in.handyman.dsl.FirebaseReactiveNotification;
 import in.handyman.dsl.GoogleSendMail;
 import in.handyman.dsl.GooglecalPUT;
 import in.handyman.dsl.GooglecontactPUT;
@@ -127,6 +128,11 @@ public class DslAdapterFactory extends AdapterFactoryImpl
       public Adapter caseAction(Action object)
       {
         return createActionAdapter();
+      }
+      @Override
+      public Adapter caseFirebaseReactiveNotification(FirebaseReactiveNotification object)
+      {
+        return createFirebaseReactiveNotificationAdapter();
       }
       @Override
       public Adapter caseSmsLeadSms(SmsLeadSms object)
@@ -341,6 +347,21 @@ public class DslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createActionAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link in.handyman.dsl.FirebaseReactiveNotification <em>Firebase Reactive Notification</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see in.handyman.dsl.FirebaseReactiveNotification
+   * @generated
+   */
+  public Adapter createFirebaseReactiveNotificationAdapter()
   {
     return null;
   }

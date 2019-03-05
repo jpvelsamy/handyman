@@ -18,6 +18,7 @@ import in.handyman.dsl.FBCLead;
 import in.handyman.dsl.FBFormDownload;
 import in.handyman.dsl.Fetch;
 import in.handyman.dsl.Finally;
+import in.handyman.dsl.FirebaseReactiveNotification;
 import in.handyman.dsl.GoogleSendMail;
 import in.handyman.dsl.GooglecalPUT;
 import in.handyman.dsl.GooglecontactPUT;
@@ -83,6 +84,13 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * @generated
    */
   private EClass actionEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass firebaseReactiveNotificationEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -483,6 +491,56 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
   public EReference getAction_Condition()
   {
     return (EReference)actionEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getFirebaseReactiveNotification()
+  {
+    return firebaseReactiveNotificationEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getFirebaseReactiveNotification_Url()
+  {
+    return (EAttribute)firebaseReactiveNotificationEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getFirebaseReactiveNotification_Fbjson()
+  {
+    return (EAttribute)firebaseReactiveNotificationEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getFirebaseReactiveNotification_GroupPath()
+  {
+    return (EAttribute)firebaseReactiveNotificationEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getFirebaseReactiveNotification_ClassFqn()
+  {
+    return (EAttribute)firebaseReactiveNotificationEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -1887,6 +1945,12 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     createEAttribute(actionEClass, ACTION__NAME);
     createEReference(actionEClass, ACTION__CONDITION);
 
+    firebaseReactiveNotificationEClass = createEClass(FIREBASE_REACTIVE_NOTIFICATION);
+    createEAttribute(firebaseReactiveNotificationEClass, FIREBASE_REACTIVE_NOTIFICATION__URL);
+    createEAttribute(firebaseReactiveNotificationEClass, FIREBASE_REACTIVE_NOTIFICATION__FBJSON);
+    createEAttribute(firebaseReactiveNotificationEClass, FIREBASE_REACTIVE_NOTIFICATION__GROUP_PATH);
+    createEAttribute(firebaseReactiveNotificationEClass, FIREBASE_REACTIVE_NOTIFICATION__CLASS_FQN);
+
     smsLeadSmsEClass = createEClass(SMS_LEAD_SMS);
     createEAttribute(smsLeadSmsEClass, SMS_LEAD_SMS__URL);
     createEAttribute(smsLeadSmsEClass, SMS_LEAD_SMS__SENDER);
@@ -2076,6 +2140,7 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     // Set bounds for type parameters
 
     // Add supertypes to classes
+    firebaseReactiveNotificationEClass.getESuperTypes().add(this.getAction());
     smsLeadSmsEClass.getESuperTypes().add(this.getAction());
     abortEClass.getESuperTypes().add(this.getAction());
     googlecontactSelectAllEClass.getESuperTypes().add(this.getAction());
@@ -2121,6 +2186,12 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     initEClass(actionEClass, Action.class, "Action", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getAction_Name(), ecorePackage.getEString(), "name", null, 0, 1, Action.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAction_Condition(), this.getExpression(), null, "condition", null, 0, 1, Action.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(firebaseReactiveNotificationEClass, FirebaseReactiveNotification.class, "FirebaseReactiveNotification", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getFirebaseReactiveNotification_Url(), ecorePackage.getEString(), "url", null, 0, 1, FirebaseReactiveNotification.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getFirebaseReactiveNotification_Fbjson(), ecorePackage.getEString(), "fbjson", null, 0, 1, FirebaseReactiveNotification.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getFirebaseReactiveNotification_GroupPath(), ecorePackage.getEString(), "groupPath", null, 0, 1, FirebaseReactiveNotification.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getFirebaseReactiveNotification_ClassFqn(), ecorePackage.getEString(), "classFqn", null, 0, 1, FirebaseReactiveNotification.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(smsLeadSmsEClass, SmsLeadSms.class, "SmsLeadSms", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getSmsLeadSms_Url(), ecorePackage.getEString(), "url", null, 0, 1, SmsLeadSms.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

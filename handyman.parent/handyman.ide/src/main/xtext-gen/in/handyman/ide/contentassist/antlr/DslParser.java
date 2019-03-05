@@ -37,6 +37,7 @@ public class DslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getTryAccess().getGroup(), "rule__Try__Group__0");
 			builder.put(grammarAccess.getFinallyAccess().getGroup(), "rule__Finally__Group__0");
 			builder.put(grammarAccess.getCatchAccess().getGroup(), "rule__Catch__Group__0");
+			builder.put(grammarAccess.getFirebaseReactiveNotificationAccess().getGroup(), "rule__FirebaseReactiveNotification__Group__0");
 			builder.put(grammarAccess.getSmsLeadSmsAccess().getGroup(), "rule__SmsLeadSms__Group__0");
 			builder.put(grammarAccess.getAbortAccess().getGroup(), "rule__Abort__Group__0");
 			builder.put(grammarAccess.getGooglecontactSelectAllAccess().getGroup(), "rule__GooglecontactSelectAll__Group__0");
@@ -71,6 +72,12 @@ public class DslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getFinallyAccess().getActionAssignment_3(), "rule__Finally__ActionAssignment_3");
 			builder.put(grammarAccess.getCatchAccess().getNameAssignment_1(), "rule__Catch__NameAssignment_1");
 			builder.put(grammarAccess.getCatchAccess().getActionAssignment_3(), "rule__Catch__ActionAssignment_3");
+			builder.put(grammarAccess.getFirebaseReactiveNotificationAccess().getNameAssignment_2(), "rule__FirebaseReactiveNotification__NameAssignment_2");
+			builder.put(grammarAccess.getFirebaseReactiveNotificationAccess().getUrlAssignment_4(), "rule__FirebaseReactiveNotification__UrlAssignment_4");
+			builder.put(grammarAccess.getFirebaseReactiveNotificationAccess().getFbjsonAssignment_6(), "rule__FirebaseReactiveNotification__FbjsonAssignment_6");
+			builder.put(grammarAccess.getFirebaseReactiveNotificationAccess().getGroupPathAssignment_8(), "rule__FirebaseReactiveNotification__GroupPathAssignment_8");
+			builder.put(grammarAccess.getFirebaseReactiveNotificationAccess().getClassFqnAssignment_10(), "rule__FirebaseReactiveNotification__ClassFqnAssignment_10");
+			builder.put(grammarAccess.getFirebaseReactiveNotificationAccess().getConditionAssignment_12(), "rule__FirebaseReactiveNotification__ConditionAssignment_12");
 			builder.put(grammarAccess.getSmsLeadSmsAccess().getNameAssignment_2(), "rule__SmsLeadSms__NameAssignment_2");
 			builder.put(grammarAccess.getSmsLeadSmsAccess().getUrlAssignment_4(), "rule__SmsLeadSms__UrlAssignment_4");
 			builder.put(grammarAccess.getSmsLeadSmsAccess().getSenderAssignment_6(), "rule__SmsLeadSms__SenderAssignment_6");

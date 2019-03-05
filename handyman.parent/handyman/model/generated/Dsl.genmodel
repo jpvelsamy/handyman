@@ -28,6 +28,12 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Action/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Dsl.ecore#//Action/condition"/>
     </genClasses>
+    <genClasses ecoreClass="Dsl.ecore#//FirebaseReactiveNotification">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FirebaseReactiveNotification/url"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FirebaseReactiveNotification/fbjson"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FirebaseReactiveNotification/groupPath"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FirebaseReactiveNotification/classFqn"/>
+    </genClasses>
     <genClasses ecoreClass="Dsl.ecore#//SmsLeadSms">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//SmsLeadSms/url"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//SmsLeadSms/sender"/>
