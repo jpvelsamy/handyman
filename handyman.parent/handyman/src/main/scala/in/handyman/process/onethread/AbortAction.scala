@@ -5,9 +5,13 @@ import in.handyman.command.Context
 import in.handyman.command.CommandProxy
 import in.handyman.util.ParameterisationEngine
 import in.handyman.AbortException
+import org.slf4j.MarkerFactory
 
 class AbortAction extends in.handyman.command.Action with LazyLogging {
   val detailMap = new java.util.HashMap[String, String]
+  val auditMarker = "ABORT";
+  val aMarker = MarkerFactory.getMarker(auditMarker);
+
   def execute(context: Context, action: in.handyman.dsl.Action): Context = {
     val abortAsIs: in.handyman.dsl.Abort = action.asInstanceOf[in.handyman.dsl.Abort]
     val abort: in.handyman.dsl.Abort = CommandProxy.createProxy(abortAsIs, classOf[in.handyman.dsl.Abort], context)
@@ -15,7 +19,7 @@ class AbortAction extends in.handyman.command.Action with LazyLogging {
     val id = context.getValue("process-id")
     val name = abort.getName
 
-    logger.info("Abort action id#{}, name#{}, calledprocess#{}, message#{}", id, name, name, message)
+    logger.info(aMarker, "Abort action id#{}, name#{}, calledprocess#{}, message#{}", id, name, name, message)
     try {
       throw new AbortException(message, name, context)
     } finally {
@@ -27,16 +31,20 @@ class AbortAction extends in.handyman.command.Action with LazyLogging {
   def executeIf(context: Context, action: in.handyman.dsl.Action): Boolean = {
     val abortAsIs: in.handyman.dsl.Abort = action.asInstanceOf[in.handyman.dsl.Abort]
     val abort: in.handyman.dsl.Abort = CommandProxy.createProxy(abortAsIs, classOf[in.handyman.dsl.Abort], context)
-
+    
+    val name = abort.getName
+    val id = context.getValue("process-id")
+    
     val expression = abort.getCondition
     try {
-      val output=ParameterisationEngine.doYieldtoTrue(expression)
+      val output = ParameterisationEngine.doYieldtoTrue(expression)
+      logger.info(aMarker, "Completed evaluation to execute id#{}, name#{}, dbSrc#{}, expression#{}", id, name,  expression)
       detailMap.putIfAbsent("condition-output", output.toString())
       output
     } finally {
-       if(expression!=null)
-        detailMap.putIfAbsent("condition", "LHS=" +expression.getLhs+", Operator="+expression.getOperator+", RHS="+expression.getRhs)
-        
+      if (expression != null)
+        detailMap.putIfAbsent("condition", "LHS=" + expression.getLhs + ", Operator=" + expression.getOperator + ", RHS=" + expression.getRhs)
+
     }
 
   }

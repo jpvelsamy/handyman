@@ -942,11 +942,15 @@ ruleFirebaseReactiveNotification returns [EObject current=null]
 				}
 			)
 		)
+		otherlv_11='using'
+		{
+			newLeafNode(otherlv_11, grammarAccess.getFirebaseReactiveNotificationAccess().getUsingKeyword_11());
+		}
 		(
 			(
-				lv_dbSrc_11_0=RULE_STRING
+				lv_dbSrc_12_0=RULE_STRING
 				{
-					newLeafNode(lv_dbSrc_11_0, grammarAccess.getFirebaseReactiveNotificationAccess().getDbSrcSTRINGTerminalRuleCall_11_0());
+					newLeafNode(lv_dbSrc_12_0, grammarAccess.getFirebaseReactiveNotificationAccess().getDbSrcSTRINGTerminalRuleCall_12_0());
 				}
 				{
 					if ($current==null) {
@@ -955,21 +959,21 @@ ruleFirebaseReactiveNotification returns [EObject current=null]
 					setWithLastConsumed(
 						$current,
 						"dbSrc",
-						lv_dbSrc_11_0,
+						lv_dbSrc_12_0,
 						"org.eclipse.xtext.common.Terminals.STRING");
 				}
 			)
 		)
-		otherlv_12='on-condition'
+		otherlv_13='on-condition'
 		{
-			newLeafNode(otherlv_12, grammarAccess.getFirebaseReactiveNotificationAccess().getOnConditionKeyword_12());
+			newLeafNode(otherlv_13, grammarAccess.getFirebaseReactiveNotificationAccess().getOnConditionKeyword_13());
 		}
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getFirebaseReactiveNotificationAccess().getConditionExpressionParserRuleCall_13_0());
+					newCompositeNode(grammarAccess.getFirebaseReactiveNotificationAccess().getConditionExpressionParserRuleCall_14_0());
 				}
-				lv_condition_13_0=ruleExpression
+				lv_condition_14_0=ruleExpression
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getFirebaseReactiveNotificationRule());
@@ -977,7 +981,7 @@ ruleFirebaseReactiveNotification returns [EObject current=null]
 					set(
 						$current,
 						"condition",
-						lv_condition_13_0,
+						lv_condition_14_0,
 						"in.handyman.Dsl.Expression");
 					afterParserOrEnumRuleCall();
 				}

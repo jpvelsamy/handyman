@@ -10,40 +10,56 @@ import in.handyman.util.ExceptionUtil
 import java.sql.SQLException
 import in.handyman.dsl.Expression
 import java.util.HashMap
+import org.slf4j.MarkerFactory
 
 class FirebaseDbUpdateAction extends in.handyman.command.Action with LazyLogging {
   val detailMap = new java.util.HashMap[String, String]
+  val auditMarker = "FIREBASE-UPDATE";
+  val aMarker = MarkerFactory.getMarker(auditMarker);
 
   def execute(context: Context, action: Action): Context = {
-    val fbrnAsIs = action.asInstanceOf[in.handyman.dsl.FirebaseDatabasePut]
-    val fbrn: in.handyman.dsl.FirebaseDatabasePut = CommandProxy.createProxy(fbrnAsIs, classOf[in.handyman.dsl.FirebaseDatabasePut], context)
-    val className = fbrn.getClassFqn
-    val jsonPath = fbrn.getFbjson
-    val groupPath = fbrn.getGroupPath
-    val databaseFQNUrl = fbrn.getUrl
-    val dataSrc = fbrn.getDbSrc
-    val sql = fbrn.getValue
+    val fbDuAsIs = action.asInstanceOf[in.handyman.dsl.FirebaseDatabasePut]
+    val fbDu: in.handyman.dsl.FirebaseDatabasePut = CommandProxy.createProxy(fbDuAsIs, classOf[in.handyman.dsl.FirebaseDatabasePut], context)
+    val className = fbDu.getClassFqn
+    val jsonPath = fbDu.getFbjson
+    val groupPath = fbDu.getGroupPath
+    val databaseFQNUrl = fbDu.getUrl
+    val dataSrc = fbDu.getDbSrc
+    val sql = fbDu.getValue
     val clazz = this.getClass.getClassLoader.loadClass(className)
-    
-    //Bso here means business specific object
-    val fbrnBso = clazz.newInstance()
-    val method = clazz.getDeclaredMethod("execute", classOf[String],classOf[String], classOf[String], classOf[String], classOf[String], classOf[Context], classOf[HashMap[String, String]])
-    method.invoke(fbrnBso, jsonPath, groupPath, databaseFQNUrl, dataSrc, sql, context, detailMap).asInstanceOf[Context]    
-    
-    context
-  }
-  
-  def updateFBDbNode():Unit = {
-    
+
+    try {
+      //Bso here means business specific object
+      val fbrnBso = clazz.newInstance()
+      
+      logger.info(aMarker, "Starting the firebase database update custom code execution with param class = {}, authkey = {}, url = {}, group = {}, dbSrc = {}", className, jsonPath, databaseFQNUrl, groupPath, dataSrc)
+      val method = clazz.getDeclaredMethod("execute", classOf[String], classOf[String], classOf[String], classOf[String], classOf[String], classOf[Context], classOf[HashMap[String, String]])
+      method.invoke(fbrnBso, jsonPath, groupPath, databaseFQNUrl, dataSrc, sql, context, detailMap).asInstanceOf[Context]
+      logger.info(aMarker, "Starting the firebase database update custom code execution with param class = {}, authkey = {}, url = {}, group = {}, dbSrc = {}", className, jsonPath, databaseFQNUrl, groupPath, dataSrc)
+      context
+    } finally {
+      detailMap.put("name", fbDu.getName)
+      detailMap.put("className", className)
+      detailMap.put("jsonPath", jsonPath)
+      detailMap.put("groupPath", groupPath)
+      detailMap.put("databaseFQNUrl", databaseFQNUrl)
+      detailMap.put("dataSrc", dataSrc)
+      detailMap.put("sql", sql)
+    }
   }
 
   def executeIf(context: Context, action: Action): Boolean = {
-    val fbrnAsIs = action.asInstanceOf[in.handyman.dsl.FirebaseReactiveNotification]
-    val fbrn: in.handyman.dsl.FirebaseReactiveNotification = CommandProxy.createProxy(fbrnAsIs, classOf[in.handyman.dsl.FirebaseReactiveNotification], context)
+    val fbDuAsIs = action.asInstanceOf[in.handyman.dsl.FirebaseDatabasePut]
+    val fbdu: in.handyman.dsl.FirebaseDatabasePut = CommandProxy.createProxy(fbDuAsIs, classOf[in.handyman.dsl.FirebaseDatabasePut], context)
 
-    val expression: Expression = fbrn.getCondition
+    val dbSrc = fbdu.getUrl()
+    val name = fbdu.getName
+    val id = context.getValue("process-id")
+    val expression: Expression = fbdu.getCondition
     try {
       val output = ParameterisationEngine.doYieldtoTrue(expression)
+      logger.info(aMarker, "Completed evaluation to execute id#{}, name#{}, dbSrc#{}, expression#{},  output = {}", id, name, dbSrc, expression, output.toString())
+      detailMap.put("name", name)
       detailMap.putIfAbsent("condition-output", output.toString())
       output
     } finally {

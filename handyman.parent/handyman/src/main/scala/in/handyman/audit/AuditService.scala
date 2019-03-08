@@ -17,7 +17,7 @@ object AuditService extends LazyLogging{
 
     val conn = ResourceAccess.rdbmsConn(auditService)
     conn.setAutoCommit(false)
-    logger.info("Obtained Connection for handle ={} for inserting the audit for process {}", auditService, instanceName)
+    logger.info(aMarker, "Obtained Connection for handle ={} for inserting the audit for process {}", auditService, instanceName)
     val st = conn.prepareStatement("INSERT INTO instance_audit (instance_name, mode, start, hostname, file, status) VALUES (?, ?, NOW(), ?, ?, 1);", Statement.RETURN_GENERATED_KEYS)
     try {
       st.setString(1, instanceName)
@@ -58,13 +58,13 @@ object AuditService extends LazyLogging{
       conn.commit
     } catch {
       case t: Throwable =>
-        logger.error("Error performing updating the proces audit with process id ={}, for process#{}",processId,instanceName)
-        logger.error("Error stack trace#",t)
+        logger.error(aMarker,"Error performing updating the proces audit with process id ={}, for process#{}",processId,instanceName)
+        logger.error(aMarker,"Error stack trace#",t)
         
     } finally {
       st.close();
       conn.close()
-      logger.info("Completed update for processid #{} for process #{} ", processId, instanceName)
+      logger.info(aMarker,"Completed update for processid #{} for process #{} ", processId, instanceName)
     }
   }
 
@@ -72,7 +72,7 @@ object AuditService extends LazyLogging{
     val conn = ResourceAccess.rdbmsConn(auditService)
     conn.setAutoCommit(false)
     val st = conn.prepareStatement("INSERT INTO command_audit (instance_id, start, action_name, process_name, status) VALUES (?, NOW(), ?, ?, '1')", Statement.RETURN_GENERATED_KEYS)
-    logger.info("Insert for command #$actionName for process #$processName for processid# $instanceId")
+    logger.info(aMarker, "Insert for command #{} for process #{} for processid# {}",actionName, processName, instanceId.toString())
     try {
       st.setInt(1, instanceId)
       st.setString(2, actionName)
@@ -83,12 +83,12 @@ object AuditService extends LazyLogging{
       rs.next
       val pk = rs.getInt(1)
       rs.close()
-      logger.info("Completed Insert for command # $actionName for process # $processName for processid# $instanceId with id# $pk")
+      logger.info(aMarker,"Completed Insert for command # {} for process # {} for processid# {} with id# {}", actionName, processName, instanceId.toString(), pk.toString())
       pk
     } catch {
       case t: Throwable =>
-        logger.error("Error performing updating the proces audit with process id = $instanceId, for process# $processName, for action# $actionName")
-        logger.error("Error stack trace#",t)
+        logger.error(aMarker,"Error performing updating the proces audit with process id = $instanceId, for process# $processName, for action# $actionName")
+        logger.error(aMarker,"Error stack trace#",t)
         0
     } finally {
       st.close();

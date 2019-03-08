@@ -8,9 +8,13 @@ import in.handyman.command.CommandProxy
 import in.handyman.util.ParameterisationEngine
 import in.handyman.util.ExceptionUtil
 import java.sql.SQLException
+import org.slf4j.MarkerFactory
+import java.sql.SQLSyntaxErrorException
 
 class TransformAction extends in.handyman.command.Action with LazyLogging {
   val detailMap = new java.util.HashMap[String, String]
+  val auditMarker = "TRANSFORM";
+  val aMarker = MarkerFactory.getMarker(auditMarker);
 
   def execute(context: Context, action: Action): Context = {
     val transformAsIs = action.asInstanceOf[in.handyman.dsl.Transform]
@@ -20,7 +24,7 @@ class TransformAction extends in.handyman.command.Action with LazyLogging {
     val name = transform.getName
     val id = context.getValue("process-id")
     val sqlList = transform.getValue
-    logger.info("Transform id#{}, name#{}, dbSrc#{}, sqlList#{}", id, name, dbSrc)
+    logger.info(aMarker, "Transform id#{}, name#{}, dbSrc#{}, sqlList#{}", id, name, dbSrc)
     detailMap.put("dbSrc", dbSrc)
 
     val conn = ResourceAccess.rdbmsConn(dbSrc)
@@ -34,30 +38,40 @@ class TransformAction extends in.handyman.command.Action with LazyLogging {
         val sqlList = sqlWithoutQuotes.split(";")
         sqlList.foreach { sql =>
           if (!sql.trim.isEmpty()) {
-            logger.info("Transform id#{}, executing script {}", id, sql.trim)
+            logger.info(aMarker, "Transform id#{}, executing script {}", id, sql.trim)
             try {
               val rowCount = stmt.executeUpdate(sql.trim)
               val warnings = ExceptionUtil.completeSQLWarning(stmt.getWarnings)
               detailMap.put(sql.trim + ".count", rowCount.toString)
               detailMap.put(sql.trim + ".stmtcount", stmt.getUpdateCount.toString)
               detailMap.put(sql.trim + ".count", warnings)
-              logger.info("Transform id# $id, executed script $sql.trim rows returned $rowCount")
+              logger.info(aMarker, "Transform id# $id, executed script $sql.trim rows returned $rowCount")
               stmt.clearWarnings();
             } catch {
-              case ex: SQLException => {
-                logger.error(" SQL Error executing sql for {} ", sql, ex)
-                detailMap.put(sql.trim +".exception", ExceptionUtil.completeStackTraceex(ex))
+              
+              case ex:SQLSyntaxErrorException=>{
+                logger.error(aMarker, "Stopping execution, General Error iexecuting sql for {} with for campaign {}", sql, ex)
+                detailMap.put(sql.trim + ".exception", ExceptionUtil.completeStackTraceex(ex))
+                throw ex
               }
+              
+              case ex: SQLException => {
+                logger.error(aMarker, "Continuing to execute, even though SQL Error executing sql for {} ", sql, ex)
+                detailMap.put(sql.trim + ".exception", ExceptionUtil.completeStackTraceex(ex))
+                
+              }
+              
               case ex: Throwable => {
-                logger.error(" General Error iexecuting sql for {} with for campaign {}", sql, ex)
-                detailMap.put(sql.trim +".exception", ExceptionUtil.completeStackTraceex(ex))
+                logger.error(aMarker, "Stopping execution, General Error iexecuting sql for {} with for campaign {}", sql, ex)
+                detailMap.put(sql.trim + ".exception", ExceptionUtil.completeStackTraceex(ex))
+                throw ex
               }
             }
           }
         }
       }
       conn.commit
-      logger.info("Completed Transform id#{}, name#{}, dbSrc#{}, sqlList#{}", id, name, dbSrc, sqlList)
+      logger.info(aMarker, "Completed Transform id#{}, name#{}, dbSrc#{}, sqlList#{}", id, name, dbSrc, sqlList)
     } finally {
       stmt.close
       conn.close
@@ -69,15 +83,18 @@ class TransformAction extends in.handyman.command.Action with LazyLogging {
   def executeIf(context: Context, action: Action): Boolean = {
     val transformAsIs = action.asInstanceOf[in.handyman.dsl.Transform]
     val transform: in.handyman.dsl.Transform = CommandProxy.createProxy(transformAsIs, classOf[in.handyman.dsl.Transform], context)
-
+    val dbSrc = transform.getOn
+    val name = transform.getName
+    val id = context.getValue("process-id")
     val expression = transform.getCondition
     try {
       val output = ParameterisationEngine.doYieldtoTrue(expression)
+      logger.info(aMarker, "Completed evaluation to execute id#{}, name#{}, dbSrc#{}, expression#{}", id, name, dbSrc, expression)
       detailMap.putIfAbsent("condition-output", output.toString())
       output
     } finally {
-      if(expression!=null)
-      detailMap.putIfAbsent("condition", "LHS=" + expression.getLhs + ", Operator=" + expression.getOperator + ", RHS=" + expression.getRhs)
+      if (expression != null)
+        detailMap.putIfAbsent("condition", "LHS=" + expression.getLhs + ", Operator=" + expression.getOperator + ", RHS=" + expression.getRhs)
 
     }
   }

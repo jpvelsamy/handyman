@@ -19,15 +19,21 @@ object ProcessAST extends LazyLogging {
   val pMarker = MarkerFactory.getMarker(marker)
     
   def loadProcessAST(instanceName: String, json:String) = {
-    
     logger.info(pMarker,"Retreiving configuration for process instance {}" + instanceName)
     val config: Map[String, String] = in.handyman.config.ConfigurationService.getAllConfig(instanceName)
     val inputConfig = config+("myjson"->json)
-    val fileRelativePath = config.get("filepath").get;
+    val filePathConfig = config.get("filepath")
+   
+    if(filePathConfig.isEmpty)
+      throw new Exception("File path configuration for process "+instanceName+" is missing, check spw_process_config or spw_instance_config")
+    
+    val fileRelativePath = filePathConfig.get;
+    
     val basePath = config.get("basepath").get;
     //logger.info("basepath=" + basePath)
     logger.info(pMarker, "filepath {} for process instance {} with base path as {}" , fileRelativePath, instanceName, basePath)
     val path = PathResolver.resolvePath(instanceName, fileRelativePath, basePath)
+   
 
     val result = parser.parse(new java.io.FileReader(path));
     val eRoot = result.getRootASTElement();

@@ -2532,9 +2532,9 @@ rule__FirebaseReactiveNotification__Group__11__Impl
 	}
 :
 (
-	{ before(grammarAccess.getFirebaseReactiveNotificationAccess().getDbSrcAssignment_11()); }
-	(rule__FirebaseReactiveNotification__DbSrcAssignment_11)
-	{ after(grammarAccess.getFirebaseReactiveNotificationAccess().getDbSrcAssignment_11()); }
+	{ before(grammarAccess.getFirebaseReactiveNotificationAccess().getUsingKeyword_11()); }
+	'using'
+	{ after(grammarAccess.getFirebaseReactiveNotificationAccess().getUsingKeyword_11()); }
 )
 ;
 finally {
@@ -2559,9 +2559,9 @@ rule__FirebaseReactiveNotification__Group__12__Impl
 	}
 :
 (
-	{ before(grammarAccess.getFirebaseReactiveNotificationAccess().getOnConditionKeyword_12()); }
-	'on-condition'
-	{ after(grammarAccess.getFirebaseReactiveNotificationAccess().getOnConditionKeyword_12()); }
+	{ before(grammarAccess.getFirebaseReactiveNotificationAccess().getDbSrcAssignment_12()); }
+	(rule__FirebaseReactiveNotification__DbSrcAssignment_12)
+	{ after(grammarAccess.getFirebaseReactiveNotificationAccess().getDbSrcAssignment_12()); }
 )
 ;
 finally {
@@ -2574,6 +2574,7 @@ rule__FirebaseReactiveNotification__Group__13
 	}
 :
 	rule__FirebaseReactiveNotification__Group__13__Impl
+	rule__FirebaseReactiveNotification__Group__14
 ;
 finally {
 	restoreStackSize(stackSize);
@@ -2585,9 +2586,35 @@ rule__FirebaseReactiveNotification__Group__13__Impl
 	}
 :
 (
-	{ before(grammarAccess.getFirebaseReactiveNotificationAccess().getConditionAssignment_13()); }
-	(rule__FirebaseReactiveNotification__ConditionAssignment_13)
-	{ after(grammarAccess.getFirebaseReactiveNotificationAccess().getConditionAssignment_13()); }
+	{ before(grammarAccess.getFirebaseReactiveNotificationAccess().getOnConditionKeyword_13()); }
+	'on-condition'
+	{ after(grammarAccess.getFirebaseReactiveNotificationAccess().getOnConditionKeyword_13()); }
+)
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+rule__FirebaseReactiveNotification__Group__14
+	@init {
+		int stackSize = keepStackSize();
+	}
+:
+	rule__FirebaseReactiveNotification__Group__14__Impl
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+rule__FirebaseReactiveNotification__Group__14__Impl
+	@init {
+		int stackSize = keepStackSize();
+	}
+:
+(
+	{ before(grammarAccess.getFirebaseReactiveNotificationAccess().getConditionAssignment_14()); }
+	(rule__FirebaseReactiveNotification__ConditionAssignment_14)
+	{ after(grammarAccess.getFirebaseReactiveNotificationAccess().getConditionAssignment_14()); }
 )
 ;
 finally {
@@ -13092,30 +13119,30 @@ finally {
 	restoreStackSize(stackSize);
 }
 
-rule__FirebaseReactiveNotification__DbSrcAssignment_11
+rule__FirebaseReactiveNotification__DbSrcAssignment_12
 	@init {
 		int stackSize = keepStackSize();
 	}
 :
 	(
-		{ before(grammarAccess.getFirebaseReactiveNotificationAccess().getDbSrcSTRINGTerminalRuleCall_11_0()); }
+		{ before(grammarAccess.getFirebaseReactiveNotificationAccess().getDbSrcSTRINGTerminalRuleCall_12_0()); }
 		RULE_STRING
-		{ after(grammarAccess.getFirebaseReactiveNotificationAccess().getDbSrcSTRINGTerminalRuleCall_11_0()); }
+		{ after(grammarAccess.getFirebaseReactiveNotificationAccess().getDbSrcSTRINGTerminalRuleCall_12_0()); }
 	)
 ;
 finally {
 	restoreStackSize(stackSize);
 }
 
-rule__FirebaseReactiveNotification__ConditionAssignment_13
+rule__FirebaseReactiveNotification__ConditionAssignment_14
 	@init {
 		int stackSize = keepStackSize();
 	}
 :
 	(
-		{ before(grammarAccess.getFirebaseReactiveNotificationAccess().getConditionExpressionParserRuleCall_13_0()); }
+		{ before(grammarAccess.getFirebaseReactiveNotificationAccess().getConditionExpressionParserRuleCall_14_0()); }
 		ruleExpression
-		{ after(grammarAccess.getFirebaseReactiveNotificationAccess().getConditionExpressionParserRuleCall_13_0()); }
+		{ after(grammarAccess.getFirebaseReactiveNotificationAccess().getConditionExpressionParserRuleCall_14_0()); }
 	)
 ;
 finally {

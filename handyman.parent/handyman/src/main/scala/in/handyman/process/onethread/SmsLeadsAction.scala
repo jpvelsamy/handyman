@@ -9,10 +9,14 @@ import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.client.methods.HttpGet
 import java.net.URLEncoder
 import org.apache.commons.text.StrSubstitutor
+import org.slf4j.MarkerFactory
 
 class SmsLeadsAction extends in.handyman.command.Action with LazyLogging {
 
   val detailMap = new java.util.HashMap[String, String]
+  val auditMarker = "SENDSMS";
+  val aMarker = MarkerFactory.getMarker(auditMarker);
+
   def execute(context: Context, action: in.handyman.dsl.Action): Context = {
     val smsAsIs: in.handyman.dsl.SmsLeadSms = action.asInstanceOf[in.handyman.dsl.SmsLeadSms]
     val sms: in.handyman.dsl.SmsLeadSms = CommandProxy.createProxy(smsAsIs, classOf[in.handyman.dsl.SmsLeadSms], context)
@@ -29,41 +33,49 @@ class SmsLeadsAction extends in.handyman.command.Action with LazyLogging {
     val conn = ResourceAccess.rdbmsConn(dbSrc)
     val stmt = conn.createStatement
     val rs = stmt.executeQuery(sql.trim())
+    var urlString:String=""
+
+    logger.info(aMarker, "Executing query to retreive the essentials {}", sql.trim())
 
     try {
       while (rs.next()) {
-        
+
         val targetMobileNumber = rs.getString("target_mobile_number")
         val targetAltNumber = rs.getString("target_alternate_number")
         val body = rs.getString("body")
 
         val mobile = {
-          if (dryRun!=null && !dryRun.isEmpty())
+          if (dryRun != null && !dryRun.isEmpty())
             dryRun.trim
           else
-            rs.getString("mobile")
+            targetMobileNumber + "," + targetAltNumber
         }
 
-        
         val output = body
-        val encodedMessage = URLEncoder.encode(output)
-        val urlString = url + "username=" + user + "&password=" + password + "&sender=" + sender + "&numbers=" + mobile + "&message=" + encodedMessage
-        val request = new HttpGet(urlString);
-        request.addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36");
-        request.addHeader("Upgrade-Insecure-Requests", "1")
-        request.addHeader("Host", "smsleads.in")
-        request.addHeader("Accept-Language", "en-IN,en-GB;q=0.9,en-US;q=0.8,en;q=0.7")
-        request.addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
-        val response = client.execute(request);
-        logger.info("Sent sms using url {} with responsecode {}", url, response)
+        if (output != null) {
+          val encodedMessage = URLEncoder.encode(output)
+          urlString = url + "username=" + user + "&password=" + password + "&sender=" + sender + "&numbers=" + mobile + "&message=" + encodedMessage
+          val request = new HttpGet(urlString);
+          request.addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36");
+          request.addHeader("Upgrade-Insecure-Requests", "1")
+          request.addHeader("Host", "smsleads.in")
+          request.addHeader("Accept-Language", "en-IN,en-GB;q=0.9,en-US;q=0.8,en;q=0.7")
+          request.addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
+          val response = client.execute(request);
+          logger.info(aMarker, "Sent sms using url {} with responsecode {}", urlString, response)
+          
+        }
+        else{
+          logger.info(aMarker, "Skipping sending sms using url {} with username {} as there is not text",url, user)
+        }
       }
     } finally {
-
+      detailMap.put("name", name)
       detailMap.put("dbSrc", dbSrc)
       detailMap.put("user", user)
       detailMap.put("password", password)
       detailMap.put("target", dryRun)
-      detailMap.put("url", url)
+      detailMap.put("url", urlString)
       detailMap.put("sender", sender)
       detailMap.put("sql", sql)
       stmt.close
@@ -78,6 +90,10 @@ class SmsLeadsAction extends in.handyman.command.Action with LazyLogging {
     val expression = sms.getCondition
     try {
       val output = ParameterisationEngine.doYieldtoTrue(expression)
+      val name = sms.getName
+      val id = context.getValue("process-id")
+      logger.info(aMarker, "Completed evaluation to execute id#{}, name#{}, dbSrc#{}, expression#{}", id, name, expression)
+      detailMap.put("name", name)
       detailMap.putIfAbsent("condition-output", output.toString())
       output
     } finally {

@@ -611,8 +611,8 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 		feeder.accept(grammarAccess.getFirebaseReactiveNotificationAccess().getFbjsonSTRINGTerminalRuleCall_6_0(), semanticObject.getFbjson());
 		feeder.accept(grammarAccess.getFirebaseReactiveNotificationAccess().getGroupPathSTRINGTerminalRuleCall_8_0(), semanticObject.getGroupPath());
 		feeder.accept(grammarAccess.getFirebaseReactiveNotificationAccess().getClassFqnSTRINGTerminalRuleCall_10_0(), semanticObject.getClassFqn());
-		feeder.accept(grammarAccess.getFirebaseReactiveNotificationAccess().getDbSrcSTRINGTerminalRuleCall_11_0(), semanticObject.getDbSrc());
-		feeder.accept(grammarAccess.getFirebaseReactiveNotificationAccess().getConditionExpressionParserRuleCall_13_0(), semanticObject.getCondition());
+		feeder.accept(grammarAccess.getFirebaseReactiveNotificationAccess().getDbSrcSTRINGTerminalRuleCall_12_0(), semanticObject.getDbSrc());
+		feeder.accept(grammarAccess.getFirebaseReactiveNotificationAccess().getConditionExpressionParserRuleCall_14_0(), semanticObject.getCondition());
 		feeder.finish();
 	}
 	

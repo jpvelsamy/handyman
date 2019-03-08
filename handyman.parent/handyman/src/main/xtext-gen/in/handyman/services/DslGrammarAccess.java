@@ -483,19 +483,20 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cWithClassKeyword_9 = (Keyword)cGroup.eContents().get(9);
 		private final Assignment cClassFqnAssignment_10 = (Assignment)cGroup.eContents().get(10);
 		private final RuleCall cClassFqnSTRINGTerminalRuleCall_10_0 = (RuleCall)cClassFqnAssignment_10.eContents().get(0);
-		private final Assignment cDbSrcAssignment_11 = (Assignment)cGroup.eContents().get(11);
-		private final RuleCall cDbSrcSTRINGTerminalRuleCall_11_0 = (RuleCall)cDbSrcAssignment_11.eContents().get(0);
-		private final Keyword cOnConditionKeyword_12 = (Keyword)cGroup.eContents().get(12);
-		private final Assignment cConditionAssignment_13 = (Assignment)cGroup.eContents().get(13);
-		private final RuleCall cConditionExpressionParserRuleCall_13_0 = (RuleCall)cConditionAssignment_13.eContents().get(0);
+		private final Keyword cUsingKeyword_11 = (Keyword)cGroup.eContents().get(11);
+		private final Assignment cDbSrcAssignment_12 = (Assignment)cGroup.eContents().get(12);
+		private final RuleCall cDbSrcSTRINGTerminalRuleCall_12_0 = (RuleCall)cDbSrcAssignment_12.eContents().get(0);
+		private final Keyword cOnConditionKeyword_13 = (Keyword)cGroup.eContents().get(13);
+		private final Assignment cConditionAssignment_14 = (Assignment)cGroup.eContents().get(14);
+		private final RuleCall cConditionExpressionParserRuleCall_14_0 = (RuleCall)cConditionAssignment_14.eContents().get(0);
 		
 		//FirebaseReactiveNotification:
 		//	'fbrn' 'as' name=STRING 'on' url=STRING 'auth-by' fbjson=STRING 'for-group' groupPath=STRING 'with-class'
-		//	classFqn=STRING dbSrc=STRING 'on-condition' condition=Expression;
+		//	classFqn=STRING 'using' dbSrc=STRING 'on-condition' condition=Expression;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'fbrn' 'as' name=STRING 'on' url=STRING 'auth-by' fbjson=STRING 'for-group' groupPath=STRING 'with-class'
-		//classFqn=STRING dbSrc=STRING 'on-condition' condition=Expression
+		//classFqn=STRING 'using' dbSrc=STRING 'on-condition' condition=Expression
 		public Group getGroup() { return cGroup; }
 		
 		//'fbrn'
@@ -546,20 +547,23 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		//STRING
 		public RuleCall getClassFqnSTRINGTerminalRuleCall_10_0() { return cClassFqnSTRINGTerminalRuleCall_10_0; }
 		
+		//'using'
+		public Keyword getUsingKeyword_11() { return cUsingKeyword_11; }
+		
 		//dbSrc=STRING
-		public Assignment getDbSrcAssignment_11() { return cDbSrcAssignment_11; }
+		public Assignment getDbSrcAssignment_12() { return cDbSrcAssignment_12; }
 		
 		//STRING
-		public RuleCall getDbSrcSTRINGTerminalRuleCall_11_0() { return cDbSrcSTRINGTerminalRuleCall_11_0; }
+		public RuleCall getDbSrcSTRINGTerminalRuleCall_12_0() { return cDbSrcSTRINGTerminalRuleCall_12_0; }
 		
 		//'on-condition'
-		public Keyword getOnConditionKeyword_12() { return cOnConditionKeyword_12; }
+		public Keyword getOnConditionKeyword_13() { return cOnConditionKeyword_13; }
 		
 		//condition=Expression
-		public Assignment getConditionAssignment_13() { return cConditionAssignment_13; }
+		public Assignment getConditionAssignment_14() { return cConditionAssignment_14; }
 		
 		//Expression
-		public RuleCall getConditionExpressionParserRuleCall_13_0() { return cConditionExpressionParserRuleCall_13_0; }
+		public RuleCall getConditionExpressionParserRuleCall_14_0() { return cConditionExpressionParserRuleCall_14_0; }
 	}
 	public class SmsLeadSmsElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "in.handyman.Dsl.SmsLeadSms");
@@ -3344,7 +3348,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	//FirebaseReactiveNotification:
 	//	'fbrn' 'as' name=STRING 'on' url=STRING 'auth-by' fbjson=STRING 'for-group' groupPath=STRING 'with-class'
-	//	classFqn=STRING dbSrc=STRING 'on-condition' condition=Expression;
+	//	classFqn=STRING 'using' dbSrc=STRING 'on-condition' condition=Expression;
 	public FirebaseReactiveNotificationElements getFirebaseReactiveNotificationAccess() {
 		return pFirebaseReactiveNotification;
 	}

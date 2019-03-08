@@ -86,8 +86,8 @@ public class DslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getFirebaseReactiveNotificationAccess().getFbjsonAssignment_6(), "rule__FirebaseReactiveNotification__FbjsonAssignment_6");
 			builder.put(grammarAccess.getFirebaseReactiveNotificationAccess().getGroupPathAssignment_8(), "rule__FirebaseReactiveNotification__GroupPathAssignment_8");
 			builder.put(grammarAccess.getFirebaseReactiveNotificationAccess().getClassFqnAssignment_10(), "rule__FirebaseReactiveNotification__ClassFqnAssignment_10");
-			builder.put(grammarAccess.getFirebaseReactiveNotificationAccess().getDbSrcAssignment_11(), "rule__FirebaseReactiveNotification__DbSrcAssignment_11");
-			builder.put(grammarAccess.getFirebaseReactiveNotificationAccess().getConditionAssignment_13(), "rule__FirebaseReactiveNotification__ConditionAssignment_13");
+			builder.put(grammarAccess.getFirebaseReactiveNotificationAccess().getDbSrcAssignment_12(), "rule__FirebaseReactiveNotification__DbSrcAssignment_12");
+			builder.put(grammarAccess.getFirebaseReactiveNotificationAccess().getConditionAssignment_14(), "rule__FirebaseReactiveNotification__ConditionAssignment_14");
 			builder.put(grammarAccess.getSmsLeadSmsAccess().getNameAssignment_2(), "rule__SmsLeadSms__NameAssignment_2");
 			builder.put(grammarAccess.getSmsLeadSmsAccess().getUrlAssignment_4(), "rule__SmsLeadSms__UrlAssignment_4");
 			builder.put(grammarAccess.getSmsLeadSmsAccess().getSenderAssignment_6(), "rule__SmsLeadSms__SenderAssignment_6");

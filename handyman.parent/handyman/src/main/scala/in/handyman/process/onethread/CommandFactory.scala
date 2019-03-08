@@ -19,6 +19,9 @@ object CommandFactory {
       case "googlecalput"=>new GoogleCalendarAction     
       case "fetch"=>new FetchVariableAction
       case "smsleadsms"=>new SmsLeadsAction          
+      case "sendmail"=>new MailAction
+      case "firebasedatabaseput"=>new FirebaseDbUpdateAction
+      case "firebasereactivenotification"=>new FirebaseMessagingAction
     }
   }
 }

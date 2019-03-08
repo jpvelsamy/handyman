@@ -10,9 +10,12 @@ import in.handyman.util.ExceptionUtil
 import java.sql.SQLException
 import in.handyman.dsl.Expression
 import java.util.HashMap
+import org.slf4j.MarkerFactory
 
 class FirebaseMessagingAction extends in.handyman.command.Action with LazyLogging {
   val detailMap = new java.util.HashMap[String, String]
+  val auditMarker = "FIREBASE-MESSAGING";
+  val aMarker = MarkerFactory.getMarker(auditMarker);
 
   def execute(context: Context, action: Action): Context = {
     val fbrnAsIs = action.asInstanceOf[in.handyman.dsl.FirebaseReactiveNotification]
@@ -23,20 +26,37 @@ class FirebaseMessagingAction extends in.handyman.command.Action with LazyLoggin
     val databaseFQNUrl = fbrn.getUrl
     val clazz = this.getClass.getClassLoader.loadClass(className)
     val dbSrc = fbrn.getDbSrc
-    
-    //Bso here means business specific object
-    val fbrnBso = clazz.newInstance()
-    val method = clazz.getDeclaredMethod("execute", classOf[String],classOf[String], classOf[String], classOf[String], classOf[Context], classOf[HashMap[String, String]])
-    method.invoke(fbrnBso, jsonPath, groupPath, databaseFQNUrl, dbSrc, context, detailMap).asInstanceOf[Context]    
+
+    try {
+      //Bso here means business specific object
+      val fbrnBso = clazz.newInstance()
+      logger.info(aMarker, "Starting the messaging custom code execution with param class = {}, authkey = {}, url = {}, group = {}, dbSrc = {}", className, jsonPath, databaseFQNUrl, groupPath, dbSrc)
+      val method = clazz.getDeclaredMethod("execute", classOf[String], classOf[String], classOf[String], classOf[String], classOf[Context], classOf[HashMap[String, String]])
+      method.invoke(fbrnBso, jsonPath, groupPath, databaseFQNUrl, dbSrc, context, detailMap).asInstanceOf[Context]
+      logger.info(aMarker, "Completed the messaging custom code execution with param class = {}, authkey = {}, url = {}, group = {}, dbSrc = {}", className, jsonPath, databaseFQNUrl, groupPath, dbSrc)
+      context
+    } finally {
+      detailMap.put("name", fbrn.getName)
+      detailMap.put("className", className)
+      detailMap.put("jsonPath", jsonPath)
+      detailMap.put("groupPath", groupPath)
+      detailMap.put("databaseFQNUrl", databaseFQNUrl)
+      detailMap.put("dataSrc", dbSrc)
+    }
   }
 
   def executeIf(context: Context, action: Action): Boolean = {
     val fbrnAsIs = action.asInstanceOf[in.handyman.dsl.FirebaseReactiveNotification]
     val fbrn: in.handyman.dsl.FirebaseReactiveNotification = CommandProxy.createProxy(fbrnAsIs, classOf[in.handyman.dsl.FirebaseReactiveNotification], context)
 
+    val dbSrc = fbrn.getUrl()
+    val name = fbrn.getName
+    val id = context.getValue("process-id")
     val expression: Expression = fbrn.getCondition
     try {
       val output = ParameterisationEngine.doYieldtoTrue(expression)
+      logger.info(aMarker, "Completed evaluation to execute id#{}, name#{}, dbSrc#{}, expression#{}", id, name, dbSrc, expression)
+      detailMap.put("name", name)
       detailMap.putIfAbsent("condition-output", output.toString())
       output
     } finally {

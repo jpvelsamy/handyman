@@ -68,9 +68,7 @@ FirebaseDatabasePut:
 ;
 
 FirebaseReactiveNotification:
-	'fbrn' 'as' name=STRING 'on' url=STRING 'auth-by' fbjson=STRING 'for-group' groupPath=STRING 'with-class' classFqn=STRING dbSrc=STRING 'on-condition' condition=Expression
-	
-;
+	'fbrn' 'as' name=STRING 'on' url=STRING 'auth-by' fbjson=STRING 'for-group' groupPath=STRING 'with-class' classFqn=STRING 'using' dbSrc=STRING 'on-condition' condition=Expression;
 
 SmsLeadSms:
 	'smsleadssms' 'as' name=STRING  'on' url=STRING 'with-sender' sender=STRING 'through-account' account=STRING 'secured-by' privateKey=STRING  'from-source' dbSrc=STRING 'using'
