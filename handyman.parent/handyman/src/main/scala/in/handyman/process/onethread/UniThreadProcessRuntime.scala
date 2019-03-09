@@ -62,9 +62,11 @@ class UniThreadProcessRuntime(name: String, id: Int) extends ProcessRuntime with
           actionRuntime.execute(context, action)
           //TODO still need to fix the status part
           val commandDetailAsMap = actionRuntime.generateAudit()
+          if(commandDetailAsMap!=null && !commandDetailAsMap.isEmpty()){
           val commandDetail = jsonSerializer.writeValueAsString(commandDetailAsMap)
           detailMap.put(action.getName + "." + actionId.toString(), commandDetailAsMap)
           in.handyman.audit.AuditService.updateCommandAudit(actionId, 1, commandDetail)
+          }
         }
       }
       detailMap
