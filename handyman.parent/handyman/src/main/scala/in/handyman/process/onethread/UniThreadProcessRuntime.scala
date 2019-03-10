@@ -8,29 +8,35 @@ import in.handyman.command._
 import in.handyman.server.ProcessResponse
 import in.handyman.AbortException
 import com.fasterxml.jackson.databind.SerializationFeature
+import org.slf4j.MarkerFactory
 
 class UniThreadProcessRuntime(name: String, id: Int) extends ProcessRuntime with LazyLogging {
   val jsonSerializer = new ObjectMapper
+  val auditMarkerText = "Actioncaller";
+  val auditMarker = MarkerFactory.getMarker(auditMarkerText);
+  
   @throws(classOf[Exception])
   def execute(process: in.handyman.dsl.Process, context: Context): ProcessResponse = {
     var errorContext: ErrorContext = new ErrorContext(context.asInstanceOf[TryContext])
     var processResponse = new ProcessResponse
     try {
-
+      logger.info(auditMarker, "Executing try block for process {}", process.getName)
       val detailMap = executeChain(process.getTry.getAction, context)
       processResponse.detailMap = detailMap
       processResponse.context = context
       processResponse
     } catch {
       case ex: in.handyman.AbortException => {
-        logError(ex)
+        //logError(ex, process.getName)
+        logger.info(auditMarker, "Abort exception caught in try block for process {}", process.getName)
         processResponse.exception = ex
         processResponse
         throw ex
       }
       case ex: Throwable => {
-        logError(ex)
+        logError(ex, process.getName)
         val onError = process.getCatch
+        logger.info(auditMarker, "General exception caught in try block for process {}, attempting to execute catch block", process.getName)
         errorContext = executeCatch(onError, context.asInstanceOf[TryContext])
         errorContext.exception = ex
         processResponse.context = errorContext
@@ -41,6 +47,7 @@ class UniThreadProcessRuntime(name: String, id: Int) extends ProcessRuntime with
 
     } finally {
       val onFinally = process.getFinally
+      logger.info(auditMarker, "Executing finally block for process {}, attempting to execute catch block", process.getName)
       executeFinally(onFinally, errorContext)
       processResponse.context = errorContext
       processResponse
@@ -73,11 +80,12 @@ class UniThreadProcessRuntime(name: String, id: Int) extends ProcessRuntime with
       detailMap
     }
 
-  def logError(ex: Throwable) = {
-    logger.error("Error executing process", ex)
+  def logError(ex: Throwable, process:String) = {
+    logger.error(auditMarker, "Error executing process {}", process, ex)
   }
 
   def executeCatch(onError: Catch, context: TryContext): ErrorContext = {
+   // logger.warn(marker, message)
     val errorContext: ErrorContext = new ErrorContext(context)
     executeChain(onError.getAction, errorContext)
     errorContext

@@ -145,12 +145,13 @@ object AuditService extends LazyLogging{
   def updateStatementAudit(statementId: Integer, rowsW: Int, rowsR: Int, statement: String, status: Integer): Unit = {
     val conn = ResourceAccess.rdbmsConn(auditService)
     conn.setAutoCommit(false)
-    val st = conn.prepareStatement("update command_audit set end_time=now(), status=?, statement_config=?, rows_written=?, rows_read=? where statement_id=?")
+    val st = conn.prepareStatement("update statement_audit set end=now(), status=?, statement_config=?, rows_written=?, rows_read=? where statement_id=?")
     try {
       st.setInt(1, status)
       st.setString(2, statement)
       st.setInt(3, rowsW)
       st.setInt(4, rowsR)
+      st.setInt(5,statementId)
       val rowsUpdated = st.executeUpdate()
       conn.commit
     } catch {

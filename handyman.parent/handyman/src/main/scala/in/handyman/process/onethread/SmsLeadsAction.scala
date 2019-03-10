@@ -19,7 +19,7 @@ class SmsLeadsAction extends in.handyman.command.Action with LazyLogging {
   val auditMarker = "SENDSMS";
   val aMarker = MarkerFactory.getMarker(auditMarker);
 
-  def execute(context: Context, action: in.handyman.dsl.Action, actionId:Integer): Context = {
+  def execute(context: Context, action: in.handyman.dsl.Action, actionId: Integer): Context = {
     val smsAsIs: in.handyman.dsl.SmsLeadSms = action.asInstanceOf[in.handyman.dsl.SmsLeadSms]
     val sms: in.handyman.dsl.SmsLeadSms = CommandProxy.createProxy(smsAsIs, classOf[in.handyman.dsl.SmsLeadSms], context)
     val client = HttpClientBuilder.create().build();
@@ -35,15 +35,15 @@ class SmsLeadsAction extends in.handyman.command.Action with LazyLogging {
     val conn = ResourceAccess.rdbmsConn(dbSrc)
     val stmt = conn.createStatement
     val rs = stmt.executeQuery(sql.trim())
-    var urlString:String=""
+    var urlString: String = ""
 
     logger.info(aMarker, "Executing query to retreive the essentials {}", sql.trim())
-    
+
     val incomingSMSReq: AtomicInteger = new AtomicInteger
     val sentSMSCount: AtomicInteger = new AtomicInteger
 
     val statementId = AuditService.insertStatementAudit(actionId, "sms->" + name, context.getValue("process-name"))
-    
+
     try {
       while (rs.next()) {
         incomingSMSReq.incrementAndGet()
@@ -54,8 +54,16 @@ class SmsLeadsAction extends in.handyman.command.Action with LazyLogging {
         val mobile = {
           if (dryRun != null && !dryRun.isEmpty())
             dryRun.trim
-          else
-            targetMobileNumber + "," + targetAltNumber
+          else {
+            if (targetMobileNumber.equals(targetAltNumber)) {
+              removePlusNineOne(targetMobileNumber)
+            } else if (targetAltNumber.trim().isEmpty()){
+              removePlusNineOne(targetMobileNumber)
+            }
+            else {
+              removePlusNineOne(targetMobileNumber) + "," + removePlusNineOne(targetAltNumber)
+            }
+          }
         }
 
         val output = body
@@ -71,10 +79,9 @@ class SmsLeadsAction extends in.handyman.command.Action with LazyLogging {
           val response = client.execute(request);
           sentSMSCount.incrementAndGet()
           logger.info(aMarker, "Sent sms using url {} with responsecode {}", urlString, response)
-          
-        }
-        else{
-          logger.info(aMarker, "Skipping sending sms using url {} with username {} as there is not text",url, user)
+
+        } else {
+          logger.info(aMarker, "Skipping sending sms using url {} with username {} as there is not text", url, user)
         }
       }
     } finally {
@@ -93,6 +100,13 @@ class SmsLeadsAction extends in.handyman.command.Action with LazyLogging {
       conn.close
     }
     context
+  }
+
+  def removePlusNineOne(number: String): String = {
+    if (number.startsWith("+91"))
+      number.substring(3, number.length())
+    else
+      number
   }
 
   def executeIf(context: in.handyman.command.Context, action: in.handyman.dsl.Action): Boolean = {

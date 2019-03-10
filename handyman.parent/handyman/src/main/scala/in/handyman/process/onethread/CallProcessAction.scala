@@ -58,6 +58,7 @@ class CallProcessAction extends in.handyman.command.Action with LazyLogging {
         case ex: Throwable => {
           handleError(ex)
           detailMap.put("exception", ExceptionUtil.completeStackTraceex(ex))
+          throw ex
         }
 
       } finally {
