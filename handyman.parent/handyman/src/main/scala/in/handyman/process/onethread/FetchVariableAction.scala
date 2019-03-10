@@ -12,8 +12,8 @@ class FetchVariableAction extends in.handyman.command.Action with LazyLogging {
   val detailMap = new java.util.HashMap[String, String]
   val auditMarker = "ASSIGN";
   val aMarker = MarkerFactory.getMarker(auditMarker);
-  
-  def execute(context: Context, action: Action, actionId:Integer): Context = {
+
+  def execute(context: Context, action: Action, actionId: Integer): Context = {
     val fetchAsIs: in.handyman.dsl.Fetch = action.asInstanceOf[in.handyman.dsl.Fetch]
     val fetch: in.handyman.dsl.Fetch = CommandProxy.createProxy(fetchAsIs, classOf[in.handyman.dsl.Fetch], context)
 
@@ -22,33 +22,32 @@ class FetchVariableAction extends in.handyman.command.Action with LazyLogging {
     val sql = fetch.getValue.trim
     val id = context.getValue("process-id")
     val sqlList = sql.split(";")
-    logger.info(aMarker,"Fetch id#{}, name#{}, sql#{}, db=#{}", id, name, sqlList, source)
+    logger.info(aMarker, "Fetch id#{}, name#{}, sql#{}, db=#{}", id, name, sqlList, source)
     val conn = ResourceAccess.rdbmsConn(source)
     val stmt = conn.createStatement
-    sqlList.foreach(sqlItem=>{
-      
-    
     try {
-      logger.info(aMarker,"Execution query sql#{} on db=#{}", sqlItem, source)
-      val rs = stmt.executeQuery(sqlItem)
-      val columnCount = rs.getMetaData.getColumnCount
+      sqlList.foreach(sqlItem => {
+          logger.info(aMarker, "Execution query sql#{} on db=#{}", sqlItem.trim(), source)
+          val rs = stmt.executeQuery(sqlItem.trim)
+          val columnCount = rs.getMetaData.getColumnCount
 
-      while (rs.next()) {
+          while (rs.next()) {
 
-        for (i <- 1 until columnCount + 1) {
-          val key = rs.getMetaData.getColumnLabel(i)
-          val value = rs.getString(i)
-          logger.info(aMarker,"Adding value {} for key {} from query sql#{} on db=#{}", value, name + "." + key, sqlItem, source)
-          context.addValue(name + "." + key, value)          
-        }
-      }
+            for (i <- 1 until columnCount + 1) {
+              val key = rs.getMetaData.getColumnLabel(i)
+              val value = rs.getString(i)
+              logger.info(aMarker, "Adding value {} for key {} from query sql#{} on db=#{}", value, name + "." + key, sqlItem, source)
+              context.addValue(name + "." + key, value)
+            }
+          }       
+          detailMap.put("source", source)
+          detailMap.put("sql", sqlItem)
+      })
     } finally {
-      detailMap.put("source", source)
-      detailMap.put("sql", sqlItem)
+
       stmt.close
       conn.close
     }
-    })
     logger.info("Completed fetch id#{}, name#{}, sql#{}, db=#{}", id, name, sql, source)
 
     context
@@ -64,8 +63,8 @@ class FetchVariableAction extends in.handyman.command.Action with LazyLogging {
       detailMap.putIfAbsent("condition-output", output.toString())
       output
     } finally {
-       if(expression!=null)
-      detailMap.putIfAbsent("condition", "LHS=" + expression.getLhs + ", Operator=" + expression.getOperator + ", RHS=" + expression.getRhs)
+      if (expression != null)
+        detailMap.putIfAbsent("condition", "LHS=" + expression.getLhs + ", Operator=" + expression.getOperator + ", RHS=" + expression.getRhs)
 
     }
   }
