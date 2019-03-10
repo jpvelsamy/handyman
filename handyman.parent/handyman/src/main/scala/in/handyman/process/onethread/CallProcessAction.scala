@@ -20,7 +20,7 @@ import in.handyman.util.ExceptionUtil
 
 class CallProcessAction extends in.handyman.command.Action with LazyLogging {
   val detailMap = new java.util.HashMap[String, String]
-  def execute(context: in.handyman.command.Context, action: in.handyman.dsl.Action): in.handyman.command.Context = {
+  def execute(context: in.handyman.command.Context, action: in.handyman.dsl.Action, actionId:Integer): in.handyman.command.Context = {
 
     val callProcessAsIs: in.handyman.dsl.Callprocess = action.asInstanceOf[in.handyman.dsl.Callprocess]
     val callProcess: in.handyman.dsl.Callprocess = CommandProxy.createProxy(callProcessAsIs, classOf[in.handyman.dsl.Callprocess], context)

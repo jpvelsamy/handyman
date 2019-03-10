@@ -14,7 +14,7 @@ import in.handyman.util.ParameterisationEngine
 class DoozleAction extends in.handyman.command.Action with LazyLogging {
   val detailMap = new java.util.HashMap[String, String]
   
-  def execute(context: in.handyman.command.Context, action: in.handyman.dsl.Action): in.handyman.command.Context = {
+  def execute(context: in.handyman.command.Context, action: in.handyman.dsl.Action, actionId:Integer): in.handyman.command.Context = {
     val doozleAsIs: in.handyman.dsl.Doozle = action.asInstanceOf[in.handyman.dsl.Doozle]
     val doozle: in.handyman.dsl.Doozle = CommandProxy.createProxy(doozleAsIs, classOf[in.handyman.dsl.Doozle], context)
 

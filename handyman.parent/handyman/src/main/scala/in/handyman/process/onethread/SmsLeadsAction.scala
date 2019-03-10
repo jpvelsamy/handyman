@@ -10,6 +10,8 @@ import org.apache.http.client.methods.HttpGet
 import java.net.URLEncoder
 import org.apache.commons.text.StrSubstitutor
 import org.slf4j.MarkerFactory
+import in.handyman.audit.AuditService
+import java.util.concurrent.atomic.AtomicInteger
 
 class SmsLeadsAction extends in.handyman.command.Action with LazyLogging {
 
@@ -17,7 +19,7 @@ class SmsLeadsAction extends in.handyman.command.Action with LazyLogging {
   val auditMarker = "SENDSMS";
   val aMarker = MarkerFactory.getMarker(auditMarker);
 
-  def execute(context: Context, action: in.handyman.dsl.Action): Context = {
+  def execute(context: Context, action: in.handyman.dsl.Action, actionId:Integer): Context = {
     val smsAsIs: in.handyman.dsl.SmsLeadSms = action.asInstanceOf[in.handyman.dsl.SmsLeadSms]
     val sms: in.handyman.dsl.SmsLeadSms = CommandProxy.createProxy(smsAsIs, classOf[in.handyman.dsl.SmsLeadSms], context)
     val client = HttpClientBuilder.create().build();
@@ -36,10 +38,15 @@ class SmsLeadsAction extends in.handyman.command.Action with LazyLogging {
     var urlString:String=""
 
     logger.info(aMarker, "Executing query to retreive the essentials {}", sql.trim())
+    
+    val incomingSMSReq: AtomicInteger = new AtomicInteger
+    val sentSMSCount: AtomicInteger = new AtomicInteger
 
+    val statementId = AuditService.insertStatementAudit(actionId, "sms->" + name, context.getValue("process-name"))
+    
     try {
       while (rs.next()) {
-
+        incomingSMSReq.incrementAndGet()
         val targetMobileNumber = rs.getString("target_mobile_number")
         val targetAltNumber = rs.getString("target_alternate_number")
         val body = rs.getString("body")
@@ -62,6 +69,7 @@ class SmsLeadsAction extends in.handyman.command.Action with LazyLogging {
           request.addHeader("Accept-Language", "en-IN,en-GB;q=0.9,en-US;q=0.8,en;q=0.7")
           request.addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
           val response = client.execute(request);
+          sentSMSCount.incrementAndGet()
           logger.info(aMarker, "Sent sms using url {} with responsecode {}", urlString, response)
           
         }
@@ -78,6 +86,9 @@ class SmsLeadsAction extends in.handyman.command.Action with LazyLogging {
       detailMap.put("url", urlString)
       detailMap.put("sender", sender)
       detailMap.put("sql", sql)
+      detailMap.put("incomingSMSReq", incomingSMSReq.intValue().toString())
+      detailMap.put("sentSMSCount", sentSMSCount.intValue().toString())
+      AuditService.updateStatementAudit(statementId, incomingSMSReq.intValue(), sentSMSCount.intValue(), sql, 1)
       stmt.close
       conn.close
     }

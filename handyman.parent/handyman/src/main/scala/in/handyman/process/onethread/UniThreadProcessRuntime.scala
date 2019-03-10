@@ -59,7 +59,8 @@ class UniThreadProcessRuntime(name: String, id: Int) extends ProcessRuntime with
         val actionRuntime = CommandFactory.create(action.eClass.getName)
         if (actionRuntime.executeIf(context, action)) {
           val actionId = in.handyman.audit.AuditService.insertCommandAudit(id, action.eClass().getName + "->" + action.getName, name)
-          actionRuntime.execute(context, action)
+          context.addValue("process-name", name)
+          actionRuntime.execute(context, action, actionId)
           //TODO still need to fix the status part
           val commandDetailAsMap = actionRuntime.generateAudit()
           if(commandDetailAsMap!=null && !commandDetailAsMap.isEmpty()){

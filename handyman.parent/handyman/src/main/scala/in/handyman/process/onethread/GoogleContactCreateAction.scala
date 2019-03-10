@@ -24,11 +24,12 @@ import com.google.api.services.people.v1.model.ProfileMetadata
 import com.google.api.services.people.v1.model.Url
 import org.slf4j.MarkerFactory
 import in.handyman.util.ExceptionUtil
+import in.handyman.audit.AuditService
 
 class GContactCreateAction extends in.handyman.command.Action with LazyLogging {
   val detailMap = new java.util.HashMap[String, String]
   val JSON_FACTORY: JsonFactory = JacksonFactory.getDefaultInstance();
-  def execute(context: in.handyman.command.Context, action: in.handyman.dsl.Action): in.handyman.command.Context = {
+  def execute(context: in.handyman.command.Context, action: in.handyman.dsl.Action, actionId: Integer): in.handyman.command.Context = {
     val contactPut: GooglecontactPUT = action.asInstanceOf[GooglecontactPUT]
     val contact: in.handyman.dsl.GooglecontactPUT = CommandProxy.createProxy(contactPut, classOf[in.handyman.dsl.GooglecontactPUT], context)
     val dbSrc = contact.getDbSrc
@@ -45,6 +46,7 @@ class GContactCreateAction extends in.handyman.command.Action with LazyLogging {
     val httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     val gcontactCreateMarker = "GCONTACT-CREATE";
     val gMarker = MarkerFactory.getMarker(gcontactCreateMarker);
+    val name = contact.getName
 
     val credential: GoogleCredential = new GoogleCredential.Builder().setTransport(httpTransport).
       setJsonFactory(JSON_FACTORY).
@@ -57,12 +59,12 @@ class GContactCreateAction extends in.handyman.command.Action with LazyLogging {
 
     val peopleService: PeopleService =
       new PeopleService.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(project).build();
-    
-    
 
     val incomingContactCounter: AtomicInteger = new AtomicInteger
     val addedContactCounter: AtomicInteger = new AtomicInteger
+    val statementId = AuditService.insertStatementAudit(actionId, "contact->" + name, context.getValue("process-name"))
     try {
+
       while (rs.next()) {
 
         incomingContactCounter.incrementAndGet
@@ -125,6 +127,7 @@ class GContactCreateAction extends in.handyman.command.Action with LazyLogging {
       detailMap.put("sql", sql)
       detailMap.put("incomingContactCounter", incomingContactCounter.intValue.toString)
       detailMap.put("addedContactCounter", addedContactCounter.intValue.toString)
+      AuditService.updateStatementAudit(statementId, addedContactCounter.intValue(), incomingContactCounter.intValue(), sql, 1)
       stmt.close
       conn.close
     }

@@ -25,6 +25,7 @@ import in.handyman.util.ParameterisationEngine
 import java.util.concurrent.atomic.AtomicInteger
 import in.handyman.config.ConfigurationService
 import org.slf4j.MarkerFactory
+import in.handyman.audit.AuditService
 
 class GoogleCalendarAction extends in.handyman.command.Action with LazyLogging {
   val DEFAULT_TIMEZONE = "Asia/Kolkata"
@@ -32,11 +33,12 @@ class GoogleCalendarAction extends in.handyman.command.Action with LazyLogging {
 
   val DATA_STORE_DIR: java.io.File =
     new java.io.File(System.getProperty("user.home"), ".store/calendar_sample");
-
   val JSON_FACTORY: JsonFactory = JacksonFactory.getDefaultInstance();
-
   val CALENDAR_SCOPE = "https://www.googleapis.com/auth/calendar"
-  def execute(context: Context, action: Action): Context = {
+  val gcalCreateMarker = "GCALENDART-CREATE";
+  val gMarker = MarkerFactory.getMarker(gcalCreateMarker);
+
+  def execute(context: Context, action: Action, actionId: Integer): Context = {
     val calAsIs: GooglecalPUT = action.asInstanceOf[GooglecalPUT]
     val cal: in.handyman.dsl.GooglecalPUT = CommandProxy.createProxy(calAsIs, classOf[in.handyman.dsl.GooglecalPUT], context)
 
@@ -46,6 +48,8 @@ class GoogleCalendarAction extends in.handyman.command.Action with LazyLogging {
     val relativePath = cal.getPtwelveFile
     val key = cal.getPrivateKey
     val project = cal.getProject
+    val name = cal.getName
+
     val authStore = this.getClass.getClassLoader.getResource(relativePath).getPath
     val sql = cal.getValue
     val conn = ResourceAccess.rdbmsConn(dbSrc)
@@ -69,11 +73,9 @@ class GoogleCalendarAction extends in.handyman.command.Action with LazyLogging {
     val addedCalenderEvent: AtomicInteger = new AtomicInteger
     val timeZoneLabel = ConfigurationService.getGlobalconfig().get("timeZone").getOrElse(DEFAULT_TIMEZONE)
     val timeZone = TimeZone.getTimeZone(timeZoneLabel);
-    val gcalCreateMarker = "GCALENDART-CREATE";
-    val gMarker = MarkerFactory.getMarker(gcalCreateMarker);
 
     val eventMap: java.util.Map[Date, CalendarEvent] = new java.util.HashMap[Date, CalendarEvent]()
-
+    val statementId = AuditService.insertStatementAudit(actionId, "contact->" + name, context.getValue("process-name"))
     try {
       while (rs.next()) {
 
@@ -133,7 +135,7 @@ class GoogleCalendarAction extends in.handyman.command.Action with LazyLogging {
             //contactList.foreach(contact => descBuilder.append(contact).append("<br/>"))
             val iter = contactList.iterator()
             while (iter.hasNext()) {
-              descBuilder.append(iter.next()).append("<br/>")              
+              descBuilder.append(iter.next()).append("<br/>")
             }
             descBuilder.toString()
           }
@@ -144,7 +146,7 @@ class GoogleCalendarAction extends in.handyman.command.Action with LazyLogging {
 
           val result = client.events().insert(calId, event).execute();
           addedCalenderEvent.incrementAndGet
-          logger.info("Adding event  {} with for location {} title {} with counter {} with description {} with final date{}", startDateAsKey.toString(), location, title, addedCalenderEvent.get.toString(), description, endDateForRecur)
+          logger.info(gMarker, "Adding event  {} with for location {} title {} with counter {} with description {} with final date{}", startDateAsKey.toString(), location, title, addedCalenderEvent.get.toString(), description, endDateForRecur)
 
         }
       }
@@ -159,6 +161,7 @@ class GoogleCalendarAction extends in.handyman.command.Action with LazyLogging {
       detailMap.put("sql", sql)
       detailMap.put("incomingContactCounter", incomingCalenderEvent.intValue.toString)
       detailMap.put("addedContactCounter", addedCalenderEvent.intValue.toString)
+      AuditService.updateStatementAudit(statementId, addedCalenderEvent.intValue(), incomingCalenderEvent.intValue(), sql, 1)
       stmt.close
       conn.close
     }

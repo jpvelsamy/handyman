@@ -6,10 +6,14 @@ import in.handyman.command.Context
 import in.handyman.util.ParameterisationEngine
 import in.handyman.command.CommandProxy
 import in.handyman.util.ResourceAccess
+import org.slf4j.MarkerFactory
 
 class FetchVariableAction extends in.handyman.command.Action with LazyLogging {
   val detailMap = new java.util.HashMap[String, String]
-  def execute(context: Context, action: Action): Context = {
+  val auditMarker = "ASSIGN";
+  val aMarker = MarkerFactory.getMarker(auditMarker);
+  
+  def execute(context: Context, action: Action, actionId:Integer): Context = {
     val fetchAsIs: in.handyman.dsl.Fetch = action.asInstanceOf[in.handyman.dsl.Fetch]
     val fetch: in.handyman.dsl.Fetch = CommandProxy.createProxy(fetchAsIs, classOf[in.handyman.dsl.Fetch], context)
 
@@ -17,12 +21,16 @@ class FetchVariableAction extends in.handyman.command.Action with LazyLogging {
     val name = fetch.getName
     val sql = fetch.getValue.trim
     val id = context.getValue("process-id")
-
-    logger.info("Fetch id#{}, name#{}, sql#{}, db=#{}", id, name, sql, source)
+    val sqlList = sql.split(";")
+    logger.info(aMarker,"Fetch id#{}, name#{}, sql#{}, db=#{}", id, name, sqlList, source)
     val conn = ResourceAccess.rdbmsConn(source)
     val stmt = conn.createStatement
+    sqlList.foreach(sqlItem=>{
+      
+    
     try {
-      val rs = stmt.executeQuery(sql)
+      logger.info(aMarker,"Execution query sql#{} on db=#{}", sqlItem, source)
+      val rs = stmt.executeQuery(sqlItem)
       val columnCount = rs.getMetaData.getColumnCount
 
       while (rs.next()) {
@@ -30,15 +38,17 @@ class FetchVariableAction extends in.handyman.command.Action with LazyLogging {
         for (i <- 1 until columnCount + 1) {
           val key = rs.getMetaData.getColumnLabel(i)
           val value = rs.getString(i)
+          logger.info(aMarker,"Adding value {} for key {} from query sql#{} on db=#{}", value, name + "." + key, sqlItem, source)
           context.addValue(name + "." + key, value)          
         }
       }
     } finally {
       detailMap.put("source", source)
-      detailMap.put("sql", sql)
+      detailMap.put("sql", sqlItem)
       stmt.close
       conn.close
     }
+    })
     logger.info("Completed fetch id#{}, name#{}, sql#{}, db=#{}", id, name, sql, source)
 
     context

@@ -18,6 +18,7 @@ import in.handyman.config.ConfigurationService
 import in.handyman.util.ExceptionUtil
 import org.slf4j.MarkerFactory
 import com.facebook.ads.sdk.LeadgenForm
+import in.handyman.audit.AuditService
 
 /**
  * //https://developers.facebook.com/docs/marketing-api/guides/lead-ads/retrieving/v2.9
@@ -58,7 +59,7 @@ class FBFormDownloadAction extends in.handyman.command.Action with LazyLogging {
   val fbMarkerText = "FB-LEAD-INGESTION";
   val fbMarker = MarkerFactory.getMarker(fbMarkerText);
   
-  def execute(context: in.handyman.command.Context, action: in.handyman.dsl.Action): in.handyman.command.Context = {
+  def execute(context: in.handyman.command.Context, action: in.handyman.dsl.Action, actionId:Integer): in.handyman.command.Context = {
     
 
     val fbAsIs: in.handyman.dsl.FBFormDownload = action.asInstanceOf[in.handyman.dsl.FBFormDownload]
@@ -80,6 +81,7 @@ class FBFormDownloadAction extends in.handyman.command.Action with LazyLogging {
     val fieldsToSelect = fb.getValue
     val fieldArray = fieldsToSelect.split(",")
     val dbTarget = fb.getTarget
+    val name = fb.getName
     val tgtConn = ResourceAccess.rdbmsConn(dbTarget)
     val stmt = tgtConn.prepareStatement(InsertSql)
 
@@ -89,6 +91,7 @@ class FBFormDownloadAction extends in.handyman.command.Action with LazyLogging {
     val incomingLeadCount:AtomicInteger=new AtomicInteger
     val insertedLeadCount:AtomicInteger = new AtomicInteger
     
+    val statementId = AuditService.insertStatementAudit(actionId, "fbform->"+name, context.getValue("process-name"))
     logger.info(fbMarker, "Form id list as is {} with account id {} and with db {}" , formIdList, accountId, dbTarget)
     formIdList.foreach {
       formId =>
@@ -234,6 +237,7 @@ class FBFormDownloadAction extends in.handyman.command.Action with LazyLogging {
       detailMap.put("nameCleanup",nameCleanup)
       detailMap.put("incomingLeadCount", incomingLeadCount.intValue.toString)
       detailMap.put("insertedLeadCount", insertedLeadCount.intValue.toString)
+      AuditService.updateStatementAudit(statementId, insertedLeadCount.intValue(), incomingLeadCount.intValue(), fieldsToSelect, 1)
     }
     context
   }
