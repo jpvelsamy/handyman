@@ -14,6 +14,7 @@ import in.handyman.audit.AuditService
 import java.util.concurrent.atomic.AtomicInteger
 import org.apache.http.impl.nio.client.HttpAsyncClients
 
+//https://hc.apache.org/httpcomponents-asyncclient-ga/quickstart.html
 class SmsLeadsAction extends in.handyman.command.Action with LazyLogging {
 
   val detailMap = new java.util.HashMap[String, String]
