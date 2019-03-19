@@ -13,13 +13,13 @@ object HandymanServer extends Application with LazyLogging{
     
     logger.info("Starting the restlet server to take in commands, at port 2909")
     val component = new Component()
-    val port = {
+    val port:Int = {
       if(args.isEmpty)
-        "2909"
+        2909
       else
-        args.apply(0)
+        args.apply(0).toInt
     }
-    component.getServers().add(Protocol.HTTP, 2909)
+    component.getServers().add(Protocol.HTTP, port)
     // Attach the sample application.
     component.getDefaultHost().attach(this)
     // Start the component.    
