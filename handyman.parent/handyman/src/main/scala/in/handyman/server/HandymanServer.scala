@@ -27,19 +27,19 @@ object HandymanServer extends Application with LazyLogging{
     logger.info("Successfully started the restlet server to take in commands, at port 2909")
     logger.info("Bootstrapping the background scheduler")
     val schedulerThreadPoolCount:Int = {
-       if(args.isEmpty || args.length==1)
+       if(args.isEmpty && args.length==1)
         5
        else
          args.apply(1).toInt
     }
     val packageName:String = {
-       if(args.isEmpty || args.length==2)
+       if(args.isEmpty && args.length==2)
         "in.juno.jam"
        else
          args.apply(2)
     }
     val startDelay:Int = {
-       if(args.isEmpty || args.length==3)
+       if(args.isEmpty && args.length==3)
         10
        else
          args.apply(3).toInt
