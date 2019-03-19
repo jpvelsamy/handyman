@@ -57,7 +57,7 @@ class FBLeadCreateAction extends in.handyman.command.Action with LazyLogging {
   val detailMap = new java.util.HashMap[String, String]
   val fbMarkerText = "FB-LEAD-INGESTION";
   val fbMarker = MarkerFactory.getMarker(fbMarkerText);
-  
+  //https://stackoverflow.com/questions/11352037/scala-utc-timestamp-in-seconds-since-january-1st-1970
   def execute(context: in.handyman.command.Context, action: in.handyman.dsl.Action, actionId:Integer): in.handyman.command.Context = {
     val fbAsIs: in.handyman.dsl.FBCLead = action.asInstanceOf[in.handyman.dsl.FBCLead]
     val fb: in.handyman.dsl.FBCLead = CommandProxy.createProxy(fbAsIs, classOf[in.handyman.dsl.FBCLead], context)
@@ -78,7 +78,7 @@ class FBLeadCreateAction extends in.handyman.command.Action with LazyLogging {
     val tgtConn = ResourceAccess.rdbmsConn(dbTarget)
     val stmt = tgtConn.prepareStatement(InsertSql)
 
-    val fbContext = new APIContext(accessToken, appSecret);
+    val fbContext = new APIContext(accessToken, appSecret).enableDebug(true);
     val fbAccount = new AdAccount(accountId, fbContext)
     val nameCleanup = ConfigurationService.getGlobalconfig().get("cleanSpecialChar").getOrElse("false")
     
