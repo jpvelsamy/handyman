@@ -30,6 +30,7 @@ class UniThreadProcessRuntime(name: String, id: Int) extends ProcessRuntime with
         //logError(ex, process.getName)
         logger.info(auditMarker, "Abort exception caught in try block for process {}", process.getName)
         processResponse.exception = ex
+        ex.processResponse=processResponse
         processResponse
         throw ex
       }
