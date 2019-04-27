@@ -7,8 +7,20 @@
       <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
     </encoder>
   </appender>
+	<appender name="RollingFile-Appender" class="ch.qos.Logback.core.rolling.RollingFileAppender">
+	    <file>${LOG_PATH}/handyman.log</file>
+	    <rollingPolicy class="ch.qos.Logback.core.rolling.TimeBasedRollingPolicy">
+	        <fileNamePattern>${LOG_ARCHIVE}/handyman.%d{yyyy-MM-dd}.log</fileNamePattern>
+	        <maxHistory>30</maxHistory>
+	        <totalSizeCap>100MB</totalSizeCap>
+	    </rollingPolicy>
+	    <encoder>
+	        <pattern>%msg%n</pattern>
+	    </encoder>
+	</appender>
 
-   <root level="debug">
+   <root level="info">
     <appender-ref ref="STDOUT" />
+    <appender-ref ref="RollingFile-Appender"/>
   </root>
 </configuration>
