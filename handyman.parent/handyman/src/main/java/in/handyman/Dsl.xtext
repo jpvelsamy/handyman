@@ -159,7 +159,7 @@ RestPart:
 ; 
 
 TrelloGET:
-	'trelloget' 'as' name=STRING 'secured-by' authtoken=STRING 'with-key' key=STRING 'through-user' useraccount=STRING 'from-board' board=STRING 'to' target=STRING 'using'
+	'trelloget' 'as' name=STRING 'source' source=STRING 'class' classtg=STRING 'using'
 	'{'
 		value=SelectStatement
 	'}' 'on-condition' condition=Expression

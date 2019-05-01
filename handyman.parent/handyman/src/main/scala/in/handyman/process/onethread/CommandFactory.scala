@@ -26,6 +26,7 @@ object CommandFactory {
       case "loadcsv" => new LoadCsvIntoDbAction
       case "terminal" => new TerminalAction
       case "python" => new PythonAction
+      case "trelloget" => new HorusIntegrationAction   
     }
   }
 }
