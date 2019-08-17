@@ -19,7 +19,7 @@
 		<commons.text.version>1.1</commons.text.version>
 		<commons.httpclient.version>4.5.2</commons.httpclient.version>
 		<commons.asynchttpclient.version>4.1.2</commons.asynchttpclient.version>
-		<facebook.sdk.version>3.2.8</facebook.sdk.version>
+		<facebook.sdk.version>4.0.2</facebook.sdk.version>
 		<squareup.http.version>3.11.0</squareup.http.version>
 		<google.people.version>v1-rev224-1.23.0</google.people.version>
 		<google.cal.version>v3-rev87-1.19.0</google.cal.version>
