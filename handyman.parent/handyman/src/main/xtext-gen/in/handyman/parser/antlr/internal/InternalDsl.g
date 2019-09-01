@@ -601,6 +601,153 @@ ruleAction returns [EObject current=null]
 			$current = $this_FirebaseDatabasePut_23.current;
 			afterParserOrEnumRuleCall();
 		}
+		    |
+		{
+			newCompositeNode(grammarAccess.getActionAccess().getExecJavaParserRuleCall_24());
+		}
+		this_ExecJava_24=ruleExecJava
+		{
+			$current = $this_ExecJava_24.current;
+			afterParserOrEnumRuleCall();
+		}
+	)
+;
+
+// Entry rule entryRuleExecJava
+entryRuleExecJava returns [EObject current=null]:
+	{ newCompositeNode(grammarAccess.getExecJavaRule()); }
+	iv_ruleExecJava=ruleExecJava
+	{ $current=$iv_ruleExecJava.current; }
+	EOF;
+
+// Rule ExecJava
+ruleExecJava returns [EObject current=null]
+@init {
+	enterRule();
+}
+@after {
+	leaveRule();
+}:
+	(
+		otherlv_0='java'
+		{
+			newLeafNode(otherlv_0, grammarAccess.getExecJavaAccess().getJavaKeyword_0());
+		}
+		otherlv_1='as'
+		{
+			newLeafNode(otherlv_1, grammarAccess.getExecJavaAccess().getAsKeyword_1());
+		}
+		(
+			(
+				lv_name_2_0=RULE_STRING
+				{
+					newLeafNode(lv_name_2_0, grammarAccess.getExecJavaAccess().getNameSTRINGTerminalRuleCall_2_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getExecJavaRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"name",
+						lv_name_2_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_3='using'
+		{
+			newLeafNode(otherlv_3, grammarAccess.getExecJavaAccess().getUsingKeyword_3());
+		}
+		(
+			(
+				lv_classFqn_4_0=RULE_STRING
+				{
+					newLeafNode(lv_classFqn_4_0, grammarAccess.getExecJavaAccess().getClassFqnSTRINGTerminalRuleCall_4_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getExecJavaRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"classFqn",
+						lv_classFqn_4_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_5='name-sake-db'
+		{
+			newLeafNode(otherlv_5, grammarAccess.getExecJavaAccess().getNameSakeDbKeyword_5());
+		}
+		(
+			(
+				lv_dbSrc_6_0=RULE_STRING
+				{
+					newLeafNode(lv_dbSrc_6_0, grammarAccess.getExecJavaAccess().getDbSrcSTRINGTerminalRuleCall_6_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getExecJavaRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"dbSrc",
+						lv_dbSrc_6_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_7='{'
+		{
+			newLeafNode(otherlv_7, grammarAccess.getExecJavaAccess().getLeftCurlyBracketKeyword_7());
+		}
+		(
+			(
+				lv_value_8_0=RULE_STRING
+				{
+					newLeafNode(lv_value_8_0, grammarAccess.getExecJavaAccess().getValueSTRINGTerminalRuleCall_8_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getExecJavaRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"value",
+						lv_value_8_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_9='}'
+		{
+			newLeafNode(otherlv_9, grammarAccess.getExecJavaAccess().getRightCurlyBracketKeyword_9());
+		}
+		otherlv_10='on-condition'
+		{
+			newLeafNode(otherlv_10, grammarAccess.getExecJavaAccess().getOnConditionKeyword_10());
+		}
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getExecJavaAccess().getConditionExpressionParserRuleCall_11_0());
+				}
+				lv_condition_11_0=ruleExpression
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getExecJavaRule());
+					}
+					set(
+						$current,
+						"condition",
+						lv_condition_11_0,
+						"in.handyman.Dsl.Expression");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)
 	)
 ;
 

@@ -100,6 +100,7 @@ class FBFormDownloadAction extends in.handyman.command.Action with LazyLogging {
           val form = LeadgenForm.fetchById(formId, fbContext)
           //Need to know how to use the lamba and keep my life simple
           //val leadList = ad.getLeads.requestAllFields().execute();
+          //.setParam(\"filtering\", \"[{\\"field\\":\\"time_created\\",\\"operator\\":\\"GREATER_THAN\\",\\"value\\":1546549613}]\")
               val leadList = form.getLeads.requestAllFields().execute();
               if (!leadList.isEmpty()) {
 

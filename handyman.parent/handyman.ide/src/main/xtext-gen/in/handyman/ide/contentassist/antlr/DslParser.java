@@ -37,6 +37,7 @@ public class DslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getTryAccess().getGroup(), "rule__Try__Group__0");
 			builder.put(grammarAccess.getFinallyAccess().getGroup(), "rule__Finally__Group__0");
 			builder.put(grammarAccess.getCatchAccess().getGroup(), "rule__Catch__Group__0");
+			builder.put(grammarAccess.getExecJavaAccess().getGroup(), "rule__ExecJava__Group__0");
 			builder.put(grammarAccess.getFirebaseDatabasePutAccess().getGroup(), "rule__FirebaseDatabasePut__Group__0");
 			builder.put(grammarAccess.getFirebaseReactiveNotificationAccess().getGroup(), "rule__FirebaseReactiveNotification__Group__0");
 			builder.put(grammarAccess.getSmsLeadSmsAccess().getGroup(), "rule__SmsLeadSms__Group__0");
@@ -73,6 +74,11 @@ public class DslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getFinallyAccess().getActionAssignment_3(), "rule__Finally__ActionAssignment_3");
 			builder.put(grammarAccess.getCatchAccess().getNameAssignment_1(), "rule__Catch__NameAssignment_1");
 			builder.put(grammarAccess.getCatchAccess().getActionAssignment_3(), "rule__Catch__ActionAssignment_3");
+			builder.put(grammarAccess.getExecJavaAccess().getNameAssignment_2(), "rule__ExecJava__NameAssignment_2");
+			builder.put(grammarAccess.getExecJavaAccess().getClassFqnAssignment_4(), "rule__ExecJava__ClassFqnAssignment_4");
+			builder.put(grammarAccess.getExecJavaAccess().getDbSrcAssignment_6(), "rule__ExecJava__DbSrcAssignment_6");
+			builder.put(grammarAccess.getExecJavaAccess().getValueAssignment_8(), "rule__ExecJava__ValueAssignment_8");
+			builder.put(grammarAccess.getExecJavaAccess().getConditionAssignment_11(), "rule__ExecJava__ConditionAssignment_11");
 			builder.put(grammarAccess.getFirebaseDatabasePutAccess().getNameAssignment_2(), "rule__FirebaseDatabasePut__NameAssignment_2");
 			builder.put(grammarAccess.getFirebaseDatabasePutAccess().getUrlAssignment_4(), "rule__FirebaseDatabasePut__UrlAssignment_4");
 			builder.put(grammarAccess.getFirebaseDatabasePutAccess().getFbjsonAssignment_6(), "rule__FirebaseDatabasePut__FbjsonAssignment_6");

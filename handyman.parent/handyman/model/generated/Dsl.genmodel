@@ -28,6 +28,11 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Action/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Dsl.ecore#//Action/condition"/>
     </genClasses>
+    <genClasses ecoreClass="Dsl.ecore#//ExecJava">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//ExecJava/classFqn"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//ExecJava/dbSrc"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//ExecJava/value"/>
+    </genClasses>
     <genClasses ecoreClass="Dsl.ecore#//FirebaseDatabasePut">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FirebaseDatabasePut/url"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//FirebaseDatabasePut/fbjson"/>

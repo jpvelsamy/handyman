@@ -69,6 +69,15 @@ public interface DslFactory extends EFactory
   Action createAction();
 
   /**
+   * Returns a new object of class '<em>Exec Java</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Exec Java</em>'.
+   * @generated
+   */
+  ExecJava createExecJava();
+
+  /**
    * Returns a new object of class '<em>Firebase Database Put</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

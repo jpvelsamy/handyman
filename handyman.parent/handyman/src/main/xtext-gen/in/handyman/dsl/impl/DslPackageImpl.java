@@ -13,6 +13,7 @@ import in.handyman.dsl.Doozle;
 import in.handyman.dsl.Dropfile;
 import in.handyman.dsl.DslFactory;
 import in.handyman.dsl.DslPackage;
+import in.handyman.dsl.ExecJava;
 import in.handyman.dsl.Expression;
 import in.handyman.dsl.FBCLead;
 import in.handyman.dsl.FBFormDownload;
@@ -85,6 +86,13 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * @generated
    */
   private EClass actionEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass execJavaEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -499,6 +507,46 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
   public EReference getAction_Condition()
   {
     return (EReference)actionEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getExecJava()
+  {
+    return execJavaEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getExecJava_ClassFqn()
+  {
+    return (EAttribute)execJavaEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getExecJava_DbSrc()
+  {
+    return (EAttribute)execJavaEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getExecJava_Value()
+  {
+    return (EAttribute)execJavaEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -2013,6 +2061,11 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     createEAttribute(actionEClass, ACTION__NAME);
     createEReference(actionEClass, ACTION__CONDITION);
 
+    execJavaEClass = createEClass(EXEC_JAVA);
+    createEAttribute(execJavaEClass, EXEC_JAVA__CLASS_FQN);
+    createEAttribute(execJavaEClass, EXEC_JAVA__DB_SRC);
+    createEAttribute(execJavaEClass, EXEC_JAVA__VALUE);
+
     firebaseDatabasePutEClass = createEClass(FIREBASE_DATABASE_PUT);
     createEAttribute(firebaseDatabasePutEClass, FIREBASE_DATABASE_PUT__URL);
     createEAttribute(firebaseDatabasePutEClass, FIREBASE_DATABASE_PUT__FBJSON);
@@ -2215,6 +2268,7 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     // Set bounds for type parameters
 
     // Add supertypes to classes
+    execJavaEClass.getESuperTypes().add(this.getAction());
     firebaseDatabasePutEClass.getESuperTypes().add(this.getAction());
     firebaseReactiveNotificationEClass.getESuperTypes().add(this.getAction());
     smsLeadSmsEClass.getESuperTypes().add(this.getAction());
@@ -2262,6 +2316,11 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     initEClass(actionEClass, Action.class, "Action", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getAction_Name(), ecorePackage.getEString(), "name", null, 0, 1, Action.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAction_Condition(), this.getExpression(), null, "condition", null, 0, 1, Action.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(execJavaEClass, ExecJava.class, "ExecJava", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getExecJava_ClassFqn(), ecorePackage.getEString(), "classFqn", null, 0, 1, ExecJava.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getExecJava_DbSrc(), ecorePackage.getEString(), "dbSrc", null, 0, 1, ExecJava.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getExecJava_Value(), ecorePackage.getEString(), "value", null, 0, 1, ExecJava.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(firebaseDatabasePutEClass, FirebaseDatabasePut.class, "FirebaseDatabasePut", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getFirebaseDatabasePut_Url(), ecorePackage.getEString(), "url", null, 0, 1, FirebaseDatabasePut.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

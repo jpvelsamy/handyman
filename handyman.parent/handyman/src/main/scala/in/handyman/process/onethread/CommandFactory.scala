@@ -22,6 +22,8 @@ object CommandFactory {
       case "sendmail"=>new MailAction
       case "firebasedatabaseput"=>new FirebaseDbUpdateAction
       case "firebasereactivenotification"=>new FirebaseMessagingAction
+      case "execjava"=>new JavaAction  
+    
     }
   }
 }

@@ -261,6 +261,70 @@ public interface DslPackage extends EPackage
   int ACTION_FEATURE_COUNT = 2;
 
   /**
+   * The meta object id for the '{@link in.handyman.dsl.impl.ExecJavaImpl <em>Exec Java</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see in.handyman.dsl.impl.ExecJavaImpl
+   * @see in.handyman.dsl.impl.DslPackageImpl#getExecJava()
+   * @generated
+   */
+  int EXEC_JAVA = 5;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int EXEC_JAVA__NAME = ACTION__NAME;
+
+  /**
+   * The feature id for the '<em><b>Condition</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int EXEC_JAVA__CONDITION = ACTION__CONDITION;
+
+  /**
+   * The feature id for the '<em><b>Class Fqn</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int EXEC_JAVA__CLASS_FQN = ACTION_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Db Src</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int EXEC_JAVA__DB_SRC = ACTION_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Value</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int EXEC_JAVA__VALUE = ACTION_FEATURE_COUNT + 2;
+
+  /**
+   * The number of structural features of the '<em>Exec Java</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int EXEC_JAVA_FEATURE_COUNT = ACTION_FEATURE_COUNT + 3;
+
+  /**
    * The meta object id for the '{@link in.handyman.dsl.impl.FirebaseDatabasePutImpl <em>Firebase Database Put</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -268,7 +332,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getFirebaseDatabasePut()
    * @generated
    */
-  int FIREBASE_DATABASE_PUT = 5;
+  int FIREBASE_DATABASE_PUT = 6;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -359,7 +423,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getFirebaseReactiveNotification()
    * @generated
    */
-  int FIREBASE_REACTIVE_NOTIFICATION = 6;
+  int FIREBASE_REACTIVE_NOTIFICATION = 7;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -441,7 +505,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getSmsLeadSms()
    * @generated
    */
-  int SMS_LEAD_SMS = 7;
+  int SMS_LEAD_SMS = 8;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -541,7 +605,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getAbort()
    * @generated
    */
-  int ABORT = 8;
+  int ABORT = 9;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -587,7 +651,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getGooglecontactSelectAll()
    * @generated
    */
-  int GOOGLECONTACT_SELECT_ALL = 9;
+  int GOOGLECONTACT_SELECT_ALL = 10;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -687,7 +751,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getSendMail()
    * @generated
    */
-  int SEND_MAIL = 10;
+  int SEND_MAIL = 11;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -769,7 +833,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getGooglecontactPUT()
    * @generated
    */
-  int GOOGLECONTACT_PUT = 11;
+  int GOOGLECONTACT_PUT = 12;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -869,7 +933,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getGooglecalPUT()
    * @generated
    */
-  int GOOGLECAL_PUT = 12;
+  int GOOGLECAL_PUT = 13;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -969,7 +1033,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getFBCLead()
    * @generated
    */
-  int FBC_LEAD = 13;
+  int FBC_LEAD = 14;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1060,7 +1124,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getFBFormDownload()
    * @generated
    */
-  int FB_FORM_DOWNLOAD = 14;
+  int FB_FORM_DOWNLOAD = 15;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1151,7 +1215,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getDropfile()
    * @generated
    */
-  int DROPFILE = 15;
+  int DROPFILE = 16;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1197,7 +1261,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getDoozle()
    * @generated
    */
-  int DOOZLE = 16;
+  int DOOZLE = 17;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1261,7 +1325,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getRest()
    * @generated
    */
-  int REST = 17;
+  int REST = 18;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1415,7 +1479,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getRestPart()
    * @generated
    */
-  int REST_PART = 18;
+  int REST_PART = 19;
 
   /**
    * The feature id for the '<em><b>Part Name</b></em>' attribute.
@@ -1452,7 +1516,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getTrelloGET()
    * @generated
    */
-  int TRELLO_GET = 19;
+  int TRELLO_GET = 20;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1543,7 +1607,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getTrelloPUT()
    * @generated
    */
-  int TRELLO_PUT = 20;
+  int TRELLO_PUT = 21;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1634,7 +1698,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getFetch()
    * @generated
    */
-  int FETCH = 21;
+  int FETCH = 22;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1689,7 +1753,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getCallprocess()
    * @generated
    */
-  int CALLPROCESS = 22;
+  int CALLPROCESS = 23;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1762,7 +1826,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getUpdatedaudit()
    * @generated
    */
-  int UPDATEDAUDIT = 23;
+  int UPDATEDAUDIT = 24;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1826,7 +1890,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getClickSendSms()
    * @generated
    */
-  int CLICK_SEND_SMS = 24;
+  int CLICK_SEND_SMS = 25;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1899,7 +1963,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getSlackPUT()
    * @generated
    */
-  int SLACK_PUT = 25;
+  int SLACK_PUT = 26;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1963,7 +2027,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getCopydata()
    * @generated
    */
-  int COPYDATA = 26;
+  int COPYDATA = 27;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2027,7 +2091,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getWriteCsv()
    * @generated
    */
-  int WRITE_CSV = 27;
+  int WRITE_CSV = 28;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2100,7 +2164,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getLoadCsv()
    * @generated
    */
-  int LOAD_CSV = 28;
+  int LOAD_CSV = 29;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2173,7 +2237,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getTransform()
    * @generated
    */
-  int TRANSFORM = 29;
+  int TRANSFORM = 30;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2228,7 +2292,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getExpression()
    * @generated
    */
-  int EXPRESSION = 30;
+  int EXPRESSION = 31;
 
   /**
    * The feature id for the '<em><b>Lhs</b></em>' attribute.
@@ -2448,6 +2512,49 @@ public interface DslPackage extends EPackage
    * @generated
    */
   EReference getAction_Condition();
+
+  /**
+   * Returns the meta object for class '{@link in.handyman.dsl.ExecJava <em>Exec Java</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Exec Java</em>'.
+   * @see in.handyman.dsl.ExecJava
+   * @generated
+   */
+  EClass getExecJava();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.ExecJava#getClassFqn <em>Class Fqn</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Class Fqn</em>'.
+   * @see in.handyman.dsl.ExecJava#getClassFqn()
+   * @see #getExecJava()
+   * @generated
+   */
+  EAttribute getExecJava_ClassFqn();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.ExecJava#getDbSrc <em>Db Src</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Db Src</em>'.
+   * @see in.handyman.dsl.ExecJava#getDbSrc()
+   * @see #getExecJava()
+   * @generated
+   */
+  EAttribute getExecJava_DbSrc();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.ExecJava#getValue <em>Value</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Value</em>'.
+   * @see in.handyman.dsl.ExecJava#getValue()
+   * @see #getExecJava()
+   * @generated
+   */
+  EAttribute getExecJava_Value();
 
   /**
    * Returns the meta object for class '{@link in.handyman.dsl.FirebaseDatabasePut <em>Firebase Database Put</em>}'.
@@ -4197,6 +4304,40 @@ public interface DslPackage extends EPackage
      * @generated
      */
     EReference ACTION__CONDITION = eINSTANCE.getAction_Condition();
+
+    /**
+     * The meta object literal for the '{@link in.handyman.dsl.impl.ExecJavaImpl <em>Exec Java</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see in.handyman.dsl.impl.ExecJavaImpl
+     * @see in.handyman.dsl.impl.DslPackageImpl#getExecJava()
+     * @generated
+     */
+    EClass EXEC_JAVA = eINSTANCE.getExecJava();
+
+    /**
+     * The meta object literal for the '<em><b>Class Fqn</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute EXEC_JAVA__CLASS_FQN = eINSTANCE.getExecJava_ClassFqn();
+
+    /**
+     * The meta object literal for the '<em><b>Db Src</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute EXEC_JAVA__DB_SRC = eINSTANCE.getExecJava_DbSrc();
+
+    /**
+     * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute EXEC_JAVA__VALUE = eINSTANCE.getExecJava_Value();
 
     /**
      * The meta object literal for the '{@link in.handyman.dsl.impl.FirebaseDatabasePutImpl <em>Firebase Database Put</em>}' class.

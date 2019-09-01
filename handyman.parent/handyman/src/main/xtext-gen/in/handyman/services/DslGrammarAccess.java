@@ -235,6 +235,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cSmsLeadSmsParserRuleCall_21 = (RuleCall)cAlternatives.eContents().get(21);
 		private final RuleCall cFirebaseReactiveNotificationParserRuleCall_22 = (RuleCall)cAlternatives.eContents().get(22);
 		private final RuleCall cFirebaseDatabasePutParserRuleCall_23 = (RuleCall)cAlternatives.eContents().get(23);
+		private final RuleCall cExecJavaParserRuleCall_24 = (RuleCall)cAlternatives.eContents().get(24);
 		
 		//Action:
 		//	Copydata
@@ -260,12 +261,13 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		//	| Abort
 		//	| SmsLeadSms
 		//	| FirebaseReactiveNotification
-		//	| FirebaseDatabasePut;
+		//	| FirebaseDatabasePut
+		//	| ExecJava;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//Copydata | LoadCsv | WriteCsv | Transform | GooglecalPUT | SlackPUT | ClickSendSms | Updatedaudit | Callprocess | Fetch
 		//| TrelloPUT | TrelloGET | Rest | Doozle | Dropfile | FBCLead | FBFormDownload | SendMail | GooglecontactPUT |
-		//GooglecontactSelectAll | Abort | SmsLeadSms | FirebaseReactiveNotification | FirebaseDatabasePut
+		//GooglecontactSelectAll | Abort | SmsLeadSms | FirebaseReactiveNotification | FirebaseDatabasePut | ExecJava
 		public Alternatives getAlternatives() { return cAlternatives; }
 		
 		//Copydata
@@ -339,6 +341,92 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//FirebaseDatabasePut
 		public RuleCall getFirebaseDatabasePutParserRuleCall_23() { return cFirebaseDatabasePutParserRuleCall_23; }
+		
+		//ExecJava
+		public RuleCall getExecJavaParserRuleCall_24() { return cExecJavaParserRuleCall_24; }
+	}
+	public class ExecJavaElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "in.handyman.Dsl.ExecJava");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cJavaKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Keyword cAsKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Assignment cNameAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cNameSTRINGTerminalRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
+		private final Keyword cUsingKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Assignment cClassFqnAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cClassFqnSTRINGTerminalRuleCall_4_0 = (RuleCall)cClassFqnAssignment_4.eContents().get(0);
+		private final Keyword cNameSakeDbKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		private final Assignment cDbSrcAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final RuleCall cDbSrcSTRINGTerminalRuleCall_6_0 = (RuleCall)cDbSrcAssignment_6.eContents().get(0);
+		private final Keyword cLeftCurlyBracketKeyword_7 = (Keyword)cGroup.eContents().get(7);
+		private final Assignment cValueAssignment_8 = (Assignment)cGroup.eContents().get(8);
+		private final RuleCall cValueSTRINGTerminalRuleCall_8_0 = (RuleCall)cValueAssignment_8.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_9 = (Keyword)cGroup.eContents().get(9);
+		private final Keyword cOnConditionKeyword_10 = (Keyword)cGroup.eContents().get(10);
+		private final Assignment cConditionAssignment_11 = (Assignment)cGroup.eContents().get(11);
+		private final RuleCall cConditionExpressionParserRuleCall_11_0 = (RuleCall)cConditionAssignment_11.eContents().get(0);
+		
+		//ExecJava:
+		//	"java" 'as' name=STRING 'using' classFqn=STRING 'name-sake-db' dbSrc=STRING
+		//	'{'
+		//	value=STRING
+		//	'}' 'on-condition' condition=Expression;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//"java" 'as' name=STRING 'using' classFqn=STRING 'name-sake-db' dbSrc=STRING '{' value=STRING '}' 'on-condition'
+		//condition=Expression
+		public Group getGroup() { return cGroup; }
+		
+		//"java"
+		public Keyword getJavaKeyword_0() { return cJavaKeyword_0; }
+		
+		//'as'
+		public Keyword getAsKeyword_1() { return cAsKeyword_1; }
+		
+		//name=STRING
+		public Assignment getNameAssignment_2() { return cNameAssignment_2; }
+		
+		//STRING
+		public RuleCall getNameSTRINGTerminalRuleCall_2_0() { return cNameSTRINGTerminalRuleCall_2_0; }
+		
+		//'using'
+		public Keyword getUsingKeyword_3() { return cUsingKeyword_3; }
+		
+		//classFqn=STRING
+		public Assignment getClassFqnAssignment_4() { return cClassFqnAssignment_4; }
+		
+		//STRING
+		public RuleCall getClassFqnSTRINGTerminalRuleCall_4_0() { return cClassFqnSTRINGTerminalRuleCall_4_0; }
+		
+		//'name-sake-db'
+		public Keyword getNameSakeDbKeyword_5() { return cNameSakeDbKeyword_5; }
+		
+		//dbSrc=STRING
+		public Assignment getDbSrcAssignment_6() { return cDbSrcAssignment_6; }
+		
+		//STRING
+		public RuleCall getDbSrcSTRINGTerminalRuleCall_6_0() { return cDbSrcSTRINGTerminalRuleCall_6_0; }
+		
+		//'{'
+		public Keyword getLeftCurlyBracketKeyword_7() { return cLeftCurlyBracketKeyword_7; }
+		
+		//value=STRING
+		public Assignment getValueAssignment_8() { return cValueAssignment_8; }
+		
+		//STRING
+		public RuleCall getValueSTRINGTerminalRuleCall_8_0() { return cValueSTRINGTerminalRuleCall_8_0; }
+		
+		//'}'
+		public Keyword getRightCurlyBracketKeyword_9() { return cRightCurlyBracketKeyword_9; }
+		
+		//'on-condition'
+		public Keyword getOnConditionKeyword_10() { return cOnConditionKeyword_10; }
+		
+		//condition=Expression
+		public Assignment getConditionAssignment_11() { return cConditionAssignment_11; }
+		
+		//Expression
+		public RuleCall getConditionExpressionParserRuleCall_11_0() { return cConditionExpressionParserRuleCall_11_0; }
 	}
 	public class FirebaseDatabasePutElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "in.handyman.Dsl.FirebaseDatabasePut");
@@ -3139,6 +3227,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	private final FinallyElements pFinally;
 	private final CatchElements pCatch;
 	private final ActionElements pAction;
+	private final ExecJavaElements pExecJava;
 	private final FirebaseDatabasePutElements pFirebaseDatabasePut;
 	private final FirebaseReactiveNotificationElements pFirebaseReactiveNotification;
 	private final SmsLeadSmsElements pSmsLeadSms;
@@ -3185,6 +3274,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		this.pFinally = new FinallyElements();
 		this.pCatch = new CatchElements();
 		this.pAction = new ActionElements();
+		this.pExecJava = new ExecJavaElements();
 		this.pFirebaseDatabasePut = new FirebaseDatabasePutElements();
 		this.pFirebaseReactiveNotification = new FirebaseReactiveNotificationElements();
 		this.pSmsLeadSms = new SmsLeadSmsElements();
@@ -3323,13 +3413,27 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	//	| Abort
 	//	| SmsLeadSms
 	//	| FirebaseReactiveNotification
-	//	| FirebaseDatabasePut;
+	//	| FirebaseDatabasePut
+	//	| ExecJava;
 	public ActionElements getActionAccess() {
 		return pAction;
 	}
 	
 	public ParserRule getActionRule() {
 		return getActionAccess().getRule();
+	}
+	
+	//ExecJava:
+	//	"java" 'as' name=STRING 'using' classFqn=STRING 'name-sake-db' dbSrc=STRING
+	//	'{'
+	//	value=STRING
+	//	'}' 'on-condition' condition=Expression;
+	public ExecJavaElements getExecJavaAccess() {
+		return pExecJava;
+	}
+	
+	public ParserRule getExecJavaRule() {
+		return getExecJavaAccess().getRule();
 	}
 	
 	//FirebaseDatabasePut:

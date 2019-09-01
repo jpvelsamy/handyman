@@ -12,6 +12,7 @@ import in.handyman.dsl.Copydata;
 import in.handyman.dsl.Doozle;
 import in.handyman.dsl.Dropfile;
 import in.handyman.dsl.DslPackage;
+import in.handyman.dsl.ExecJava;
 import in.handyman.dsl.Expression;
 import in.handyman.dsl.FBCLead;
 import in.handyman.dsl.FBFormDownload;
@@ -80,6 +81,9 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 				return; 
 			case DslPackage.DROPFILE:
 				sequence_Dropfile(context, (Dropfile) semanticObject); 
+				return; 
+			case DslPackage.EXEC_JAVA:
+				sequence_ExecJava(context, (ExecJava) semanticObject); 
 				return; 
 			case DslPackage.EXPRESSION:
 				sequence_Expression(context, (Expression) semanticObject); 
@@ -357,6 +361,37 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 		feeder.accept(grammarAccess.getDropfileAccess().getNameSTRINGTerminalRuleCall_2_0(), semanticObject.getName());
 		feeder.accept(grammarAccess.getDropfileAccess().getTargetSTRINGTerminalRuleCall_4_0(), semanticObject.getTarget());
 		feeder.accept(grammarAccess.getDropfileAccess().getConditionExpressionParserRuleCall_6_0(), semanticObject.getCondition());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Action returns ExecJava
+	 *     ExecJava returns ExecJava
+	 *
+	 * Constraint:
+	 *     (name=STRING classFqn=STRING dbSrc=STRING value=STRING condition=Expression)
+	 */
+	protected void sequence_ExecJava(ISerializationContext context, ExecJava semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.ACTION__NAME) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.ACTION__NAME));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.EXEC_JAVA__CLASS_FQN) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.EXEC_JAVA__CLASS_FQN));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.EXEC_JAVA__DB_SRC) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.EXEC_JAVA__DB_SRC));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.EXEC_JAVA__VALUE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.EXEC_JAVA__VALUE));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.ACTION__CONDITION) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.ACTION__CONDITION));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getExecJavaAccess().getNameSTRINGTerminalRuleCall_2_0(), semanticObject.getName());
+		feeder.accept(grammarAccess.getExecJavaAccess().getClassFqnSTRINGTerminalRuleCall_4_0(), semanticObject.getClassFqn());
+		feeder.accept(grammarAccess.getExecJavaAccess().getDbSrcSTRINGTerminalRuleCall_6_0(), semanticObject.getDbSrc());
+		feeder.accept(grammarAccess.getExecJavaAccess().getValueSTRINGTerminalRuleCall_8_0(), semanticObject.getValue());
+		feeder.accept(grammarAccess.getExecJavaAccess().getConditionExpressionParserRuleCall_11_0(), semanticObject.getCondition());
 		feeder.finish();
 	}
 	

@@ -12,6 +12,7 @@ import in.handyman.dsl.Copydata;
 import in.handyman.dsl.Doozle;
 import in.handyman.dsl.Dropfile;
 import in.handyman.dsl.DslPackage;
+import in.handyman.dsl.ExecJava;
 import in.handyman.dsl.Expression;
 import in.handyman.dsl.FBCLead;
 import in.handyman.dsl.FBFormDownload;
@@ -135,6 +136,14 @@ public class DslSwitch<T> extends Switch<T>
       {
         Action action = (Action)theEObject;
         T result = caseAction(action);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case DslPackage.EXEC_JAVA:
+      {
+        ExecJava execJava = (ExecJava)theEObject;
+        T result = caseExecJava(execJava);
+        if (result == null) result = caseAction(execJava);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -424,6 +433,22 @@ public class DslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseAction(Action object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Exec Java</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Exec Java</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseExecJava(ExecJava object)
   {
     return null;
   }

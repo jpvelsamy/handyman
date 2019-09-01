@@ -57,7 +57,15 @@ Action:
 	|SmsLeadSms
 	|FirebaseReactiveNotification
 	|FirebaseDatabasePut
+	|ExecJava
 	)
+;
+
+ExecJava:
+	"java" 'as' name=STRING 'using' classFqn=STRING 'name-sake-db' dbSrc=STRING 
+	'{'
+		value=STRING
+	'}' 'on-condition' condition=Expression 
 ;
 
 FirebaseDatabasePut:

@@ -11,7 +11,7 @@ object HandymanServer extends Application with LazyLogging{
   
   def main(args:Array[String]){
     
-    logger.info("Starting the restlet server to take in commands, at port 2909")
+    logger.info("Starting the restlet server to take in commands,")
     val component = new Component()
     val port:Int = {
       if(args.isEmpty)
