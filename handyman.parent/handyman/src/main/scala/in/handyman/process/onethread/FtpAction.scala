@@ -15,6 +15,7 @@ import org.apache.commons.net.ftp.FTPFile
 import org.apache.commons.net.ftp.FTPReply
 import java.io._
 import java.text.MessageFormat
+import org.apache.commons.codec.digest.DigestUtils
 
 class FtpAction extends in.handyman.command.Action with LazyLogging {
 
@@ -55,38 +56,43 @@ class FtpAction extends in.handyman.command.Action with LazyLogging {
     val ftpc: FTPClient = new FTPClient()
     val writer: PrintWriter = new PrintWriter(System.out)
     try {
+
       // Redirect FTP commands to stdout if flag set.
 
-      if (actiontype == "download") {
+      if (FTP_PROTOCOL_DEBUGGING) {
+        ftpc.addProtocolCommandListener(new PrintCommandListener(writer))
+      }
 
-        if (FTP_PROTOCOL_DEBUGGING) {
-          ftpc.addProtocolCommandListener(new PrintCommandListener(writer))
-        }
-        // Connect/login.
-        println("Connecting to ftp host: {0} on port: {1}", domain, port)
-        ftpc.connect(domain, port)
-        ftpc.login(user, key)
+      // Connect/login.
+      println("Connecting to ftp host: {0} on port: {1}", domain, port)
+      ftpc.connect(domain, port)
+      ftpc.login(user, key)
+      if (!FTPReply.isPositiveCompletion(ftpc.getReplyCode)) {
+        throw new RuntimeException("Cannot connect to FTP_HOST: " + domain)
+      }
+
+      // Enter pasive (download mode) and set file type as binary data.
+      ftpc.setDataTimeout(FTP_TIMEOUT_MILLIS)
+      ftpc.setFileType(FTP.BINARY_FILE_TYPE)
+      ftpc.enterLocalPassiveMode()
+      // Change directory to the directory containing the files we wish to transfer.
+      if (rpath == "parent") {
+        ftpc.changeToParentDirectory()
         if (!FTPReply.isPositiveCompletion(ftpc.getReplyCode)) {
-          throw new RuntimeException("Cannot connect to FTP_HOST: " + domain)
+          throw new RuntimeException(
+            "Something is wrong with the directory: " + rpath + "error code is " + ftpc.getReplyCode)
         }
-        // Enter pasive (download mode) and set file type as binary data.
-        ftpc.setDataTimeout(FTP_TIMEOUT_MILLIS)
-        ftpc.setFileType(FTP.BINARY_FILE_TYPE)
-        ftpc.enterLocalPassiveMode()
-        // Change directory to the directory containing the files we wish to transfer.
-        if (rpath == "parent") {
-          ftpc.changeToParentDirectory()
-          if (!FTPReply.isPositiveCompletion(ftpc.getReplyCode)) {
-            throw new RuntimeException(
-              "Something is wrong with the directory: " + rpath + "error code is " + ftpc.getReplyCode)
-          }
-        } else {
-          ftpc.changeWorkingDirectory(rpath);
-          if (!FTPReply.isPositiveCompletion(ftpc.getReplyCode)) {
-            throw new RuntimeException(
-              "Cannot change directory: " + rpath + "error code is " + ftpc.getReplyCode)
-          }
+      } else if (rpath != null) {
+        ftpc.changeWorkingDirectory(rpath);
+        if (!FTPReply.isPositiveCompletion(ftpc.getReplyCode)) {
+          throw new RuntimeException(
+            "Cannot change directory: " + rpath + "error code is " + ftpc.getReplyCode)
         }
+      } else {
+        throw new RuntimeException("Please check the specified location")
+      }
+
+      if (actiontype == "download") {
 
         if (method == "auto") {
 
@@ -101,7 +107,11 @@ class FtpAction extends in.handyman.command.Action with LazyLogging {
             val outputStream: OutputStream = new BufferedOutputStream(
               new FileOutputStream(target))
             ftpc.retrieveFile(file.getName, outputStream)
+            val inputStream = new FileInputStream(lpath + file.getName)
+            val checksum: String = DigestUtils.md5Hex(inputStream)
+            inputStream.close()
             outputStream.close()
+
             if (!FTPReply.isPositiveCompletion(ftpc.getReplyCode)) {
               println(
                 MessageFormat.format(
@@ -115,6 +125,9 @@ class FtpAction extends in.handyman.command.Action with LazyLogging {
             val outputStream: OutputStream = new BufferedOutputStream(
               new FileOutputStream(target))
             ftpc.retrieveFile(rs.getString("file"), outputStream)
+            val inputStream = new FileInputStream(lpath + rs.getString("file"))
+            val checksum: String = DigestUtils.md5Hex(inputStream)
+            inputStream.close()
             outputStream.close()
             if (!FTPReply.isPositiveCompletion(ftpc.getReplyCode)) {
               println(
@@ -125,32 +138,6 @@ class FtpAction extends in.handyman.command.Action with LazyLogging {
           }
         }
       } else {
-        println(
-          "Connecting to ftp host: {0} on port: {1}",
-          domain,
-          port)
-        ftpc.connect(domain, port)
-        ftpc.login(user, key)
-        if (!FTPReply.isPositiveCompletion(ftpc.getReplyCode)) {
-          throw new RuntimeException("Cannot connect to FTP_HOST: " + domain)
-        }
-        // Enter pasive (download mode) and set file type as binary data.
-        ftpc.enterLocalPassiveMode()
-        ftpc.setFileType(FTP.BINARY_FILE_TYPE)
-        // Change directory to the directory containing the files we wish to transfer.
-        if (rpath == "parent") {
-          ftpc.changeToParentDirectory()
-          if (!FTPReply.isPositiveCompletion(ftpc.getReplyCode)) {
-            throw new RuntimeException(
-              "Something is wrong with the directory: " + rpath + "error code is " + ftpc.getReplyCode)
-          }
-        } else {
-          ftpc.changeWorkingDirectory(rpath);
-          if (!FTPReply.isPositiveCompletion(ftpc.getReplyCode)) {
-            throw new RuntimeException(
-              "Cannot change directory: " + rpath + "error code is " + ftpc.getReplyCode)
-          }
-        }
 
         if (method == "auto") {
 
@@ -159,6 +146,11 @@ class FtpAction extends in.handyman.command.Action with LazyLogging {
 
             val input: InputStream = new FileInputStream(
               new File(lpath + file.getName))
+
+            val inputStream = new FileInputStream(lpath + file.getName)
+            val checksum: String = DigestUtils.md5Hex(inputStream)
+            inputStream.close()
+
             // Upload file to FTP server.
             println(
               MessageFormat.format(
@@ -182,6 +174,9 @@ class FtpAction extends in.handyman.command.Action with LazyLogging {
             // Create new input stream for the file to transfer.
             val input: InputStream = new FileInputStream(
               new File(lpath + rs.getString("file")))
+            val inputStream = new FileInputStream(lpath + rs.getString("file"))
+            val checksum: String = DigestUtils.md5Hex(inputStream)
+            inputStream.close()
             // Upload file to FTP server.
             println(
               MessageFormat.format(

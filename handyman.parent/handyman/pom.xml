@@ -302,6 +302,14 @@
 			<version>${logback.classic.version}</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.13</version>
+		</dependency>
+
+
 		<!-- https://mvnrepository.com/artifact/org.scala-lang.modules/scala-xml -->
 		<dependency>
 			<groupId>org.scala-lang.modules</groupId>
