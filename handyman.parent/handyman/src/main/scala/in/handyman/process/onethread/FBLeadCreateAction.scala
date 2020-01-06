@@ -168,7 +168,7 @@ class FBLeadCreateAction extends in.handyman.command.Action with LazyLogging {
                       } else if (name.equals("company_name")) 
                       {
                         myLead.setCompany(value)
-                      } else if (name.equals("phone_number")) {
+                      } else if (name.equals("phone_number")||name.equals("mobile_number")) {
                         val prunedValue = {
                           if (value.length > 10)
                             value.substring(value.length - 10, value.length)
