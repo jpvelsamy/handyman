@@ -98,3 +98,5 @@ buildNumber.properties
 .designer
 
 *.xml_gen
+##custom entries
+.antlr-generator-3.2.0-patch.jar
