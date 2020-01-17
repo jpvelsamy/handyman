@@ -59,6 +59,8 @@ Action:
 	|Python
 	|RunR
 	|Archive
+	|Acumatica
+	|Mail
 	)
 ;
 
@@ -76,8 +78,6 @@ Abort:
 		value=STRING
 	'}' 'on-condition' condition=Expression
 ;
-
-
 
 GooglecontactSelectAll:
 	'gcontact-fetchall' 'as' name=STRING 'through-account' account=STRING 'secured-by' privateKey=STRING 'with-key' ptwelveFile=STRING 'for-project' project=STRING 'on-behalf-of' impersonatedUser=STRING 'to-target' dbSrc=STRING 'using'
@@ -122,6 +122,8 @@ FBCLead:
 	'}' 'on-condition' condition=Expression
 ;
 
+
+
 Dropfile:
 	'dropfile' 'as' name=STRING 'in-path' target=STRING 'on-condition' condition=Expression
 ;
@@ -133,7 +135,19 @@ Doozle:
 	'}' 'on-condition' condition=Expression
 ;
 
+Acumatica:
+	'acumatica' 'as' name= STRING 'from' source= STRING 'aurl' aurl=STRING 'burl' burl= STRING 'user' user=STRING 'token' token=STRING 'using' 
+	'{'
+		value=SelectStatement
+	'}' 'on-condition' condition=Expression
+;
 
+Mail:
+	'mail' 'as' name= STRING 'db' source= STRING 'from' from= STRING 'pass' pass= STRING 'using'
+	'{'
+		value=SelectStatement
+	'}' 'on-condition' condition=Expression 
+;
 
 Rest:
 	'rest' 'as' name=STRING 'secured-by' authtoken=STRING 'with-url' url=STRING 'and-method-as' method=STRING
