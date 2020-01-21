@@ -27,16 +27,11 @@ class MailAction extends in.handyman.command.Action with LazyLogging {
     val sql: String = mail.getValue.replaceAll("\"", "")
     val id = context.getValue("process-id")
     val pass = mail.getPass
-    val subject = "Test mail from handyman"
-    val content = "This is to test whether the handyman is able to send mail using scala macro"
-    val to = "canvasgold98@gmail.com,msenthilsiddharth@gmail.com"
-    val cc = "sidyercaud@gmail.com,sidyercaud1@gmail.com"
-    val bcc =""
-
-//    val mailDbConnfrom = ResourceAccess.rdbmsConn(source)
-//    val mailStmtfrom = mailDbConnfrom.createStatement
-//
-//    val rs = mailStmtfrom.executeQuery(sql)
+    val subject = mail.getSubject
+    val content = mail.getBody
+    val to = mail.getTo
+    val cc = mail.getCc
+    val bcc = mail.getBcc
 
     try {
 
