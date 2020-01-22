@@ -30,20 +30,22 @@ class SpAction extends in.handyman.command.Action with LazyLogging {
     //val proc = exec.replace("exec", "").replace("call", "").replace("{", "").replace("}", "").replace("\"", "").replace(" ", "")
 
     val con = ResourceAccess.rdbmsConn(db)
-    val istmt:Statement = con.createStatement()
-    istmt.executeUpdate("create table ZuciTest.dbo.zzz (sp varchar(100))")
+    con.setAutoCommit(false)
+    val istmt: Statement = con.createStatement()
     logger.info("Completed inserting")
     try {
 
       val stmt: CallableStatement = con.prepareCall(exec)
-      val rs:ResultSet = stmt.executeQuery()
+      val rs: ResultSet = stmt.executeQuery()
       if (rs.next()) {
         val result = rs.getInt(1)
         val insert = "insert into " + table + " (sp,time,result)" + " values (" + "\'" + name + "\', \'" + LocalDateTime.now() + "\', \'" + result + "\');"
         logger.info("WriteCsv id#{}, name#{}, from#{}, sqlList#{}", id, name, db, insert)
         istmt.executeUpdate(insert)
+        con.commit
         logger.info("Completed inserting")
       }
+      con.commit
     } catch {
       case ex: SQLException => {
         ex.printStackTrace()
