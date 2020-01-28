@@ -192,7 +192,7 @@
 				<plugin>
 					<groupId>net.alchim31.maven</groupId>
 					<artifactId>scala-maven-plugin</artifactId>
-					<version>3.3.1</version>
+					<version>3.4.2</version>
 					<executions>
 						<execution>
 							<id>scala-compile-first</id>
@@ -226,6 +226,19 @@
 						</execution>
 					</executions>
 				</plugin>
+				<plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>appassembler-maven-plugin</artifactId>
+        <version>1.10</version>
+        <configuration>
+          <programs>
+            <program>
+              <mainClass>in.handyman.server.HandymanServer</mainClass>
+              <id>handyman</id>
+            </program>
+          </programs>
+        </configuration>
+      </plugin>
 			</plugins>
 		</pluginManagement>
 		<resources>
