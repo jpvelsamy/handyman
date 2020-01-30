@@ -227,23 +227,31 @@
 					</executions>
 				</plugin>
 				<plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>appassembler-maven-plugin</artifactId>
-        <version>1.10</version>
-        <configuration>
-          <programs>
-            <program>
-              <mainClass>in.handyman.server.HandymanServer</mainClass>
-              <id>handyman</id>
-            </program>
-          </programs>
-        </configuration>
-      </plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>appassembler-maven-plugin</artifactId>
+					<version>1.10</version>
+					<configuration>
+						<descriptors>
+							<descriptor>./src/main/assembly/assembler.xml</descriptor>
+						</descriptors>
+						<copyConfigurationDirectory>true</copyConfigurationDirectory>
+						<includeConfigurationDirectoryInClasspath>true</includeConfigurationDirectoryInClasspath>
+						<programs>
+							<program>
+								<mainClass>in.handyman.server.HandymanServer</mainClass>
+								<id>handyman</id>
+							</program>
+						</programs>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<resources>
 			<resource>
 				<directory>src/main/resources/common</directory>
+			</resource>
+			<resource>
+				<directory>src/process</directory>
 			</resource>
 		</resources>
 
@@ -279,6 +287,14 @@
 			<version>${xtextVersion}</version>
 			<optional>true</optional>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.18</version>
+		</dependency>
+
 		<!-- <dependency> <groupId>org.apache.mahout</groupId> <artifactId>mahout-core</artifactId> 
 			<version>0.9-cdh5.4.4</version> </dependency> <dependency> <groupId>org.apache.mahout</groupId> 
 			<artifactId>mahout-math</artifactId> <version>0.9-cdh5.4.4</version> </dependency> -->
