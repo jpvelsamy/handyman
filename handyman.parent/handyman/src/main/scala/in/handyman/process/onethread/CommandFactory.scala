@@ -29,6 +29,7 @@ object CommandFactory {
       case "trelloget" => new HorusIntegrationAction
       case "mail" => new MailAction
       case "sp" => new SpAction
+      case "acumatica" => new AcumaticaAction
     }
   }
 }
