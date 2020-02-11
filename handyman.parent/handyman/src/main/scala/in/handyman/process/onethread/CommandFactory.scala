@@ -30,6 +30,7 @@ object CommandFactory {
       case "mail" => new MailAction
       case "sp" => new SpAction
       case "acumatica" => new AcumaticaAction
+      case "ftp" => new FtpAction
     }
   }
 }

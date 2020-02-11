@@ -57,7 +57,8 @@ Action:
 	| Archive
 	| Acumatica
 	| Mail
-	| Sp);
+	| Sp
+	| Ftp);
 
 SmsLeadSms:
 	'smsleadssms' 'as' name=STRING 'on' url=STRING 'with-sender' sender=STRING 'through-account' account=STRING
@@ -93,6 +94,14 @@ GoogleSendMail:
 	'{'
 	value=STRING
 	'}' 'on-condition' condition=Expression;
+	
+Ftp:
+	'ftp' 'as' name=STRING 'db' db=STRING 'domain' domain=STRING 'port' port=STRING 'user' user=STRING 'key' key=STRING
+	'rpath' rpath=STRING 'lpath' lpath=STRING 'action' action=STRING 'method' method=STRING 'using'
+	'{'
+	value=SelectStatement
+	'}'
+	'on-condition' condition=Expression;
 
 GooglecontactPUT:
 	'gcontact' 'as' name=STRING 'through-account' account=STRING 'secured-by' privateKey=STRING 'with-key'
