@@ -54,7 +54,7 @@ class FtpAction extends in.handyman.command.Action with LazyLogging {
 
     val incomingFtpReq: AtomicInteger = new AtomicInteger
 
-//    val statementId = AuditService.insertStatementAudit(actionId, "ftp->" + name, context.getValue("process-name"))
+    //val statementId = AuditService.insertStatementAudit(actionId, "ftp->" + name, context.getValue("process-name"))
     logger.error("Attempting to get files from ftp, name={}, asUser={}, securitykey={}, dbsrc={}, domain={}", name, user, key, db, domain)
 
     val startTimeMillis: Long = System.currentTimeMillis()
