@@ -40,7 +40,7 @@ class DropboxAction extends in.handyman.command.Action with LazyLogging {
     try {
 
       // azavea/rf-dropbox-test
-      val config = new DbxRequestConfig("sid/dropbox-test")
+      val config = new DbxRequestConfig("azavea/rf-dropbox-test")
       val client = new DbxClientV2(config, auth)
       //      println("==> TEST BASIC ACCOUNT DETAILS")
       //      val account = client.users.getCurrentAccount
@@ -61,9 +61,10 @@ class DropboxAction extends in.handyman.command.Action with LazyLogging {
           .download(outputStream)
         logger.info("Dowload from Dropbox id#{}, name#{}, from#{}, to#{}", id, name, source, target)
         logger.info("Download completed into this location#{}",target)
-        val query = "insert into " + id + "_dropbox" +  " (" + "name" + ")" + " (" + "source" + ")" + " (" + "target" + ")" +
-        " (" + "time" + ")" + "values" + " (" + name + ",\"" + source + "\",\"" + target + "\"," + now + ");"
+        val query = "insert into " + id + "_dropbox" +  " (process_id,name,source,target,time) values " + "(\"" + id + "\",\"" + name + "\",\"" + source + "\",\"" + target + "\"," + now + ");"
         logger.info("Inserted the data into db ")
+        dropboxStmtfrom.execute(query)
+        dropboxDbConnfrom.commit()
       }
       outputStream.close()
 

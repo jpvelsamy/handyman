@@ -76,13 +76,13 @@ Abort:
 	'}' 'on-condition' condition=Expression;
 	
 Dropbox:
-    'dropbox' 'as' name= STRING 'db' db= STRING 'auth' auth=STRING 'source' source= STRING 'target' target=STRING 'using'
+    'dropbox' 'as' name= STRING 'db' db= STRING 'auth' auth= STRING 'source' source= STRING 'target' target= STRING 'using'
     '{'
         value=SelectStatement
     '}' 'on-condition' condition=Expression;
     
 S3:
-    's3' 'as' name= STRING 'db' db= STRING 'key' key=STRING 'token' token= STRING 'bucket' bucket=STRING 'path' path=STRING 'file' file=STRING 'using'
+    's3' 'as' name= STRING 'db' db= STRING 'key' key= STRING 'token' token= STRING 'bucket' bucket= STRING 'path' path= STRING 'file' file= STRING 'using'
     '{'
         value=SelectStatement
     '}' 'on-condition' condition=Expression;
