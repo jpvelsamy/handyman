@@ -31,6 +31,8 @@ object CommandFactory {
       case "sp" => new SpAction
       case "acumatica" => new AcumaticaAction
       case "ftp" => new FtpAction
+      case "s3" => new S3Action
+      case "dropbox" => new DropboxAction
     }
   }
 }

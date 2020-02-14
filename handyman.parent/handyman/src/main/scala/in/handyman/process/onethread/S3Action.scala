@@ -38,7 +38,11 @@ class S3Action extends in.handyman.command.Action with LazyLogging {
     val token = s3.getToken
     val bucket = s3.getBucket
     val file = s3.getFile
-    var path = ""
+    var path = s3.getPath
+
+    if (path == "${path}") {
+      path = ""
+    }
 
     val s3DbConnfrom = ResourceAccess.rdbmsConn(db)
     val s3Stmtfrom = s3DbConnfrom.createStatement
@@ -52,14 +56,16 @@ class S3Action extends in.handyman.command.Action with LazyLogging {
 
       val rs = s3Stmtfrom.executeQuery(ddlSql)
 
-      while (rs.next()) {
-        path = rs.getString("target")
+      if (path == "" || path == null) {
+        while (rs.next()) {
+          path = rs.getString("target")
+        }
       }
 
       // upload file
       val upFile = new File(path)
       amazonS3Client.putObject(bucket, file, upFile)
-      logger.info("Upload completed into S3 bucket#{},file#{}",bucket,file)
+      logger.info("Upload completed into S3 bucket#{},file#{}", bucket, file)
 
     } catch {
       case ase: AmazonServiceException => System.err.println("Exception: " + ase.toString)
