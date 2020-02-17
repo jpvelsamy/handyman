@@ -25,7 +25,7 @@ class DropboxAction extends in.handyman.command.Action with LazyLogging {
     val dropbox: in.handyman.dsl.Dropbox = CommandProxy.createProxy(dropboxAsIs, classOf[in.handyman.dsl.Dropbox], context)
 
     val source = dropbox.getSource
-    val target = dropbox.getTarget
+    var target = dropbox.getTarget
     val name = dropbox.getName
     val ddlSql: String = dropbox.getValue.replaceAll("\"", "")
     val id = context.getValue("process-id")
@@ -61,6 +61,9 @@ class DropboxAction extends in.handyman.command.Action with LazyLogging {
           .download(outputStream)
         logger.info("Dowload from Dropbox id#{}, name#{}, from#{}, to#{}", id, name, source, target)
         logger.info("Download completed into this location#{}",target)
+        if(target.contains("\\")){
+          target = target.replace("\\", "\\\\")
+        }
         val query = "insert into " + id + "_dropbox" +  " (process_id,name,source,target,time) values " + "(\"" + id + "\",\"" + name + "\",\"" + source + "\",\"" + target + "\"," + now + ");"
         logger.info("Inserted the data into db ")
         dropboxStmtfrom.execute(query)
