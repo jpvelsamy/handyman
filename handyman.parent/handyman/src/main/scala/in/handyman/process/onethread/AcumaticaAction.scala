@@ -62,12 +62,31 @@ class AcumaticaAction extends in.handyman.command.Action with LazyLogging {
       osw.flush();
       osw.close();
       os.close();
-      var headerValues: Map[String, List[String]] = new HashMap[String, List[String]]()
+      
+       if(loginConnection.getResponseCode() != 204)
+			{
+				val isReader = new InputStreamReader(loginConnection.getErrorStream())
+				val reader = new BufferedReader(isReader)
+				 val errorResponse = new StringBuffer()
+			      var errorString = ""
+			      while((errorString = reader.readLine())!= null){
+			         errorResponse.append(errorString)
+			      }
+			      System.out.println(errorResponse)
+			      logger.info("Log:Response Error Message " + errorResponse)
+			}
+       
+       else{
+       var headerValues: Map[String, List[String]] = new HashMap[String, List[String]]()
       headerValues = loginConnection.getHeaderFields
-      val setCookie: Array[AnyRef] = headerValues.get("Set-Cookie").toArray()
-      val cookies: Array[String] = setCookie(0).toString.split(";")
-      val authId: String = cookies(0)
-      if (loginConnection.getResponseCode == 204) {
+      val setCookie: String = headerValues.get("Set-Cookie").toString()
+      val cookies: Array[String] = setCookie.split(",")
+      cookies(0) = cookies(0).replace("path=/; HttpOnly", "").replace("[", "")
+      cookies(3) = cookies(3).replace("path=/", "")
+      cookies(4) = cookies(3).replace("path=/","")
+      cookies(5) = cookies(5).replace("path=/; HttpOnly","").replace("]","")
+      val authId: String = cookies(5)+cookies(4)+cookies(3)+cookies(1)+";"+cookies(0)
+      
         val acumaticaEndPointUrl: URL = new URL(burl)
         val endpointConnection: HttpURLConnection =
           acumaticaEndPointUrl.openConnection().asInstanceOf[HttpURLConnection]
@@ -85,7 +104,7 @@ class AcumaticaAction extends in.handyman.command.Action with LazyLogging {
         os1.close()
         println("Response Message " + endpointConnection.getResponseMessage)
         logger.info("Log:Response Message " + endpointConnection.getResponseMessage)
-        if(endpointConnection.getResponseCode() != 200)
+       if(endpointConnection.getResponseCode() != 200)
 			{
 				val isReader = new InputStreamReader(endpointConnection.getErrorStream())
 				val reader = new BufferedReader(isReader)
@@ -99,11 +118,11 @@ class AcumaticaAction extends in.handyman.command.Action with LazyLogging {
 			}
         loginConnection.disconnect()
         endpointConnection.disconnect()
-      } 
-      else {
-        println("Error Occured")
-        logger.info("Log:Login Error Occured ")
-      }
+       }
+        
+    
+     
+      
 
       def getData(): JSONObject = {
         val rootObject = new JSONObject
