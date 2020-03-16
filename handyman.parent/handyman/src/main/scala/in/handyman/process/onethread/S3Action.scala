@@ -22,6 +22,8 @@ import java.io.FileOutputStream
 import org.apache.commons.io.IOUtils
 
 import scala.util.Try
+import com.amazonaws.services.s3.transfer.MultipleFileUpload
+import com.amazonaws.services.s3.transfer.TransferManager
 
 class S3Action extends in.handyman.command.Action with LazyLogging {
   val detailMap = new java.util.HashMap[String, String]
@@ -37,12 +39,9 @@ class S3Action extends in.handyman.command.Action with LazyLogging {
     val key = s3.getKey
     val token = s3.getToken
     val bucket = s3.getBucket
-    val file = s3.getFile
-    var path = s3.getPath
-
-    if (path == "${path}") {
-      path = ""
-    }
+    val ftype = s3.getType
+    var directory: File = null
+    var file = ""
 
     val s3DbConnfrom = ResourceAccess.rdbmsConn(db)
     val s3Stmtfrom = s3DbConnfrom.createStatement
@@ -53,20 +52,27 @@ class S3Action extends in.handyman.command.Action with LazyLogging {
 
       val awsCredentials = new BasicAWSCredentials(key, token)
       val amazonS3Client = new AmazonS3Client(awsCredentials)
+      val tm = new TransferManager(amazonS3Client);
 
       val rs = s3Stmtfrom.executeQuery(ddlSql)
 
-      if (path == "" || path == null) {
+      if (ftype == "directory") {
         while (rs.next()) {
-          path = rs.getString("target")
+          directory = new File(rs.getString("target"))
+          val upDirectory = tm.uploadDirectory(bucket, id, directory, true);
+        }
+      } else if (ftype == "file") {
+        while (rs.next()) {
+          directory = new File(rs.getString("directory"))
+          file = rs.getString("file")
+          // upload file
+
+          val upFile = new File(directory+file)
+          amazonS3Client.putObject(bucket, file, upFile)
+          logger.info("Upload completed into S3 bucket#{},file#{}", bucket, file)
+
         }
       }
-
-      // upload file
-      val upFile = new File(path)
-      amazonS3Client.putObject(bucket, file, upFile)
-      logger.info("Upload completed into S3 bucket#{},file#{}", bucket, file)
-
     } catch {
       case ase: AmazonServiceException => System.err.println("Exception: " + ase.toString)
       case ace: AmazonClientException => System.err.println("Exception: " + ace.toString)

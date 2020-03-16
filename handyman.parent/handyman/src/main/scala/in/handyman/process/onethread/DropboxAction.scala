@@ -31,17 +31,23 @@ class DropboxAction extends in.handyman.command.Action with LazyLogging {
     val id = context.getValue("process-id")
     val db = dropbox.getDb
     val auth = dropbox.getAuth
-    
+    var ftype = dropbox.getType
+
     val dropboxDbConnfrom = ResourceAccess.rdbmsConn(db)
     val dropboxStmtfrom = dropboxDbConnfrom.createStatement
     dropboxDbConnfrom.setAutoCommit(false)
     val now = "now()"
 
+    var outputStream: FileOutputStream = null
+
     try {
 
       // azavea/rf-dropbox-test
-      val config = new DbxRequestConfig("azavea/rf-dropbox-test")
+      val config = new DbxRequestConfig("jcdropboxtest")
       val client = new DbxClientV2(config, auth)
+      
+      ftype = client.files().getMetadata(source)
+      
       //      println("==> TEST BASIC ACCOUNT DETAILS")
       //      val account = client.users.getCurrentAccount
       //      println(s"Linked Account is ${account.getName.getDisplayName}")
@@ -54,22 +60,42 @@ class DropboxAction extends in.handyman.command.Action with LazyLogging {
       //      for (item <- items)
       //        println(item.getPathLower)
 
-      val outputStream = new FileOutputStream(target)
-      val downloadedFile = Try {
-        client.files
-          .downloadZip(source)
-          .download(outputStream)
-        logger.info("Dowload from Dropbox id#{}, name#{}, from#{}, to#{}", id, name, source, target)
-        logger.info("Download completed into this location#{}",target)
-        if(target.contains("\\")){
-          target = target.replace("\\", "\\\\")
+      if (ftype == "file") {
+
+        outputStream = new FileOutputStream(target + source)
+        val downloadFile = Try {
+          client.files
+            .download(source)
+            .download(outputStream)
+          logger.info("Dowload from Dropbox id#{}, name#{}, from#{}, to#{}", id, name, source, target)
+          logger.info("Download completed into this location#{}", target)
+          if (target.contains("\\")) {
+            target = target.replace("\\", "\\\\")
+          }
+          val query = "insert into " + id + "_dropbox" + " (process_id,name,source,target,time) values " + "(\"" + id + "\",\"" + name + "\",\"" + source + "\",\"" + target + "\"," + now + ");"
+          logger.info("Inserted the data into db ")
+          dropboxStmtfrom.execute(query)
+          dropboxDbConnfrom.commit()
         }
-        val query = "insert into " + id + "_dropbox" +  " (process_id,name,source,target,time) values " + "(\"" + id + "\",\"" + name + "\",\"" + source + "\",\"" + target + "\"," + now + ");"
-        logger.info("Inserted the data into db ")
-        dropboxStmtfrom.execute(query)
-        dropboxDbConnfrom.commit()
+
+      } else if (ftype == "directory") {
+
+        outputStream = new FileOutputStream(target + source + ".zip")
+        val downloadZip = Try {
+          client.files
+            .downloadZip(source)
+            .download(outputStream)
+          logger.info("Dowload from Dropbox id#{}, name#{}, from#{}, to#{}", id, name, source, target)
+          logger.info("Download completed into this location#{}", target)
+          if (target.contains("\\")) {
+            target = target.replace("\\", "\\\\")
+          }
+          val query = "insert into " + id + "_dropbox" + " (process_id,name,source,target,time) values " + "(\"" + id + "\",\"" + name + "\",\"" + source + "\",\"" + target + "\"," + now + ");"
+          logger.info("Inserted the data into db ")
+          dropboxStmtfrom.execute(query)
+          dropboxDbConnfrom.commit()
+        }
       }
-      outputStream.close()
 
       //println(s"Downloaded file ${downloadedFile}")
 
@@ -78,13 +104,13 @@ class DropboxAction extends in.handyman.command.Action with LazyLogging {
         ex.printStackTrace()
       }
     } finally {
+      outputStream.close()
       detailMap.put("name", name)
       detailMap.put("source", source)
       detailMap.put("target", target)
       detailMap.put("ddlSql", ddlSql)
     }
     context
-
   }
 
   def executeIf(context: in.handyman.command.Context, action: in.handyman.dsl.Action): Boolean = {
