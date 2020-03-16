@@ -77,7 +77,7 @@ Abort:
 	'}' 'on-condition' condition=Expression;
 	
 Dropbox:
-    'dropbox' 'as' name= STRING 'db' db= STRING 'auth' auth= STRING 'source' source= STRING 'target' target= STRING 'type' type= STRING 'using'
+    'dropbox' 'as' name= STRING 'db' db= STRING 'auth' auth= STRING 'source' source= STRING 'target' target= STRING 'using'
     '{'
         value=SelectStatement
     '}' 'on-condition' condition=Expression;

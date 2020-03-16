@@ -16,6 +16,9 @@ import com.dropbox.core.{ DbxAppInfo, DbxRequestConfig, DbxWebAuth }
 import com.dropbox.core.v2.DbxClientV2
 
 import scala.util.Try
+import com.dropbox.core.v2.files.Metadata
+import com.dropbox.core.v2.files.FileMetadata
+import com.dropbox.core.v2.files.FolderMetadata
 
 class DropboxAction extends in.handyman.command.Action with LazyLogging {
   val detailMap = new java.util.HashMap[String, String]
@@ -31,7 +34,7 @@ class DropboxAction extends in.handyman.command.Action with LazyLogging {
     val id = context.getValue("process-id")
     val db = dropbox.getDb
     val auth = dropbox.getAuth
-    var ftype = dropbox.getType
+    var ftype: Metadata  = null
 
     val dropboxDbConnfrom = ResourceAccess.rdbmsConn(db)
     val dropboxStmtfrom = dropboxDbConnfrom.createStatement
@@ -60,7 +63,7 @@ class DropboxAction extends in.handyman.command.Action with LazyLogging {
       //      for (item <- items)
       //        println(item.getPathLower)
 
-      if (ftype == "file") {
+      if (ftype.isInstanceOf[FileMetadata]) {
 
         outputStream = new FileOutputStream(target + source)
         val downloadFile = Try {
@@ -78,7 +81,7 @@ class DropboxAction extends in.handyman.command.Action with LazyLogging {
           dropboxDbConnfrom.commit()
         }
 
-      } else if (ftype == "directory") {
+      } else if (ftype.isInstanceOf[FolderMetadata]) {
 
         outputStream = new FileOutputStream(target + source + ".zip")
         val downloadZip = Try {
