@@ -58,8 +58,25 @@ Action:
 	|FirebaseReactiveNotification
 	|FirebaseDatabasePut
 	|ExecJava
+	|ElasticFBCLead
+	|ElasticGET
 	)
 ;
+
+ElasticFBCLead:
+	'efblc' 'as' name=STRING 'secured-by' accessToken=STRING 'with-key' appSecret=STRING 'through-user' accountId=STRING 'for-campaign' campaignId=STRING 'into' target=STRING 'using'
+	'{'
+		value=STRING
+	'}' 'on-condition' condition=Expression
+;
+
+ElasticGET:
+	'elasticget' 'as' name= STRING 'from' source= STRING 'to' to= STRING 'using'
+	'{'
+		value=SelectStatement
+	'}' 'on-condition' condition=Expression
+;
+
 
 ExecJava:
 	"java" 'as' name=STRING 'using' classFqn=STRING 'name-sake-db' dbSrc=STRING 

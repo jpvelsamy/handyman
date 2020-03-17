@@ -22,6 +22,8 @@ local.properties
 generated/
 src-gen/
 xtend-gen/
+*/src/main/xtext-gen
+*/src/main/xtext-gen
 
 # Ignore plugin.xml_gen and feature.xml_gen files, when build Eclipse Plugins.
 
