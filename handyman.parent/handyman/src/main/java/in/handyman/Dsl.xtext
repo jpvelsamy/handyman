@@ -60,8 +60,30 @@ Action:
 	|ExecJava
 	|ElasticFBCLead
 	|ElasticGET
+	|Dropbox
+	|S3
+	|Extract
 	)
 ;
+
+Dropbox:
+    'dropbox' 'as' name= STRING 'db' db= STRING 'auth' auth= STRING 'source' source= STRING 'target' target= STRING 'using'
+    '{'
+        value=SelectStatement
+    '}' 'on-condition' condition=Expression;
+    
+S3:
+    's3' 'as' name= STRING 'db' db= STRING 'key' key= STRING 'token' token= STRING 'bucket' bucket= STRING 'type' type= STRING 'using'
+    '{'
+        value=SelectStatement
+    '}' 'on-condition' condition=Expression;
+    
+Extract:
+    'extract' 'as' name= STRING 'db' db= STRING 'sdirectory' sdirectory= STRING 'ddirectory' ddirectory= STRING 'file' file= STRING 'using'
+    '{'
+        value=SelectStatement
+    '}' 'on-condition' condition=Expression;
+
 
 ElasticFBCLead:
 	'efblc' 'as' name=STRING 'secured-by' accessToken=STRING 'with-key' appSecret=STRING 'through-user' accountId=STRING 'for-campaign' campaignId=STRING 'into' target=STRING 'using'
