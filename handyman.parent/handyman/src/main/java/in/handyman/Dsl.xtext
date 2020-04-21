@@ -63,17 +63,19 @@ Action:
 	|Dropbox
 	|S3
 	|Extract
+	|Checksum
+	//|LoadCsv
 	)
 ;
 
 Dropbox:
-    'dropbox' 'as' name= STRING 'db' db= STRING 'auth' auth= STRING 'source' source= STRING 'target' target= STRING 'using'
+    'dropbox' 'as' name= STRING 'db' db= STRING 'auth' auth= STRING 'source' source= STRING 'target' target= STRING 'type' type= STRING 'by-batch' limit=STRING 'using'
     '{'
         value=SelectStatement
     '}' 'on-condition' condition=Expression;
     
 S3:
-    's3' 'as' name= STRING 'db' db= STRING 'key' key= STRING 'token' token= STRING 'bucket' bucket= STRING 'type' type= STRING 'using'
+    's3' 'as' name= STRING 'db' db= STRING 'key' key= STRING 'token' token= STRING 'bucket' bucket= STRING 'type' type= STRING 'by-batch' limit=STRING 'using'
     '{'
         value=SelectStatement
     '}' 'on-condition' condition=Expression;
@@ -83,7 +85,25 @@ Extract:
     '{'
         value=SelectStatement
     '}' 'on-condition' condition=Expression;
+    
+Checksum:
+    'checksum' 'as' name= STRING 'db' db= STRING 'cstype' cstype = STRING 
+    '{'
+        value=SelectStatement
+    '}' 'on-condition' condition=Expression;
+    
+LoadCsv:
+	'loadcsv' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'with' delim=STRING 'by-batch' limit=STRING 'using'
+	'{'
+	value=SelectStatement
+	'}' 'on-condition' condition=Expression;
 
+//LoadCsv:
+	//'loadcsv' 'as' name= STRING 'from' source= STRING 'to' to= STRING 'with'  delim= STRING 'using'
+	//'{'
+		//value=SelectStatement
+	//'}' 'on-condition' condition=Expression
+//;
 
 ElasticFBCLead:
 	'efblc' 'as' name=STRING 'secured-by' accessToken=STRING 'with-key' appSecret=STRING 'through-user' accountId=STRING 'for-campaign' campaignId=STRING 'into' target=STRING 'using'
@@ -280,12 +300,7 @@ WriteCsv:
 	'}' 'on-condition' condition=Expression
 ;
 
-LoadCsv:
-	'loadcsv' 'as' name= STRING 'from' source= STRING 'to' to= STRING 'with'  delim= STRING 'using'
-	'{'
-		value=SelectStatement
-	'}' 'on-condition' condition=Expression
-;
+
 
 Transform:
 	'transform' 'as' name= STRING 'on' on= STRING 'using'

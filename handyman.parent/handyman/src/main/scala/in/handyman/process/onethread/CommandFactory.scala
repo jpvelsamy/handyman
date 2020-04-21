@@ -23,7 +23,11 @@ object CommandFactory {
       case "firebasedatabaseput"=>new FirebaseDbUpdateAction
       case "firebasereactivenotification"=>new FirebaseMessagingAction
       case "execjava"=>new JavaAction  
-      case "dropbox"=> new DropboxAction    
+      case "dropbox"=> new DropboxAction   
+      case "s3"=> new S3Action
+      case "extract"=> new ExtractAction
+      case "checksum"=> new ChecksumAction
+      case "loadcsv" => new LoadCsvIntoDbAction
     }
   }
 }
