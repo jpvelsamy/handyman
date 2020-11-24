@@ -31,13 +31,13 @@ object CommandFactory {
       case "s3" => new S3Action
       case "extract" => new ExtractAction
       case "checksum" => new ChecksumAction
-      //      case "loadcsv" => new LoadCsvIntoDbAction
+      case "loadcsv" => new LoadCsvIntoDbAction
       case "deletefolder" => new DeleteFolderAction
       case "mail" => new EMailAction
       case "targeneration" => new TarGenerationAction
       case "modelgeneration" => new ModelGenerationAction
       case "mahout" => new ModelTrainingAction
-      //      case "copydata" => new CopydataAction
+      case "copydata" => new CopydataAction
       case "terminal" => new TerminalAction
       case "writecsv" => new WriteCsvAndTsvAction
       case "nlptextpreprocessing" => new NLPTextPreprocessingAction
