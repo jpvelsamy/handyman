@@ -23,6 +23,7 @@ import in.handyman.dsl.Fetch;
 import in.handyman.dsl.Finally;
 import in.handyman.dsl.FirebaseDatabasePut;
 import in.handyman.dsl.FirebaseReactiveNotification;
+import in.handyman.dsl.Forkprocess;
 import in.handyman.dsl.GooglecalPUT;
 import in.handyman.dsl.GooglecontactPUT;
 import in.handyman.dsl.GooglecontactSelectAll;
@@ -125,6 +126,7 @@ public class DslFactoryImpl extends EFactoryImpl implements DslFactory
       case DslPackage.TRELLO_PUT: return createTrelloPUT();
       case DslPackage.FETCH: return createFetch();
       case DslPackage.CALLPROCESS: return createCallprocess();
+      case DslPackage.FORKPROCESS: return createForkprocess();
       case DslPackage.UPDATEDAUDIT: return createUpdatedaudit();
       case DslPackage.CLICK_SEND_SMS: return createClickSendSms();
       case DslPackage.SLACK_PUT: return createSlackPUT();
@@ -422,6 +424,17 @@ public class DslFactoryImpl extends EFactoryImpl implements DslFactory
   {
     CallprocessImpl callprocess = new CallprocessImpl();
     return callprocess;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Forkprocess createForkprocess()
+  {
+    ForkprocessImpl forkprocess = new ForkprocessImpl();
+    return forkprocess;
   }
 
   /**

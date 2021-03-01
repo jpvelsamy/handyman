@@ -258,6 +258,15 @@ public interface DslFactory extends EFactory
   Callprocess createCallprocess();
 
   /**
+   * Returns a new object of class '<em>Forkprocess</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Forkprocess</em>'.
+   * @generated
+   */
+  Forkprocess createForkprocess();
+
+  /**
    * Returns a new object of class '<em>Updatedaudit</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

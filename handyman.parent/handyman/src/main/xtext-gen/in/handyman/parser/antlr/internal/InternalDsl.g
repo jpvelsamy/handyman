@@ -468,164 +468,173 @@ ruleAction returns [EObject current=null]
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getActionAccess().getFetchParserRuleCall_9());
+			newCompositeNode(grammarAccess.getActionAccess().getForkprocessParserRuleCall_9());
 		}
-		this_Fetch_9=ruleFetch
+		this_Forkprocess_9=ruleForkprocess
 		{
-			$current = $this_Fetch_9.current;
+			$current = $this_Forkprocess_9.current;
 			afterParserOrEnumRuleCall();
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getActionAccess().getTrelloPUTParserRuleCall_10());
+			newCompositeNode(grammarAccess.getActionAccess().getFetchParserRuleCall_10());
 		}
-		this_TrelloPUT_10=ruleTrelloPUT
+		this_Fetch_10=ruleFetch
 		{
-			$current = $this_TrelloPUT_10.current;
+			$current = $this_Fetch_10.current;
 			afterParserOrEnumRuleCall();
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getActionAccess().getTrelloGETParserRuleCall_11());
+			newCompositeNode(grammarAccess.getActionAccess().getTrelloPUTParserRuleCall_11());
 		}
-		this_TrelloGET_11=ruleTrelloGET
+		this_TrelloPUT_11=ruleTrelloPUT
 		{
-			$current = $this_TrelloGET_11.current;
+			$current = $this_TrelloPUT_11.current;
 			afterParserOrEnumRuleCall();
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getActionAccess().getRestParserRuleCall_12());
+			newCompositeNode(grammarAccess.getActionAccess().getTrelloGETParserRuleCall_12());
 		}
-		this_Rest_12=ruleRest
+		this_TrelloGET_12=ruleTrelloGET
 		{
-			$current = $this_Rest_12.current;
+			$current = $this_TrelloGET_12.current;
 			afterParserOrEnumRuleCall();
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getActionAccess().getDoozleParserRuleCall_13());
+			newCompositeNode(grammarAccess.getActionAccess().getRestParserRuleCall_13());
 		}
-		this_Doozle_13=ruleDoozle
+		this_Rest_13=ruleRest
 		{
-			$current = $this_Doozle_13.current;
+			$current = $this_Rest_13.current;
 			afterParserOrEnumRuleCall();
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getActionAccess().getDropfileParserRuleCall_14());
+			newCompositeNode(grammarAccess.getActionAccess().getDoozleParserRuleCall_14());
 		}
-		this_Dropfile_14=ruleDropfile
+		this_Doozle_14=ruleDoozle
 		{
-			$current = $this_Dropfile_14.current;
+			$current = $this_Doozle_14.current;
 			afterParserOrEnumRuleCall();
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getActionAccess().getFBCLeadParserRuleCall_15());
+			newCompositeNode(grammarAccess.getActionAccess().getDropfileParserRuleCall_15());
 		}
-		this_FBCLead_15=ruleFBCLead
+		this_Dropfile_15=ruleDropfile
 		{
-			$current = $this_FBCLead_15.current;
+			$current = $this_Dropfile_15.current;
 			afterParserOrEnumRuleCall();
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getActionAccess().getFBFormDownloadParserRuleCall_16());
+			newCompositeNode(grammarAccess.getActionAccess().getFBCLeadParserRuleCall_16());
 		}
-		this_FBFormDownload_16=ruleFBFormDownload
+		this_FBCLead_16=ruleFBCLead
 		{
-			$current = $this_FBFormDownload_16.current;
+			$current = $this_FBCLead_16.current;
 			afterParserOrEnumRuleCall();
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getActionAccess().getSendMailParserRuleCall_17());
+			newCompositeNode(grammarAccess.getActionAccess().getFBFormDownloadParserRuleCall_17());
 		}
-		this_SendMail_17=ruleSendMail
+		this_FBFormDownload_17=ruleFBFormDownload
 		{
-			$current = $this_SendMail_17.current;
+			$current = $this_FBFormDownload_17.current;
 			afterParserOrEnumRuleCall();
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getActionAccess().getGooglecontactPUTParserRuleCall_18());
+			newCompositeNode(grammarAccess.getActionAccess().getSendMailParserRuleCall_18());
 		}
-		this_GooglecontactPUT_18=ruleGooglecontactPUT
+		this_SendMail_18=ruleSendMail
 		{
-			$current = $this_GooglecontactPUT_18.current;
+			$current = $this_SendMail_18.current;
 			afterParserOrEnumRuleCall();
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getActionAccess().getGooglecontactSelectAllParserRuleCall_19());
+			newCompositeNode(grammarAccess.getActionAccess().getGooglecontactPUTParserRuleCall_19());
 		}
-		this_GooglecontactSelectAll_19=ruleGooglecontactSelectAll
+		this_GooglecontactPUT_19=ruleGooglecontactPUT
 		{
-			$current = $this_GooglecontactSelectAll_19.current;
+			$current = $this_GooglecontactPUT_19.current;
 			afterParserOrEnumRuleCall();
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getActionAccess().getAbortParserRuleCall_20());
+			newCompositeNode(grammarAccess.getActionAccess().getGooglecontactSelectAllParserRuleCall_20());
 		}
-		this_Abort_20=ruleAbort
+		this_GooglecontactSelectAll_20=ruleGooglecontactSelectAll
 		{
-			$current = $this_Abort_20.current;
+			$current = $this_GooglecontactSelectAll_20.current;
 			afterParserOrEnumRuleCall();
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getActionAccess().getSmsLeadSmsParserRuleCall_21());
+			newCompositeNode(grammarAccess.getActionAccess().getAbortParserRuleCall_21());
 		}
-		this_SmsLeadSms_21=ruleSmsLeadSms
+		this_Abort_21=ruleAbort
 		{
-			$current = $this_SmsLeadSms_21.current;
+			$current = $this_Abort_21.current;
 			afterParserOrEnumRuleCall();
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getActionAccess().getFirebaseReactiveNotificationParserRuleCall_22());
+			newCompositeNode(grammarAccess.getActionAccess().getSmsLeadSmsParserRuleCall_22());
 		}
-		this_FirebaseReactiveNotification_22=ruleFirebaseReactiveNotification
+		this_SmsLeadSms_22=ruleSmsLeadSms
 		{
-			$current = $this_FirebaseReactiveNotification_22.current;
+			$current = $this_SmsLeadSms_22.current;
 			afterParserOrEnumRuleCall();
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getActionAccess().getFirebaseDatabasePutParserRuleCall_23());
+			newCompositeNode(grammarAccess.getActionAccess().getFirebaseReactiveNotificationParserRuleCall_23());
 		}
-		this_FirebaseDatabasePut_23=ruleFirebaseDatabasePut
+		this_FirebaseReactiveNotification_23=ruleFirebaseReactiveNotification
 		{
-			$current = $this_FirebaseDatabasePut_23.current;
+			$current = $this_FirebaseReactiveNotification_23.current;
 			afterParserOrEnumRuleCall();
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getActionAccess().getExecJavaParserRuleCall_24());
+			newCompositeNode(grammarAccess.getActionAccess().getFirebaseDatabasePutParserRuleCall_24());
 		}
-		this_ExecJava_24=ruleExecJava
+		this_FirebaseDatabasePut_24=ruleFirebaseDatabasePut
 		{
-			$current = $this_ExecJava_24.current;
+			$current = $this_FirebaseDatabasePut_24.current;
 			afterParserOrEnumRuleCall();
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getActionAccess().getElasticFBCLeadParserRuleCall_25());
+			newCompositeNode(grammarAccess.getActionAccess().getExecJavaParserRuleCall_25());
 		}
-		this_ElasticFBCLead_25=ruleElasticFBCLead
+		this_ExecJava_25=ruleExecJava
 		{
-			$current = $this_ElasticFBCLead_25.current;
+			$current = $this_ExecJava_25.current;
 			afterParserOrEnumRuleCall();
 		}
 		    |
 		{
-			newCompositeNode(grammarAccess.getActionAccess().getElasticGETParserRuleCall_26());
+			newCompositeNode(grammarAccess.getActionAccess().getElasticFBCLeadParserRuleCall_26());
 		}
-		this_ElasticGET_26=ruleElasticGET
+		this_ElasticFBCLead_26=ruleElasticFBCLead
 		{
-			$current = $this_ElasticGET_26.current;
+			$current = $this_ElasticFBCLead_26.current;
+			afterParserOrEnumRuleCall();
+		}
+		    |
+		{
+			newCompositeNode(grammarAccess.getActionAccess().getElasticGETParserRuleCall_27());
+		}
+		this_ElasticGET_27=ruleElasticGET
+		{
+			$current = $this_ElasticGET_27.current;
 			afterParserOrEnumRuleCall();
 		}
 	)
@@ -4512,6 +4521,171 @@ ruleCallprocess returns [EObject current=null]
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getCallprocessRule());
+					}
+					set(
+						$current,
+						"condition",
+						lv_condition_14_0,
+						"in.handyman.Dsl.Expression");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)
+	)
+;
+
+// Entry rule entryRuleForkprocess
+entryRuleForkprocess returns [EObject current=null]:
+	{ newCompositeNode(grammarAccess.getForkprocessRule()); }
+	iv_ruleForkprocess=ruleForkprocess
+	{ $current=$iv_ruleForkprocess.current; }
+	EOF;
+
+// Rule Forkprocess
+ruleForkprocess returns [EObject current=null]
+@init {
+	enterRule();
+}
+@after {
+	leaveRule();
+}:
+	(
+		otherlv_0='forkprocess'
+		{
+			newLeafNode(otherlv_0, grammarAccess.getForkprocessAccess().getForkprocessKeyword_0());
+		}
+		otherlv_1='as'
+		{
+			newLeafNode(otherlv_1, grammarAccess.getForkprocessAccess().getAsKeyword_1());
+		}
+		(
+			(
+				lv_name_2_0=RULE_STRING
+				{
+					newLeafNode(lv_name_2_0, grammarAccess.getForkprocessAccess().getNameSTRINGTerminalRuleCall_2_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getForkprocessRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"name",
+						lv_name_2_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_3='with-target'
+		{
+			newLeafNode(otherlv_3, grammarAccess.getForkprocessAccess().getWithTargetKeyword_3());
+		}
+		(
+			(
+				lv_target_4_0=RULE_STRING
+				{
+					newLeafNode(lv_target_4_0, grammarAccess.getForkprocessAccess().getTargetSTRINGTerminalRuleCall_4_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getForkprocessRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"target",
+						lv_target_4_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_5='from-file'
+		{
+			newLeafNode(otherlv_5, grammarAccess.getForkprocessAccess().getFromFileKeyword_5());
+		}
+		(
+			(
+				lv_source_6_0=RULE_STRING
+				{
+					newLeafNode(lv_source_6_0, grammarAccess.getForkprocessAccess().getSourceSTRINGTerminalRuleCall_6_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getForkprocessRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"source",
+						lv_source_6_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_7='using'
+		{
+			newLeafNode(otherlv_7, grammarAccess.getForkprocessAccess().getUsingKeyword_7());
+		}
+		(
+			(
+				lv_datasource_8_0=RULE_STRING
+				{
+					newLeafNode(lv_datasource_8_0, grammarAccess.getForkprocessAccess().getDatasourceSTRINGTerminalRuleCall_8_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getForkprocessRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"datasource",
+						lv_datasource_8_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_9='for-every'
+		{
+			newLeafNode(otherlv_9, grammarAccess.getForkprocessAccess().getForEveryKeyword_9());
+		}
+		otherlv_10='{'
+		{
+			newLeafNode(otherlv_10, grammarAccess.getForkprocessAccess().getLeftCurlyBracketKeyword_10());
+		}
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getForkprocessAccess().getValueSelectStatementParserRuleCall_11_0());
+				}
+				lv_value_11_0=ruleSelectStatement
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getForkprocessRule());
+					}
+					set(
+						$current,
+						"value",
+						lv_value_11_0,
+						"in.handyman.Dsl.SelectStatement");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)
+		otherlv_12='}'
+		{
+			newLeafNode(otherlv_12, grammarAccess.getForkprocessAccess().getRightCurlyBracketKeyword_12());
+		}
+		otherlv_13='on-condition'
+		{
+			newLeafNode(otherlv_13, grammarAccess.getForkprocessAccess().getOnConditionKeyword_13());
+		}
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getForkprocessAccess().getConditionExpressionParserRuleCall_14_0());
+				}
+				lv_condition_14_0=ruleExpression
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getForkprocessRule());
 					}
 					set(
 						$current,

@@ -22,6 +22,7 @@ import in.handyman.dsl.Fetch;
 import in.handyman.dsl.Finally;
 import in.handyman.dsl.FirebaseDatabasePut;
 import in.handyman.dsl.FirebaseReactiveNotification;
+import in.handyman.dsl.Forkprocess;
 import in.handyman.dsl.GooglecalPUT;
 import in.handyman.dsl.GooglecontactPUT;
 import in.handyman.dsl.GooglecontactSelectAll;
@@ -237,6 +238,11 @@ public class DslAdapterFactory extends AdapterFactoryImpl
       public Adapter caseCallprocess(Callprocess object)
       {
         return createCallprocessAdapter();
+      }
+      @Override
+      public Adapter caseForkprocess(Forkprocess object)
+      {
+        return createForkprocessAdapter();
       }
       @Override
       public Adapter caseUpdatedaudit(Updatedaudit object)
@@ -686,6 +692,21 @@ public class DslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createCallprocessAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link in.handyman.dsl.Forkprocess <em>Forkprocess</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see in.handyman.dsl.Forkprocess
+   * @generated
+   */
+  public Adapter createForkprocessAdapter()
   {
     return null;
   }

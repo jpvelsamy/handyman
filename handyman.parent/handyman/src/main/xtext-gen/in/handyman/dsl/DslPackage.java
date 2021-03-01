@@ -1974,6 +1974,79 @@ public interface DslPackage extends EPackage
   int CALLPROCESS_FEATURE_COUNT = ACTION_FEATURE_COUNT + 4;
 
   /**
+   * The meta object id for the '{@link in.handyman.dsl.impl.ForkprocessImpl <em>Forkprocess</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see in.handyman.dsl.impl.ForkprocessImpl
+   * @see in.handyman.dsl.impl.DslPackageImpl#getForkprocess()
+   * @generated
+   */
+  int FORKPROCESS = 26;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FORKPROCESS__NAME = ACTION__NAME;
+
+  /**
+   * The feature id for the '<em><b>Condition</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FORKPROCESS__CONDITION = ACTION__CONDITION;
+
+  /**
+   * The feature id for the '<em><b>Target</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FORKPROCESS__TARGET = ACTION_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Source</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FORKPROCESS__SOURCE = ACTION_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Datasource</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FORKPROCESS__DATASOURCE = ACTION_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Value</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FORKPROCESS__VALUE = ACTION_FEATURE_COUNT + 3;
+
+  /**
+   * The number of structural features of the '<em>Forkprocess</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FORKPROCESS_FEATURE_COUNT = ACTION_FEATURE_COUNT + 4;
+
+  /**
    * The meta object id for the '{@link in.handyman.dsl.impl.UpdatedauditImpl <em>Updatedaudit</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1981,7 +2054,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getUpdatedaudit()
    * @generated
    */
-  int UPDATEDAUDIT = 26;
+  int UPDATEDAUDIT = 27;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2045,7 +2118,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getClickSendSms()
    * @generated
    */
-  int CLICK_SEND_SMS = 27;
+  int CLICK_SEND_SMS = 28;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2118,7 +2191,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getSlackPUT()
    * @generated
    */
-  int SLACK_PUT = 28;
+  int SLACK_PUT = 29;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2182,7 +2255,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getCopydata()
    * @generated
    */
-  int COPYDATA = 29;
+  int COPYDATA = 30;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2246,7 +2319,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getWriteCsv()
    * @generated
    */
-  int WRITE_CSV = 30;
+  int WRITE_CSV = 31;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2319,7 +2392,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getLoadCsv()
    * @generated
    */
-  int LOAD_CSV = 31;
+  int LOAD_CSV = 32;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2392,7 +2465,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getTransform()
    * @generated
    */
-  int TRANSFORM = 32;
+  int TRANSFORM = 33;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2447,7 +2520,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getExpression()
    * @generated
    */
-  int EXPRESSION = 33;
+  int EXPRESSION = 34;
 
   /**
    * The feature id for the '<em><b>Lhs</b></em>' attribute.
@@ -4045,6 +4118,60 @@ public interface DslPackage extends EPackage
   EAttribute getCallprocess_Value();
 
   /**
+   * Returns the meta object for class '{@link in.handyman.dsl.Forkprocess <em>Forkprocess</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Forkprocess</em>'.
+   * @see in.handyman.dsl.Forkprocess
+   * @generated
+   */
+  EClass getForkprocess();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.Forkprocess#getTarget <em>Target</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Target</em>'.
+   * @see in.handyman.dsl.Forkprocess#getTarget()
+   * @see #getForkprocess()
+   * @generated
+   */
+  EAttribute getForkprocess_Target();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.Forkprocess#getSource <em>Source</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Source</em>'.
+   * @see in.handyman.dsl.Forkprocess#getSource()
+   * @see #getForkprocess()
+   * @generated
+   */
+  EAttribute getForkprocess_Source();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.Forkprocess#getDatasource <em>Datasource</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Datasource</em>'.
+   * @see in.handyman.dsl.Forkprocess#getDatasource()
+   * @see #getForkprocess()
+   * @generated
+   */
+  EAttribute getForkprocess_Datasource();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.Forkprocess#getValue <em>Value</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Value</em>'.
+   * @see in.handyman.dsl.Forkprocess#getValue()
+   * @see #getForkprocess()
+   * @generated
+   */
+  EAttribute getForkprocess_Value();
+
+  /**
    * Returns the meta object for class '{@link in.handyman.dsl.Updatedaudit <em>Updatedaudit</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -5636,6 +5763,48 @@ public interface DslPackage extends EPackage
      * @generated
      */
     EAttribute CALLPROCESS__VALUE = eINSTANCE.getCallprocess_Value();
+
+    /**
+     * The meta object literal for the '{@link in.handyman.dsl.impl.ForkprocessImpl <em>Forkprocess</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see in.handyman.dsl.impl.ForkprocessImpl
+     * @see in.handyman.dsl.impl.DslPackageImpl#getForkprocess()
+     * @generated
+     */
+    EClass FORKPROCESS = eINSTANCE.getForkprocess();
+
+    /**
+     * The meta object literal for the '<em><b>Target</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FORKPROCESS__TARGET = eINSTANCE.getForkprocess_Target();
+
+    /**
+     * The meta object literal for the '<em><b>Source</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FORKPROCESS__SOURCE = eINSTANCE.getForkprocess_Source();
+
+    /**
+     * The meta object literal for the '<em><b>Datasource</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FORKPROCESS__DATASOURCE = eINSTANCE.getForkprocess_Datasource();
+
+    /**
+     * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FORKPROCESS__VALUE = eINSTANCE.getForkprocess_Value();
 
     /**
      * The meta object literal for the '{@link in.handyman.dsl.impl.UpdatedauditImpl <em>Updatedaudit</em>}' class.

@@ -58,6 +58,7 @@ public class DslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getTrelloPUTAccess().getGroup(), "rule__TrelloPUT__Group__0");
 			builder.put(grammarAccess.getFetchAccess().getGroup(), "rule__Fetch__Group__0");
 			builder.put(grammarAccess.getCallprocessAccess().getGroup(), "rule__Callprocess__Group__0");
+			builder.put(grammarAccess.getForkprocessAccess().getGroup(), "rule__Forkprocess__Group__0");
 			builder.put(grammarAccess.getUpdatedauditAccess().getGroup(), "rule__Updatedaudit__Group__0");
 			builder.put(grammarAccess.getClickSendSmsAccess().getGroup(), "rule__ClickSendSms__Group__0");
 			builder.put(grammarAccess.getSlackPUTAccess().getGroup(), "rule__SlackPUT__Group__0");
@@ -222,6 +223,12 @@ public class DslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getCallprocessAccess().getDatasourceAssignment_8(), "rule__Callprocess__DatasourceAssignment_8");
 			builder.put(grammarAccess.getCallprocessAccess().getValueAssignment_11(), "rule__Callprocess__ValueAssignment_11");
 			builder.put(grammarAccess.getCallprocessAccess().getConditionAssignment_14(), "rule__Callprocess__ConditionAssignment_14");
+			builder.put(grammarAccess.getForkprocessAccess().getNameAssignment_2(), "rule__Forkprocess__NameAssignment_2");
+			builder.put(grammarAccess.getForkprocessAccess().getTargetAssignment_4(), "rule__Forkprocess__TargetAssignment_4");
+			builder.put(grammarAccess.getForkprocessAccess().getSourceAssignment_6(), "rule__Forkprocess__SourceAssignment_6");
+			builder.put(grammarAccess.getForkprocessAccess().getDatasourceAssignment_8(), "rule__Forkprocess__DatasourceAssignment_8");
+			builder.put(grammarAccess.getForkprocessAccess().getValueAssignment_11(), "rule__Forkprocess__ValueAssignment_11");
+			builder.put(grammarAccess.getForkprocessAccess().getConditionAssignment_14(), "rule__Forkprocess__ConditionAssignment_14");
 			builder.put(grammarAccess.getUpdatedauditAccess().getNameAssignment_2(), "rule__Updatedaudit__NameAssignment_2");
 			builder.put(grammarAccess.getUpdatedauditAccess().getLogsinkAssignment_4(), "rule__Updatedaudit__LogsinkAssignment_4");
 			builder.put(grammarAccess.getUpdatedauditAccess().getDatasourceAssignment_6(), "rule__Updatedaudit__DatasourceAssignment_6");

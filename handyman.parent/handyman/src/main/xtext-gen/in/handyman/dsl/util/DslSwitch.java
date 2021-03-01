@@ -22,6 +22,7 @@ import in.handyman.dsl.Fetch;
 import in.handyman.dsl.Finally;
 import in.handyman.dsl.FirebaseDatabasePut;
 import in.handyman.dsl.FirebaseReactiveNotification;
+import in.handyman.dsl.Forkprocess;
 import in.handyman.dsl.GooglecalPUT;
 import in.handyman.dsl.GooglecontactPUT;
 import in.handyman.dsl.GooglecontactSelectAll;
@@ -305,6 +306,14 @@ public class DslSwitch<T> extends Switch<T>
         Callprocess callprocess = (Callprocess)theEObject;
         T result = caseCallprocess(callprocess);
         if (result == null) result = caseAction(callprocess);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case DslPackage.FORKPROCESS:
+      {
+        Forkprocess forkprocess = (Forkprocess)theEObject;
+        T result = caseForkprocess(forkprocess);
+        if (result == null) result = caseAction(forkprocess);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -787,6 +796,22 @@ public class DslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseCallprocess(Callprocess object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Forkprocess</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Forkprocess</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseForkprocess(Forkprocess object)
   {
     return null;
   }

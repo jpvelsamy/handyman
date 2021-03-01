@@ -31,6 +31,7 @@ class CallProcessAction extends in.handyman.command.Action with LazyLogging {
     val dbSrc = callProcess.getDatasource
     val sql = callProcess.getValue.replaceAll("\"", "")
     val id = context.getValue("process-id")
+    
 
     logger.info("Callprocess id#{}, name#{}, calledprocess#{}, calledfile#{}, db=#{}", id, name, processName, fileRelativePath, dbSrc)
 
@@ -38,9 +39,10 @@ class CallProcessAction extends in.handyman.command.Action with LazyLogging {
     val stmt = conn.createStatement
     val rs = stmt.executeQuery(sql)
     val columnCount = rs.getMetaData.getColumnCount
-
+    val contextList:java.util.Set[TryContext] = new java.util.HashSet[TryContext]
+    
     while (rs.next()) {
-
+      
       for (i <- 1 until columnCount + 1) {
         val key = rs.getMetaData.getColumnLabel(i)
         val value = rs.getString(i)
