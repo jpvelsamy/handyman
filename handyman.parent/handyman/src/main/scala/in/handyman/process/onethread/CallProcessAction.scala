@@ -21,7 +21,7 @@ import java.sql.ResultSet
 
 class CallProcessAction extends in.handyman.command.Action with LazyLogging {
   val detailMap = new java.util.HashMap[String, String]
-  def execute(context: in.handyman.command.Context, action: in.handyman.dsl.Action, actionId:Integer): in.handyman.command.Context = {
+  def execute(context: in.handyman.command.Context, action: in.handyman.dsl.Action, actionId: Integer): in.handyman.command.Context = {
 
     val callProcessAsIs: in.handyman.dsl.Callprocess = action.asInstanceOf[in.handyman.dsl.Callprocess]
     val callProcess: in.handyman.dsl.Callprocess = CommandProxy.createProxy(callProcessAsIs, classOf[in.handyman.dsl.Callprocess], context)
@@ -39,9 +39,12 @@ class CallProcessAction extends in.handyman.command.Action with LazyLogging {
     val stmt = conn.createStatement
     val rs = stmt.executeQuery(sql)
     val columnCount = rs.getMetaData.getColumnCount
+    val contextList: java.util.Set[TryContext] = new java.util.HashSet[TryContext]
 
     while (rs.next()) {
- for (i <- 1 until columnCount + 1) {
+
+      for (i <- 1 until columnCount + 1) {
+
         val key = rs.getMetaData.getColumnLabel(i)
         val value = rs.getString(i)
         context.addValue(key, value)
@@ -75,21 +78,20 @@ class CallProcessAction extends in.handyman.command.Action with LazyLogging {
       detailMap.put("sql", sql)
 
     } finally {
-      try{
-      rs.close
-      stmt.close
-      conn.close
-      }catch{
-         case ex: Throwable => {
+      try {
+        rs.close
+        stmt.close
+        conn.close
+      } catch {
+        case ex: Throwable => {
           handleError(ex)
-          detailMap.put("exception", ExceptionUtil.completeStackTraceex(ex))          
+          detailMap.put("exception", ExceptionUtil.completeStackTraceex(ex))
         }
       }
-     
+
     }
     context
   }
-
 
   def executeIf(context: in.handyman.command.Context, action: in.handyman.dsl.Action): Boolean = {
     val callProcessAsIs: in.handyman.dsl.Callprocess = action.asInstanceOf[in.handyman.dsl.Callprocess]

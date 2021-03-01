@@ -192,6 +192,12 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Callprocess/datasource"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Callprocess/value"/>
     </genClasses>
+    <genClasses ecoreClass="Dsl.ecore#//Forkprocess">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Forkprocess/target"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Forkprocess/source"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Forkprocess/datasource"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Forkprocess/value"/>
+    </genClasses>
     <genClasses ecoreClass="Dsl.ecore#//Updatedaudit">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Updatedaudit/logsink"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Updatedaudit/datasource"/>

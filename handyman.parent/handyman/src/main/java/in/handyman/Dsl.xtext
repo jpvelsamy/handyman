@@ -42,6 +42,7 @@ Action:
 	|ClickSendSms
 	|Updatedaudit 
 	|Callprocess
+	|Forkprocess
 	|Fetch
 	|TrelloPUT
 	|TrelloGET
@@ -231,6 +232,13 @@ Fetch:
 
 Callprocess:
 	'callprocess' 'as' name=STRING 'with-target' target=STRING 'from-file' source=STRING 'using' datasource=STRING 'for-every' 
+	'{'
+		value=SelectStatement
+	'}' 'on-condition' condition=Expression
+;
+
+Forkprocess:
+	'forkprocess' 'as' name=STRING 'with-target' target=STRING 'from-file' source=STRING 'using' datasource=STRING 'for-every' 
 	'{'
 		value=SelectStatement
 	'}' 'on-condition' condition=Expression

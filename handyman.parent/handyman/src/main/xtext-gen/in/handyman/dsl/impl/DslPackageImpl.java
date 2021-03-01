@@ -25,6 +25,7 @@ import in.handyman.dsl.Fetch;
 import in.handyman.dsl.Finally;
 import in.handyman.dsl.FirebaseDatabasePut;
 import in.handyman.dsl.FirebaseReactiveNotification;
+import in.handyman.dsl.Forkprocess;
 import in.handyman.dsl.GooglecalPUT;
 import in.handyman.dsl.GooglecontactPUT;
 import in.handyman.dsl.GooglecontactSelectAll;
@@ -251,6 +252,13 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * @generated
    */
   private EClass callprocessEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass forkprocessEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1956,6 +1964,56 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getForkprocess()
+  {
+    return forkprocessEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getForkprocess_Target()
+  {
+    return (EAttribute)forkprocessEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getForkprocess_Source()
+  {
+    return (EAttribute)forkprocessEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getForkprocess_Datasource()
+  {
+    return (EAttribute)forkprocessEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getForkprocess_Value()
+  {
+    return (EAttribute)forkprocessEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getUpdatedaudit()
   {
     return updatedauditEClass;
@@ -2507,6 +2565,12 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     createEAttribute(callprocessEClass, CALLPROCESS__DATASOURCE);
     createEAttribute(callprocessEClass, CALLPROCESS__VALUE);
 
+    forkprocessEClass = createEClass(FORKPROCESS);
+    createEAttribute(forkprocessEClass, FORKPROCESS__TARGET);
+    createEAttribute(forkprocessEClass, FORKPROCESS__SOURCE);
+    createEAttribute(forkprocessEClass, FORKPROCESS__DATASOURCE);
+    createEAttribute(forkprocessEClass, FORKPROCESS__VALUE);
+
     updatedauditEClass = createEClass(UPDATEDAUDIT);
     createEAttribute(updatedauditEClass, UPDATEDAUDIT__LOGSINK);
     createEAttribute(updatedauditEClass, UPDATEDAUDIT__DATASOURCE);
@@ -2601,6 +2665,7 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     trelloPUTEClass.getESuperTypes().add(this.getAction());
     fetchEClass.getESuperTypes().add(this.getAction());
     callprocessEClass.getESuperTypes().add(this.getAction());
+    forkprocessEClass.getESuperTypes().add(this.getAction());
     updatedauditEClass.getESuperTypes().add(this.getAction());
     clickSendSmsEClass.getESuperTypes().add(this.getAction());
     slackPUTEClass.getESuperTypes().add(this.getAction());
@@ -2795,6 +2860,12 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     initEAttribute(getCallprocess_Source(), ecorePackage.getEString(), "source", null, 0, 1, Callprocess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getCallprocess_Datasource(), ecorePackage.getEString(), "datasource", null, 0, 1, Callprocess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getCallprocess_Value(), ecorePackage.getEString(), "value", null, 0, 1, Callprocess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(forkprocessEClass, Forkprocess.class, "Forkprocess", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getForkprocess_Target(), ecorePackage.getEString(), "target", null, 0, 1, Forkprocess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getForkprocess_Source(), ecorePackage.getEString(), "source", null, 0, 1, Forkprocess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getForkprocess_Datasource(), ecorePackage.getEString(), "datasource", null, 0, 1, Forkprocess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getForkprocess_Value(), ecorePackage.getEString(), "value", null, 0, 1, Forkprocess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(updatedauditEClass, Updatedaudit.class, "Updatedaudit", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getUpdatedaudit_Logsink(), ecorePackage.getEString(), "logsink", null, 0, 1, Updatedaudit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

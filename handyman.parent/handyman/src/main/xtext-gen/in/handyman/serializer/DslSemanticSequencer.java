@@ -24,6 +24,7 @@ import in.handyman.dsl.Fetch;
 import in.handyman.dsl.Finally;
 import in.handyman.dsl.FirebaseDatabasePut;
 import in.handyman.dsl.FirebaseReactiveNotification;
+import in.handyman.dsl.Forkprocess;
 import in.handyman.dsl.GooglecalPUT;
 import in.handyman.dsl.GooglecontactPUT;
 import in.handyman.dsl.GooglecontactSelectAll;
@@ -121,6 +122,9 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 				return; 
 			case DslPackage.FIREBASE_REACTIVE_NOTIFICATION:
 				sequence_FirebaseReactiveNotification(context, (FirebaseReactiveNotification) semanticObject); 
+				return; 
+			case DslPackage.FORKPROCESS:
+				sequence_Forkprocess(context, (Forkprocess) semanticObject); 
 				return; 
 			case DslPackage.GOOGLECAL_PUT:
 				sequence_GooglecalPUT(context, (GooglecalPUT) semanticObject); 
@@ -815,6 +819,47 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 		feeder.accept(grammarAccess.getFirebaseReactiveNotificationAccess().getClassFqnSTRINGTerminalRuleCall_10_0(), semanticObject.getClassFqn());
 		feeder.accept(grammarAccess.getFirebaseReactiveNotificationAccess().getDbSrcSTRINGTerminalRuleCall_12_0(), semanticObject.getDbSrc());
 		feeder.accept(grammarAccess.getFirebaseReactiveNotificationAccess().getConditionExpressionParserRuleCall_14_0(), semanticObject.getCondition());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Action returns Forkprocess
+	 *     Forkprocess returns Forkprocess
+	 *
+	 * Constraint:
+	 *     (
+	 *         name=STRING 
+	 *         target=STRING 
+	 *         source=STRING 
+	 *         datasource=STRING 
+	 *         value=SelectStatement 
+	 *         condition=Expression
+	 *     )
+	 */
+	protected void sequence_Forkprocess(ISerializationContext context, Forkprocess semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.ACTION__NAME) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.ACTION__NAME));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.FORKPROCESS__TARGET) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FORKPROCESS__TARGET));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.FORKPROCESS__SOURCE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FORKPROCESS__SOURCE));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.FORKPROCESS__DATASOURCE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FORKPROCESS__DATASOURCE));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.FORKPROCESS__VALUE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FORKPROCESS__VALUE));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.ACTION__CONDITION) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.ACTION__CONDITION));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getForkprocessAccess().getNameSTRINGTerminalRuleCall_2_0(), semanticObject.getName());
+		feeder.accept(grammarAccess.getForkprocessAccess().getTargetSTRINGTerminalRuleCall_4_0(), semanticObject.getTarget());
+		feeder.accept(grammarAccess.getForkprocessAccess().getSourceSTRINGTerminalRuleCall_6_0(), semanticObject.getSource());
+		feeder.accept(grammarAccess.getForkprocessAccess().getDatasourceSTRINGTerminalRuleCall_8_0(), semanticObject.getDatasource());
+		feeder.accept(grammarAccess.getForkprocessAccess().getValueSelectStatementParserRuleCall_11_0(), semanticObject.getValue());
+		feeder.accept(grammarAccess.getForkprocessAccess().getConditionExpressionParserRuleCall_14_0(), semanticObject.getCondition());
 		feeder.finish();
 	}
 	
