@@ -60,7 +60,23 @@ Action:
 	|ExecJava
 	|ElasticFBCLead
 	|ElasticGET
+	|EsUpdate
+	|EsAccumulate
 	)
+;
+
+EsUpdate:
+	'es-update' 'as' name=STRING 'from' source=STRING 'to' target=STRING 'with-fetchsize-as' fetchSize=STRING 'and-writesize-as' writeSize=STRING 'using' 
+		'{'
+			value+=NonSelectStatement
+		'}' 'on-condition' condition=Expression 'with-write-threads' writeThreadCount=STRING
+;
+
+EsAccumulate:
+	'es-accumulate' 'as' name=STRING 'from' source=STRING 'to' target=STRING 'with-fetchsize-as' fetchSize=STRING 'and-writesize-as' writeSize=STRING 'using' 
+		'{'
+			value=STRING
+		'}' 'on-condition' condition=Expression 'with-write-threads' writeThreadCount=STRING
 ;
 
 ElasticFBCLead:

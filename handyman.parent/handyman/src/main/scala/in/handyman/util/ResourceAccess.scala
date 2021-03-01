@@ -1,9 +1,12 @@
 package in.handyman.util
 
 import java.sql.Connection
+import com.typesafe.scalalogging.LazyLogging
 import in.handyman.config.ConfigurationService
 import in.handyman.config.Resource
 import java.sql.DriverManager
+import com.typesafe.scalalogging.LazyLogging
+import com.typesafe.scalalogging.Logger
 
 /**
  * 	Migration script added on Feb 19 2021 - 
@@ -13,16 +16,18 @@ import java.sql.DriverManager
  *   </ul>
  */
 
-object ResourceAccess {
+object ResourceAccess  extends LazyLogging{
   
  
   def rdbmsConn(name: String): Connection = 
   {
+    
     val connResource: Resource = ConfigurationService.getResourceConfig(name)
     if(connResource.driverClassName!=null)
     {
       Class.forName(connResource.driverClassName)
     }
+    logger.info(s"Initiating connection for $name with url: $connResource")
     val conn = DriverManager.
       getConnection(connResource.url,
         connResource.userName, connResource.password)

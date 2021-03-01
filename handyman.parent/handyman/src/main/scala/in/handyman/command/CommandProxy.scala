@@ -23,14 +23,14 @@ object CommandProxy extends LazyLogging {
           case "org.eclipse.emf.common.util.EList" => {
             method.getName match {
               case "getParts" => {
-                logger.info("Invoking method in  action #{}", method.getName)
+                logger.info("(getParts) Invoking method in  action #{}", method.getName)
                 method.invoke(proxee, args: _*)
                   .asInstanceOf[EObjectContainmentEList[RestPart]]
               }
               case _ => {
                 val interim = method.invoke(proxee, args: _*)
                   .asInstanceOf[EDataTypeEList[String]]
-                logger.info("Invoking method in  action #{}", method.getName)
+                logger.info("(No getParts) Invoking method in  action #{}", method.getName)
                 val output = new BasicEList[String]
                 val iter = interim.iterator
                 while (iter.hasNext) {

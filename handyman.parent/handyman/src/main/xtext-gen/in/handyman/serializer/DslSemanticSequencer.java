@@ -14,6 +14,8 @@ import in.handyman.dsl.Dropfile;
 import in.handyman.dsl.DslPackage;
 import in.handyman.dsl.ElasticFBCLead;
 import in.handyman.dsl.ElasticGET;
+import in.handyman.dsl.EsAccumulate;
+import in.handyman.dsl.EsUpdate;
 import in.handyman.dsl.ExecJava;
 import in.handyman.dsl.Expression;
 import in.handyman.dsl.FBCLead;
@@ -89,6 +91,12 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 				return; 
 			case DslPackage.ELASTIC_GET:
 				sequence_ElasticGET(context, (ElasticGET) semanticObject); 
+				return; 
+			case DslPackage.ES_ACCUMULATE:
+				sequence_EsAccumulate(context, (EsAccumulate) semanticObject); 
+				return; 
+			case DslPackage.ES_UPDATE:
+				sequence_EsUpdate(context, (EsUpdate) semanticObject); 
 				return; 
 			case DslPackage.EXEC_JAVA:
 				sequence_ExecJava(context, (ExecJava) semanticObject); 
@@ -450,6 +458,77 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 		feeder.accept(grammarAccess.getElasticGETAccess().getValueSelectStatementParserRuleCall_9_0(), semanticObject.getValue());
 		feeder.accept(grammarAccess.getElasticGETAccess().getConditionExpressionParserRuleCall_12_0(), semanticObject.getCondition());
 		feeder.finish();
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Action returns EsAccumulate
+	 *     EsAccumulate returns EsAccumulate
+	 *
+	 * Constraint:
+	 *     (
+	 *         name=STRING 
+	 *         source=STRING 
+	 *         target=STRING 
+	 *         fetchSize=STRING 
+	 *         writeSize=STRING 
+	 *         value=STRING 
+	 *         condition=Expression 
+	 *         writeThreadCount=STRING
+	 *     )
+	 */
+	protected void sequence_EsAccumulate(ISerializationContext context, EsAccumulate semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.ACTION__NAME) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.ACTION__NAME));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.ES_ACCUMULATE__SOURCE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.ES_ACCUMULATE__SOURCE));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.ES_ACCUMULATE__TARGET) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.ES_ACCUMULATE__TARGET));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.ES_ACCUMULATE__FETCH_SIZE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.ES_ACCUMULATE__FETCH_SIZE));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.ES_ACCUMULATE__WRITE_SIZE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.ES_ACCUMULATE__WRITE_SIZE));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.ES_ACCUMULATE__VALUE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.ES_ACCUMULATE__VALUE));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.ACTION__CONDITION) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.ACTION__CONDITION));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.ES_ACCUMULATE__WRITE_THREAD_COUNT) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.ES_ACCUMULATE__WRITE_THREAD_COUNT));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getEsAccumulateAccess().getNameSTRINGTerminalRuleCall_2_0(), semanticObject.getName());
+		feeder.accept(grammarAccess.getEsAccumulateAccess().getSourceSTRINGTerminalRuleCall_4_0(), semanticObject.getSource());
+		feeder.accept(grammarAccess.getEsAccumulateAccess().getTargetSTRINGTerminalRuleCall_6_0(), semanticObject.getTarget());
+		feeder.accept(grammarAccess.getEsAccumulateAccess().getFetchSizeSTRINGTerminalRuleCall_8_0(), semanticObject.getFetchSize());
+		feeder.accept(grammarAccess.getEsAccumulateAccess().getWriteSizeSTRINGTerminalRuleCall_10_0(), semanticObject.getWriteSize());
+		feeder.accept(grammarAccess.getEsAccumulateAccess().getValueSTRINGTerminalRuleCall_13_0(), semanticObject.getValue());
+		feeder.accept(grammarAccess.getEsAccumulateAccess().getConditionExpressionParserRuleCall_16_0(), semanticObject.getCondition());
+		feeder.accept(grammarAccess.getEsAccumulateAccess().getWriteThreadCountSTRINGTerminalRuleCall_18_0(), semanticObject.getWriteThreadCount());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     Action returns EsUpdate
+	 *     EsUpdate returns EsUpdate
+	 *
+	 * Constraint:
+	 *     (
+	 *         name=STRING 
+	 *         source=STRING 
+	 *         target=STRING 
+	 *         fetchSize=STRING 
+	 *         writeSize=STRING 
+	 *         value+=NonSelectStatement 
+	 *         condition=Expression 
+	 *         writeThreadCount=STRING
+	 *     )
+	 */
+	protected void sequence_EsUpdate(ISerializationContext context, EsUpdate semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	

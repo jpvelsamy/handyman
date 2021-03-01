@@ -14,6 +14,8 @@ import in.handyman.dsl.Dropfile;
 import in.handyman.dsl.DslPackage;
 import in.handyman.dsl.ElasticFBCLead;
 import in.handyman.dsl.ElasticGET;
+import in.handyman.dsl.EsAccumulate;
+import in.handyman.dsl.EsUpdate;
 import in.handyman.dsl.ExecJava;
 import in.handyman.dsl.Expression;
 import in.handyman.dsl.FBCLead;
@@ -138,6 +140,22 @@ public class DslSwitch<T> extends Switch<T>
       {
         Action action = (Action)theEObject;
         T result = caseAction(action);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case DslPackage.ES_UPDATE:
+      {
+        EsUpdate esUpdate = (EsUpdate)theEObject;
+        T result = caseEsUpdate(esUpdate);
+        if (result == null) result = caseAction(esUpdate);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case DslPackage.ES_ACCUMULATE:
+      {
+        EsAccumulate esAccumulate = (EsAccumulate)theEObject;
+        T result = caseEsAccumulate(esAccumulate);
+        if (result == null) result = caseAction(esAccumulate);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -451,6 +469,38 @@ public class DslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseAction(Action object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Es Update</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Es Update</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseEsUpdate(EsUpdate object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Es Accumulate</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Es Accumulate</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseEsAccumulate(EsAccumulate object)
   {
     return null;
   }

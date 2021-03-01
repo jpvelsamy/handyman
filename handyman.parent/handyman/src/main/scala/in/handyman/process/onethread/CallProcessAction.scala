@@ -17,6 +17,7 @@ import in.handyman.util.ParameterisationEngine
 import java.io.StringWriter
 import java.io.PrintWriter
 import in.handyman.util.ExceptionUtil
+import java.sql.ResultSet
 
 class CallProcessAction extends in.handyman.command.Action with LazyLogging {
   val detailMap = new java.util.HashMap[String, String]
@@ -40,8 +41,7 @@ class CallProcessAction extends in.handyman.command.Action with LazyLogging {
     val columnCount = rs.getMetaData.getColumnCount
 
     while (rs.next()) {
-
-      for (i <- 1 until columnCount + 1) {
+ for (i <- 1 until columnCount + 1) {
         val key = rs.getMetaData.getColumnLabel(i)
         val value = rs.getString(i)
         context.addValue(key, value)
@@ -85,9 +85,11 @@ class CallProcessAction extends in.handyman.command.Action with LazyLogging {
           detailMap.put("exception", ExceptionUtil.completeStackTraceex(ex))          
         }
       }
+     
     }
     context
   }
+
 
   def executeIf(context: in.handyman.command.Context, action: in.handyman.dsl.Action): Boolean = {
     val callProcessAsIs: in.handyman.dsl.Callprocess = action.asInstanceOf[in.handyman.dsl.Callprocess]

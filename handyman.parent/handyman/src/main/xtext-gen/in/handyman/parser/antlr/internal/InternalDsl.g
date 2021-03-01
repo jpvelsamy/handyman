@@ -628,6 +628,441 @@ ruleAction returns [EObject current=null]
 			$current = $this_ElasticGET_26.current;
 			afterParserOrEnumRuleCall();
 		}
+		    |
+		{
+			newCompositeNode(grammarAccess.getActionAccess().getEsUpdateParserRuleCall_27());
+		}
+		this_EsUpdate_27=ruleEsUpdate
+		{
+			$current = $this_EsUpdate_27.current;
+			afterParserOrEnumRuleCall();
+		}
+		    |
+		{
+			newCompositeNode(grammarAccess.getActionAccess().getEsAccumulateParserRuleCall_28());
+		}
+		this_EsAccumulate_28=ruleEsAccumulate
+		{
+			$current = $this_EsAccumulate_28.current;
+			afterParserOrEnumRuleCall();
+		}
+	)
+;
+
+// Entry rule entryRuleEsUpdate
+entryRuleEsUpdate returns [EObject current=null]:
+	{ newCompositeNode(grammarAccess.getEsUpdateRule()); }
+	iv_ruleEsUpdate=ruleEsUpdate
+	{ $current=$iv_ruleEsUpdate.current; }
+	EOF;
+
+// Rule EsUpdate
+ruleEsUpdate returns [EObject current=null]
+@init {
+	enterRule();
+}
+@after {
+	leaveRule();
+}:
+	(
+		otherlv_0='es-update'
+		{
+			newLeafNode(otherlv_0, grammarAccess.getEsUpdateAccess().getEsUpdateKeyword_0());
+		}
+		otherlv_1='as'
+		{
+			newLeafNode(otherlv_1, grammarAccess.getEsUpdateAccess().getAsKeyword_1());
+		}
+		(
+			(
+				lv_name_2_0=RULE_STRING
+				{
+					newLeafNode(lv_name_2_0, grammarAccess.getEsUpdateAccess().getNameSTRINGTerminalRuleCall_2_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getEsUpdateRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"name",
+						lv_name_2_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_3='from'
+		{
+			newLeafNode(otherlv_3, grammarAccess.getEsUpdateAccess().getFromKeyword_3());
+		}
+		(
+			(
+				lv_source_4_0=RULE_STRING
+				{
+					newLeafNode(lv_source_4_0, grammarAccess.getEsUpdateAccess().getSourceSTRINGTerminalRuleCall_4_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getEsUpdateRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"source",
+						lv_source_4_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_5='to'
+		{
+			newLeafNode(otherlv_5, grammarAccess.getEsUpdateAccess().getToKeyword_5());
+		}
+		(
+			(
+				lv_target_6_0=RULE_STRING
+				{
+					newLeafNode(lv_target_6_0, grammarAccess.getEsUpdateAccess().getTargetSTRINGTerminalRuleCall_6_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getEsUpdateRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"target",
+						lv_target_6_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_7='with-fetchsize-as'
+		{
+			newLeafNode(otherlv_7, grammarAccess.getEsUpdateAccess().getWithFetchsizeAsKeyword_7());
+		}
+		(
+			(
+				lv_fetchSize_8_0=RULE_STRING
+				{
+					newLeafNode(lv_fetchSize_8_0, grammarAccess.getEsUpdateAccess().getFetchSizeSTRINGTerminalRuleCall_8_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getEsUpdateRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"fetchSize",
+						lv_fetchSize_8_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_9='and-writesize-as'
+		{
+			newLeafNode(otherlv_9, grammarAccess.getEsUpdateAccess().getAndWritesizeAsKeyword_9());
+		}
+		(
+			(
+				lv_writeSize_10_0=RULE_STRING
+				{
+					newLeafNode(lv_writeSize_10_0, grammarAccess.getEsUpdateAccess().getWriteSizeSTRINGTerminalRuleCall_10_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getEsUpdateRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"writeSize",
+						lv_writeSize_10_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_11='using'
+		{
+			newLeafNode(otherlv_11, grammarAccess.getEsUpdateAccess().getUsingKeyword_11());
+		}
+		otherlv_12='{'
+		{
+			newLeafNode(otherlv_12, grammarAccess.getEsUpdateAccess().getLeftCurlyBracketKeyword_12());
+		}
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getEsUpdateAccess().getValueNonSelectStatementParserRuleCall_13_0());
+				}
+				lv_value_13_0=ruleNonSelectStatement
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getEsUpdateRule());
+					}
+					add(
+						$current,
+						"value",
+						lv_value_13_0,
+						"in.handyman.Dsl.NonSelectStatement");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)
+		otherlv_14='}'
+		{
+			newLeafNode(otherlv_14, grammarAccess.getEsUpdateAccess().getRightCurlyBracketKeyword_14());
+		}
+		otherlv_15='on-condition'
+		{
+			newLeafNode(otherlv_15, grammarAccess.getEsUpdateAccess().getOnConditionKeyword_15());
+		}
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getEsUpdateAccess().getConditionExpressionParserRuleCall_16_0());
+				}
+				lv_condition_16_0=ruleExpression
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getEsUpdateRule());
+					}
+					set(
+						$current,
+						"condition",
+						lv_condition_16_0,
+						"in.handyman.Dsl.Expression");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)
+		otherlv_17='with-write-threads'
+		{
+			newLeafNode(otherlv_17, grammarAccess.getEsUpdateAccess().getWithWriteThreadsKeyword_17());
+		}
+		(
+			(
+				lv_writeThreadCount_18_0=RULE_STRING
+				{
+					newLeafNode(lv_writeThreadCount_18_0, grammarAccess.getEsUpdateAccess().getWriteThreadCountSTRINGTerminalRuleCall_18_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getEsUpdateRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"writeThreadCount",
+						lv_writeThreadCount_18_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+	)
+;
+
+// Entry rule entryRuleEsAccumulate
+entryRuleEsAccumulate returns [EObject current=null]:
+	{ newCompositeNode(grammarAccess.getEsAccumulateRule()); }
+	iv_ruleEsAccumulate=ruleEsAccumulate
+	{ $current=$iv_ruleEsAccumulate.current; }
+	EOF;
+
+// Rule EsAccumulate
+ruleEsAccumulate returns [EObject current=null]
+@init {
+	enterRule();
+}
+@after {
+	leaveRule();
+}:
+	(
+		otherlv_0='es-accumulate'
+		{
+			newLeafNode(otherlv_0, grammarAccess.getEsAccumulateAccess().getEsAccumulateKeyword_0());
+		}
+		otherlv_1='as'
+		{
+			newLeafNode(otherlv_1, grammarAccess.getEsAccumulateAccess().getAsKeyword_1());
+		}
+		(
+			(
+				lv_name_2_0=RULE_STRING
+				{
+					newLeafNode(lv_name_2_0, grammarAccess.getEsAccumulateAccess().getNameSTRINGTerminalRuleCall_2_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getEsAccumulateRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"name",
+						lv_name_2_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_3='from'
+		{
+			newLeafNode(otherlv_3, grammarAccess.getEsAccumulateAccess().getFromKeyword_3());
+		}
+		(
+			(
+				lv_source_4_0=RULE_STRING
+				{
+					newLeafNode(lv_source_4_0, grammarAccess.getEsAccumulateAccess().getSourceSTRINGTerminalRuleCall_4_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getEsAccumulateRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"source",
+						lv_source_4_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_5='to'
+		{
+			newLeafNode(otherlv_5, grammarAccess.getEsAccumulateAccess().getToKeyword_5());
+		}
+		(
+			(
+				lv_target_6_0=RULE_STRING
+				{
+					newLeafNode(lv_target_6_0, grammarAccess.getEsAccumulateAccess().getTargetSTRINGTerminalRuleCall_6_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getEsAccumulateRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"target",
+						lv_target_6_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_7='with-fetchsize-as'
+		{
+			newLeafNode(otherlv_7, grammarAccess.getEsAccumulateAccess().getWithFetchsizeAsKeyword_7());
+		}
+		(
+			(
+				lv_fetchSize_8_0=RULE_STRING
+				{
+					newLeafNode(lv_fetchSize_8_0, grammarAccess.getEsAccumulateAccess().getFetchSizeSTRINGTerminalRuleCall_8_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getEsAccumulateRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"fetchSize",
+						lv_fetchSize_8_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_9='and-writesize-as'
+		{
+			newLeafNode(otherlv_9, grammarAccess.getEsAccumulateAccess().getAndWritesizeAsKeyword_9());
+		}
+		(
+			(
+				lv_writeSize_10_0=RULE_STRING
+				{
+					newLeafNode(lv_writeSize_10_0, grammarAccess.getEsAccumulateAccess().getWriteSizeSTRINGTerminalRuleCall_10_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getEsAccumulateRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"writeSize",
+						lv_writeSize_10_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_11='using'
+		{
+			newLeafNode(otherlv_11, grammarAccess.getEsAccumulateAccess().getUsingKeyword_11());
+		}
+		otherlv_12='{'
+		{
+			newLeafNode(otherlv_12, grammarAccess.getEsAccumulateAccess().getLeftCurlyBracketKeyword_12());
+		}
+		(
+			(
+				lv_value_13_0=RULE_STRING
+				{
+					newLeafNode(lv_value_13_0, grammarAccess.getEsAccumulateAccess().getValueSTRINGTerminalRuleCall_13_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getEsAccumulateRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"value",
+						lv_value_13_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_14='}'
+		{
+			newLeafNode(otherlv_14, grammarAccess.getEsAccumulateAccess().getRightCurlyBracketKeyword_14());
+		}
+		otherlv_15='on-condition'
+		{
+			newLeafNode(otherlv_15, grammarAccess.getEsAccumulateAccess().getOnConditionKeyword_15());
+		}
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getEsAccumulateAccess().getConditionExpressionParserRuleCall_16_0());
+				}
+				lv_condition_16_0=ruleExpression
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getEsAccumulateRule());
+					}
+					set(
+						$current,
+						"condition",
+						lv_condition_16_0,
+						"in.handyman.Dsl.Expression");
+					afterParserOrEnumRuleCall();
+				}
+			)
+		)
+		otherlv_17='with-write-threads'
+		{
+			newLeafNode(otherlv_17, grammarAccess.getEsAccumulateAccess().getWithWriteThreadsKeyword_17());
+		}
+		(
+			(
+				lv_writeThreadCount_18_0=RULE_STRING
+				{
+					newLeafNode(lv_writeThreadCount_18_0, grammarAccess.getEsAccumulateAccess().getWriteThreadCountSTRINGTerminalRuleCall_18_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getEsAccumulateRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"writeThreadCount",
+						lv_writeThreadCount_18_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
 	)
 ;
 

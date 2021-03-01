@@ -15,6 +15,8 @@ import in.handyman.dsl.DslFactory;
 import in.handyman.dsl.DslPackage;
 import in.handyman.dsl.ElasticFBCLead;
 import in.handyman.dsl.ElasticGET;
+import in.handyman.dsl.EsAccumulate;
+import in.handyman.dsl.EsUpdate;
 import in.handyman.dsl.ExecJava;
 import in.handyman.dsl.Expression;
 import in.handyman.dsl.FBCLead;
@@ -104,6 +106,8 @@ public class DslFactoryImpl extends EFactoryImpl implements DslFactory
       case DslPackage.FINALLY: return createFinally();
       case DslPackage.CATCH: return createCatch();
       case DslPackage.ACTION: return createAction();
+      case DslPackage.ES_UPDATE: return createEsUpdate();
+      case DslPackage.ES_ACCUMULATE: return createEsAccumulate();
       case DslPackage.ELASTIC_FBC_LEAD: return createElasticFBCLead();
       case DslPackage.ELASTIC_GET: return createElasticGET();
       case DslPackage.EXEC_JAVA: return createExecJava();
@@ -191,6 +195,28 @@ public class DslFactoryImpl extends EFactoryImpl implements DslFactory
   {
     ActionImpl action = new ActionImpl();
     return action;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EsUpdate createEsUpdate()
+  {
+    EsUpdateImpl esUpdate = new EsUpdateImpl();
+    return esUpdate;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EsAccumulate createEsAccumulate()
+  {
+    EsAccumulateImpl esAccumulate = new EsAccumulateImpl();
+    return esAccumulate;
   }
 
   /**

@@ -238,6 +238,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cExecJavaParserRuleCall_24 = (RuleCall)cAlternatives.eContents().get(24);
 		private final RuleCall cElasticFBCLeadParserRuleCall_25 = (RuleCall)cAlternatives.eContents().get(25);
 		private final RuleCall cElasticGETParserRuleCall_26 = (RuleCall)cAlternatives.eContents().get(26);
+		private final RuleCall cEsUpdateParserRuleCall_27 = (RuleCall)cAlternatives.eContents().get(27);
+		private final RuleCall cEsAccumulateParserRuleCall_28 = (RuleCall)cAlternatives.eContents().get(28);
 		
 		//Action:
 		//	Copydata
@@ -266,13 +268,15 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		//	| FirebaseDatabasePut
 		//	| ExecJava
 		//	| ElasticFBCLead
-		//	| ElasticGET;
+		//	| ElasticGET
+		//	| EsUpdate
+		//	| EsAccumulate;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//Copydata | LoadCsv | WriteCsv | Transform | GooglecalPUT | SlackPUT | ClickSendSms | Updatedaudit | Callprocess | Fetch
 		//| TrelloPUT | TrelloGET | Rest | Doozle | Dropfile | FBCLead | FBFormDownload | SendMail | GooglecontactPUT |
 		//GooglecontactSelectAll | Abort | SmsLeadSms | FirebaseReactiveNotification | FirebaseDatabasePut | ExecJava |
-		//ElasticFBCLead | ElasticGET
+		//ElasticFBCLead | ElasticGET | EsUpdate | EsAccumulate
 		public Alternatives getAlternatives() { return cAlternatives; }
 		
 		//Copydata
@@ -355,6 +359,262 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//ElasticGET
 		public RuleCall getElasticGETParserRuleCall_26() { return cElasticGETParserRuleCall_26; }
+		
+		//EsUpdate
+		public RuleCall getEsUpdateParserRuleCall_27() { return cEsUpdateParserRuleCall_27; }
+		
+		//EsAccumulate
+		public RuleCall getEsAccumulateParserRuleCall_28() { return cEsAccumulateParserRuleCall_28; }
+	}
+	public class EsUpdateElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "in.handyman.Dsl.EsUpdate");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cEsUpdateKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Keyword cAsKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Assignment cNameAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cNameSTRINGTerminalRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
+		private final Keyword cFromKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Assignment cSourceAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cSourceSTRINGTerminalRuleCall_4_0 = (RuleCall)cSourceAssignment_4.eContents().get(0);
+		private final Keyword cToKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		private final Assignment cTargetAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final RuleCall cTargetSTRINGTerminalRuleCall_6_0 = (RuleCall)cTargetAssignment_6.eContents().get(0);
+		private final Keyword cWithFetchsizeAsKeyword_7 = (Keyword)cGroup.eContents().get(7);
+		private final Assignment cFetchSizeAssignment_8 = (Assignment)cGroup.eContents().get(8);
+		private final RuleCall cFetchSizeSTRINGTerminalRuleCall_8_0 = (RuleCall)cFetchSizeAssignment_8.eContents().get(0);
+		private final Keyword cAndWritesizeAsKeyword_9 = (Keyword)cGroup.eContents().get(9);
+		private final Assignment cWriteSizeAssignment_10 = (Assignment)cGroup.eContents().get(10);
+		private final RuleCall cWriteSizeSTRINGTerminalRuleCall_10_0 = (RuleCall)cWriteSizeAssignment_10.eContents().get(0);
+		private final Keyword cUsingKeyword_11 = (Keyword)cGroup.eContents().get(11);
+		private final Keyword cLeftCurlyBracketKeyword_12 = (Keyword)cGroup.eContents().get(12);
+		private final Assignment cValueAssignment_13 = (Assignment)cGroup.eContents().get(13);
+		private final RuleCall cValueNonSelectStatementParserRuleCall_13_0 = (RuleCall)cValueAssignment_13.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_14 = (Keyword)cGroup.eContents().get(14);
+		private final Keyword cOnConditionKeyword_15 = (Keyword)cGroup.eContents().get(15);
+		private final Assignment cConditionAssignment_16 = (Assignment)cGroup.eContents().get(16);
+		private final RuleCall cConditionExpressionParserRuleCall_16_0 = (RuleCall)cConditionAssignment_16.eContents().get(0);
+		private final Keyword cWithWriteThreadsKeyword_17 = (Keyword)cGroup.eContents().get(17);
+		private final Assignment cWriteThreadCountAssignment_18 = (Assignment)cGroup.eContents().get(18);
+		private final RuleCall cWriteThreadCountSTRINGTerminalRuleCall_18_0 = (RuleCall)cWriteThreadCountAssignment_18.eContents().get(0);
+		
+		//EsUpdate:
+		//	'es-update' 'as' name=STRING 'from' source=STRING 'to' target=STRING 'with-fetchsize-as' fetchSize=STRING
+		//	'and-writesize-as' writeSize=STRING 'using'
+		//	'{'
+		//	value+=NonSelectStatement
+		//	'}' 'on-condition' condition=Expression 'with-write-threads' writeThreadCount=STRING;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//'es-update' 'as' name=STRING 'from' source=STRING 'to' target=STRING 'with-fetchsize-as' fetchSize=STRING
+		//'and-writesize-as' writeSize=STRING 'using' '{' value+=NonSelectStatement '}' 'on-condition' condition=Expression
+		//'with-write-threads' writeThreadCount=STRING
+		public Group getGroup() { return cGroup; }
+		
+		//'es-update'
+		public Keyword getEsUpdateKeyword_0() { return cEsUpdateKeyword_0; }
+		
+		//'as'
+		public Keyword getAsKeyword_1() { return cAsKeyword_1; }
+		
+		//name=STRING
+		public Assignment getNameAssignment_2() { return cNameAssignment_2; }
+		
+		//STRING
+		public RuleCall getNameSTRINGTerminalRuleCall_2_0() { return cNameSTRINGTerminalRuleCall_2_0; }
+		
+		//'from'
+		public Keyword getFromKeyword_3() { return cFromKeyword_3; }
+		
+		//source=STRING
+		public Assignment getSourceAssignment_4() { return cSourceAssignment_4; }
+		
+		//STRING
+		public RuleCall getSourceSTRINGTerminalRuleCall_4_0() { return cSourceSTRINGTerminalRuleCall_4_0; }
+		
+		//'to'
+		public Keyword getToKeyword_5() { return cToKeyword_5; }
+		
+		//target=STRING
+		public Assignment getTargetAssignment_6() { return cTargetAssignment_6; }
+		
+		//STRING
+		public RuleCall getTargetSTRINGTerminalRuleCall_6_0() { return cTargetSTRINGTerminalRuleCall_6_0; }
+		
+		//'with-fetchsize-as'
+		public Keyword getWithFetchsizeAsKeyword_7() { return cWithFetchsizeAsKeyword_7; }
+		
+		//fetchSize=STRING
+		public Assignment getFetchSizeAssignment_8() { return cFetchSizeAssignment_8; }
+		
+		//STRING
+		public RuleCall getFetchSizeSTRINGTerminalRuleCall_8_0() { return cFetchSizeSTRINGTerminalRuleCall_8_0; }
+		
+		//'and-writesize-as'
+		public Keyword getAndWritesizeAsKeyword_9() { return cAndWritesizeAsKeyword_9; }
+		
+		//writeSize=STRING
+		public Assignment getWriteSizeAssignment_10() { return cWriteSizeAssignment_10; }
+		
+		//STRING
+		public RuleCall getWriteSizeSTRINGTerminalRuleCall_10_0() { return cWriteSizeSTRINGTerminalRuleCall_10_0; }
+		
+		//'using'
+		public Keyword getUsingKeyword_11() { return cUsingKeyword_11; }
+		
+		//'{'
+		public Keyword getLeftCurlyBracketKeyword_12() { return cLeftCurlyBracketKeyword_12; }
+		
+		//value+=NonSelectStatement
+		public Assignment getValueAssignment_13() { return cValueAssignment_13; }
+		
+		//NonSelectStatement
+		public RuleCall getValueNonSelectStatementParserRuleCall_13_0() { return cValueNonSelectStatementParserRuleCall_13_0; }
+		
+		//'}'
+		public Keyword getRightCurlyBracketKeyword_14() { return cRightCurlyBracketKeyword_14; }
+		
+		//'on-condition'
+		public Keyword getOnConditionKeyword_15() { return cOnConditionKeyword_15; }
+		
+		//condition=Expression
+		public Assignment getConditionAssignment_16() { return cConditionAssignment_16; }
+		
+		//Expression
+		public RuleCall getConditionExpressionParserRuleCall_16_0() { return cConditionExpressionParserRuleCall_16_0; }
+		
+		//'with-write-threads'
+		public Keyword getWithWriteThreadsKeyword_17() { return cWithWriteThreadsKeyword_17; }
+		
+		//writeThreadCount=STRING
+		public Assignment getWriteThreadCountAssignment_18() { return cWriteThreadCountAssignment_18; }
+		
+		//STRING
+		public RuleCall getWriteThreadCountSTRINGTerminalRuleCall_18_0() { return cWriteThreadCountSTRINGTerminalRuleCall_18_0; }
+	}
+	public class EsAccumulateElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "in.handyman.Dsl.EsAccumulate");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cEsAccumulateKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Keyword cAsKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Assignment cNameAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cNameSTRINGTerminalRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
+		private final Keyword cFromKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Assignment cSourceAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cSourceSTRINGTerminalRuleCall_4_0 = (RuleCall)cSourceAssignment_4.eContents().get(0);
+		private final Keyword cToKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		private final Assignment cTargetAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final RuleCall cTargetSTRINGTerminalRuleCall_6_0 = (RuleCall)cTargetAssignment_6.eContents().get(0);
+		private final Keyword cWithFetchsizeAsKeyword_7 = (Keyword)cGroup.eContents().get(7);
+		private final Assignment cFetchSizeAssignment_8 = (Assignment)cGroup.eContents().get(8);
+		private final RuleCall cFetchSizeSTRINGTerminalRuleCall_8_0 = (RuleCall)cFetchSizeAssignment_8.eContents().get(0);
+		private final Keyword cAndWritesizeAsKeyword_9 = (Keyword)cGroup.eContents().get(9);
+		private final Assignment cWriteSizeAssignment_10 = (Assignment)cGroup.eContents().get(10);
+		private final RuleCall cWriteSizeSTRINGTerminalRuleCall_10_0 = (RuleCall)cWriteSizeAssignment_10.eContents().get(0);
+		private final Keyword cUsingKeyword_11 = (Keyword)cGroup.eContents().get(11);
+		private final Keyword cLeftCurlyBracketKeyword_12 = (Keyword)cGroup.eContents().get(12);
+		private final Assignment cValueAssignment_13 = (Assignment)cGroup.eContents().get(13);
+		private final RuleCall cValueSTRINGTerminalRuleCall_13_0 = (RuleCall)cValueAssignment_13.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_14 = (Keyword)cGroup.eContents().get(14);
+		private final Keyword cOnConditionKeyword_15 = (Keyword)cGroup.eContents().get(15);
+		private final Assignment cConditionAssignment_16 = (Assignment)cGroup.eContents().get(16);
+		private final RuleCall cConditionExpressionParserRuleCall_16_0 = (RuleCall)cConditionAssignment_16.eContents().get(0);
+		private final Keyword cWithWriteThreadsKeyword_17 = (Keyword)cGroup.eContents().get(17);
+		private final Assignment cWriteThreadCountAssignment_18 = (Assignment)cGroup.eContents().get(18);
+		private final RuleCall cWriteThreadCountSTRINGTerminalRuleCall_18_0 = (RuleCall)cWriteThreadCountAssignment_18.eContents().get(0);
+		
+		//EsAccumulate:
+		//	'es-accumulate' 'as' name=STRING 'from' source=STRING 'to' target=STRING 'with-fetchsize-as' fetchSize=STRING
+		//	'and-writesize-as' writeSize=STRING 'using'
+		//	'{'
+		//	value=STRING
+		//	'}' 'on-condition' condition=Expression 'with-write-threads' writeThreadCount=STRING;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//'es-accumulate' 'as' name=STRING 'from' source=STRING 'to' target=STRING 'with-fetchsize-as' fetchSize=STRING
+		//'and-writesize-as' writeSize=STRING 'using' '{' value=STRING '}' 'on-condition' condition=Expression
+		//'with-write-threads' writeThreadCount=STRING
+		public Group getGroup() { return cGroup; }
+		
+		//'es-accumulate'
+		public Keyword getEsAccumulateKeyword_0() { return cEsAccumulateKeyword_0; }
+		
+		//'as'
+		public Keyword getAsKeyword_1() { return cAsKeyword_1; }
+		
+		//name=STRING
+		public Assignment getNameAssignment_2() { return cNameAssignment_2; }
+		
+		//STRING
+		public RuleCall getNameSTRINGTerminalRuleCall_2_0() { return cNameSTRINGTerminalRuleCall_2_0; }
+		
+		//'from'
+		public Keyword getFromKeyword_3() { return cFromKeyword_3; }
+		
+		//source=STRING
+		public Assignment getSourceAssignment_4() { return cSourceAssignment_4; }
+		
+		//STRING
+		public RuleCall getSourceSTRINGTerminalRuleCall_4_0() { return cSourceSTRINGTerminalRuleCall_4_0; }
+		
+		//'to'
+		public Keyword getToKeyword_5() { return cToKeyword_5; }
+		
+		//target=STRING
+		public Assignment getTargetAssignment_6() { return cTargetAssignment_6; }
+		
+		//STRING
+		public RuleCall getTargetSTRINGTerminalRuleCall_6_0() { return cTargetSTRINGTerminalRuleCall_6_0; }
+		
+		//'with-fetchsize-as'
+		public Keyword getWithFetchsizeAsKeyword_7() { return cWithFetchsizeAsKeyword_7; }
+		
+		//fetchSize=STRING
+		public Assignment getFetchSizeAssignment_8() { return cFetchSizeAssignment_8; }
+		
+		//STRING
+		public RuleCall getFetchSizeSTRINGTerminalRuleCall_8_0() { return cFetchSizeSTRINGTerminalRuleCall_8_0; }
+		
+		//'and-writesize-as'
+		public Keyword getAndWritesizeAsKeyword_9() { return cAndWritesizeAsKeyword_9; }
+		
+		//writeSize=STRING
+		public Assignment getWriteSizeAssignment_10() { return cWriteSizeAssignment_10; }
+		
+		//STRING
+		public RuleCall getWriteSizeSTRINGTerminalRuleCall_10_0() { return cWriteSizeSTRINGTerminalRuleCall_10_0; }
+		
+		//'using'
+		public Keyword getUsingKeyword_11() { return cUsingKeyword_11; }
+		
+		//'{'
+		public Keyword getLeftCurlyBracketKeyword_12() { return cLeftCurlyBracketKeyword_12; }
+		
+		//value=STRING
+		public Assignment getValueAssignment_13() { return cValueAssignment_13; }
+		
+		//STRING
+		public RuleCall getValueSTRINGTerminalRuleCall_13_0() { return cValueSTRINGTerminalRuleCall_13_0; }
+		
+		//'}'
+		public Keyword getRightCurlyBracketKeyword_14() { return cRightCurlyBracketKeyword_14; }
+		
+		//'on-condition'
+		public Keyword getOnConditionKeyword_15() { return cOnConditionKeyword_15; }
+		
+		//condition=Expression
+		public Assignment getConditionAssignment_16() { return cConditionAssignment_16; }
+		
+		//Expression
+		public RuleCall getConditionExpressionParserRuleCall_16_0() { return cConditionExpressionParserRuleCall_16_0; }
+		
+		//'with-write-threads'
+		public Keyword getWithWriteThreadsKeyword_17() { return cWithWriteThreadsKeyword_17; }
+		
+		//writeThreadCount=STRING
+		public Assignment getWriteThreadCountAssignment_18() { return cWriteThreadCountAssignment_18; }
+		
+		//STRING
+		public RuleCall getWriteThreadCountSTRINGTerminalRuleCall_18_0() { return cWriteThreadCountSTRINGTerminalRuleCall_18_0; }
 	}
 	public class ElasticFBCLeadElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "in.handyman.Dsl.ElasticFBCLead");
@@ -3449,6 +3709,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	private final FinallyElements pFinally;
 	private final CatchElements pCatch;
 	private final ActionElements pAction;
+	private final EsUpdateElements pEsUpdate;
+	private final EsAccumulateElements pEsAccumulate;
 	private final ElasticFBCLeadElements pElasticFBCLead;
 	private final ElasticGETElements pElasticGET;
 	private final ExecJavaElements pExecJava;
@@ -3498,6 +3760,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		this.pFinally = new FinallyElements();
 		this.pCatch = new CatchElements();
 		this.pAction = new ActionElements();
+		this.pEsUpdate = new EsUpdateElements();
+		this.pEsAccumulate = new EsAccumulateElements();
 		this.pElasticFBCLead = new ElasticFBCLeadElements();
 		this.pElasticGET = new ElasticGETElements();
 		this.pExecJava = new ExecJavaElements();
@@ -3642,13 +3906,43 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	//	| FirebaseDatabasePut
 	//	| ExecJava
 	//	| ElasticFBCLead
-	//	| ElasticGET;
+	//	| ElasticGET
+	//	| EsUpdate
+	//	| EsAccumulate;
 	public ActionElements getActionAccess() {
 		return pAction;
 	}
 	
 	public ParserRule getActionRule() {
 		return getActionAccess().getRule();
+	}
+	
+	//EsUpdate:
+	//	'es-update' 'as' name=STRING 'from' source=STRING 'to' target=STRING 'with-fetchsize-as' fetchSize=STRING
+	//	'and-writesize-as' writeSize=STRING 'using'
+	//	'{'
+	//	value+=NonSelectStatement
+	//	'}' 'on-condition' condition=Expression 'with-write-threads' writeThreadCount=STRING;
+	public EsUpdateElements getEsUpdateAccess() {
+		return pEsUpdate;
+	}
+	
+	public ParserRule getEsUpdateRule() {
+		return getEsUpdateAccess().getRule();
+	}
+	
+	//EsAccumulate:
+	//	'es-accumulate' 'as' name=STRING 'from' source=STRING 'to' target=STRING 'with-fetchsize-as' fetchSize=STRING
+	//	'and-writesize-as' writeSize=STRING 'using'
+	//	'{'
+	//	value=STRING
+	//	'}' 'on-condition' condition=Expression 'with-write-threads' writeThreadCount=STRING;
+	public EsAccumulateElements getEsAccumulateAccess() {
+		return pEsAccumulate;
+	}
+	
+	public ParserRule getEsAccumulateRule() {
+		return getEsAccumulateAccess().getRule();
 	}
 	
 	//ElasticFBCLead:

@@ -15,6 +15,8 @@ import in.handyman.dsl.DslFactory;
 import in.handyman.dsl.DslPackage;
 import in.handyman.dsl.ElasticFBCLead;
 import in.handyman.dsl.ElasticGET;
+import in.handyman.dsl.EsAccumulate;
+import in.handyman.dsl.EsUpdate;
 import in.handyman.dsl.ExecJava;
 import in.handyman.dsl.Expression;
 import in.handyman.dsl.FBCLead;
@@ -88,6 +90,20 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * @generated
    */
   private EClass actionEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass esUpdateEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass esAccumulateEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -523,6 +539,146 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
   public EReference getAction_Condition()
   {
     return (EReference)actionEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getEsUpdate()
+  {
+    return esUpdateEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getEsUpdate_Source()
+  {
+    return (EAttribute)esUpdateEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getEsUpdate_Target()
+  {
+    return (EAttribute)esUpdateEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getEsUpdate_FetchSize()
+  {
+    return (EAttribute)esUpdateEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getEsUpdate_WriteSize()
+  {
+    return (EAttribute)esUpdateEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getEsUpdate_Value()
+  {
+    return (EAttribute)esUpdateEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getEsUpdate_WriteThreadCount()
+  {
+    return (EAttribute)esUpdateEClass.getEStructuralFeatures().get(5);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getEsAccumulate()
+  {
+    return esAccumulateEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getEsAccumulate_Source()
+  {
+    return (EAttribute)esAccumulateEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getEsAccumulate_Target()
+  {
+    return (EAttribute)esAccumulateEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getEsAccumulate_FetchSize()
+  {
+    return (EAttribute)esAccumulateEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getEsAccumulate_WriteSize()
+  {
+    return (EAttribute)esAccumulateEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getEsAccumulate_Value()
+  {
+    return (EAttribute)esAccumulateEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getEsAccumulate_WriteThreadCount()
+  {
+    return (EAttribute)esAccumulateEClass.getEStructuralFeatures().get(5);
   }
 
   /**
@@ -2187,6 +2343,22 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     createEAttribute(actionEClass, ACTION__NAME);
     createEReference(actionEClass, ACTION__CONDITION);
 
+    esUpdateEClass = createEClass(ES_UPDATE);
+    createEAttribute(esUpdateEClass, ES_UPDATE__SOURCE);
+    createEAttribute(esUpdateEClass, ES_UPDATE__TARGET);
+    createEAttribute(esUpdateEClass, ES_UPDATE__FETCH_SIZE);
+    createEAttribute(esUpdateEClass, ES_UPDATE__WRITE_SIZE);
+    createEAttribute(esUpdateEClass, ES_UPDATE__VALUE);
+    createEAttribute(esUpdateEClass, ES_UPDATE__WRITE_THREAD_COUNT);
+
+    esAccumulateEClass = createEClass(ES_ACCUMULATE);
+    createEAttribute(esAccumulateEClass, ES_ACCUMULATE__SOURCE);
+    createEAttribute(esAccumulateEClass, ES_ACCUMULATE__TARGET);
+    createEAttribute(esAccumulateEClass, ES_ACCUMULATE__FETCH_SIZE);
+    createEAttribute(esAccumulateEClass, ES_ACCUMULATE__WRITE_SIZE);
+    createEAttribute(esAccumulateEClass, ES_ACCUMULATE__VALUE);
+    createEAttribute(esAccumulateEClass, ES_ACCUMULATE__WRITE_THREAD_COUNT);
+
     elasticFBCLeadEClass = createEClass(ELASTIC_FBC_LEAD);
     createEAttribute(elasticFBCLeadEClass, ELASTIC_FBC_LEAD__ACCESS_TOKEN);
     createEAttribute(elasticFBCLeadEClass, ELASTIC_FBC_LEAD__APP_SECRET);
@@ -2407,6 +2579,8 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     // Set bounds for type parameters
 
     // Add supertypes to classes
+    esUpdateEClass.getESuperTypes().add(this.getAction());
+    esAccumulateEClass.getESuperTypes().add(this.getAction());
     elasticFBCLeadEClass.getESuperTypes().add(this.getAction());
     elasticGETEClass.getESuperTypes().add(this.getAction());
     execJavaEClass.getESuperTypes().add(this.getAction());
@@ -2457,6 +2631,22 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     initEClass(actionEClass, Action.class, "Action", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getAction_Name(), ecorePackage.getEString(), "name", null, 0, 1, Action.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAction_Condition(), this.getExpression(), null, "condition", null, 0, 1, Action.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(esUpdateEClass, EsUpdate.class, "EsUpdate", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getEsUpdate_Source(), ecorePackage.getEString(), "source", null, 0, 1, EsUpdate.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getEsUpdate_Target(), ecorePackage.getEString(), "target", null, 0, 1, EsUpdate.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getEsUpdate_FetchSize(), ecorePackage.getEString(), "fetchSize", null, 0, 1, EsUpdate.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getEsUpdate_WriteSize(), ecorePackage.getEString(), "writeSize", null, 0, 1, EsUpdate.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getEsUpdate_Value(), ecorePackage.getEString(), "value", null, 0, -1, EsUpdate.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getEsUpdate_WriteThreadCount(), ecorePackage.getEString(), "writeThreadCount", null, 0, 1, EsUpdate.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(esAccumulateEClass, EsAccumulate.class, "EsAccumulate", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getEsAccumulate_Source(), ecorePackage.getEString(), "source", null, 0, 1, EsAccumulate.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getEsAccumulate_Target(), ecorePackage.getEString(), "target", null, 0, 1, EsAccumulate.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getEsAccumulate_FetchSize(), ecorePackage.getEString(), "fetchSize", null, 0, 1, EsAccumulate.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getEsAccumulate_WriteSize(), ecorePackage.getEString(), "writeSize", null, 0, 1, EsAccumulate.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getEsAccumulate_Value(), ecorePackage.getEString(), "value", null, 0, 1, EsAccumulate.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getEsAccumulate_WriteThreadCount(), ecorePackage.getEString(), "writeThreadCount", null, 0, 1, EsAccumulate.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(elasticFBCLeadEClass, ElasticFBCLead.class, "ElasticFBCLead", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getElasticFBCLead_AccessToken(), ecorePackage.getEString(), "accessToken", null, 0, 1, ElasticFBCLead.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

@@ -69,6 +69,24 @@ public interface DslFactory extends EFactory
   Action createAction();
 
   /**
+   * Returns a new object of class '<em>Es Update</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Es Update</em>'.
+   * @generated
+   */
+  EsUpdate createEsUpdate();
+
+  /**
+   * Returns a new object of class '<em>Es Accumulate</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Es Accumulate</em>'.
+   * @generated
+   */
+  EsAccumulate createEsAccumulate();
+
+  /**
    * Returns a new object of class '<em>Elastic FBC Lead</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

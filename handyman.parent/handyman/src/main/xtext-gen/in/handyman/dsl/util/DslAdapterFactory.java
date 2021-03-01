@@ -14,6 +14,8 @@ import in.handyman.dsl.Dropfile;
 import in.handyman.dsl.DslPackage;
 import in.handyman.dsl.ElasticFBCLead;
 import in.handyman.dsl.ElasticGET;
+import in.handyman.dsl.EsAccumulate;
+import in.handyman.dsl.EsUpdate;
 import in.handyman.dsl.ExecJava;
 import in.handyman.dsl.Expression;
 import in.handyman.dsl.FBCLead;
@@ -132,6 +134,16 @@ public class DslAdapterFactory extends AdapterFactoryImpl
       public Adapter caseAction(Action object)
       {
         return createActionAdapter();
+      }
+      @Override
+      public Adapter caseEsUpdate(EsUpdate object)
+      {
+        return createEsUpdateAdapter();
+      }
+      @Override
+      public Adapter caseEsAccumulate(EsAccumulate object)
+      {
+        return createEsAccumulateAdapter();
       }
       @Override
       public Adapter caseElasticFBCLead(ElasticFBCLead object)
@@ -371,6 +383,36 @@ public class DslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createActionAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link in.handyman.dsl.EsUpdate <em>Es Update</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see in.handyman.dsl.EsUpdate
+   * @generated
+   */
+  public Adapter createEsUpdateAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link in.handyman.dsl.EsAccumulate <em>Es Accumulate</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see in.handyman.dsl.EsAccumulate
+   * @generated
+   */
+  public Adapter createEsAccumulateAdapter()
   {
     return null;
   }
