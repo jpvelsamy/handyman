@@ -3350,24 +3350,35 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cToKeyword_5 = (Keyword)cGroup.eContents().get(5);
 		private final Assignment cToAssignment_6 = (Assignment)cGroup.eContents().get(6);
 		private final RuleCall cToSTRINGTerminalRuleCall_6_0 = (RuleCall)cToAssignment_6.eContents().get(0);
-		private final Keyword cUsingKeyword_7 = (Keyword)cGroup.eContents().get(7);
-		private final Keyword cLeftCurlyBracketKeyword_8 = (Keyword)cGroup.eContents().get(8);
-		private final Assignment cValueAssignment_9 = (Assignment)cGroup.eContents().get(9);
-		private final RuleCall cValueSelectStatementParserRuleCall_9_0 = (RuleCall)cValueAssignment_9.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_10 = (Keyword)cGroup.eContents().get(10);
-		private final Keyword cOnConditionKeyword_11 = (Keyword)cGroup.eContents().get(11);
-		private final Assignment cConditionAssignment_12 = (Assignment)cGroup.eContents().get(12);
-		private final RuleCall cConditionExpressionParserRuleCall_12_0 = (RuleCall)cConditionAssignment_12.eContents().get(0);
+		private final Keyword cWithFetchBatchSizeKeyword_7 = (Keyword)cGroup.eContents().get(7);
+		private final Assignment cFetchBatchSizeAssignment_8 = (Assignment)cGroup.eContents().get(8);
+		private final RuleCall cFetchBatchSizeINTTerminalRuleCall_8_0 = (RuleCall)cFetchBatchSizeAssignment_8.eContents().get(0);
+		private final Keyword cWithWriteBatchSizeKeyword_9 = (Keyword)cGroup.eContents().get(9);
+		private final Assignment cWriteBatchSizeAssignment_10 = (Assignment)cGroup.eContents().get(10);
+		private final RuleCall cWriteBatchSizeINTTerminalRuleCall_10_0 = (RuleCall)cWriteBatchSizeAssignment_10.eContents().get(0);
+		private final Keyword cUsingKeyword_11 = (Keyword)cGroup.eContents().get(11);
+		private final Keyword cLeftCurlyBracketKeyword_12 = (Keyword)cGroup.eContents().get(12);
+		private final Assignment cValueAssignment_13 = (Assignment)cGroup.eContents().get(13);
+		private final RuleCall cValueSelectStatementParserRuleCall_13_0 = (RuleCall)cValueAssignment_13.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_14 = (Keyword)cGroup.eContents().get(14);
+		private final Keyword cOnConditionKeyword_15 = (Keyword)cGroup.eContents().get(15);
+		private final Assignment cConditionAssignment_16 = (Assignment)cGroup.eContents().get(16);
+		private final RuleCall cConditionExpressionParserRuleCall_16_0 = (RuleCall)cConditionAssignment_16.eContents().get(0);
+		private final Keyword cFieldingKeyword_17 = (Keyword)cGroup.eContents().get(17);
+		private final Assignment cWriteThreadCountAssignment_18 = (Assignment)cGroup.eContents().get(18);
+		private final RuleCall cWriteThreadCountINTTerminalRuleCall_18_0 = (RuleCall)cWriteThreadCountAssignment_18.eContents().get(0);
 		
 		//Copydata:
-		//	'copydata' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'using'
+		//	'copydata' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'with-fetch-batch-size' fetchBatchSize=INT
+		//	'with-write-batch-size' writeBatchSize=INT 'using'
 		//	'{'
 		//	value=SelectStatement
-		//	'}' 'on-condition' condition=Expression;
+		//	'}' 'on-condition' condition=Expression 'fielding' writeThreadCount=INT;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'copydata' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'using' '{' value=SelectStatement '}' 'on-condition'
-		//condition=Expression
+		//'copydata' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'with-fetch-batch-size' fetchBatchSize=INT
+		//'with-write-batch-size' writeBatchSize=INT 'using' '{' value=SelectStatement '}' 'on-condition' condition=Expression
+		//'fielding' writeThreadCount=INT
 		public Group getGroup() { return cGroup; }
 		
 		//'copydata'
@@ -3400,29 +3411,56 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		//STRING
 		public RuleCall getToSTRINGTerminalRuleCall_6_0() { return cToSTRINGTerminalRuleCall_6_0; }
 		
+		//'with-fetch-batch-size'
+		public Keyword getWithFetchBatchSizeKeyword_7() { return cWithFetchBatchSizeKeyword_7; }
+		
+		//fetchBatchSize=INT
+		public Assignment getFetchBatchSizeAssignment_8() { return cFetchBatchSizeAssignment_8; }
+		
+		//INT
+		public RuleCall getFetchBatchSizeINTTerminalRuleCall_8_0() { return cFetchBatchSizeINTTerminalRuleCall_8_0; }
+		
+		//'with-write-batch-size'
+		public Keyword getWithWriteBatchSizeKeyword_9() { return cWithWriteBatchSizeKeyword_9; }
+		
+		//writeBatchSize=INT
+		public Assignment getWriteBatchSizeAssignment_10() { return cWriteBatchSizeAssignment_10; }
+		
+		//INT
+		public RuleCall getWriteBatchSizeINTTerminalRuleCall_10_0() { return cWriteBatchSizeINTTerminalRuleCall_10_0; }
+		
 		//'using'
-		public Keyword getUsingKeyword_7() { return cUsingKeyword_7; }
+		public Keyword getUsingKeyword_11() { return cUsingKeyword_11; }
 		
 		//'{'
-		public Keyword getLeftCurlyBracketKeyword_8() { return cLeftCurlyBracketKeyword_8; }
+		public Keyword getLeftCurlyBracketKeyword_12() { return cLeftCurlyBracketKeyword_12; }
 		
 		//value=SelectStatement
-		public Assignment getValueAssignment_9() { return cValueAssignment_9; }
+		public Assignment getValueAssignment_13() { return cValueAssignment_13; }
 		
 		//SelectStatement
-		public RuleCall getValueSelectStatementParserRuleCall_9_0() { return cValueSelectStatementParserRuleCall_9_0; }
+		public RuleCall getValueSelectStatementParserRuleCall_13_0() { return cValueSelectStatementParserRuleCall_13_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_10() { return cRightCurlyBracketKeyword_10; }
+		public Keyword getRightCurlyBracketKeyword_14() { return cRightCurlyBracketKeyword_14; }
 		
 		//'on-condition'
-		public Keyword getOnConditionKeyword_11() { return cOnConditionKeyword_11; }
+		public Keyword getOnConditionKeyword_15() { return cOnConditionKeyword_15; }
 		
 		//condition=Expression
-		public Assignment getConditionAssignment_12() { return cConditionAssignment_12; }
+		public Assignment getConditionAssignment_16() { return cConditionAssignment_16; }
 		
 		//Expression
-		public RuleCall getConditionExpressionParserRuleCall_12_0() { return cConditionExpressionParserRuleCall_12_0; }
+		public RuleCall getConditionExpressionParserRuleCall_16_0() { return cConditionExpressionParserRuleCall_16_0; }
+		
+		//'fielding'
+		public Keyword getFieldingKeyword_17() { return cFieldingKeyword_17; }
+		
+		//writeThreadCount=INT
+		public Assignment getWriteThreadCountAssignment_18() { return cWriteThreadCountAssignment_18; }
+		
+		//INT
+		public RuleCall getWriteThreadCountINTTerminalRuleCall_18_0() { return cWriteThreadCountINTTerminalRuleCall_18_0; }
 	}
 	public class WriteCsvElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "in.handyman.Dsl.WriteCsv");
@@ -3539,24 +3577,35 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cWithKeyword_7 = (Keyword)cGroup.eContents().get(7);
 		private final Assignment cDelimAssignment_8 = (Assignment)cGroup.eContents().get(8);
 		private final RuleCall cDelimSTRINGTerminalRuleCall_8_0 = (RuleCall)cDelimAssignment_8.eContents().get(0);
-		private final Keyword cUsingKeyword_9 = (Keyword)cGroup.eContents().get(9);
-		private final Keyword cLeftCurlyBracketKeyword_10 = (Keyword)cGroup.eContents().get(10);
-		private final Assignment cValueAssignment_11 = (Assignment)cGroup.eContents().get(11);
-		private final RuleCall cValueSelectStatementParserRuleCall_11_0 = (RuleCall)cValueAssignment_11.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_12 = (Keyword)cGroup.eContents().get(12);
-		private final Keyword cOnConditionKeyword_13 = (Keyword)cGroup.eContents().get(13);
-		private final Assignment cConditionAssignment_14 = (Assignment)cGroup.eContents().get(14);
-		private final RuleCall cConditionExpressionParserRuleCall_14_0 = (RuleCall)cConditionAssignment_14.eContents().get(0);
+		private final Keyword cWithFetchBatchSizeKeyword_9 = (Keyword)cGroup.eContents().get(9);
+		private final Assignment cFetchBatchSizeAssignment_10 = (Assignment)cGroup.eContents().get(10);
+		private final RuleCall cFetchBatchSizeINTTerminalRuleCall_10_0 = (RuleCall)cFetchBatchSizeAssignment_10.eContents().get(0);
+		private final Keyword cWithWriteBatchSizeKeyword_11 = (Keyword)cGroup.eContents().get(11);
+		private final Assignment cWriteBatchSizeAssignment_12 = (Assignment)cGroup.eContents().get(12);
+		private final RuleCall cWriteBatchSizeINTTerminalRuleCall_12_0 = (RuleCall)cWriteBatchSizeAssignment_12.eContents().get(0);
+		private final Keyword cUsingKeyword_13 = (Keyword)cGroup.eContents().get(13);
+		private final Keyword cLeftCurlyBracketKeyword_14 = (Keyword)cGroup.eContents().get(14);
+		private final Assignment cValueAssignment_15 = (Assignment)cGroup.eContents().get(15);
+		private final RuleCall cValueSelectStatementParserRuleCall_15_0 = (RuleCall)cValueAssignment_15.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_16 = (Keyword)cGroup.eContents().get(16);
+		private final Keyword cOnConditionKeyword_17 = (Keyword)cGroup.eContents().get(17);
+		private final Assignment cConditionAssignment_18 = (Assignment)cGroup.eContents().get(18);
+		private final RuleCall cConditionExpressionParserRuleCall_18_0 = (RuleCall)cConditionAssignment_18.eContents().get(0);
+		private final Keyword cFieldingKeyword_19 = (Keyword)cGroup.eContents().get(19);
+		private final Assignment cWriteThreadCountAssignment_20 = (Assignment)cGroup.eContents().get(20);
+		private final RuleCall cWriteThreadCountINTTerminalRuleCall_20_0 = (RuleCall)cWriteThreadCountAssignment_20.eContents().get(0);
 		
 		//LoadCsv:
-		//	'loadcsv' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'with' delim=STRING 'using'
+		//	'loadcsv' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'with' delim=STRING 'with-fetch-batch-size'
+		//	fetchBatchSize=INT 'with-write-batch-size' writeBatchSize=INT 'using'
 		//	'{'
 		//	value=SelectStatement
-		//	'}' 'on-condition' condition=Expression;
+		//	'}' 'on-condition' condition=Expression 'fielding' writeThreadCount=INT;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'loadcsv' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'with' delim=STRING 'using' '{' value=SelectStatement '}'
-		//'on-condition' condition=Expression
+		//'loadcsv' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'with' delim=STRING 'with-fetch-batch-size'
+		//fetchBatchSize=INT 'with-write-batch-size' writeBatchSize=INT 'using' '{' value=SelectStatement '}' 'on-condition'
+		//condition=Expression 'fielding' writeThreadCount=INT
 		public Group getGroup() { return cGroup; }
 		
 		//'loadcsv'
@@ -3598,29 +3647,56 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		//STRING
 		public RuleCall getDelimSTRINGTerminalRuleCall_8_0() { return cDelimSTRINGTerminalRuleCall_8_0; }
 		
+		//'with-fetch-batch-size'
+		public Keyword getWithFetchBatchSizeKeyword_9() { return cWithFetchBatchSizeKeyword_9; }
+		
+		//fetchBatchSize=INT
+		public Assignment getFetchBatchSizeAssignment_10() { return cFetchBatchSizeAssignment_10; }
+		
+		//INT
+		public RuleCall getFetchBatchSizeINTTerminalRuleCall_10_0() { return cFetchBatchSizeINTTerminalRuleCall_10_0; }
+		
+		//'with-write-batch-size'
+		public Keyword getWithWriteBatchSizeKeyword_11() { return cWithWriteBatchSizeKeyword_11; }
+		
+		//writeBatchSize=INT
+		public Assignment getWriteBatchSizeAssignment_12() { return cWriteBatchSizeAssignment_12; }
+		
+		//INT
+		public RuleCall getWriteBatchSizeINTTerminalRuleCall_12_0() { return cWriteBatchSizeINTTerminalRuleCall_12_0; }
+		
 		//'using'
-		public Keyword getUsingKeyword_9() { return cUsingKeyword_9; }
+		public Keyword getUsingKeyword_13() { return cUsingKeyword_13; }
 		
 		//'{'
-		public Keyword getLeftCurlyBracketKeyword_10() { return cLeftCurlyBracketKeyword_10; }
+		public Keyword getLeftCurlyBracketKeyword_14() { return cLeftCurlyBracketKeyword_14; }
 		
 		//value=SelectStatement
-		public Assignment getValueAssignment_11() { return cValueAssignment_11; }
+		public Assignment getValueAssignment_15() { return cValueAssignment_15; }
 		
 		//SelectStatement
-		public RuleCall getValueSelectStatementParserRuleCall_11_0() { return cValueSelectStatementParserRuleCall_11_0; }
+		public RuleCall getValueSelectStatementParserRuleCall_15_0() { return cValueSelectStatementParserRuleCall_15_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_12() { return cRightCurlyBracketKeyword_12; }
+		public Keyword getRightCurlyBracketKeyword_16() { return cRightCurlyBracketKeyword_16; }
 		
 		//'on-condition'
-		public Keyword getOnConditionKeyword_13() { return cOnConditionKeyword_13; }
+		public Keyword getOnConditionKeyword_17() { return cOnConditionKeyword_17; }
 		
 		//condition=Expression
-		public Assignment getConditionAssignment_14() { return cConditionAssignment_14; }
+		public Assignment getConditionAssignment_18() { return cConditionAssignment_18; }
 		
 		//Expression
-		public RuleCall getConditionExpressionParserRuleCall_14_0() { return cConditionExpressionParserRuleCall_14_0; }
+		public RuleCall getConditionExpressionParserRuleCall_18_0() { return cConditionExpressionParserRuleCall_18_0; }
+		
+		//'fielding'
+		public Keyword getFieldingKeyword_19() { return cFieldingKeyword_19; }
+		
+		//writeThreadCount=INT
+		public Assignment getWriteThreadCountAssignment_20() { return cWriteThreadCountAssignment_20; }
+		
+		//INT
+		public RuleCall getWriteThreadCountINTTerminalRuleCall_20_0() { return cWriteThreadCountINTTerminalRuleCall_20_0; }
 	}
 	public class TransformElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "in.handyman.Dsl.Transform");
@@ -4400,10 +4476,11 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//Copydata:
-	//	'copydata' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'using'
+	//	'copydata' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'with-fetch-batch-size' fetchBatchSize=INT
+	//	'with-write-batch-size' writeBatchSize=INT 'using'
 	//	'{'
 	//	value=SelectStatement
-	//	'}' 'on-condition' condition=Expression;
+	//	'}' 'on-condition' condition=Expression 'fielding' writeThreadCount=INT;
 	public CopydataElements getCopydataAccess() {
 		return pCopydata;
 	}
@@ -4426,10 +4503,11 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//LoadCsv:
-	//	'loadcsv' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'with' delim=STRING 'using'
+	//	'loadcsv' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'with' delim=STRING 'with-fetch-batch-size'
+	//	fetchBatchSize=INT 'with-write-batch-size' writeBatchSize=INT 'using'
 	//	'{'
 	//	value=SelectStatement
-	//	'}' 'on-condition' condition=Expression;
+	//	'}' 'on-condition' condition=Expression 'fielding' writeThreadCount=INT;
 	public LoadCsvElements getLoadCsvAccess() {
 		return pLoadCsv;
 	}

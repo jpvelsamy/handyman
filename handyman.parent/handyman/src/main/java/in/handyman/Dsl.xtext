@@ -268,10 +268,10 @@ SlackPUT:
 
 	
 Copydata:
-	'copydata' 'as' name= STRING 'from' source= STRING 'to' to= STRING 'using'
+	'copydata' 'as' name= STRING 'from' source= STRING 'to' to= STRING 'with-fetch-batch-size' fetchBatchSize=INT 'with-write-batch-size' writeBatchSize=INT 'using'
 	'{'
 		value=SelectStatement
-	'}' 'on-condition' condition=Expression
+	'}' 'on-condition' condition=Expression 'fielding' writeThreadCount=INT
 ;
 
 
@@ -283,10 +283,10 @@ WriteCsv:
 ;
 
 LoadCsv:
-	'loadcsv' 'as' name= STRING 'from' source= STRING 'to' to= STRING 'with'  delim= STRING 'using'
+	'loadcsv' 'as' name= STRING 'from' source= STRING 'to' to= STRING 'with'  delim= STRING 'with-fetch-batch-size' fetchBatchSize=INT 'with-write-batch-size' writeBatchSize=INT 'using'
 	'{'
 		value=SelectStatement
-	'}' 'on-condition' condition=Expression
+	'}' 'on-condition' condition=Expression 'fielding' writeThreadCount=INT
 ;
 
 Transform:

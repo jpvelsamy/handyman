@@ -10,15 +10,16 @@ import java.sql.SQLSyntaxErrorException
 import in.handyman.util.ExceptionUtil
 import java.sql.SQLException
 
-case class RowCell(columnType: String, columnTypeName: String, columnName: String, columnLabel: String, scale: Integer, value: Object)
+
 class EsUpdateAction extends in.handyman.command.Action with LazyLogging {
   val detailMap = new java.util.HashMap[String, String]
-  val  inboundPsmFormQueue = new LinkedBlockingDeque[RowCell]
+  val  inboundPsmFormQueue = new LinkedBlockingDeque[ColumnInARow]
 
   def execute(context: in.handyman.command.Context, action: in.handyman.dsl.Action, actionId: Integer): in.handyman.command.Context = {
     val esUpdateAsIs: in.handyman.dsl.EsUpdate = action.asInstanceOf[in.handyman.dsl.EsUpdate]
     val esUpdate: in.handyman.dsl.EsUpdate = CommandProxy.createProxy(esUpdateAsIs, classOf[in.handyman.dsl.EsUpdate], context)
 
+    
     val id = context.getValue("process-id")
     val name=esUpdate.getName
     val source=esUpdate.getSource
@@ -28,7 +29,7 @@ class EsUpdateAction extends in.handyman.command.Action with LazyLogging {
     val threadCount=esUpdate.getWriteThreadCount
     val sqlList=esUpdate.getValue
     logger.info(s"EsUpdate action input variables id:$id,name: $name, source-database:$source, target-database:$target ")
-    logger.info(s"Sql input post parameter ingestion \n sqlString")
+    logger.info(s"EsUpdate Sql input post parameter ingestion \n :$sqlList")
     val sourceConnection = ResourceAccess.rdbmsConn(source)
     val stmt = sourceConnection.createStatement
     val iter = sqlList.iterator

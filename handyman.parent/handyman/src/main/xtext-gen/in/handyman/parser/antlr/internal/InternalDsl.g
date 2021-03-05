@@ -5669,20 +5669,64 @@ ruleCopydata returns [EObject current=null]
 				}
 			)
 		)
-		otherlv_7='using'
+		otherlv_7='with-fetch-batch-size'
 		{
-			newLeafNode(otherlv_7, grammarAccess.getCopydataAccess().getUsingKeyword_7());
+			newLeafNode(otherlv_7, grammarAccess.getCopydataAccess().getWithFetchBatchSizeKeyword_7());
 		}
-		otherlv_8='{'
+		(
+			(
+				lv_fetchBatchSize_8_0=RULE_INT
+				{
+					newLeafNode(lv_fetchBatchSize_8_0, grammarAccess.getCopydataAccess().getFetchBatchSizeINTTerminalRuleCall_8_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getCopydataRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"fetchBatchSize",
+						lv_fetchBatchSize_8_0,
+						"org.eclipse.xtext.common.Terminals.INT");
+				}
+			)
+		)
+		otherlv_9='with-write-batch-size'
 		{
-			newLeafNode(otherlv_8, grammarAccess.getCopydataAccess().getLeftCurlyBracketKeyword_8());
+			newLeafNode(otherlv_9, grammarAccess.getCopydataAccess().getWithWriteBatchSizeKeyword_9());
+		}
+		(
+			(
+				lv_writeBatchSize_10_0=RULE_INT
+				{
+					newLeafNode(lv_writeBatchSize_10_0, grammarAccess.getCopydataAccess().getWriteBatchSizeINTTerminalRuleCall_10_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getCopydataRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"writeBatchSize",
+						lv_writeBatchSize_10_0,
+						"org.eclipse.xtext.common.Terminals.INT");
+				}
+			)
+		)
+		otherlv_11='using'
+		{
+			newLeafNode(otherlv_11, grammarAccess.getCopydataAccess().getUsingKeyword_11());
+		}
+		otherlv_12='{'
+		{
+			newLeafNode(otherlv_12, grammarAccess.getCopydataAccess().getLeftCurlyBracketKeyword_12());
 		}
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getCopydataAccess().getValueSelectStatementParserRuleCall_9_0());
+					newCompositeNode(grammarAccess.getCopydataAccess().getValueSelectStatementParserRuleCall_13_0());
 				}
-				lv_value_9_0=ruleSelectStatement
+				lv_value_13_0=ruleSelectStatement
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getCopydataRule());
@@ -5690,26 +5734,26 @@ ruleCopydata returns [EObject current=null]
 					set(
 						$current,
 						"value",
-						lv_value_9_0,
+						lv_value_13_0,
 						"in.handyman.Dsl.SelectStatement");
 					afterParserOrEnumRuleCall();
 				}
 			)
 		)
-		otherlv_10='}'
+		otherlv_14='}'
 		{
-			newLeafNode(otherlv_10, grammarAccess.getCopydataAccess().getRightCurlyBracketKeyword_10());
+			newLeafNode(otherlv_14, grammarAccess.getCopydataAccess().getRightCurlyBracketKeyword_14());
 		}
-		otherlv_11='on-condition'
+		otherlv_15='on-condition'
 		{
-			newLeafNode(otherlv_11, grammarAccess.getCopydataAccess().getOnConditionKeyword_11());
+			newLeafNode(otherlv_15, grammarAccess.getCopydataAccess().getOnConditionKeyword_15());
 		}
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getCopydataAccess().getConditionExpressionParserRuleCall_12_0());
+					newCompositeNode(grammarAccess.getCopydataAccess().getConditionExpressionParserRuleCall_16_0());
 				}
-				lv_condition_12_0=ruleExpression
+				lv_condition_16_0=ruleExpression
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getCopydataRule());
@@ -5717,9 +5761,31 @@ ruleCopydata returns [EObject current=null]
 					set(
 						$current,
 						"condition",
-						lv_condition_12_0,
+						lv_condition_16_0,
 						"in.handyman.Dsl.Expression");
 					afterParserOrEnumRuleCall();
+				}
+			)
+		)
+		otherlv_17='fielding'
+		{
+			newLeafNode(otherlv_17, grammarAccess.getCopydataAccess().getFieldingKeyword_17());
+		}
+		(
+			(
+				lv_writeThreadCount_18_0=RULE_INT
+				{
+					newLeafNode(lv_writeThreadCount_18_0, grammarAccess.getCopydataAccess().getWriteThreadCountINTTerminalRuleCall_18_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getCopydataRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"writeThreadCount",
+						lv_writeThreadCount_18_0,
+						"org.eclipse.xtext.common.Terminals.INT");
 				}
 			)
 		)
@@ -5999,20 +6065,64 @@ ruleLoadCsv returns [EObject current=null]
 				}
 			)
 		)
-		otherlv_9='using'
+		otherlv_9='with-fetch-batch-size'
 		{
-			newLeafNode(otherlv_9, grammarAccess.getLoadCsvAccess().getUsingKeyword_9());
+			newLeafNode(otherlv_9, grammarAccess.getLoadCsvAccess().getWithFetchBatchSizeKeyword_9());
 		}
-		otherlv_10='{'
+		(
+			(
+				lv_fetchBatchSize_10_0=RULE_INT
+				{
+					newLeafNode(lv_fetchBatchSize_10_0, grammarAccess.getLoadCsvAccess().getFetchBatchSizeINTTerminalRuleCall_10_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getLoadCsvRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"fetchBatchSize",
+						lv_fetchBatchSize_10_0,
+						"org.eclipse.xtext.common.Terminals.INT");
+				}
+			)
+		)
+		otherlv_11='with-write-batch-size'
 		{
-			newLeafNode(otherlv_10, grammarAccess.getLoadCsvAccess().getLeftCurlyBracketKeyword_10());
+			newLeafNode(otherlv_11, grammarAccess.getLoadCsvAccess().getWithWriteBatchSizeKeyword_11());
+		}
+		(
+			(
+				lv_writeBatchSize_12_0=RULE_INT
+				{
+					newLeafNode(lv_writeBatchSize_12_0, grammarAccess.getLoadCsvAccess().getWriteBatchSizeINTTerminalRuleCall_12_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getLoadCsvRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"writeBatchSize",
+						lv_writeBatchSize_12_0,
+						"org.eclipse.xtext.common.Terminals.INT");
+				}
+			)
+		)
+		otherlv_13='using'
+		{
+			newLeafNode(otherlv_13, grammarAccess.getLoadCsvAccess().getUsingKeyword_13());
+		}
+		otherlv_14='{'
+		{
+			newLeafNode(otherlv_14, grammarAccess.getLoadCsvAccess().getLeftCurlyBracketKeyword_14());
 		}
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getLoadCsvAccess().getValueSelectStatementParserRuleCall_11_0());
+					newCompositeNode(grammarAccess.getLoadCsvAccess().getValueSelectStatementParserRuleCall_15_0());
 				}
-				lv_value_11_0=ruleSelectStatement
+				lv_value_15_0=ruleSelectStatement
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getLoadCsvRule());
@@ -6020,26 +6130,26 @@ ruleLoadCsv returns [EObject current=null]
 					set(
 						$current,
 						"value",
-						lv_value_11_0,
+						lv_value_15_0,
 						"in.handyman.Dsl.SelectStatement");
 					afterParserOrEnumRuleCall();
 				}
 			)
 		)
-		otherlv_12='}'
+		otherlv_16='}'
 		{
-			newLeafNode(otherlv_12, grammarAccess.getLoadCsvAccess().getRightCurlyBracketKeyword_12());
+			newLeafNode(otherlv_16, grammarAccess.getLoadCsvAccess().getRightCurlyBracketKeyword_16());
 		}
-		otherlv_13='on-condition'
+		otherlv_17='on-condition'
 		{
-			newLeafNode(otherlv_13, grammarAccess.getLoadCsvAccess().getOnConditionKeyword_13());
+			newLeafNode(otherlv_17, grammarAccess.getLoadCsvAccess().getOnConditionKeyword_17());
 		}
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getLoadCsvAccess().getConditionExpressionParserRuleCall_14_0());
+					newCompositeNode(grammarAccess.getLoadCsvAccess().getConditionExpressionParserRuleCall_18_0());
 				}
-				lv_condition_14_0=ruleExpression
+				lv_condition_18_0=ruleExpression
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getLoadCsvRule());
@@ -6047,9 +6157,31 @@ ruleLoadCsv returns [EObject current=null]
 					set(
 						$current,
 						"condition",
-						lv_condition_14_0,
+						lv_condition_18_0,
 						"in.handyman.Dsl.Expression");
 					afterParserOrEnumRuleCall();
+				}
+			)
+		)
+		otherlv_19='fielding'
+		{
+			newLeafNode(otherlv_19, grammarAccess.getLoadCsvAccess().getFieldingKeyword_19());
+		}
+		(
+			(
+				lv_writeThreadCount_20_0=RULE_INT
+				{
+					newLeafNode(lv_writeThreadCount_20_0, grammarAccess.getLoadCsvAccess().getWriteThreadCountINTTerminalRuleCall_20_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getLoadCsvRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"writeThreadCount",
+						lv_writeThreadCount_20_0,
+						"org.eclipse.xtext.common.Terminals.INT");
 				}
 			)
 		)

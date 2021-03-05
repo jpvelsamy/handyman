@@ -1,6 +1,6 @@
-'<'=94
-'=='=96
-'>'=95
+'<'=97
+'=='=99
+'>'=98
 'abort'=47
 'and-method-as'=64
 'and-writesize-as'=22
@@ -10,7 +10,7 @@
 'c2sms'=86
 'callprocess'=78
 'catch'=16
-'contains'=97
+'contains'=100
 'copydata'=89
 'do-dryrun-with'=46
 'doozle'=60
@@ -23,6 +23,7 @@
 'fbfd'=56
 'fblc'=55
 'fbrn'=42
+'fielding'=92
 'finally'=15
 'for-campaign'=31
 'for-every'=81
@@ -38,13 +39,13 @@
 'gcalendar'=54
 'gcontact'=53
 'gcontact-fetchall'=48
-'if'=93
+'if'=96
 'in'=85
 'in-path'=59
 'in-table'=61
 'into'=32
 'java'=34
-'loadcsv'=91
+'loadcsv'=94
 'log'=83
 'logto'=84
 'name-sake-db'=35
@@ -65,7 +66,7 @@
 'through-user'=30
 'to'=20
 'to-target'=51
-'transform'=92
+'transform'=95
 'trelloget'=72
 'trelloput'=74
 'try'=14
@@ -75,14 +76,16 @@
 'using'=23
 'with'=71
 'with-class'=41
+'with-fetch-batch-size'=90
 'with-fetchsize-as'=21
 'with-key'=29
 'with-sender'=44
 'with-target'=79
 'with-url'=63
 'with-user'=87
+'with-write-batch-size'=91
 'with-write-threads'=25
-'writecsv'=90
+'writecsv'=93
 '{'=12
 '}'=13
 RULE_ANY_OTHER=10
@@ -92,6 +95,7 @@ RULE_ML_COMMENT=7
 RULE_SL_COMMENT=8
 RULE_STRING=4
 RULE_WS=9
+T__100=100
 T__11=11
 T__12=12
 T__13=13
@@ -179,3 +183,5 @@ T__94=94
 T__95=95
 T__96=96
 T__97=97
+T__98=98
+T__99=99

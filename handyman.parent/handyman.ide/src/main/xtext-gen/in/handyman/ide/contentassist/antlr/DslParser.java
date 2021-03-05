@@ -266,8 +266,11 @@ public class DslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getCopydataAccess().getNameAssignment_2(), "rule__Copydata__NameAssignment_2");
 			builder.put(grammarAccess.getCopydataAccess().getSourceAssignment_4(), "rule__Copydata__SourceAssignment_4");
 			builder.put(grammarAccess.getCopydataAccess().getToAssignment_6(), "rule__Copydata__ToAssignment_6");
-			builder.put(grammarAccess.getCopydataAccess().getValueAssignment_9(), "rule__Copydata__ValueAssignment_9");
-			builder.put(grammarAccess.getCopydataAccess().getConditionAssignment_12(), "rule__Copydata__ConditionAssignment_12");
+			builder.put(grammarAccess.getCopydataAccess().getFetchBatchSizeAssignment_8(), "rule__Copydata__FetchBatchSizeAssignment_8");
+			builder.put(grammarAccess.getCopydataAccess().getWriteBatchSizeAssignment_10(), "rule__Copydata__WriteBatchSizeAssignment_10");
+			builder.put(grammarAccess.getCopydataAccess().getValueAssignment_13(), "rule__Copydata__ValueAssignment_13");
+			builder.put(grammarAccess.getCopydataAccess().getConditionAssignment_16(), "rule__Copydata__ConditionAssignment_16");
+			builder.put(grammarAccess.getCopydataAccess().getWriteThreadCountAssignment_18(), "rule__Copydata__WriteThreadCountAssignment_18");
 			builder.put(grammarAccess.getWriteCsvAccess().getNameAssignment_2(), "rule__WriteCsv__NameAssignment_2");
 			builder.put(grammarAccess.getWriteCsvAccess().getSourceAssignment_4(), "rule__WriteCsv__SourceAssignment_4");
 			builder.put(grammarAccess.getWriteCsvAccess().getToAssignment_6(), "rule__WriteCsv__ToAssignment_6");
@@ -278,8 +281,11 @@ public class DslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getLoadCsvAccess().getSourceAssignment_4(), "rule__LoadCsv__SourceAssignment_4");
 			builder.put(grammarAccess.getLoadCsvAccess().getToAssignment_6(), "rule__LoadCsv__ToAssignment_6");
 			builder.put(grammarAccess.getLoadCsvAccess().getDelimAssignment_8(), "rule__LoadCsv__DelimAssignment_8");
-			builder.put(grammarAccess.getLoadCsvAccess().getValueAssignment_11(), "rule__LoadCsv__ValueAssignment_11");
-			builder.put(grammarAccess.getLoadCsvAccess().getConditionAssignment_14(), "rule__LoadCsv__ConditionAssignment_14");
+			builder.put(grammarAccess.getLoadCsvAccess().getFetchBatchSizeAssignment_10(), "rule__LoadCsv__FetchBatchSizeAssignment_10");
+			builder.put(grammarAccess.getLoadCsvAccess().getWriteBatchSizeAssignment_12(), "rule__LoadCsv__WriteBatchSizeAssignment_12");
+			builder.put(grammarAccess.getLoadCsvAccess().getValueAssignment_15(), "rule__LoadCsv__ValueAssignment_15");
+			builder.put(grammarAccess.getLoadCsvAccess().getConditionAssignment_18(), "rule__LoadCsv__ConditionAssignment_18");
+			builder.put(grammarAccess.getLoadCsvAccess().getWriteThreadCountAssignment_20(), "rule__LoadCsv__WriteThreadCountAssignment_20");
 			builder.put(grammarAccess.getTransformAccess().getNameAssignment_2(), "rule__Transform__NameAssignment_2");
 			builder.put(grammarAccess.getTransformAccess().getOnAssignment_4(), "rule__Transform__OnAssignment_4");
 			builder.put(grammarAccess.getTransformAccess().getValueAssignment_7(), "rule__Transform__ValueAssignment_7");
