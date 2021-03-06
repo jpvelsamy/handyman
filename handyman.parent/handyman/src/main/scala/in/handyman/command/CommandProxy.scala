@@ -9,6 +9,7 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList
 import com.typesafe.scalalogging.LazyLogging
 import in.handyman.dsl.Expression
 import in.handyman.dsl.impl.ExpressionImpl
+import in.handyman.HandymanException
 
 object CommandProxy extends LazyLogging {
   //val eList = classOf[EList[String]].getName
@@ -56,10 +57,13 @@ object CommandProxy extends LazyLogging {
               }
             }
           }
-          case _ => {
+          case "java.lang.String" => {
             val inputString = method.invoke(proxee, args: _*).asInstanceOf[String]
             val result = ParameterisationEngine.resolve(inputString, context)
             result
+          }
+          case _=> {
+           throw new HandymanException("Support for other types is not there yet")
           }
 
         }

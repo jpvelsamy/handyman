@@ -5669,91 +5669,46 @@ ruleCopydata returns [EObject current=null]
 				}
 			)
 		)
-		otherlv_7='with-fetch-batch-size'
+		otherlv_7='using'
 		{
-			newLeafNode(otherlv_7, grammarAccess.getCopydataAccess().getWithFetchBatchSizeKeyword_7());
+			newLeafNode(otherlv_7, grammarAccess.getCopydataAccess().getUsingKeyword_7());
+		}
+		otherlv_8='{'
+		{
+			newLeafNode(otherlv_8, grammarAccess.getCopydataAccess().getLeftCurlyBracketKeyword_8());
 		}
 		(
 			(
-				lv_fetchBatchSize_8_0=RULE_INT
+				lv_value_9_0=RULE_STRING
 				{
-					newLeafNode(lv_fetchBatchSize_8_0, grammarAccess.getCopydataAccess().getFetchBatchSizeINTTerminalRuleCall_8_0());
+					newLeafNode(lv_value_9_0, grammarAccess.getCopydataAccess().getValueSTRINGTerminalRuleCall_9_0());
 				}
 				{
 					if ($current==null) {
 						$current = createModelElement(grammarAccess.getCopydataRule());
 					}
 					setWithLastConsumed(
-						$current,
-						"fetchBatchSize",
-						lv_fetchBatchSize_8_0,
-						"org.eclipse.xtext.common.Terminals.INT");
-				}
-			)
-		)
-		otherlv_9='with-write-batch-size'
-		{
-			newLeafNode(otherlv_9, grammarAccess.getCopydataAccess().getWithWriteBatchSizeKeyword_9());
-		}
-		(
-			(
-				lv_writeBatchSize_10_0=RULE_INT
-				{
-					newLeafNode(lv_writeBatchSize_10_0, grammarAccess.getCopydataAccess().getWriteBatchSizeINTTerminalRuleCall_10_0());
-				}
-				{
-					if ($current==null) {
-						$current = createModelElement(grammarAccess.getCopydataRule());
-					}
-					setWithLastConsumed(
-						$current,
-						"writeBatchSize",
-						lv_writeBatchSize_10_0,
-						"org.eclipse.xtext.common.Terminals.INT");
-				}
-			)
-		)
-		otherlv_11='using'
-		{
-			newLeafNode(otherlv_11, grammarAccess.getCopydataAccess().getUsingKeyword_11());
-		}
-		otherlv_12='{'
-		{
-			newLeafNode(otherlv_12, grammarAccess.getCopydataAccess().getLeftCurlyBracketKeyword_12());
-		}
-		(
-			(
-				{
-					newCompositeNode(grammarAccess.getCopydataAccess().getValueSelectStatementParserRuleCall_13_0());
-				}
-				lv_value_13_0=ruleSelectStatement
-				{
-					if ($current==null) {
-						$current = createModelElementForParent(grammarAccess.getCopydataRule());
-					}
-					set(
 						$current,
 						"value",
-						lv_value_13_0,
-						"in.handyman.Dsl.SelectStatement");
-					afterParserOrEnumRuleCall();
+						lv_value_9_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
 				}
 			)
 		)
-		otherlv_14='}'
+		otherlv_10='}'
 		{
-			newLeafNode(otherlv_14, grammarAccess.getCopydataAccess().getRightCurlyBracketKeyword_14());
+			newLeafNode(otherlv_10, grammarAccess.getCopydataAccess().getRightCurlyBracketKeyword_10());
 		}
-		otherlv_15='on-condition'
+		otherlv_11='on-condition'
 		{
-			newLeafNode(otherlv_15, grammarAccess.getCopydataAccess().getOnConditionKeyword_15());
+			newLeafNode(otherlv_11, grammarAccess.getCopydataAccess().getOnConditionKeyword_11());
 		}
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getCopydataAccess().getConditionExpressionParserRuleCall_16_0());
+					newCompositeNode(grammarAccess.getCopydataAccess().getConditionExpressionParserRuleCall_12_0());
 				}
-				lv_condition_16_0=ruleExpression
+				lv_condition_12_0=ruleExpression
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getCopydataRule());
@@ -5761,21 +5716,21 @@ ruleCopydata returns [EObject current=null]
 					set(
 						$current,
 						"condition",
-						lv_condition_16_0,
+						lv_condition_12_0,
 						"in.handyman.Dsl.Expression");
 					afterParserOrEnumRuleCall();
 				}
 			)
 		)
-		otherlv_17='fielding'
+		otherlv_13='fielding'
 		{
-			newLeafNode(otherlv_17, grammarAccess.getCopydataAccess().getFieldingKeyword_17());
+			newLeafNode(otherlv_13, grammarAccess.getCopydataAccess().getFieldingKeyword_13());
 		}
 		(
 			(
-				lv_writeThreadCount_18_0=RULE_INT
+				lv_writeThreadCount_14_0=RULE_STRING
 				{
-					newLeafNode(lv_writeThreadCount_18_0, grammarAccess.getCopydataAccess().getWriteThreadCountINTTerminalRuleCall_18_0());
+					newLeafNode(lv_writeThreadCount_14_0, grammarAccess.getCopydataAccess().getWriteThreadCountSTRINGTerminalRuleCall_14_0());
 				}
 				{
 					if ($current==null) {
@@ -5784,8 +5739,52 @@ ruleCopydata returns [EObject current=null]
 					setWithLastConsumed(
 						$current,
 						"writeThreadCount",
-						lv_writeThreadCount_18_0,
-						"org.eclipse.xtext.common.Terminals.INT");
+						lv_writeThreadCount_14_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_15='with-fetch-batch-size'
+		{
+			newLeafNode(otherlv_15, grammarAccess.getCopydataAccess().getWithFetchBatchSizeKeyword_15());
+		}
+		(
+			(
+				lv_fetchBatchSize_16_0=RULE_STRING
+				{
+					newLeafNode(lv_fetchBatchSize_16_0, grammarAccess.getCopydataAccess().getFetchBatchSizeSTRINGTerminalRuleCall_16_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getCopydataRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"fetchBatchSize",
+						lv_fetchBatchSize_16_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_17='with-write-batch-size'
+		{
+			newLeafNode(otherlv_17, grammarAccess.getCopydataAccess().getWithWriteBatchSizeKeyword_17());
+		}
+		(
+			(
+				lv_writeBatchSize_18_0=RULE_STRING
+				{
+					newLeafNode(lv_writeBatchSize_18_0, grammarAccess.getCopydataAccess().getWriteBatchSizeSTRINGTerminalRuleCall_18_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getCopydataRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"writeBatchSize",
+						lv_writeBatchSize_18_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
 				}
 			)
 		)

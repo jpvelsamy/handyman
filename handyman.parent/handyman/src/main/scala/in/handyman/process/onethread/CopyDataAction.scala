@@ -46,38 +46,40 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
     val name = copyData.getName
 
     val source = {
-      if (!copyData.getSource.trim.isEmpty())
-        copyData.getSource.trim
-      else
+      if (copyData.getSource.trim.isEmpty()) {
         throw new HandymanException("source data source cannot be empty for copydata for " + name)
+      }
+      copyData.getSource.trim
+
     }
 
     val target = {
-      if (!copyData.getTo.trim.isEmpty())
-        copyData.getTo.trim
-      else
+      if (copyData.getTo.trim.isEmpty()) {
         throw new HandymanException("target data source cannot be empty for copydata for " + name)
+      }
+      copyData.getTo.trim
+
     }
 
     val fetchSize: Int = {
-      if (copyData.getFetchBatchSize.isValidInt)
-        copyData.getFetchBatchSize
+      if (!copyData.getFetchBatchSize.isEmpty && copyData.getFetchBatchSize.toInt>0)
+        copyData.getFetchBatchSize.toInt
       else {
         configMap.getOrElse(Constants.READSIZE, Constants.DEFAULT_READ_SIZE).toInt
       }
     }
 
     val writeSize = {
-      if (copyData.getWriteBatchSize.isValidInt)
-        copyData.getWriteBatchSize
+      if (!copyData.getWriteBatchSize.isEmpty && copyData.getWriteBatchSize.toInt>0)
+        copyData.getWriteBatchSize.toInt
       else {
         configMap.getOrElse(Constants.WRITESIZE, Constants.DEFAULT_WRITE_SIZE).toInt
       }
     }
 
     val threadCount: Int = {
-      if (copyData.getWriteThreadCount.isValidInt)
-        copyData.getWriteThreadCount
+      if (!copyData.getWriteThreadCount.isEmpty && copyData.getWriteThreadCount.toInt>0)
+        copyData.getWriteThreadCount.toInt
       else {
         configMap.getOrElse(Constants.WRITERTHREAD, Constants.DEFAULT_WRITER_COUNT).toInt
       }
@@ -86,10 +88,10 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
     //retrieving the insert into sql statement
     val insertStatementAsIs = copyData.getValue
     val insertStatement = {
-      if (!insertStatementAsIs.trim.isEmpty())
-        insertStatementAsIs.trim
+      if (insertStatementAsIs.trim.isEmpty())
+        throw new HandymanException("INSERT INTO SELECT .... cannot be empty for copydata for " + name)        
       else
-        throw new HandymanException("INSERT INTO SELECT .... cannot be empty for copydata for " + name)
+        insertStatementAsIs.trim
     }
     val insert = CCJSqlParserUtil.parse(insertStatement).asInstanceOf[Insert]
     val select = insert.getSelect
@@ -99,7 +101,7 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
     logger.info(s"Copydata Select Sql input post parameter ingestion \n :$select")
 
     //initializing the connection related statement
-    val  sourceConnection= ResourceAccess.rdbmsConn(source)
+    val sourceConnection = ResourceAccess.rdbmsConn(source)
     val stmt = sourceConnection.createStatement
     stmt.setFetchSize(fetchSize)
     val statementId = AuditService.insertStatementAudit(actionId, "copydata->" + name, context.getValue("process-name"))
@@ -165,21 +167,20 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
       detailMap.put("ddlSql", insertStatementAsIs)
       detailMap.put("rows-processed", String.valueOf(rowsProcessed.intValue));
       context.addValue("rows-processed", String.valueOf(rowsProcessed.intValue));
-      
-      
-        try {
-          if(rs!=null)
-            rs.close
-          if(stmt!=null)
-            stmt.close
-          if(sourceConnection!=null)
+
+      try {
+        if (rs != null)
+          rs.close
+        if (stmt != null)
+          stmt.close
+        if (sourceConnection != null)
           sourceConnection.close
-        }catch{
-          case ex: Throwable => {
-            logger.error(s"Copydata:$instanceId error closing source connection for database:$source", ex)
-          }
+      } catch {
+        case ex: Throwable => {
+          logger.error(s"Copydata:$instanceId error closing source connection for database:$source", ex)
         }
-      
+      }
+
     }
     context
   }

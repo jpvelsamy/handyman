@@ -17,7 +17,7 @@ case class Resource(configType: String, driverClassName: String, userName: Strin
 object ConfigurationService extends LazyLogging {
   //config_type, auth_info, resource_url
   private val conf = ConfigFactory.parseResources("configstore.props")
-  logger.info("Initializing the config store from config file" + conf.origin().url())
+  logger.info(s"Initializing the config store from config file $conf.origin.url")
   private val url = conf.getString("config.url")
   private val driver = conf.getString("config.driver")
   private val user = conf.getString("config.user")

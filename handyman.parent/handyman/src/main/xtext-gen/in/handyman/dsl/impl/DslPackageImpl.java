@@ -2174,7 +2174,7 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getCopydata_FetchBatchSize()
+  public EAttribute getCopydata_Value()
   {
     return (EAttribute)copydataEClass.getEStructuralFeatures().get(2);
   }
@@ -2184,7 +2184,7 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getCopydata_WriteBatchSize()
+  public EAttribute getCopydata_WriteThreadCount()
   {
     return (EAttribute)copydataEClass.getEStructuralFeatures().get(3);
   }
@@ -2194,7 +2194,7 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getCopydata_Value()
+  public EAttribute getCopydata_FetchBatchSize()
   {
     return (EAttribute)copydataEClass.getEStructuralFeatures().get(4);
   }
@@ -2204,7 +2204,7 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getCopydata_WriteThreadCount()
+  public EAttribute getCopydata_WriteBatchSize()
   {
     return (EAttribute)copydataEClass.getEStructuralFeatures().get(5);
   }
@@ -2650,10 +2650,10 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     copydataEClass = createEClass(COPYDATA);
     createEAttribute(copydataEClass, COPYDATA__SOURCE);
     createEAttribute(copydataEClass, COPYDATA__TO);
-    createEAttribute(copydataEClass, COPYDATA__FETCH_BATCH_SIZE);
-    createEAttribute(copydataEClass, COPYDATA__WRITE_BATCH_SIZE);
     createEAttribute(copydataEClass, COPYDATA__VALUE);
     createEAttribute(copydataEClass, COPYDATA__WRITE_THREAD_COUNT);
+    createEAttribute(copydataEClass, COPYDATA__FETCH_BATCH_SIZE);
+    createEAttribute(copydataEClass, COPYDATA__WRITE_BATCH_SIZE);
 
     writeCsvEClass = createEClass(WRITE_CSV);
     createEAttribute(writeCsvEClass, WRITE_CSV__SOURCE);
@@ -2952,10 +2952,10 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     initEClass(copydataEClass, Copydata.class, "Copydata", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getCopydata_Source(), ecorePackage.getEString(), "source", null, 0, 1, Copydata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getCopydata_To(), ecorePackage.getEString(), "to", null, 0, 1, Copydata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getCopydata_FetchBatchSize(), ecorePackage.getEInt(), "fetchBatchSize", null, 0, 1, Copydata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getCopydata_WriteBatchSize(), ecorePackage.getEInt(), "writeBatchSize", null, 0, 1, Copydata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getCopydata_Value(), ecorePackage.getEString(), "value", null, 0, 1, Copydata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getCopydata_WriteThreadCount(), ecorePackage.getEInt(), "writeThreadCount", null, 0, 1, Copydata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getCopydata_WriteThreadCount(), ecorePackage.getEString(), "writeThreadCount", null, 0, 1, Copydata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getCopydata_FetchBatchSize(), ecorePackage.getEString(), "fetchBatchSize", null, 0, 1, Copydata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getCopydata_WriteBatchSize(), ecorePackage.getEString(), "writeBatchSize", null, 0, 1, Copydata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(writeCsvEClass, WriteCsv.class, "WriteCsv", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getWriteCsv_Source(), ecorePackage.getEString(), "source", null, 0, 1, WriteCsv.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

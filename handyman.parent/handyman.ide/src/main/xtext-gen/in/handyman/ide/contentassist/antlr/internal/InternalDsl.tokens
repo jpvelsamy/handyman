@@ -23,7 +23,7 @@
 'fbfd'=60
 'fblc'=59
 'fbrn'=46
-'fielding'=96
+'fielding'=94
 'finally'=19
 'for-campaign'=35
 'for-every'=85
@@ -76,14 +76,14 @@
 'using'=27
 'with'=75
 'with-class'=45
-'with-fetch-batch-size'=94
+'with-fetch-batch-size'=95
 'with-fetchsize-as'=25
 'with-key'=33
 'with-sender'=48
 'with-target'=83
 'with-url'=67
 'with-user'=91
-'with-write-batch-size'=95
+'with-write-batch-size'=96
 'with-write-threads'=29
 'writecsv'=97
 '{'=16

@@ -217,10 +217,10 @@
     <genClasses ecoreClass="Dsl.ecore#//Copydata">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Copydata/source"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Copydata/to"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Copydata/fetchBatchSize"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Copydata/writeBatchSize"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Copydata/value"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Copydata/writeThreadCount"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Copydata/fetchBatchSize"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Copydata/writeBatchSize"/>
     </genClasses>
     <genClasses ecoreClass="Dsl.ecore#//WriteCsv">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//WriteCsv/source"/>

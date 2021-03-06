@@ -15,10 +15,10 @@ package in.handyman.dsl;
  * <ul>
  *   <li>{@link in.handyman.dsl.Copydata#getSource <em>Source</em>}</li>
  *   <li>{@link in.handyman.dsl.Copydata#getTo <em>To</em>}</li>
- *   <li>{@link in.handyman.dsl.Copydata#getFetchBatchSize <em>Fetch Batch Size</em>}</li>
- *   <li>{@link in.handyman.dsl.Copydata#getWriteBatchSize <em>Write Batch Size</em>}</li>
  *   <li>{@link in.handyman.dsl.Copydata#getValue <em>Value</em>}</li>
  *   <li>{@link in.handyman.dsl.Copydata#getWriteThreadCount <em>Write Thread Count</em>}</li>
+ *   <li>{@link in.handyman.dsl.Copydata#getFetchBatchSize <em>Fetch Batch Size</em>}</li>
+ *   <li>{@link in.handyman.dsl.Copydata#getWriteBatchSize <em>Write Batch Size</em>}</li>
  * </ul>
  *
  * @see in.handyman.dsl.DslPackage#getCopydata()
@@ -80,58 +80,6 @@ public interface Copydata extends Action
   void setTo(String value);
 
   /**
-   * Returns the value of the '<em><b>Fetch Batch Size</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Fetch Batch Size</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Fetch Batch Size</em>' attribute.
-   * @see #setFetchBatchSize(int)
-   * @see in.handyman.dsl.DslPackage#getCopydata_FetchBatchSize()
-   * @model
-   * @generated
-   */
-  int getFetchBatchSize();
-
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Copydata#getFetchBatchSize <em>Fetch Batch Size</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Fetch Batch Size</em>' attribute.
-   * @see #getFetchBatchSize()
-   * @generated
-   */
-  void setFetchBatchSize(int value);
-
-  /**
-   * Returns the value of the '<em><b>Write Batch Size</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Write Batch Size</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Write Batch Size</em>' attribute.
-   * @see #setWriteBatchSize(int)
-   * @see in.handyman.dsl.DslPackage#getCopydata_WriteBatchSize()
-   * @model
-   * @generated
-   */
-  int getWriteBatchSize();
-
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Copydata#getWriteBatchSize <em>Write Batch Size</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Write Batch Size</em>' attribute.
-   * @see #getWriteBatchSize()
-   * @generated
-   */
-  void setWriteBatchSize(int value);
-
-  /**
    * Returns the value of the '<em><b>Value</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <p>
@@ -166,12 +114,12 @@ public interface Copydata extends Action
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Write Thread Count</em>' attribute.
-   * @see #setWriteThreadCount(int)
+   * @see #setWriteThreadCount(String)
    * @see in.handyman.dsl.DslPackage#getCopydata_WriteThreadCount()
    * @model
    * @generated
    */
-  int getWriteThreadCount();
+  String getWriteThreadCount();
 
   /**
    * Sets the value of the '{@link in.handyman.dsl.Copydata#getWriteThreadCount <em>Write Thread Count</em>}' attribute.
@@ -181,6 +129,58 @@ public interface Copydata extends Action
    * @see #getWriteThreadCount()
    * @generated
    */
-  void setWriteThreadCount(int value);
+  void setWriteThreadCount(String value);
+
+  /**
+   * Returns the value of the '<em><b>Fetch Batch Size</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Fetch Batch Size</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Fetch Batch Size</em>' attribute.
+   * @see #setFetchBatchSize(String)
+   * @see in.handyman.dsl.DslPackage#getCopydata_FetchBatchSize()
+   * @model
+   * @generated
+   */
+  String getFetchBatchSize();
+
+  /**
+   * Sets the value of the '{@link in.handyman.dsl.Copydata#getFetchBatchSize <em>Fetch Batch Size</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Fetch Batch Size</em>' attribute.
+   * @see #getFetchBatchSize()
+   * @generated
+   */
+  void setFetchBatchSize(String value);
+
+  /**
+   * Returns the value of the '<em><b>Write Batch Size</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Write Batch Size</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Write Batch Size</em>' attribute.
+   * @see #setWriteBatchSize(String)
+   * @see in.handyman.dsl.DslPackage#getCopydata_WriteBatchSize()
+   * @model
+   * @generated
+   */
+  String getWriteBatchSize();
+
+  /**
+   * Sets the value of the '{@link in.handyman.dsl.Copydata#getWriteBatchSize <em>Write Batch Size</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Write Batch Size</em>' attribute.
+   * @see #getWriteBatchSize()
+   * @generated
+   */
+  void setWriteBatchSize(String value);
 
 } // Copydata

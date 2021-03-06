@@ -268,10 +268,10 @@ SlackPUT:
 
 	
 Copydata:
-	'copydata' 'as' name= STRING 'from' source= STRING 'to' to= STRING 'with-fetch-batch-size' fetchBatchSize=INT 'with-write-batch-size' writeBatchSize=INT 'using'
+	'copydata' 'as' name= STRING 'from' source= STRING 'to' to= STRING  'using'
 	'{'
-		value=SelectStatement
-	'}' 'on-condition' condition=Expression 'fielding' writeThreadCount=INT
+		value=STRING
+	'}' 'on-condition' condition=Expression 'fielding' writeThreadCount=STRING 'with-fetch-batch-size' fetchBatchSize=STRING 'with-write-batch-size' writeBatchSize=STRING
 ;
 
 

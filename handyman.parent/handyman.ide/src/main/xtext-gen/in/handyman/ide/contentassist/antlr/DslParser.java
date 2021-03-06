@@ -266,11 +266,11 @@ public class DslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getCopydataAccess().getNameAssignment_2(), "rule__Copydata__NameAssignment_2");
 			builder.put(grammarAccess.getCopydataAccess().getSourceAssignment_4(), "rule__Copydata__SourceAssignment_4");
 			builder.put(grammarAccess.getCopydataAccess().getToAssignment_6(), "rule__Copydata__ToAssignment_6");
-			builder.put(grammarAccess.getCopydataAccess().getFetchBatchSizeAssignment_8(), "rule__Copydata__FetchBatchSizeAssignment_8");
-			builder.put(grammarAccess.getCopydataAccess().getWriteBatchSizeAssignment_10(), "rule__Copydata__WriteBatchSizeAssignment_10");
-			builder.put(grammarAccess.getCopydataAccess().getValueAssignment_13(), "rule__Copydata__ValueAssignment_13");
-			builder.put(grammarAccess.getCopydataAccess().getConditionAssignment_16(), "rule__Copydata__ConditionAssignment_16");
-			builder.put(grammarAccess.getCopydataAccess().getWriteThreadCountAssignment_18(), "rule__Copydata__WriteThreadCountAssignment_18");
+			builder.put(grammarAccess.getCopydataAccess().getValueAssignment_9(), "rule__Copydata__ValueAssignment_9");
+			builder.put(grammarAccess.getCopydataAccess().getConditionAssignment_12(), "rule__Copydata__ConditionAssignment_12");
+			builder.put(grammarAccess.getCopydataAccess().getWriteThreadCountAssignment_14(), "rule__Copydata__WriteThreadCountAssignment_14");
+			builder.put(grammarAccess.getCopydataAccess().getFetchBatchSizeAssignment_16(), "rule__Copydata__FetchBatchSizeAssignment_16");
+			builder.put(grammarAccess.getCopydataAccess().getWriteBatchSizeAssignment_18(), "rule__Copydata__WriteBatchSizeAssignment_18");
 			builder.put(grammarAccess.getWriteCsvAccess().getNameAssignment_2(), "rule__WriteCsv__NameAssignment_2");
 			builder.put(grammarAccess.getWriteCsvAccess().getSourceAssignment_4(), "rule__WriteCsv__SourceAssignment_4");
 			builder.put(grammarAccess.getWriteCsvAccess().getToAssignment_6(), "rule__WriteCsv__ToAssignment_6");

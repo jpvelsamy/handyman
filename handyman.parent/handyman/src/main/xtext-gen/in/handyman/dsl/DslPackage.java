@@ -2476,31 +2476,13 @@ public interface DslPackage extends EPackage
   int COPYDATA__TO = ACTION_FEATURE_COUNT + 1;
 
   /**
-   * The feature id for the '<em><b>Fetch Batch Size</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int COPYDATA__FETCH_BATCH_SIZE = ACTION_FEATURE_COUNT + 2;
-
-  /**
-   * The feature id for the '<em><b>Write Batch Size</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int COPYDATA__WRITE_BATCH_SIZE = ACTION_FEATURE_COUNT + 3;
-
-  /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int COPYDATA__VALUE = ACTION_FEATURE_COUNT + 4;
+  int COPYDATA__VALUE = ACTION_FEATURE_COUNT + 2;
 
   /**
    * The feature id for the '<em><b>Write Thread Count</b></em>' attribute.
@@ -2509,7 +2491,25 @@ public interface DslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int COPYDATA__WRITE_THREAD_COUNT = ACTION_FEATURE_COUNT + 5;
+  int COPYDATA__WRITE_THREAD_COUNT = ACTION_FEATURE_COUNT + 3;
+
+  /**
+   * The feature id for the '<em><b>Fetch Batch Size</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int COPYDATA__FETCH_BATCH_SIZE = ACTION_FEATURE_COUNT + 4;
+
+  /**
+   * The feature id for the '<em><b>Write Batch Size</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int COPYDATA__WRITE_BATCH_SIZE = ACTION_FEATURE_COUNT + 5;
 
   /**
    * The number of structural features of the '<em>Copydata</em>' class.
@@ -4732,28 +4732,6 @@ public interface DslPackage extends EPackage
   EAttribute getCopydata_To();
 
   /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.Copydata#getFetchBatchSize <em>Fetch Batch Size</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Fetch Batch Size</em>'.
-   * @see in.handyman.dsl.Copydata#getFetchBatchSize()
-   * @see #getCopydata()
-   * @generated
-   */
-  EAttribute getCopydata_FetchBatchSize();
-
-  /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.Copydata#getWriteBatchSize <em>Write Batch Size</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Write Batch Size</em>'.
-   * @see in.handyman.dsl.Copydata#getWriteBatchSize()
-   * @see #getCopydata()
-   * @generated
-   */
-  EAttribute getCopydata_WriteBatchSize();
-
-  /**
    * Returns the meta object for the attribute '{@link in.handyman.dsl.Copydata#getValue <em>Value</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -4774,6 +4752,28 @@ public interface DslPackage extends EPackage
    * @generated
    */
   EAttribute getCopydata_WriteThreadCount();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.Copydata#getFetchBatchSize <em>Fetch Batch Size</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Fetch Batch Size</em>'.
+   * @see in.handyman.dsl.Copydata#getFetchBatchSize()
+   * @see #getCopydata()
+   * @generated
+   */
+  EAttribute getCopydata_FetchBatchSize();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.Copydata#getWriteBatchSize <em>Write Batch Size</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Write Batch Size</em>'.
+   * @see in.handyman.dsl.Copydata#getWriteBatchSize()
+   * @see #getCopydata()
+   * @generated
+   */
+  EAttribute getCopydata_WriteBatchSize();
 
   /**
    * Returns the meta object for class '{@link in.handyman.dsl.WriteCsv <em>Write Csv</em>}'.
@@ -6513,22 +6513,6 @@ public interface DslPackage extends EPackage
     EAttribute COPYDATA__TO = eINSTANCE.getCopydata_To();
 
     /**
-     * The meta object literal for the '<em><b>Fetch Batch Size</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute COPYDATA__FETCH_BATCH_SIZE = eINSTANCE.getCopydata_FetchBatchSize();
-
-    /**
-     * The meta object literal for the '<em><b>Write Batch Size</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute COPYDATA__WRITE_BATCH_SIZE = eINSTANCE.getCopydata_WriteBatchSize();
-
-    /**
      * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -6543,6 +6527,22 @@ public interface DslPackage extends EPackage
      * @generated
      */
     EAttribute COPYDATA__WRITE_THREAD_COUNT = eINSTANCE.getCopydata_WriteThreadCount();
+
+    /**
+     * The meta object literal for the '<em><b>Fetch Batch Size</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute COPYDATA__FETCH_BATCH_SIZE = eINSTANCE.getCopydata_FetchBatchSize();
+
+    /**
+     * The meta object literal for the '<em><b>Write Batch Size</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute COPYDATA__WRITE_BATCH_SIZE = eINSTANCE.getCopydata_WriteBatchSize();
 
     /**
      * The meta object literal for the '{@link in.handyman.dsl.impl.WriteCsvImpl <em>Write Csv</em>}' class.

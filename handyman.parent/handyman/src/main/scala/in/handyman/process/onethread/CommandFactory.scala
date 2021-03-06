@@ -23,7 +23,7 @@ object CommandFactory {
       case "firebasedatabaseput"=>new FirebaseDbUpdateAction
       case "firebasereactivenotification"=>new FirebaseMessagingAction
       case "execjava"=>new JavaAction  
-      
+      case "copydata"=>new CopyDataAction
     
     }
   }

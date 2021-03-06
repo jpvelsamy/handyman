@@ -27,8 +27,8 @@ class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonP
     c
     }
   val writeSize = {
-    if (copyData.getWriteBatchSize.isValidInt)
-      copyData.getWriteBatchSize
+    if (copyData.getWriteBatchSize.toInt>0)
+      copyData.getWriteBatchSize.toInt
     else {
       configMap.getOrElse(Constants.WRITESIZE, Constants.DEFAULT_WRITE_SIZE).toInt
     }
