@@ -8,7 +8,7 @@ object Constants {
   val DEFAULT_READ_SIZE="5000"
   val WRITERTHREAD="writer_count"
   val DEFAULT_WRITER_COUNT="3"
-  val STRING_DATATYPE="string"
+  val STRING_DATATYPE="varchar"
   val STRING_ENCLOSER="'"
   val FIELD_SEPARATOR=","
   val INSERT_STMT_VALUE_START="("

@@ -62,7 +62,7 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
     }
 
     val fetchSize: Int = {
-      if (!copyData.getFetchBatchSize.isEmpty && copyData.getFetchBatchSize.toInt>0)
+      if (!copyData.getFetchBatchSize.isEmpty && copyData.getFetchBatchSize.toInt > 0)
         copyData.getFetchBatchSize.toInt
       else {
         configMap.getOrElse(Constants.READSIZE, Constants.DEFAULT_READ_SIZE).toInt
@@ -70,7 +70,7 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
     }
 
     val writeSize = {
-      if (!copyData.getWriteBatchSize.isEmpty && copyData.getWriteBatchSize.toInt>0)
+      if (!copyData.getWriteBatchSize.isEmpty && copyData.getWriteBatchSize.toInt > 0)
         copyData.getWriteBatchSize.toInt
       else {
         configMap.getOrElse(Constants.WRITESIZE, Constants.DEFAULT_WRITE_SIZE).toInt
@@ -78,7 +78,7 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
     }
 
     val threadCount: Int = {
-      if (!copyData.getWriteThreadCount.isEmpty && copyData.getWriteThreadCount.toInt>0)
+      if (!copyData.getWriteThreadCount.isEmpty && copyData.getWriteThreadCount.toInt > 0)
         copyData.getWriteThreadCount.toInt
       else {
         configMap.getOrElse(Constants.WRITERTHREAD, Constants.DEFAULT_WRITER_COUNT).toInt
@@ -89,12 +89,14 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
     val insertStatementAsIs = copyData.getValue
     val insertStatement = {
       if (insertStatementAsIs.trim.isEmpty())
-        throw new HandymanException("INSERT INTO SELECT .... cannot be empty for copydata for " + name)        
+        throw new HandymanException("INSERT INTO SELECT .... cannot be empty for copydata for " + name)
       else
         insertStatementAsIs.trim
     }
     val insert = CCJSqlParserUtil.parse(insertStatement).asInstanceOf[Insert]
     val select = insert.getSelect
+    
+    val targetTable = insert.getTable
 
     logger.info(s"Copydata action input variables id:$instanceId,name: $name, source-database:$source, target-database:$target, fetchSize:$fetchSize, writeSize:$writeSize,threadCount:$threadCount ")
     logger.info(s"Copydata Insert Sql input post parameter ingestion \n :$insert")
@@ -119,7 +121,7 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
     val rs: ResultSet = stmt.executeQuery(select.toString)
     val rsmd = rs.getMetaData
     val nrCols = rsmd.getColumnCount
-    val rowBatchSet: java.util.Set[Row] = new java.util.HashSet[Row]
+    val rowBatchSet: java.util.Set[Row] = new java.util.LinkedHashSet[Row]
 
     while (rs.next()) {
 
@@ -147,8 +149,10 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
 
     try {
       if (!rowBatchSet.isEmpty) {
-        rowQueue.addAll(rowBatchSet)
+        rowBatchSet.addAll(poisonPillSet)
+        rowQueue.addAll(rowBatchSet)        
       }
+      //rowQueue.addAll(poisonPillSet)8
 
       countDownLatch.await();
       workerPool.forEach(worker => {
@@ -189,7 +193,7 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
     val countDownLatch: CountDownLatch = new CountDownLatch(threadCount);
     val poisonPillSet: java.util.Set[Row] = new java.util.HashSet[Row]
     val workerPool: java.util.Set[CopyDataJdbcWriter] = new java.util.HashSet[CopyDataJdbcWriter]
-    for (i <- 0 to 10) {
+    for (i <- 1 to threadCount) {
 
       val poisonPill: Row = new Row(i, null)
       poisonPillSet.add(poisonPill)
