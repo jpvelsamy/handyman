@@ -11,6 +11,7 @@ import in.handyman.HandymanException
 import scala.util.control.Breaks
 import java.sql.SQLException
 import java.sql.Statement
+import java.util.concurrent.atomic.AtomicInteger
 
 class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonPill: Row,
                          copyData: in.handyman.dsl.Copydata,
@@ -57,12 +58,13 @@ class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonP
     Breaks.breakable {
       while (true) {
         val row = rowQueue.take();
-        if (row.equals(poisonPill)) {
+        if (poisonPill.equals(row)) {
           if (!writeBuffer.isEmpty) {
             logger.info(s"CopydataWriter(After poison pill) flushing to database rows:$writeBuffer.size")
             writeToDb
-            Breaks.break
           }
+          countDownLatch.countDown
+          Breaks.break
 
         } else {
           val dataFrame = generateDataFrame(row)
@@ -74,7 +76,7 @@ class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonP
         }
       }
     }
-    countDownLatch.countDown();
+
     ???
   }
 

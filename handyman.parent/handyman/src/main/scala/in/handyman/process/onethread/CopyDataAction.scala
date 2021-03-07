@@ -22,16 +22,20 @@ import scala.collection.mutable.HashSet
 import java.sql.ResultSetMetaData
 import java.util.concurrent.atomic.AtomicInteger
 import scala.collection.mutable.LinkedHashSet
+import scala.collection.mutable.HashMap
+import java.util.Random
+import scala.collection.mutable.LinkedHashMap
 
 /**
  * TODO - Still need to add more rich ness to audit trail with respect to statement warnings
  */
 class CopyDataAction extends in.handyman.command.Action with LazyLogging {
 
-  val rowQueue: BlockingQueue[Row] = new LinkedBlockingDeque[Row];
+  val rowQueueMap: LinkedHashMap[Int, BlockingQueue[Row]] = new LinkedHashMap[Int, BlockingQueue[Row]];
   val executor: ExecutorService = Executors.newCachedThreadPool;
   val detailMap = new java.util.HashMap[String, String]
   var rowsProcessed: AtomicInteger = new AtomicInteger(0)
+  val rand: Random = new Random()
 
   def execute(context: in.handyman.command.Context, action: in.handyman.dsl.Action, actionId: Integer): in.handyman.command.Context = {
 
@@ -85,6 +89,9 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
         configMap.getOrElse(Constants.WRITERTHREAD, Constants.DEFAULT_WRITER_COUNT).toInt
       }
     }
+    
+    val upperThreadCount = threadCount
+    val lowerThreadCount = 1
 
     //retrieving the insert into sql statement
     val insertStatementAsIs = copyData.getValue
@@ -96,7 +103,7 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
     }
     val insert = CCJSqlParserUtil.parse(insertStatement).asInstanceOf[Insert]
     val select = insert.getSelect
-    
+
     val targetTable = insert.getTable
 
     logger.info(s"Copydata action input variables id:$instanceId,name: $name, source-database:$source, target-database:$target, fetchSize:$fetchSize, writeSize:$writeSize,threadCount:$threadCount ")
@@ -114,18 +121,16 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
     //Prepping up the parallelization framework
 
     val prepOut = prepWokerPool(configMap, insert, copyData, threadCount, instanceId)
-    val poisonPillSet = prepOut._1
-    val countDownLatch = prepOut._2
-    val workerPool = prepOut._3
+    val countDownLatch = prepOut._1
+    val workerPool = prepOut._2
 
-    //Retreiving the data from the source
+    //Retrieving the data from the source
     val rs: ResultSet = stmt.executeQuery(select.toString)
     val rsmd = rs.getMetaData
     val nrCols = rsmd.getColumnCount
-    val rowBatchSet: java.util.Set[Row] = new java.util.LinkedHashSet[Row]
 
     while (rs.next()) {
-
+    
       val startTime = System.currentTimeMillis
       val columnSet: LinkedHashSet[ColumnInARow] = new LinkedHashSet[ColumnInARow]
       val id = rs.getRow
@@ -135,31 +140,35 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
       }
 
       val row = new Row(id, columnSet)
-      rowBatchSet.add(row)
-      if (rowBatchSet.size == fetchSize) {
-        rowQueue.addAll(rowBatchSet)
-        rowBatchSet.clear
+      val queuNumber = rand.nextInt((upperThreadCount-lowerThreadCount)+1)+lowerThreadCount
+      val rowQueue = rowQueueMap.get(queuNumber).get
+      rowQueue.add(row)
+      
+      if (rowsProcessed.incrementAndGet % fetchSize == 0) {
         val endTime = System.currentTimeMillis
-        val timeTaken = endTime - startTime
-        logger.info(s"Copydata flushing batch with batch size:$rowBatchSet.size, taking time of:$timeTaken")
+        val timeTaken = endTime - startTime        
         //Taken care of batch audit
-        AuditService.insertBatchAudit(statementId, name, instanceId.toInt, rowBatchSet.size, timeTaken.toInt)
-      }
-      rowsProcessed.incrementAndGet
-    }
-
-    try {
-      if (!rowBatchSet.isEmpty) {
-        rowBatchSet.addAll(poisonPillSet)
-        rowQueue.addAll(rowBatchSet)        
+        AuditService.insertBatchAudit(statementId, name, instanceId.toInt, rowsProcessed.get, timeTaken.toInt)
       }
       
+    }
+    
+   
+    rowQueueMap.foreach((kv) => {
+      val rowQueue = kv._2
+      val row = new Row(kv._1, null)
+      rowQueue.add(row)
+    })
 
+    try {
       countDownLatch.await();
-      workerPool.forEach(worker => {
-        logger.info(s"Copydata:$instanceId cleaning up worker:$worker")
+      workerPool.foreach((kv)=>{
+        val worker = kv._2
+        logger.info(s"Copydata:$instanceId cleaning up worker:$worker with poison pill:$kv._1")
         worker.cleanup
       })
+      
+      
     } catch {
       case ex: InterruptedException => {
         logger.error(s"Copydata:$instanceId error during waiting for worker threads to finish their job", ex)
@@ -190,21 +199,21 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
     context
   }
 
-  def prepWokerPool(configMap: Map[String, String], insert: Insert, copyData: in.handyman.dsl.Copydata, threadCount: Int, instanceId: String): Tuple3[java.util.Set[Row], CountDownLatch, java.util.Set[CopyDataJdbcWriter]] = {
-    val countDownLatch: CountDownLatch = new CountDownLatch(threadCount);
-    val poisonPillSet: java.util.Set[Row] = new java.util.HashSet[Row]
-    val workerPool: java.util.Set[CopyDataJdbcWriter] = new java.util.HashSet[CopyDataJdbcWriter]
+  def prepWokerPool(configMap: Map[String, String], insert: Insert, copyData: in.handyman.dsl.Copydata, threadCount: Int, instanceId: String): Tuple2[CountDownLatch,HashMap[Row,CopyDataJdbcWriter]] = {
+    val countDownLatch: CountDownLatch = new CountDownLatch(threadCount);    
+    val workerPool:HashMap[Row,CopyDataJdbcWriter] = new HashMap[Row, CopyDataJdbcWriter]
+    
     for (i <- 1 to threadCount) {
-
-      val poisonPill: Row = new Row(i, null)
-      poisonPillSet.add(poisonPill)
+      val rowQueue = new LinkedBlockingDeque[Row];
+      val poisonPill: Row = new Row(i, null)   
       logger.info(s"Copydata action is prepping up writer thread with poison pill:$poisonPill")
       val jdbcWriter: CopyDataJdbcWriter = new CopyDataJdbcWriter(configMap, insert, poisonPill, copyData, instanceId, rowQueue, countDownLatch)
-      workerPool.add(jdbcWriter)
+      workerPool.put(poisonPill, jdbcWriter)
       this.executor.submit(jdbcWriter)
+      rowQueueMap.put(poisonPill.rowId, rowQueue)
 
     }
-    new Tuple3(poisonPillSet, countDownLatch, workerPool)
+    new Tuple2(countDownLatch, workerPool)
   }
 
   def createColumn(i: Int, rs: ResultSet, rsmd: ResultSetMetaData, nrCols: Int): ColumnInARow = {
