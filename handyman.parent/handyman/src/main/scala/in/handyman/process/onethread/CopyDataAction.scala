@@ -21,6 +21,7 @@ import net.sf.jsqlparser.statement.insert.Insert
 import scala.collection.mutable.HashSet
 import java.sql.ResultSetMetaData
 import java.util.concurrent.atomic.AtomicInteger
+import scala.collection.mutable.LinkedHashSet
 
 /**
  * TODO - Still need to add more rich ness to audit trail with respect to statement warnings
@@ -126,7 +127,7 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
     while (rs.next()) {
 
       val startTime = System.currentTimeMillis
-      val columnSet: HashSet[ColumnInARow] = new HashSet[ColumnInARow]
+      val columnSet: LinkedHashSet[ColumnInARow] = new LinkedHashSet[ColumnInARow]
       val id = rs.getRow
       for (i <- 1 to nrCols) {
         val column: ColumnInARow = createColumn(i, rs, rsmd, nrCols)
@@ -152,7 +153,7 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
         rowBatchSet.addAll(poisonPillSet)
         rowQueue.addAll(rowBatchSet)        
       }
-      //rowQueue.addAll(poisonPillSet)8
+      
 
       countDownLatch.await();
       workerPool.forEach(worker => {

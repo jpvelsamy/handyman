@@ -10,6 +10,7 @@ import in.handyman.util.ResourceAccess
 import in.handyman.HandymanException
 import scala.util.control.Breaks
 import java.sql.SQLException
+import java.sql.Statement
 
 class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonPill: Row,
                          copyData: in.handyman.dsl.Copydata,
@@ -23,6 +24,7 @@ class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonP
     else
       throw new HandymanException("target data source cannot be empty for copydata for " + copyData.getName)
   }
+
   val conn = {
     val c = ResourceAccess.rdbmsConn(target)
     c.setAutoCommit(false)
@@ -58,7 +60,7 @@ class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonP
         if (row.equals(poisonPill)) {
           if (!writeBuffer.isEmpty) {
             logger.info(s"CopydataWriter(After poison pill) flushing to database rows:$writeBuffer.size")
-            //flush
+            writeToDb
             Breaks.break
           }
 
@@ -67,7 +69,7 @@ class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonP
           writeBuffer.add(dataFrame)
           if (writeBuffer.size % writeSize == 0) {
             logger.info(s"CopydataWriter(Before poison pill) flushing to database rows:$writeBuffer.size")
-            //flush
+            writeToDb
           }
         }
       }
@@ -91,6 +93,10 @@ class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonP
       columnType.toLowerCase match {
         case Constants.STRING_DATATYPE => dataFrameBuilder.append(Constants.STRING_ENCLOSER).
           append(column.value).append(Constants.STRING_ENCLOSER)
+        case "datetime" => dataFrameBuilder.append(Constants.STRING_ENCLOSER).
+          append(column.value).append(Constants.STRING_ENCLOSER)
+        case "timestamp" => dataFrameBuilder.append(Constants.STRING_ENCLOSER).
+          append(column.value).append(Constants.STRING_ENCLOSER)
         case _ => dataFrameBuilder.append(column.value)
       }
       if (!column.isLastColumn)
@@ -101,21 +107,16 @@ class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonP
     dataFrameBuilder.toString()
   }
 
-  def flush() = {
-
-    val stmt = conn.createStatement
+  def writeToDb() = {
+    logger.info(s"Writing to database using conn:$target")
+    val stmt: Statement = conn.createStatement
     try {
       writeBuffer.foreach(sql => {
         stmt.addBatch(sql)
       })
-      //stmt.executeLargeBatch
-      // stmt.closeOnCompletion
-      //conn.commit
+      stmt.executeBatch
+      conn.commit
       writeBuffer.clear
-
-      if (stmt != null)
-        stmt.close
-
     } catch {
       case ex: SQLException => {
         logger.error(s"CopydataWriter:$id error closing source connection for database:$target", ex)
@@ -123,12 +124,22 @@ class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonP
       case ex: Throwable => {
         logger.error(s"CopydataWriter:$id error closing source connection for database:$target", ex)
       }
+    } finally {
+      try {
+        if (stmt != null)
+          stmt.close
+      } catch {
+        case ex: Throwable => {
+          ex.printStackTrace
+          logger.error(s"Copydata:$id error closing source connection for database:$target", ex)
+        }
+      }
     }
-    ???
+
   }
 
   def cleanup = {
-    try {
+    /*try {
       if (conn != null) {
         conn.close()
       }
@@ -137,7 +148,6 @@ class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonP
         ex.printStackTrace()
         //throw ex
       }
-    }
-
+    }*/
   }
 }
