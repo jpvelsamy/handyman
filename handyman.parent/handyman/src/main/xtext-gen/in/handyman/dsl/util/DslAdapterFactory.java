@@ -9,13 +9,10 @@ import in.handyman.dsl.Callprocess;
 import in.handyman.dsl.Catch;
 import in.handyman.dsl.ClickSendSms;
 import in.handyman.dsl.Copydata;
+import in.handyman.dsl.Dogleg;
 import in.handyman.dsl.Doozle;
 import in.handyman.dsl.Dropfile;
 import in.handyman.dsl.DslPackage;
-import in.handyman.dsl.ElasticFBCLead;
-import in.handyman.dsl.ElasticGET;
-import in.handyman.dsl.EsAccumulate;
-import in.handyman.dsl.EsUpdate;
 import in.handyman.dsl.ExecJava;
 import in.handyman.dsl.Expression;
 import in.handyman.dsl.FBCLead;
@@ -34,6 +31,8 @@ import in.handyman.dsl.RestPart;
 import in.handyman.dsl.SendMail;
 import in.handyman.dsl.SlackPUT;
 import in.handyman.dsl.SmsLeadSms;
+import in.handyman.dsl.Spawnprocess;
+import in.handyman.dsl.StartProcess;
 import in.handyman.dsl.Transform;
 import in.handyman.dsl.TrelloGET;
 import in.handyman.dsl.TrelloPUT;
@@ -137,24 +136,14 @@ public class DslAdapterFactory extends AdapterFactoryImpl
         return createActionAdapter();
       }
       @Override
-      public Adapter caseEsUpdate(EsUpdate object)
+      public Adapter caseSpawnprocess(Spawnprocess object)
       {
-        return createEsUpdateAdapter();
+        return createSpawnprocessAdapter();
       }
       @Override
-      public Adapter caseEsAccumulate(EsAccumulate object)
+      public Adapter caseDogleg(Dogleg object)
       {
-        return createEsAccumulateAdapter();
-      }
-      @Override
-      public Adapter caseElasticFBCLead(ElasticFBCLead object)
-      {
-        return createElasticFBCLeadAdapter();
-      }
-      @Override
-      public Adapter caseElasticGET(ElasticGET object)
-      {
-        return createElasticGETAdapter();
+        return createDoglegAdapter();
       }
       @Override
       public Adapter caseExecJava(ExecJava object)
@@ -292,6 +281,11 @@ public class DslAdapterFactory extends AdapterFactoryImpl
         return createTransformAdapter();
       }
       @Override
+      public Adapter caseStartProcess(StartProcess object)
+      {
+        return createStartProcessAdapter();
+      }
+      @Override
       public Adapter caseExpression(Expression object)
       {
         return createExpressionAdapter();
@@ -394,61 +388,31 @@ public class DslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link in.handyman.dsl.EsUpdate <em>Es Update</em>}'.
+   * Creates a new adapter for an object of class '{@link in.handyman.dsl.Spawnprocess <em>Spawnprocess</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see in.handyman.dsl.EsUpdate
+   * @see in.handyman.dsl.Spawnprocess
    * @generated
    */
-  public Adapter createEsUpdateAdapter()
+  public Adapter createSpawnprocessAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link in.handyman.dsl.EsAccumulate <em>Es Accumulate</em>}'.
+   * Creates a new adapter for an object of class '{@link in.handyman.dsl.Dogleg <em>Dogleg</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see in.handyman.dsl.EsAccumulate
+   * @see in.handyman.dsl.Dogleg
    * @generated
    */
-  public Adapter createEsAccumulateAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link in.handyman.dsl.ElasticFBCLead <em>Elastic FBC Lead</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see in.handyman.dsl.ElasticFBCLead
-   * @generated
-   */
-  public Adapter createElasticFBCLeadAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link in.handyman.dsl.ElasticGET <em>Elastic GET</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see in.handyman.dsl.ElasticGET
-   * @generated
-   */
-  public Adapter createElasticGETAdapter()
+  public Adapter createDoglegAdapter()
   {
     return null;
   }
@@ -854,6 +818,21 @@ public class DslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createTransformAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link in.handyman.dsl.StartProcess <em>Start Process</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see in.handyman.dsl.StartProcess
+   * @generated
+   */
+  public Adapter createStartProcessAdapter()
   {
     return null;
   }

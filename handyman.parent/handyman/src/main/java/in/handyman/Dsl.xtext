@@ -59,40 +59,23 @@ Action:
 	|FirebaseReactiveNotification
 	|FirebaseDatabasePut
 	|ExecJava
-	|ElasticFBCLead
-	|ElasticGET
-	|EsUpdate
-	|EsAccumulate
+	|Dogleg	
+	|Spawnprocess
 	)
 ;
 
-EsUpdate:
-	'es-update' 'as' name=STRING 'from' source=STRING 'to' target=STRING 'with-fetchsize-as' fetchSize=STRING 'and-writesize-as' writeSize=STRING 'using' 
-		'{'
-			value+=NonSelectStatement
-		'}' 'on-condition' condition=Expression 'with-write-threads' writeThreadCount=STRING
-;
-
-EsAccumulate:
-	'es-accumulate' 'as' name=STRING 'from' source=STRING 'to' target=STRING 'with-fetchsize-as' fetchSize=STRING 'and-writesize-as' writeSize=STRING 'using' 
-		'{'
-			value=STRING
-		'}' 'on-condition' condition=Expression 'with-write-threads' writeThreadCount=STRING
-;
-
-ElasticFBCLead:
-	'efblc' 'as' name=STRING 'secured-by' accessToken=STRING 'with-key' appSecret=STRING 'through-user' accountId=STRING 'for-campaign' campaignId=STRING 'into' target=STRING 'using'
+Spawnprocess:
+	'spawn' 'as' name=STRING 'with-target' target=STRING 'from-file' source=STRING  'on-condition' condition=Expression;
+	
+	
+Dogleg:
+	"dogleg" 'as' name=STRING 'use-parent-context' inheritContext=STRING 'using'
 	'{'
-		value=STRING
-	'}' 'on-condition' condition=Expression
+		processList+=StartProcess
+	'}'   'on-condition' condition=Expression
 ;
 
-ElasticGET:
-	'elasticget' 'as' name= STRING 'from' source= STRING 'to' to= STRING 'using'
-	'{'
-		value=SelectStatement
-	'}' 'on-condition' condition=Expression
-;
+
 
 
 ExecJava:
@@ -314,7 +297,9 @@ CreateStatement:
 	STRING
 ;
 
-
+StartProcess:
+	'start-process' name=STRING 'with-file' target=STRING
+;
 
 
 Expression :

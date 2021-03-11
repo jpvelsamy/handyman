@@ -28,34 +28,13 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Action/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Dsl.ecore#//Action/condition"/>
     </genClasses>
-    <genClasses ecoreClass="Dsl.ecore#//EsUpdate">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//EsUpdate/source"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//EsUpdate/target"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//EsUpdate/fetchSize"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//EsUpdate/writeSize"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//EsUpdate/value"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//EsUpdate/writeThreadCount"/>
+    <genClasses ecoreClass="Dsl.ecore#//Spawnprocess">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Spawnprocess/target"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Spawnprocess/source"/>
     </genClasses>
-    <genClasses ecoreClass="Dsl.ecore#//EsAccumulate">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//EsAccumulate/source"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//EsAccumulate/target"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//EsAccumulate/fetchSize"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//EsAccumulate/writeSize"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//EsAccumulate/value"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//EsAccumulate/writeThreadCount"/>
-    </genClasses>
-    <genClasses ecoreClass="Dsl.ecore#//ElasticFBCLead">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//ElasticFBCLead/accessToken"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//ElasticFBCLead/appSecret"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//ElasticFBCLead/accountId"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//ElasticFBCLead/campaignId"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//ElasticFBCLead/target"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//ElasticFBCLead/value"/>
-    </genClasses>
-    <genClasses ecoreClass="Dsl.ecore#//ElasticGET">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//ElasticGET/source"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//ElasticGET/to"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//ElasticGET/value"/>
+    <genClasses ecoreClass="Dsl.ecore#//Dogleg">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Dogleg/inheritContext"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Dsl.ecore#//Dogleg/processList"/>
     </genClasses>
     <genClasses ecoreClass="Dsl.ecore#//ExecJava">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//ExecJava/classFqn"/>
@@ -240,6 +219,10 @@
     <genClasses ecoreClass="Dsl.ecore#//Transform">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Transform/on"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Transform/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Dsl.ecore#//StartProcess">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//StartProcess/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//StartProcess/target"/>
     </genClasses>
     <genClasses ecoreClass="Dsl.ecore#//Expression">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Expression/lhs"/>

@@ -69,40 +69,22 @@ public interface DslFactory extends EFactory
   Action createAction();
 
   /**
-   * Returns a new object of class '<em>Es Update</em>'.
+   * Returns a new object of class '<em>Spawnprocess</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Es Update</em>'.
+   * @return a new object of class '<em>Spawnprocess</em>'.
    * @generated
    */
-  EsUpdate createEsUpdate();
+  Spawnprocess createSpawnprocess();
 
   /**
-   * Returns a new object of class '<em>Es Accumulate</em>'.
+   * Returns a new object of class '<em>Dogleg</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Es Accumulate</em>'.
+   * @return a new object of class '<em>Dogleg</em>'.
    * @generated
    */
-  EsAccumulate createEsAccumulate();
-
-  /**
-   * Returns a new object of class '<em>Elastic FBC Lead</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Elastic FBC Lead</em>'.
-   * @generated
-   */
-  ElasticFBCLead createElasticFBCLead();
-
-  /**
-   * Returns a new object of class '<em>Elastic GET</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Elastic GET</em>'.
-   * @generated
-   */
-  ElasticGET createElasticGET();
+  Dogleg createDogleg();
 
   /**
    * Returns a new object of class '<em>Exec Java</em>'.
@@ -346,6 +328,15 @@ public interface DslFactory extends EFactory
    * @generated
    */
   Transform createTransform();
+
+  /**
+   * Returns a new object of class '<em>Start Process</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Start Process</em>'.
+   * @generated
+   */
+  StartProcess createStartProcess();
 
   /**
    * Returns a new object of class '<em>Expression</em>'.

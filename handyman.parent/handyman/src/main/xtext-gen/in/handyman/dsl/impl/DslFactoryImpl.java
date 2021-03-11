@@ -9,14 +9,11 @@ import in.handyman.dsl.Callprocess;
 import in.handyman.dsl.Catch;
 import in.handyman.dsl.ClickSendSms;
 import in.handyman.dsl.Copydata;
+import in.handyman.dsl.Dogleg;
 import in.handyman.dsl.Doozle;
 import in.handyman.dsl.Dropfile;
 import in.handyman.dsl.DslFactory;
 import in.handyman.dsl.DslPackage;
-import in.handyman.dsl.ElasticFBCLead;
-import in.handyman.dsl.ElasticGET;
-import in.handyman.dsl.EsAccumulate;
-import in.handyman.dsl.EsUpdate;
 import in.handyman.dsl.ExecJava;
 import in.handyman.dsl.Expression;
 import in.handyman.dsl.FBCLead;
@@ -35,6 +32,8 @@ import in.handyman.dsl.RestPart;
 import in.handyman.dsl.SendMail;
 import in.handyman.dsl.SlackPUT;
 import in.handyman.dsl.SmsLeadSms;
+import in.handyman.dsl.Spawnprocess;
+import in.handyman.dsl.StartProcess;
 import in.handyman.dsl.Transform;
 import in.handyman.dsl.TrelloGET;
 import in.handyman.dsl.TrelloPUT;
@@ -107,10 +106,8 @@ public class DslFactoryImpl extends EFactoryImpl implements DslFactory
       case DslPackage.FINALLY: return createFinally();
       case DslPackage.CATCH: return createCatch();
       case DslPackage.ACTION: return createAction();
-      case DslPackage.ES_UPDATE: return createEsUpdate();
-      case DslPackage.ES_ACCUMULATE: return createEsAccumulate();
-      case DslPackage.ELASTIC_FBC_LEAD: return createElasticFBCLead();
-      case DslPackage.ELASTIC_GET: return createElasticGET();
+      case DslPackage.SPAWNPROCESS: return createSpawnprocess();
+      case DslPackage.DOGLEG: return createDogleg();
       case DslPackage.EXEC_JAVA: return createExecJava();
       case DslPackage.FIREBASE_DATABASE_PUT: return createFirebaseDatabasePut();
       case DslPackage.FIREBASE_REACTIVE_NOTIFICATION: return createFirebaseReactiveNotification();
@@ -138,6 +135,7 @@ public class DslFactoryImpl extends EFactoryImpl implements DslFactory
       case DslPackage.WRITE_CSV: return createWriteCsv();
       case DslPackage.LOAD_CSV: return createLoadCsv();
       case DslPackage.TRANSFORM: return createTransform();
+      case DslPackage.START_PROCESS: return createStartProcess();
       case DslPackage.EXPRESSION: return createExpression();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
@@ -204,10 +202,10 @@ public class DslFactoryImpl extends EFactoryImpl implements DslFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public EsUpdate createEsUpdate()
+  public Spawnprocess createSpawnprocess()
   {
-    EsUpdateImpl esUpdate = new EsUpdateImpl();
-    return esUpdate;
+    SpawnprocessImpl spawnprocess = new SpawnprocessImpl();
+    return spawnprocess;
   }
 
   /**
@@ -215,32 +213,10 @@ public class DslFactoryImpl extends EFactoryImpl implements DslFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public EsAccumulate createEsAccumulate()
+  public Dogleg createDogleg()
   {
-    EsAccumulateImpl esAccumulate = new EsAccumulateImpl();
-    return esAccumulate;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public ElasticFBCLead createElasticFBCLead()
-  {
-    ElasticFBCLeadImpl elasticFBCLead = new ElasticFBCLeadImpl();
-    return elasticFBCLead;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public ElasticGET createElasticGET()
-  {
-    ElasticGETImpl elasticGET = new ElasticGETImpl();
-    return elasticGET;
+    DoglegImpl dogleg = new DoglegImpl();
+    return dogleg;
   }
 
   /**
@@ -538,6 +514,17 @@ public class DslFactoryImpl extends EFactoryImpl implements DslFactory
   {
     TransformImpl transform = new TransformImpl();
     return transform;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public StartProcess createStartProcess()
+  {
+    StartProcessImpl startProcess = new StartProcessImpl();
+    return startProcess;
   }
 
   /**

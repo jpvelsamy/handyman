@@ -9,13 +9,10 @@ import in.handyman.dsl.Callprocess;
 import in.handyman.dsl.Catch;
 import in.handyman.dsl.ClickSendSms;
 import in.handyman.dsl.Copydata;
+import in.handyman.dsl.Dogleg;
 import in.handyman.dsl.Doozle;
 import in.handyman.dsl.Dropfile;
 import in.handyman.dsl.DslPackage;
-import in.handyman.dsl.ElasticFBCLead;
-import in.handyman.dsl.ElasticGET;
-import in.handyman.dsl.EsAccumulate;
-import in.handyman.dsl.EsUpdate;
 import in.handyman.dsl.ExecJava;
 import in.handyman.dsl.Expression;
 import in.handyman.dsl.FBCLead;
@@ -34,6 +31,8 @@ import in.handyman.dsl.RestPart;
 import in.handyman.dsl.SendMail;
 import in.handyman.dsl.SlackPUT;
 import in.handyman.dsl.SmsLeadSms;
+import in.handyman.dsl.Spawnprocess;
+import in.handyman.dsl.StartProcess;
 import in.handyman.dsl.Transform;
 import in.handyman.dsl.TrelloGET;
 import in.handyman.dsl.TrelloPUT;
@@ -144,35 +143,19 @@ public class DslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case DslPackage.ES_UPDATE:
+      case DslPackage.SPAWNPROCESS:
       {
-        EsUpdate esUpdate = (EsUpdate)theEObject;
-        T result = caseEsUpdate(esUpdate);
-        if (result == null) result = caseAction(esUpdate);
+        Spawnprocess spawnprocess = (Spawnprocess)theEObject;
+        T result = caseSpawnprocess(spawnprocess);
+        if (result == null) result = caseAction(spawnprocess);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case DslPackage.ES_ACCUMULATE:
+      case DslPackage.DOGLEG:
       {
-        EsAccumulate esAccumulate = (EsAccumulate)theEObject;
-        T result = caseEsAccumulate(esAccumulate);
-        if (result == null) result = caseAction(esAccumulate);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case DslPackage.ELASTIC_FBC_LEAD:
-      {
-        ElasticFBCLead elasticFBCLead = (ElasticFBCLead)theEObject;
-        T result = caseElasticFBCLead(elasticFBCLead);
-        if (result == null) result = caseAction(elasticFBCLead);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case DslPackage.ELASTIC_GET:
-      {
-        ElasticGET elasticGET = (ElasticGET)theEObject;
-        T result = caseElasticGET(elasticGET);
-        if (result == null) result = caseAction(elasticGET);
+        Dogleg dogleg = (Dogleg)theEObject;
+        T result = caseDogleg(dogleg);
+        if (result == null) result = caseAction(dogleg);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -391,6 +374,13 @@ public class DslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case DslPackage.START_PROCESS:
+      {
+        StartProcess startProcess = (StartProcess)theEObject;
+        T result = caseStartProcess(startProcess);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case DslPackage.EXPRESSION:
       {
         Expression expression = (Expression)theEObject;
@@ -483,65 +473,33 @@ public class DslSwitch<T> extends Switch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Es Update</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Spawnprocess</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Es Update</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Spawnprocess</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseEsUpdate(EsUpdate object)
+  public T caseSpawnprocess(Spawnprocess object)
   {
     return null;
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Es Accumulate</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Dogleg</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Es Accumulate</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Dogleg</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseEsAccumulate(EsAccumulate object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Elastic FBC Lead</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Elastic FBC Lead</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseElasticFBCLead(ElasticFBCLead object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Elastic GET</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Elastic GET</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseElasticGET(ElasticGET object)
+  public T caseDogleg(Dogleg object)
   {
     return null;
   }
@@ -974,6 +932,22 @@ public class DslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseTransform(Transform object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Start Process</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Start Process</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseStartProcess(StartProcess object)
   {
     return null;
   }

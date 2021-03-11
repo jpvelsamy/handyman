@@ -261,14 +261,14 @@ public interface DslPackage extends EPackage
   int ACTION_FEATURE_COUNT = 2;
 
   /**
-   * The meta object id for the '{@link in.handyman.dsl.impl.EsUpdateImpl <em>Es Update</em>}' class.
+   * The meta object id for the '{@link in.handyman.dsl.impl.SpawnprocessImpl <em>Spawnprocess</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see in.handyman.dsl.impl.EsUpdateImpl
-   * @see in.handyman.dsl.impl.DslPackageImpl#getEsUpdate()
+   * @see in.handyman.dsl.impl.SpawnprocessImpl
+   * @see in.handyman.dsl.impl.DslPackageImpl#getSpawnprocess()
    * @generated
    */
-  int ES_UPDATE = 5;
+  int SPAWNPROCESS = 5;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -277,7 +277,7 @@ public interface DslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ES_UPDATE__NAME = ACTION__NAME;
+  int SPAWNPROCESS__NAME = ACTION__NAME;
 
   /**
    * The feature id for the '<em><b>Condition</b></em>' containment reference.
@@ -286,16 +286,7 @@ public interface DslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ES_UPDATE__CONDITION = ACTION__CONDITION;
-
-  /**
-   * The feature id for the '<em><b>Source</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ES_UPDATE__SOURCE = ACTION_FEATURE_COUNT + 0;
+  int SPAWNPROCESS__CONDITION = ACTION__CONDITION;
 
   /**
    * The feature id for the '<em><b>Target</b></em>' attribute.
@@ -304,80 +295,7 @@ public interface DslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ES_UPDATE__TARGET = ACTION_FEATURE_COUNT + 1;
-
-  /**
-   * The feature id for the '<em><b>Fetch Size</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ES_UPDATE__FETCH_SIZE = ACTION_FEATURE_COUNT + 2;
-
-  /**
-   * The feature id for the '<em><b>Write Size</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ES_UPDATE__WRITE_SIZE = ACTION_FEATURE_COUNT + 3;
-
-  /**
-   * The feature id for the '<em><b>Value</b></em>' attribute list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ES_UPDATE__VALUE = ACTION_FEATURE_COUNT + 4;
-
-  /**
-   * The feature id for the '<em><b>Write Thread Count</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ES_UPDATE__WRITE_THREAD_COUNT = ACTION_FEATURE_COUNT + 5;
-
-  /**
-   * The number of structural features of the '<em>Es Update</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ES_UPDATE_FEATURE_COUNT = ACTION_FEATURE_COUNT + 6;
-
-  /**
-   * The meta object id for the '{@link in.handyman.dsl.impl.EsAccumulateImpl <em>Es Accumulate</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see in.handyman.dsl.impl.EsAccumulateImpl
-   * @see in.handyman.dsl.impl.DslPackageImpl#getEsAccumulate()
-   * @generated
-   */
-  int ES_ACCUMULATE = 6;
-
-  /**
-   * The feature id for the '<em><b>Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ES_ACCUMULATE__NAME = ACTION__NAME;
-
-  /**
-   * The feature id for the '<em><b>Condition</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ES_ACCUMULATE__CONDITION = ACTION__CONDITION;
+  int SPAWNPROCESS__TARGET = ACTION_FEATURE_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Source</b></em>' attribute.
@@ -386,71 +304,26 @@ public interface DslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ES_ACCUMULATE__SOURCE = ACTION_FEATURE_COUNT + 0;
+  int SPAWNPROCESS__SOURCE = ACTION_FEATURE_COUNT + 1;
 
   /**
-   * The feature id for the '<em><b>Target</b></em>' attribute.
+   * The number of structural features of the '<em>Spawnprocess</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ES_ACCUMULATE__TARGET = ACTION_FEATURE_COUNT + 1;
+  int SPAWNPROCESS_FEATURE_COUNT = ACTION_FEATURE_COUNT + 2;
 
   /**
-   * The feature id for the '<em><b>Fetch Size</b></em>' attribute.
+   * The meta object id for the '{@link in.handyman.dsl.impl.DoglegImpl <em>Dogleg</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ES_ACCUMULATE__FETCH_SIZE = ACTION_FEATURE_COUNT + 2;
-
-  /**
-   * The feature id for the '<em><b>Write Size</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ES_ACCUMULATE__WRITE_SIZE = ACTION_FEATURE_COUNT + 3;
-
-  /**
-   * The feature id for the '<em><b>Value</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ES_ACCUMULATE__VALUE = ACTION_FEATURE_COUNT + 4;
-
-  /**
-   * The feature id for the '<em><b>Write Thread Count</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ES_ACCUMULATE__WRITE_THREAD_COUNT = ACTION_FEATURE_COUNT + 5;
-
-  /**
-   * The number of structural features of the '<em>Es Accumulate</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ES_ACCUMULATE_FEATURE_COUNT = ACTION_FEATURE_COUNT + 6;
-
-  /**
-   * The meta object id for the '{@link in.handyman.dsl.impl.ElasticFBCLeadImpl <em>Elastic FBC Lead</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see in.handyman.dsl.impl.ElasticFBCLeadImpl
-   * @see in.handyman.dsl.impl.DslPackageImpl#getElasticFBCLead()
+   * @see in.handyman.dsl.impl.DoglegImpl
+   * @see in.handyman.dsl.impl.DslPackageImpl#getDogleg()
    * @generated
    */
-  int ELASTIC_FBC_LEAD = 7;
+  int DOGLEG = 6;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -459,7 +332,7 @@ public interface DslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ELASTIC_FBC_LEAD__NAME = ACTION__NAME;
+  int DOGLEG__NAME = ACTION__NAME;
 
   /**
    * The feature id for the '<em><b>Condition</b></em>' containment reference.
@@ -468,134 +341,34 @@ public interface DslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ELASTIC_FBC_LEAD__CONDITION = ACTION__CONDITION;
+  int DOGLEG__CONDITION = ACTION__CONDITION;
 
   /**
-   * The feature id for the '<em><b>Access Token</b></em>' attribute.
+   * The feature id for the '<em><b>Inherit Context</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ELASTIC_FBC_LEAD__ACCESS_TOKEN = ACTION_FEATURE_COUNT + 0;
+  int DOGLEG__INHERIT_CONTEXT = ACTION_FEATURE_COUNT + 0;
 
   /**
-   * The feature id for the '<em><b>App Secret</b></em>' attribute.
+   * The feature id for the '<em><b>Process List</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ELASTIC_FBC_LEAD__APP_SECRET = ACTION_FEATURE_COUNT + 1;
+  int DOGLEG__PROCESS_LIST = ACTION_FEATURE_COUNT + 1;
 
   /**
-   * The feature id for the '<em><b>Account Id</b></em>' attribute.
+   * The number of structural features of the '<em>Dogleg</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ELASTIC_FBC_LEAD__ACCOUNT_ID = ACTION_FEATURE_COUNT + 2;
-
-  /**
-   * The feature id for the '<em><b>Campaign Id</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ELASTIC_FBC_LEAD__CAMPAIGN_ID = ACTION_FEATURE_COUNT + 3;
-
-  /**
-   * The feature id for the '<em><b>Target</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ELASTIC_FBC_LEAD__TARGET = ACTION_FEATURE_COUNT + 4;
-
-  /**
-   * The feature id for the '<em><b>Value</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ELASTIC_FBC_LEAD__VALUE = ACTION_FEATURE_COUNT + 5;
-
-  /**
-   * The number of structural features of the '<em>Elastic FBC Lead</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ELASTIC_FBC_LEAD_FEATURE_COUNT = ACTION_FEATURE_COUNT + 6;
-
-  /**
-   * The meta object id for the '{@link in.handyman.dsl.impl.ElasticGETImpl <em>Elastic GET</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see in.handyman.dsl.impl.ElasticGETImpl
-   * @see in.handyman.dsl.impl.DslPackageImpl#getElasticGET()
-   * @generated
-   */
-  int ELASTIC_GET = 8;
-
-  /**
-   * The feature id for the '<em><b>Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ELASTIC_GET__NAME = ACTION__NAME;
-
-  /**
-   * The feature id for the '<em><b>Condition</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ELASTIC_GET__CONDITION = ACTION__CONDITION;
-
-  /**
-   * The feature id for the '<em><b>Source</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ELASTIC_GET__SOURCE = ACTION_FEATURE_COUNT + 0;
-
-  /**
-   * The feature id for the '<em><b>To</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ELASTIC_GET__TO = ACTION_FEATURE_COUNT + 1;
-
-  /**
-   * The feature id for the '<em><b>Value</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ELASTIC_GET__VALUE = ACTION_FEATURE_COUNT + 2;
-
-  /**
-   * The number of structural features of the '<em>Elastic GET</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ELASTIC_GET_FEATURE_COUNT = ACTION_FEATURE_COUNT + 3;
+  int DOGLEG_FEATURE_COUNT = ACTION_FEATURE_COUNT + 2;
 
   /**
    * The meta object id for the '{@link in.handyman.dsl.impl.ExecJavaImpl <em>Exec Java</em>}' class.
@@ -605,7 +378,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getExecJava()
    * @generated
    */
-  int EXEC_JAVA = 9;
+  int EXEC_JAVA = 7;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -669,7 +442,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getFirebaseDatabasePut()
    * @generated
    */
-  int FIREBASE_DATABASE_PUT = 10;
+  int FIREBASE_DATABASE_PUT = 8;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -760,7 +533,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getFirebaseReactiveNotification()
    * @generated
    */
-  int FIREBASE_REACTIVE_NOTIFICATION = 11;
+  int FIREBASE_REACTIVE_NOTIFICATION = 9;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -842,7 +615,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getSmsLeadSms()
    * @generated
    */
-  int SMS_LEAD_SMS = 12;
+  int SMS_LEAD_SMS = 10;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -942,7 +715,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getAbort()
    * @generated
    */
-  int ABORT = 13;
+  int ABORT = 11;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -988,7 +761,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getGooglecontactSelectAll()
    * @generated
    */
-  int GOOGLECONTACT_SELECT_ALL = 14;
+  int GOOGLECONTACT_SELECT_ALL = 12;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1088,7 +861,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getSendMail()
    * @generated
    */
-  int SEND_MAIL = 15;
+  int SEND_MAIL = 13;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1170,7 +943,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getGooglecontactPUT()
    * @generated
    */
-  int GOOGLECONTACT_PUT = 16;
+  int GOOGLECONTACT_PUT = 14;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1270,7 +1043,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getGooglecalPUT()
    * @generated
    */
-  int GOOGLECAL_PUT = 17;
+  int GOOGLECAL_PUT = 15;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1370,7 +1143,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getFBCLead()
    * @generated
    */
-  int FBC_LEAD = 18;
+  int FBC_LEAD = 16;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1461,7 +1234,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getFBFormDownload()
    * @generated
    */
-  int FB_FORM_DOWNLOAD = 19;
+  int FB_FORM_DOWNLOAD = 17;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1552,7 +1325,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getDropfile()
    * @generated
    */
-  int DROPFILE = 20;
+  int DROPFILE = 18;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1598,7 +1371,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getDoozle()
    * @generated
    */
-  int DOOZLE = 21;
+  int DOOZLE = 19;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1662,7 +1435,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getRest()
    * @generated
    */
-  int REST = 22;
+  int REST = 20;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1816,7 +1589,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getRestPart()
    * @generated
    */
-  int REST_PART = 23;
+  int REST_PART = 21;
 
   /**
    * The feature id for the '<em><b>Part Name</b></em>' attribute.
@@ -1853,7 +1626,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getTrelloGET()
    * @generated
    */
-  int TRELLO_GET = 24;
+  int TRELLO_GET = 22;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1944,7 +1717,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getTrelloPUT()
    * @generated
    */
-  int TRELLO_PUT = 25;
+  int TRELLO_PUT = 23;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2035,7 +1808,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getFetch()
    * @generated
    */
-  int FETCH = 26;
+  int FETCH = 24;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2090,7 +1863,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getCallprocess()
    * @generated
    */
-  int CALLPROCESS = 27;
+  int CALLPROCESS = 25;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2163,7 +1936,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getForkprocess()
    * @generated
    */
-  int FORKPROCESS = 28;
+  int FORKPROCESS = 26;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2236,7 +2009,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getUpdatedaudit()
    * @generated
    */
-  int UPDATEDAUDIT = 29;
+  int UPDATEDAUDIT = 27;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2300,7 +2073,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getClickSendSms()
    * @generated
    */
-  int CLICK_SEND_SMS = 30;
+  int CLICK_SEND_SMS = 28;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2373,7 +2146,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getSlackPUT()
    * @generated
    */
-  int SLACK_PUT = 31;
+  int SLACK_PUT = 29;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2437,7 +2210,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getCopydata()
    * @generated
    */
-  int COPYDATA = 32;
+  int COPYDATA = 30;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2528,7 +2301,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getWriteCsv()
    * @generated
    */
-  int WRITE_CSV = 33;
+  int WRITE_CSV = 31;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2601,7 +2374,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getLoadCsv()
    * @generated
    */
-  int LOAD_CSV = 34;
+  int LOAD_CSV = 32;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2701,7 +2474,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getTransform()
    * @generated
    */
-  int TRANSFORM = 35;
+  int TRANSFORM = 33;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2749,6 +2522,43 @@ public interface DslPackage extends EPackage
   int TRANSFORM_FEATURE_COUNT = ACTION_FEATURE_COUNT + 2;
 
   /**
+   * The meta object id for the '{@link in.handyman.dsl.impl.StartProcessImpl <em>Start Process</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see in.handyman.dsl.impl.StartProcessImpl
+   * @see in.handyman.dsl.impl.DslPackageImpl#getStartProcess()
+   * @generated
+   */
+  int START_PROCESS = 34;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int START_PROCESS__NAME = 0;
+
+  /**
+   * The feature id for the '<em><b>Target</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int START_PROCESS__TARGET = 1;
+
+  /**
+   * The number of structural features of the '<em>Start Process</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int START_PROCESS_FEATURE_COUNT = 2;
+
+  /**
    * The meta object id for the '{@link in.handyman.dsl.impl.ExpressionImpl <em>Expression</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2756,7 +2566,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getExpression()
    * @generated
    */
-  int EXPRESSION = 36;
+  int EXPRESSION = 35;
 
   /**
    * The feature id for the '<em><b>Lhs</b></em>' attribute.
@@ -2978,275 +2788,68 @@ public interface DslPackage extends EPackage
   EReference getAction_Condition();
 
   /**
-   * Returns the meta object for class '{@link in.handyman.dsl.EsUpdate <em>Es Update</em>}'.
+   * Returns the meta object for class '{@link in.handyman.dsl.Spawnprocess <em>Spawnprocess</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Es Update</em>'.
-   * @see in.handyman.dsl.EsUpdate
+   * @return the meta object for class '<em>Spawnprocess</em>'.
+   * @see in.handyman.dsl.Spawnprocess
    * @generated
    */
-  EClass getEsUpdate();
+  EClass getSpawnprocess();
 
   /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.EsUpdate#getSource <em>Source</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Source</em>'.
-   * @see in.handyman.dsl.EsUpdate#getSource()
-   * @see #getEsUpdate()
-   * @generated
-   */
-  EAttribute getEsUpdate_Source();
-
-  /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.EsUpdate#getTarget <em>Target</em>}'.
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.Spawnprocess#getTarget <em>Target</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Target</em>'.
-   * @see in.handyman.dsl.EsUpdate#getTarget()
-   * @see #getEsUpdate()
+   * @see in.handyman.dsl.Spawnprocess#getTarget()
+   * @see #getSpawnprocess()
    * @generated
    */
-  EAttribute getEsUpdate_Target();
+  EAttribute getSpawnprocess_Target();
 
   /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.EsUpdate#getFetchSize <em>Fetch Size</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Fetch Size</em>'.
-   * @see in.handyman.dsl.EsUpdate#getFetchSize()
-   * @see #getEsUpdate()
-   * @generated
-   */
-  EAttribute getEsUpdate_FetchSize();
-
-  /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.EsUpdate#getWriteSize <em>Write Size</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Write Size</em>'.
-   * @see in.handyman.dsl.EsUpdate#getWriteSize()
-   * @see #getEsUpdate()
-   * @generated
-   */
-  EAttribute getEsUpdate_WriteSize();
-
-  /**
-   * Returns the meta object for the attribute list '{@link in.handyman.dsl.EsUpdate#getValue <em>Value</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute list '<em>Value</em>'.
-   * @see in.handyman.dsl.EsUpdate#getValue()
-   * @see #getEsUpdate()
-   * @generated
-   */
-  EAttribute getEsUpdate_Value();
-
-  /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.EsUpdate#getWriteThreadCount <em>Write Thread Count</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Write Thread Count</em>'.
-   * @see in.handyman.dsl.EsUpdate#getWriteThreadCount()
-   * @see #getEsUpdate()
-   * @generated
-   */
-  EAttribute getEsUpdate_WriteThreadCount();
-
-  /**
-   * Returns the meta object for class '{@link in.handyman.dsl.EsAccumulate <em>Es Accumulate</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Es Accumulate</em>'.
-   * @see in.handyman.dsl.EsAccumulate
-   * @generated
-   */
-  EClass getEsAccumulate();
-
-  /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.EsAccumulate#getSource <em>Source</em>}'.
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.Spawnprocess#getSource <em>Source</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Source</em>'.
-   * @see in.handyman.dsl.EsAccumulate#getSource()
-   * @see #getEsAccumulate()
+   * @see in.handyman.dsl.Spawnprocess#getSource()
+   * @see #getSpawnprocess()
    * @generated
    */
-  EAttribute getEsAccumulate_Source();
+  EAttribute getSpawnprocess_Source();
 
   /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.EsAccumulate#getTarget <em>Target</em>}'.
+   * Returns the meta object for class '{@link in.handyman.dsl.Dogleg <em>Dogleg</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Target</em>'.
-   * @see in.handyman.dsl.EsAccumulate#getTarget()
-   * @see #getEsAccumulate()
+   * @return the meta object for class '<em>Dogleg</em>'.
+   * @see in.handyman.dsl.Dogleg
    * @generated
    */
-  EAttribute getEsAccumulate_Target();
+  EClass getDogleg();
 
   /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.EsAccumulate#getFetchSize <em>Fetch Size</em>}'.
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.Dogleg#getInheritContext <em>Inherit Context</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Fetch Size</em>'.
-   * @see in.handyman.dsl.EsAccumulate#getFetchSize()
-   * @see #getEsAccumulate()
+   * @return the meta object for the attribute '<em>Inherit Context</em>'.
+   * @see in.handyman.dsl.Dogleg#getInheritContext()
+   * @see #getDogleg()
    * @generated
    */
-  EAttribute getEsAccumulate_FetchSize();
+  EAttribute getDogleg_InheritContext();
 
   /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.EsAccumulate#getWriteSize <em>Write Size</em>}'.
+   * Returns the meta object for the containment reference list '{@link in.handyman.dsl.Dogleg#getProcessList <em>Process List</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Write Size</em>'.
-   * @see in.handyman.dsl.EsAccumulate#getWriteSize()
-   * @see #getEsAccumulate()
+   * @return the meta object for the containment reference list '<em>Process List</em>'.
+   * @see in.handyman.dsl.Dogleg#getProcessList()
+   * @see #getDogleg()
    * @generated
    */
-  EAttribute getEsAccumulate_WriteSize();
-
-  /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.EsAccumulate#getValue <em>Value</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Value</em>'.
-   * @see in.handyman.dsl.EsAccumulate#getValue()
-   * @see #getEsAccumulate()
-   * @generated
-   */
-  EAttribute getEsAccumulate_Value();
-
-  /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.EsAccumulate#getWriteThreadCount <em>Write Thread Count</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Write Thread Count</em>'.
-   * @see in.handyman.dsl.EsAccumulate#getWriteThreadCount()
-   * @see #getEsAccumulate()
-   * @generated
-   */
-  EAttribute getEsAccumulate_WriteThreadCount();
-
-  /**
-   * Returns the meta object for class '{@link in.handyman.dsl.ElasticFBCLead <em>Elastic FBC Lead</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Elastic FBC Lead</em>'.
-   * @see in.handyman.dsl.ElasticFBCLead
-   * @generated
-   */
-  EClass getElasticFBCLead();
-
-  /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.ElasticFBCLead#getAccessToken <em>Access Token</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Access Token</em>'.
-   * @see in.handyman.dsl.ElasticFBCLead#getAccessToken()
-   * @see #getElasticFBCLead()
-   * @generated
-   */
-  EAttribute getElasticFBCLead_AccessToken();
-
-  /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.ElasticFBCLead#getAppSecret <em>App Secret</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>App Secret</em>'.
-   * @see in.handyman.dsl.ElasticFBCLead#getAppSecret()
-   * @see #getElasticFBCLead()
-   * @generated
-   */
-  EAttribute getElasticFBCLead_AppSecret();
-
-  /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.ElasticFBCLead#getAccountId <em>Account Id</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Account Id</em>'.
-   * @see in.handyman.dsl.ElasticFBCLead#getAccountId()
-   * @see #getElasticFBCLead()
-   * @generated
-   */
-  EAttribute getElasticFBCLead_AccountId();
-
-  /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.ElasticFBCLead#getCampaignId <em>Campaign Id</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Campaign Id</em>'.
-   * @see in.handyman.dsl.ElasticFBCLead#getCampaignId()
-   * @see #getElasticFBCLead()
-   * @generated
-   */
-  EAttribute getElasticFBCLead_CampaignId();
-
-  /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.ElasticFBCLead#getTarget <em>Target</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Target</em>'.
-   * @see in.handyman.dsl.ElasticFBCLead#getTarget()
-   * @see #getElasticFBCLead()
-   * @generated
-   */
-  EAttribute getElasticFBCLead_Target();
-
-  /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.ElasticFBCLead#getValue <em>Value</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Value</em>'.
-   * @see in.handyman.dsl.ElasticFBCLead#getValue()
-   * @see #getElasticFBCLead()
-   * @generated
-   */
-  EAttribute getElasticFBCLead_Value();
-
-  /**
-   * Returns the meta object for class '{@link in.handyman.dsl.ElasticGET <em>Elastic GET</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Elastic GET</em>'.
-   * @see in.handyman.dsl.ElasticGET
-   * @generated
-   */
-  EClass getElasticGET();
-
-  /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.ElasticGET#getSource <em>Source</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Source</em>'.
-   * @see in.handyman.dsl.ElasticGET#getSource()
-   * @see #getElasticGET()
-   * @generated
-   */
-  EAttribute getElasticGET_Source();
-
-  /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.ElasticGET#getTo <em>To</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>To</em>'.
-   * @see in.handyman.dsl.ElasticGET#getTo()
-   * @see #getElasticGET()
-   * @generated
-   */
-  EAttribute getElasticGET_To();
-
-  /**
-   * Returns the meta object for the attribute '{@link in.handyman.dsl.ElasticGET#getValue <em>Value</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Value</em>'.
-   * @see in.handyman.dsl.ElasticGET#getValue()
-   * @see #getElasticGET()
-   * @generated
-   */
-  EAttribute getElasticGET_Value();
+  EReference getDogleg_ProcessList();
 
   /**
    * Returns the meta object for class '{@link in.handyman.dsl.ExecJava <em>Exec Java</em>}'.
@@ -4949,6 +4552,38 @@ public interface DslPackage extends EPackage
   EAttribute getTransform_Value();
 
   /**
+   * Returns the meta object for class '{@link in.handyman.dsl.StartProcess <em>Start Process</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Start Process</em>'.
+   * @see in.handyman.dsl.StartProcess
+   * @generated
+   */
+  EClass getStartProcess();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.StartProcess#getName <em>Name</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Name</em>'.
+   * @see in.handyman.dsl.StartProcess#getName()
+   * @see #getStartProcess()
+   * @generated
+   */
+  EAttribute getStartProcess_Name();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.StartProcess#getTarget <em>Target</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Target</em>'.
+   * @see in.handyman.dsl.StartProcess#getTarget()
+   * @see #getStartProcess()
+   * @generated
+   */
+  EAttribute getStartProcess_Target();
+
+  /**
    * Returns the meta object for class '{@link in.handyman.dsl.Expression <em>Expression</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -5161,22 +4796,14 @@ public interface DslPackage extends EPackage
     EReference ACTION__CONDITION = eINSTANCE.getAction_Condition();
 
     /**
-     * The meta object literal for the '{@link in.handyman.dsl.impl.EsUpdateImpl <em>Es Update</em>}' class.
+     * The meta object literal for the '{@link in.handyman.dsl.impl.SpawnprocessImpl <em>Spawnprocess</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see in.handyman.dsl.impl.EsUpdateImpl
-     * @see in.handyman.dsl.impl.DslPackageImpl#getEsUpdate()
+     * @see in.handyman.dsl.impl.SpawnprocessImpl
+     * @see in.handyman.dsl.impl.DslPackageImpl#getSpawnprocess()
      * @generated
      */
-    EClass ES_UPDATE = eINSTANCE.getEsUpdate();
-
-    /**
-     * The meta object literal for the '<em><b>Source</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute ES_UPDATE__SOURCE = eINSTANCE.getEsUpdate_Source();
+    EClass SPAWNPROCESS = eINSTANCE.getSpawnprocess();
 
     /**
      * The meta object literal for the '<em><b>Target</b></em>' attribute feature.
@@ -5184,49 +4811,7 @@ public interface DslPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute ES_UPDATE__TARGET = eINSTANCE.getEsUpdate_Target();
-
-    /**
-     * The meta object literal for the '<em><b>Fetch Size</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute ES_UPDATE__FETCH_SIZE = eINSTANCE.getEsUpdate_FetchSize();
-
-    /**
-     * The meta object literal for the '<em><b>Write Size</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute ES_UPDATE__WRITE_SIZE = eINSTANCE.getEsUpdate_WriteSize();
-
-    /**
-     * The meta object literal for the '<em><b>Value</b></em>' attribute list feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute ES_UPDATE__VALUE = eINSTANCE.getEsUpdate_Value();
-
-    /**
-     * The meta object literal for the '<em><b>Write Thread Count</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute ES_UPDATE__WRITE_THREAD_COUNT = eINSTANCE.getEsUpdate_WriteThreadCount();
-
-    /**
-     * The meta object literal for the '{@link in.handyman.dsl.impl.EsAccumulateImpl <em>Es Accumulate</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see in.handyman.dsl.impl.EsAccumulateImpl
-     * @see in.handyman.dsl.impl.DslPackageImpl#getEsAccumulate()
-     * @generated
-     */
-    EClass ES_ACCUMULATE = eINSTANCE.getEsAccumulate();
+    EAttribute SPAWNPROCESS__TARGET = eINSTANCE.getSpawnprocess_Target();
 
     /**
      * The meta object literal for the '<em><b>Source</b></em>' attribute feature.
@@ -5234,139 +4819,33 @@ public interface DslPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute ES_ACCUMULATE__SOURCE = eINSTANCE.getEsAccumulate_Source();
+    EAttribute SPAWNPROCESS__SOURCE = eINSTANCE.getSpawnprocess_Source();
 
     /**
-     * The meta object literal for the '<em><b>Target</b></em>' attribute feature.
+     * The meta object literal for the '{@link in.handyman.dsl.impl.DoglegImpl <em>Dogleg</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see in.handyman.dsl.impl.DoglegImpl
+     * @see in.handyman.dsl.impl.DslPackageImpl#getDogleg()
+     * @generated
+     */
+    EClass DOGLEG = eINSTANCE.getDogleg();
+
+    /**
+     * The meta object literal for the '<em><b>Inherit Context</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute ES_ACCUMULATE__TARGET = eINSTANCE.getEsAccumulate_Target();
+    EAttribute DOGLEG__INHERIT_CONTEXT = eINSTANCE.getDogleg_InheritContext();
 
     /**
-     * The meta object literal for the '<em><b>Fetch Size</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Process List</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute ES_ACCUMULATE__FETCH_SIZE = eINSTANCE.getEsAccumulate_FetchSize();
-
-    /**
-     * The meta object literal for the '<em><b>Write Size</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute ES_ACCUMULATE__WRITE_SIZE = eINSTANCE.getEsAccumulate_WriteSize();
-
-    /**
-     * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute ES_ACCUMULATE__VALUE = eINSTANCE.getEsAccumulate_Value();
-
-    /**
-     * The meta object literal for the '<em><b>Write Thread Count</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute ES_ACCUMULATE__WRITE_THREAD_COUNT = eINSTANCE.getEsAccumulate_WriteThreadCount();
-
-    /**
-     * The meta object literal for the '{@link in.handyman.dsl.impl.ElasticFBCLeadImpl <em>Elastic FBC Lead</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see in.handyman.dsl.impl.ElasticFBCLeadImpl
-     * @see in.handyman.dsl.impl.DslPackageImpl#getElasticFBCLead()
-     * @generated
-     */
-    EClass ELASTIC_FBC_LEAD = eINSTANCE.getElasticFBCLead();
-
-    /**
-     * The meta object literal for the '<em><b>Access Token</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute ELASTIC_FBC_LEAD__ACCESS_TOKEN = eINSTANCE.getElasticFBCLead_AccessToken();
-
-    /**
-     * The meta object literal for the '<em><b>App Secret</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute ELASTIC_FBC_LEAD__APP_SECRET = eINSTANCE.getElasticFBCLead_AppSecret();
-
-    /**
-     * The meta object literal for the '<em><b>Account Id</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute ELASTIC_FBC_LEAD__ACCOUNT_ID = eINSTANCE.getElasticFBCLead_AccountId();
-
-    /**
-     * The meta object literal for the '<em><b>Campaign Id</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute ELASTIC_FBC_LEAD__CAMPAIGN_ID = eINSTANCE.getElasticFBCLead_CampaignId();
-
-    /**
-     * The meta object literal for the '<em><b>Target</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute ELASTIC_FBC_LEAD__TARGET = eINSTANCE.getElasticFBCLead_Target();
-
-    /**
-     * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute ELASTIC_FBC_LEAD__VALUE = eINSTANCE.getElasticFBCLead_Value();
-
-    /**
-     * The meta object literal for the '{@link in.handyman.dsl.impl.ElasticGETImpl <em>Elastic GET</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see in.handyman.dsl.impl.ElasticGETImpl
-     * @see in.handyman.dsl.impl.DslPackageImpl#getElasticGET()
-     * @generated
-     */
-    EClass ELASTIC_GET = eINSTANCE.getElasticGET();
-
-    /**
-     * The meta object literal for the '<em><b>Source</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute ELASTIC_GET__SOURCE = eINSTANCE.getElasticGET_Source();
-
-    /**
-     * The meta object literal for the '<em><b>To</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute ELASTIC_GET__TO = eINSTANCE.getElasticGET_To();
-
-    /**
-     * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute ELASTIC_GET__VALUE = eINSTANCE.getElasticGET_Value();
+    EReference DOGLEG__PROCESS_LIST = eINSTANCE.getDogleg_ProcessList();
 
     /**
      * The meta object literal for the '{@link in.handyman.dsl.impl.ExecJavaImpl <em>Exec Java</em>}' class.
@@ -6677,6 +6156,32 @@ public interface DslPackage extends EPackage
      * @generated
      */
     EAttribute TRANSFORM__VALUE = eINSTANCE.getTransform_Value();
+
+    /**
+     * The meta object literal for the '{@link in.handyman.dsl.impl.StartProcessImpl <em>Start Process</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see in.handyman.dsl.impl.StartProcessImpl
+     * @see in.handyman.dsl.impl.DslPackageImpl#getStartProcess()
+     * @generated
+     */
+    EClass START_PROCESS = eINSTANCE.getStartProcess();
+
+    /**
+     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute START_PROCESS__NAME = eINSTANCE.getStartProcess_Name();
+
+    /**
+     * The meta object literal for the '<em><b>Target</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute START_PROCESS__TARGET = eINSTANCE.getStartProcess_Target();
 
     /**
      * The meta object literal for the '{@link in.handyman.dsl.impl.ExpressionImpl <em>Expression</em>}' class.
