@@ -92,15 +92,26 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
     
     val upperThreadCount = threadCount
     val lowerThreadCount = 1
-
+    var isTempTable:Boolean = false
     //retrieving the insert into sql statement
     val insertStatementAsIs = copyData.getValue
+    logger.info(s"Insert statement as is :$insertStatementAsIs")
     val insertStatement = {
       if (insertStatementAsIs.trim.isEmpty())
         throw new HandymanException("INSERT INTO SELECT .... cannot be empty for copydata for " + name)
       else
+      {
+        if(insertStatementAsIs.contains(instanceId))
+        {
+          isTempTable=true
+          insertStatementAsIs.trim.replace(instanceId,"")
+        }else{
+          isTempTable=false
         insertStatementAsIs.trim
+        }
+      }
     }
+   logger.info(s"Insert statement after process id identification :$insertStatement")
     val insert = CCJSqlParserUtil.parse(insertStatement).asInstanceOf[Insert]
     val select = insert.getSelect
 
@@ -120,7 +131,7 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
 
     //Prepping up the parallelization framework
 
-    val prepOut = prepWokerPool(configMap, insert, copyData, threadCount, instanceId)
+    val prepOut = prepWokerPool(configMap, insert, copyData, threadCount, instanceId, isTempTable)
     val countDownLatch = prepOut._1
     val workerPool = prepOut._2
 
@@ -199,7 +210,7 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
     context
   }
 
-  def prepWokerPool(configMap: Map[String, String], insert: Insert, copyData: in.handyman.dsl.Copydata, threadCount: Int, instanceId: String): Tuple2[CountDownLatch,HashMap[Row,CopyDataJdbcWriter]] = {
+  def prepWokerPool(configMap: Map[String, String], insert: Insert, copyData: in.handyman.dsl.Copydata, threadCount: Int, instanceId: String, isTempTable:Boolean): Tuple2[CountDownLatch,HashMap[Row,CopyDataJdbcWriter]] = {
     val countDownLatch: CountDownLatch = new CountDownLatch(threadCount);    
     val workerPool:HashMap[Row,CopyDataJdbcWriter] = new HashMap[Row, CopyDataJdbcWriter]
     
@@ -207,7 +218,7 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
       val rowQueue = new LinkedBlockingDeque[Row];
       val poisonPill: Row = new Row(i, null)   
       logger.info(s"Copydata action is prepping up writer thread with poison pill:$poisonPill")
-      val jdbcWriter: CopyDataJdbcWriter = new CopyDataJdbcWriter(configMap, insert, poisonPill, copyData, instanceId, rowQueue, countDownLatch)
+      val jdbcWriter: CopyDataJdbcWriter = new CopyDataJdbcWriter(configMap, insert, poisonPill, copyData, instanceId, rowQueue, countDownLatch, isTempTable)
       workerPool.put(poisonPill, jdbcWriter)
       this.executor.submit(jdbcWriter)
       rowQueueMap.put(poisonPill.rowId, rowQueue)
