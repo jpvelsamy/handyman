@@ -101,14 +101,7 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
         throw new HandymanException("INSERT INTO SELECT .... cannot be empty for copydata for " + name)
       else
       {
-        if(insertStatementAsIs.contains(instanceId))
-        {
-          isTempTable=true
-          insertStatementAsIs.trim.replace(instanceId,"")
-        }else{
-          isTempTable=false
-        insertStatementAsIs.trim
-        }
+       insertStatementAsIs
       }
     }
    logger.info(s"Insert statement after process id identification :$insertStatement")
@@ -136,7 +129,9 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
     val workerPool = prepOut._2
 
     //Retrieving the data from the source
-    val rs: ResultSet = stmt.executeQuery(select.toString)
+    val selectStatement = select.toString
+   
+    val rs: ResultSet = stmt.executeQuery(selectStatement)
     val rsmd = rs.getMetaData
     val nrCols = rsmd.getColumnCount
 

@@ -86,12 +86,8 @@ class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonP
     val columnSet = row.columnSet
     val dataFrameBuilder = new StringBuilder
 
-    val targetTable = {
-     if(isTempTable.booleanValue)
-       id+insert.getTable
-     else
-      insert.getTable
-    }
+    val targetTable = insert.getTable
+    
 
     dataFrameBuilder.append("INSERT INTO ").append(targetTable).append(" (").
       append(columnList).append(") VALUES").append(Constants.INSERT_STMT_VALUE_START)
