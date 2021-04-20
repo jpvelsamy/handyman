@@ -36,8 +36,8 @@ object ProcessAST extends LazyLogging {
     val path = PathResolver.resolvePath(instanceName, fileRelativePath, basePath)
    
 
-    val result = parser.parse(new java.io.FileReader(path));
-    val eRoot = result.getRootASTElement();
+    val result = parser.parse(new java.io.FileReader(path))
+    val eRoot = result.getRootASTElement()    
     val process: in.handyman.dsl.Process = eRoot.asInstanceOf[in.handyman.dsl.Process]
     RuntimeContext(process, inputConfig, path, instanceName)
   }
