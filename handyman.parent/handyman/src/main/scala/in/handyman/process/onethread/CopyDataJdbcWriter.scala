@@ -16,7 +16,8 @@ import java.util.concurrent.atomic.AtomicInteger
 class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonPill: Row,
                          copyData: in.handyman.dsl.Copydata,
                          id:       String, rowQueue: BlockingQueue[Row],
-                         countDownLatch: CountDownLatch) extends Callable[Void] with LazyLogging {
+                         countDownLatch: CountDownLatch,
+                         isTempTable:Boolean) extends Callable[Void] with LazyLogging {
 
   val writeBuffer: HashSet[String] = new HashSet[String]
   val target = {
@@ -86,6 +87,7 @@ class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonP
     val dataFrameBuilder = new StringBuilder
 
     val targetTable = insert.getTable
+    
 
     dataFrameBuilder.append("INSERT INTO ").append(targetTable).append(" (").
       append(columnList).append(") VALUES").append(Constants.INSERT_STMT_VALUE_START)

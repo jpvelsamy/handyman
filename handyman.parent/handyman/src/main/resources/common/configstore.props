@@ -11,5 +11,5 @@ config= {
   key_process_sql="select value from spw_process_config where process=? and variable=?"
   key_instance_sql="select value from spw_instance_config where alias =?"
   
-  resource_sql = "select config_type, driver_class_name, user_name, password, resource_url from spw_resource_config where active='y' AND config_name=?"
+  resource_sql = "select config_type, driver_class, user_name, password, resource_url from spw_resource_config where active='y' AND config_name=?"
 }
