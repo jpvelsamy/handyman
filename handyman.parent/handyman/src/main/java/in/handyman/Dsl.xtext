@@ -224,7 +224,7 @@ Forkprocess:
 	'forkprocess' 'as' name=STRING 'with-target' target=STRING 'from-file' source=STRING 'using' datasource=STRING 'for-every' 
 	'{'
 		value=SelectStatement
-	'}' 'on-condition' condition=Expression
+	'}' 'watermark' forkBatchSize=STRING 'on-condition' condition=Expression
 ;
 
 Updatedaudit:
