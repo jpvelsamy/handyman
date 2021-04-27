@@ -12,6 +12,7 @@ import scala.util.control.Breaks
 import java.sql.SQLException
 import java.sql.Statement
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.ArrayList
 
 class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonPill: Row,
                          copyData: in.handyman.dsl.Copydata,
@@ -19,7 +20,7 @@ class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonP
                          countDownLatch: CountDownLatch,
                          isTempTable:Boolean) extends Callable[Void] with LazyLogging {
 
-  val writeBuffer: HashSet[String] = new HashSet[String]
+  val writeBuffer: ArrayList[String] = new ArrayList[String]
   val target = {
     if (!copyData.getTo.trim.isEmpty())
       copyData.getTo.trim
