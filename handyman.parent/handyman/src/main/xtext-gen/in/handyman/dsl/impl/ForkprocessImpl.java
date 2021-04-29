@@ -24,6 +24,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *   <li>{@link in.handyman.dsl.impl.ForkprocessImpl#getSource <em>Source</em>}</li>
  *   <li>{@link in.handyman.dsl.impl.ForkprocessImpl#getDatasource <em>Datasource</em>}</li>
  *   <li>{@link in.handyman.dsl.impl.ForkprocessImpl#getValue <em>Value</em>}</li>
+ *   <li>{@link in.handyman.dsl.impl.ForkprocessImpl#getForkBatchSize <em>Fork Batch Size</em>}</li>
  * </ul>
  *
  * @generated
@@ -109,6 +110,26 @@ public class ForkprocessImpl extends ActionImpl implements Forkprocess
    * @ordered
    */
   protected String value = VALUE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getForkBatchSize() <em>Fork Batch Size</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getForkBatchSize()
+   * @generated
+   * @ordered
+   */
+  protected static final String FORK_BATCH_SIZE_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getForkBatchSize() <em>Fork Batch Size</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getForkBatchSize()
+   * @generated
+   * @ordered
+   */
+  protected String forkBatchSize = FORK_BATCH_SIZE_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -228,6 +249,29 @@ public class ForkprocessImpl extends ActionImpl implements Forkprocess
    * <!-- end-user-doc -->
    * @generated
    */
+  public String getForkBatchSize()
+  {
+    return forkBatchSize;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setForkBatchSize(String newForkBatchSize)
+  {
+    String oldForkBatchSize = forkBatchSize;
+    forkBatchSize = newForkBatchSize;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.FORKPROCESS__FORK_BATCH_SIZE, oldForkBatchSize, forkBatchSize));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
@@ -241,6 +285,8 @@ public class ForkprocessImpl extends ActionImpl implements Forkprocess
         return getDatasource();
       case DslPackage.FORKPROCESS__VALUE:
         return getValue();
+      case DslPackage.FORKPROCESS__FORK_BATCH_SIZE:
+        return getForkBatchSize();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -266,6 +312,9 @@ public class ForkprocessImpl extends ActionImpl implements Forkprocess
         return;
       case DslPackage.FORKPROCESS__VALUE:
         setValue((String)newValue);
+        return;
+      case DslPackage.FORKPROCESS__FORK_BATCH_SIZE:
+        setForkBatchSize((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -293,6 +342,9 @@ public class ForkprocessImpl extends ActionImpl implements Forkprocess
       case DslPackage.FORKPROCESS__VALUE:
         setValue(VALUE_EDEFAULT);
         return;
+      case DslPackage.FORKPROCESS__FORK_BATCH_SIZE:
+        setForkBatchSize(FORK_BATCH_SIZE_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -315,6 +367,8 @@ public class ForkprocessImpl extends ActionImpl implements Forkprocess
         return DATASOURCE_EDEFAULT == null ? datasource != null : !DATASOURCE_EDEFAULT.equals(datasource);
       case DslPackage.FORKPROCESS__VALUE:
         return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
+      case DslPackage.FORKPROCESS__FORK_BATCH_SIZE:
+        return FORK_BATCH_SIZE_EDEFAULT == null ? forkBatchSize != null : !FORK_BATCH_SIZE_EDEFAULT.equals(forkBatchSize);
     }
     return super.eIsSet(featureID);
   }
@@ -338,6 +392,8 @@ public class ForkprocessImpl extends ActionImpl implements Forkprocess
     result.append(datasource);
     result.append(", value: ");
     result.append(value);
+    result.append(", forkBatchSize: ");
+    result.append(forkBatchSize);
     result.append(')');
     return result.toString();
   }

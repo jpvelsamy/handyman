@@ -20,7 +20,7 @@ class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonP
                          countDownLatch: CountDownLatch,
                          isTempTable:Boolean) extends Callable[Void] with LazyLogging {
 
-  val writeBuffer: ArrayList[String] = new ArrayList[String]
+  val writeBuffer: HashSet[String] = new HashSet[String]
   val target = {
     if (!copyData.getTo.trim.isEmpty())
       copyData.getTo.trim
@@ -116,6 +116,7 @@ class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonP
     logger.info(s"Writing to database using conn:$target")
     val stmt: Statement = conn.createStatement
     try {
+      
       writeBuffer.foreach(sql => {
         stmt.addBatch(sql)
       })

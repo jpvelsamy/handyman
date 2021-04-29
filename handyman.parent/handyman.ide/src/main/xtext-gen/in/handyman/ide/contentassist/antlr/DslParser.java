@@ -224,7 +224,8 @@ public class DslParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getForkprocessAccess().getSourceAssignment_6(), "rule__Forkprocess__SourceAssignment_6");
 			builder.put(grammarAccess.getForkprocessAccess().getDatasourceAssignment_8(), "rule__Forkprocess__DatasourceAssignment_8");
 			builder.put(grammarAccess.getForkprocessAccess().getValueAssignment_11(), "rule__Forkprocess__ValueAssignment_11");
-			builder.put(grammarAccess.getForkprocessAccess().getConditionAssignment_14(), "rule__Forkprocess__ConditionAssignment_14");
+			builder.put(grammarAccess.getForkprocessAccess().getForkBatchSizeAssignment_14(), "rule__Forkprocess__ForkBatchSizeAssignment_14");
+			builder.put(grammarAccess.getForkprocessAccess().getConditionAssignment_16(), "rule__Forkprocess__ConditionAssignment_16");
 			builder.put(grammarAccess.getUpdatedauditAccess().getNameAssignment_2(), "rule__Updatedaudit__NameAssignment_2");
 			builder.put(grammarAccess.getUpdatedauditAccess().getLogsinkAssignment_4(), "rule__Updatedaudit__LogsinkAssignment_4");
 			builder.put(grammarAccess.getUpdatedauditAccess().getDatasourceAssignment_6(), "rule__Updatedaudit__DatasourceAssignment_6");

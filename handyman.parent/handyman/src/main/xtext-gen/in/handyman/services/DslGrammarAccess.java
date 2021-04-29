@@ -2651,20 +2651,23 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Assignment cValueAssignment_11 = (Assignment)cGroup.eContents().get(11);
 		private final RuleCall cValueSelectStatementParserRuleCall_11_0 = (RuleCall)cValueAssignment_11.eContents().get(0);
 		private final Keyword cRightCurlyBracketKeyword_12 = (Keyword)cGroup.eContents().get(12);
-		private final Keyword cOnConditionKeyword_13 = (Keyword)cGroup.eContents().get(13);
-		private final Assignment cConditionAssignment_14 = (Assignment)cGroup.eContents().get(14);
-		private final RuleCall cConditionExpressionParserRuleCall_14_0 = (RuleCall)cConditionAssignment_14.eContents().get(0);
+		private final Keyword cWatermarkKeyword_13 = (Keyword)cGroup.eContents().get(13);
+		private final Assignment cForkBatchSizeAssignment_14 = (Assignment)cGroup.eContents().get(14);
+		private final RuleCall cForkBatchSizeSTRINGTerminalRuleCall_14_0 = (RuleCall)cForkBatchSizeAssignment_14.eContents().get(0);
+		private final Keyword cOnConditionKeyword_15 = (Keyword)cGroup.eContents().get(15);
+		private final Assignment cConditionAssignment_16 = (Assignment)cGroup.eContents().get(16);
+		private final RuleCall cConditionExpressionParserRuleCall_16_0 = (RuleCall)cConditionAssignment_16.eContents().get(0);
 		
 		//Forkprocess:
 		//	'forkprocess' 'as' name=STRING 'with-target' target=STRING 'from-file' source=STRING 'using' datasource=STRING
 		//	'for-every'
 		//	'{'
 		//	value=SelectStatement
-		//	'}' 'on-condition' condition=Expression;
+		//	'}' 'watermark' forkBatchSize=STRING 'on-condition' condition=Expression;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'forkprocess' 'as' name=STRING 'with-target' target=STRING 'from-file' source=STRING 'using' datasource=STRING
-		//'for-every' '{' value=SelectStatement '}' 'on-condition' condition=Expression
+		//'for-every' '{' value=SelectStatement '}' 'watermark' forkBatchSize=STRING 'on-condition' condition=Expression
 		public Group getGroup() { return cGroup; }
 		
 		//'forkprocess'
@@ -2721,14 +2724,23 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		//'}'
 		public Keyword getRightCurlyBracketKeyword_12() { return cRightCurlyBracketKeyword_12; }
 		
+		//'watermark'
+		public Keyword getWatermarkKeyword_13() { return cWatermarkKeyword_13; }
+		
+		//forkBatchSize=STRING
+		public Assignment getForkBatchSizeAssignment_14() { return cForkBatchSizeAssignment_14; }
+		
+		//STRING
+		public RuleCall getForkBatchSizeSTRINGTerminalRuleCall_14_0() { return cForkBatchSizeSTRINGTerminalRuleCall_14_0; }
+		
 		//'on-condition'
-		public Keyword getOnConditionKeyword_13() { return cOnConditionKeyword_13; }
+		public Keyword getOnConditionKeyword_15() { return cOnConditionKeyword_15; }
 		
 		//condition=Expression
-		public Assignment getConditionAssignment_14() { return cConditionAssignment_14; }
+		public Assignment getConditionAssignment_16() { return cConditionAssignment_16; }
 		
 		//Expression
-		public RuleCall getConditionExpressionParserRuleCall_14_0() { return cConditionExpressionParserRuleCall_14_0; }
+		public RuleCall getConditionExpressionParserRuleCall_16_0() { return cConditionExpressionParserRuleCall_16_0; }
 	}
 	public class UpdatedauditElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "in.handyman.Dsl.Updatedaudit");
@@ -4092,7 +4104,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	//	'for-every'
 	//	'{'
 	//	value=SelectStatement
-	//	'}' 'on-condition' condition=Expression;
+	//	'}' 'watermark' forkBatchSize=STRING 'on-condition' condition=Expression;
 	public ForkprocessElements getForkprocessAccess() {
 		return pForkprocess;
 	}

@@ -4555,16 +4555,38 @@ ruleForkprocess returns [EObject current=null]
 		{
 			newLeafNode(otherlv_12, grammarAccess.getForkprocessAccess().getRightCurlyBracketKeyword_12());
 		}
-		otherlv_13='on-condition'
+		otherlv_13='watermark'
 		{
-			newLeafNode(otherlv_13, grammarAccess.getForkprocessAccess().getOnConditionKeyword_13());
+			newLeafNode(otherlv_13, grammarAccess.getForkprocessAccess().getWatermarkKeyword_13());
+		}
+		(
+			(
+				lv_forkBatchSize_14_0=RULE_STRING
+				{
+					newLeafNode(lv_forkBatchSize_14_0, grammarAccess.getForkprocessAccess().getForkBatchSizeSTRINGTerminalRuleCall_14_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getForkprocessRule());
+					}
+					setWithLastConsumed(
+						$current,
+						"forkBatchSize",
+						lv_forkBatchSize_14_0,
+						"org.eclipse.xtext.common.Terminals.STRING");
+				}
+			)
+		)
+		otherlv_15='on-condition'
+		{
+			newLeafNode(otherlv_15, grammarAccess.getForkprocessAccess().getOnConditionKeyword_15());
 		}
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getForkprocessAccess().getConditionExpressionParserRuleCall_14_0());
+					newCompositeNode(grammarAccess.getForkprocessAccess().getConditionExpressionParserRuleCall_16_0());
 				}
-				lv_condition_14_0=ruleExpression
+				lv_condition_16_0=ruleExpression
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getForkprocessRule());
@@ -4572,7 +4594,7 @@ ruleForkprocess returns [EObject current=null]
 					set(
 						$current,
 						"condition",
-						lv_condition_14_0,
+						lv_condition_16_0,
 						"in.handyman.Dsl.Expression");
 					afterParserOrEnumRuleCall();
 				}

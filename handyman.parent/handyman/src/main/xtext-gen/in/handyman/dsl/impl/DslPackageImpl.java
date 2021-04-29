@@ -1816,6 +1816,16 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getForkprocess_ForkBatchSize()
+  {
+    return (EAttribute)forkprocessEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getUpdatedaudit()
   {
     return updatedauditEClass;
@@ -2441,6 +2451,7 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     createEAttribute(forkprocessEClass, FORKPROCESS__SOURCE);
     createEAttribute(forkprocessEClass, FORKPROCESS__DATASOURCE);
     createEAttribute(forkprocessEClass, FORKPROCESS__VALUE);
+    createEAttribute(forkprocessEClass, FORKPROCESS__FORK_BATCH_SIZE);
 
     updatedauditEClass = createEClass(UPDATEDAUDIT);
     createEAttribute(updatedauditEClass, UPDATEDAUDIT__LOGSINK);
@@ -2724,6 +2735,7 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     initEAttribute(getForkprocess_Source(), ecorePackage.getEString(), "source", null, 0, 1, Forkprocess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getForkprocess_Datasource(), ecorePackage.getEString(), "datasource", null, 0, 1, Forkprocess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getForkprocess_Value(), ecorePackage.getEString(), "value", null, 0, 1, Forkprocess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getForkprocess_ForkBatchSize(), ecorePackage.getEString(), "forkBatchSize", null, 0, 1, Forkprocess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(updatedauditEClass, Updatedaudit.class, "Updatedaudit", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getUpdatedaudit_Logsink(), ecorePackage.getEString(), "logsink", null, 0, 1, Updatedaudit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
