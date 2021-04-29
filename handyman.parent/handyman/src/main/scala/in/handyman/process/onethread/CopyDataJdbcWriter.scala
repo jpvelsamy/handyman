@@ -116,7 +116,7 @@ class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonP
     logger.info(s"Writing to database using conn:$target")
     val stmt: Statement = conn.createStatement
     try {
-      writeBuffer.forEach(sql => {
+      writeBuffer.foreach(sql => {
         stmt.addBatch(sql)
       })
       stmt.executeBatch
