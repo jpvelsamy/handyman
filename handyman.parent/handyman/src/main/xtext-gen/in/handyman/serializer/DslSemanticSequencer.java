@@ -711,6 +711,7 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 	 *         source=STRING 
 	 *         datasource=STRING 
 	 *         value=SelectStatement 
+	 *         forkBatchSize=STRING 
 	 *         condition=Expression
 	 *     )
 	 */
@@ -726,6 +727,8 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FORKPROCESS__DATASOURCE));
 			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.FORKPROCESS__VALUE) == ValueTransient.YES)
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FORKPROCESS__VALUE));
+			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.FORKPROCESS__FORK_BATCH_SIZE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.FORKPROCESS__FORK_BATCH_SIZE));
 			if (transientValues.isValueTransient(semanticObject, DslPackage.Literals.ACTION__CONDITION) == ValueTransient.YES)
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, DslPackage.Literals.ACTION__CONDITION));
 		}
@@ -735,7 +738,8 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 		feeder.accept(grammarAccess.getForkprocessAccess().getSourceSTRINGTerminalRuleCall_6_0(), semanticObject.getSource());
 		feeder.accept(grammarAccess.getForkprocessAccess().getDatasourceSTRINGTerminalRuleCall_8_0(), semanticObject.getDatasource());
 		feeder.accept(grammarAccess.getForkprocessAccess().getValueSelectStatementParserRuleCall_11_0(), semanticObject.getValue());
-		feeder.accept(grammarAccess.getForkprocessAccess().getConditionExpressionParserRuleCall_14_0(), semanticObject.getCondition());
+		feeder.accept(grammarAccess.getForkprocessAccess().getForkBatchSizeSTRINGTerminalRuleCall_14_0(), semanticObject.getForkBatchSize());
+		feeder.accept(grammarAccess.getForkprocessAccess().getConditionExpressionParserRuleCall_16_0(), semanticObject.getCondition());
 		feeder.finish();
 	}
 	

@@ -1993,13 +1993,22 @@ public interface DslPackage extends EPackage
   int FORKPROCESS__VALUE = ACTION_FEATURE_COUNT + 3;
 
   /**
+   * The feature id for the '<em><b>Fork Batch Size</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FORKPROCESS__FORK_BATCH_SIZE = ACTION_FEATURE_COUNT + 4;
+
+  /**
    * The number of structural features of the '<em>Forkprocess</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int FORKPROCESS_FEATURE_COUNT = ACTION_FEATURE_COUNT + 4;
+  int FORKPROCESS_FEATURE_COUNT = ACTION_FEATURE_COUNT + 5;
 
   /**
    * The meta object id for the '{@link in.handyman.dsl.impl.UpdatedauditImpl <em>Updatedaudit</em>}' class.
@@ -4163,6 +4172,17 @@ public interface DslPackage extends EPackage
   EAttribute getForkprocess_Value();
 
   /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.Forkprocess#getForkBatchSize <em>Fork Batch Size</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Fork Batch Size</em>'.
+   * @see in.handyman.dsl.Forkprocess#getForkBatchSize()
+   * @see #getForkprocess()
+   * @generated
+   */
+  EAttribute getForkprocess_ForkBatchSize();
+
+  /**
    * Returns the meta object for class '{@link in.handyman.dsl.Updatedaudit <em>Updatedaudit</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -5854,6 +5874,14 @@ public interface DslPackage extends EPackage
      * @generated
      */
     EAttribute FORKPROCESS__VALUE = eINSTANCE.getForkprocess_Value();
+
+    /**
+     * The meta object literal for the '<em><b>Fork Batch Size</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FORKPROCESS__FORK_BATCH_SIZE = eINSTANCE.getForkprocess_ForkBatchSize();
 
     /**
      * The meta object literal for the '{@link in.handyman.dsl.impl.UpdatedauditImpl <em>Updatedaudit</em>}' class.

@@ -17,6 +17,7 @@ package in.handyman.dsl;
  *   <li>{@link in.handyman.dsl.Forkprocess#getSource <em>Source</em>}</li>
  *   <li>{@link in.handyman.dsl.Forkprocess#getDatasource <em>Datasource</em>}</li>
  *   <li>{@link in.handyman.dsl.Forkprocess#getValue <em>Value</em>}</li>
+ *   <li>{@link in.handyman.dsl.Forkprocess#getForkBatchSize <em>Fork Batch Size</em>}</li>
  * </ul>
  *
  * @see in.handyman.dsl.DslPackage#getForkprocess()
@@ -128,5 +129,31 @@ public interface Forkprocess extends Action
    * @generated
    */
   void setValue(String value);
+
+  /**
+   * Returns the value of the '<em><b>Fork Batch Size</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Fork Batch Size</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Fork Batch Size</em>' attribute.
+   * @see #setForkBatchSize(String)
+   * @see in.handyman.dsl.DslPackage#getForkprocess_ForkBatchSize()
+   * @model
+   * @generated
+   */
+  String getForkBatchSize();
+
+  /**
+   * Sets the value of the '{@link in.handyman.dsl.Forkprocess#getForkBatchSize <em>Fork Batch Size</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Fork Batch Size</em>' attribute.
+   * @see #getForkBatchSize()
+   * @generated
+   */
+  void setForkBatchSize(String value);
 
 } // Forkprocess

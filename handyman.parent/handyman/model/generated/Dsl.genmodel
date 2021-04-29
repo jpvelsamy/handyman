@@ -176,6 +176,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Forkprocess/source"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Forkprocess/datasource"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Forkprocess/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Forkprocess/forkBatchSize"/>
     </genClasses>
     <genClasses ecoreClass="Dsl.ecore#//Updatedaudit">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Updatedaudit/logsink"/>
