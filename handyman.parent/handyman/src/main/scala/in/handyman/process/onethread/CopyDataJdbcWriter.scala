@@ -13,12 +13,13 @@ import java.sql.SQLException
 import java.sql.Statement
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.ArrayList
+import org.apache.commons.lang3.math.NumberUtils
 
 class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonPill: Row,
                          copyData: in.handyman.dsl.Copydata,
                          id:       String, rowQueue: BlockingQueue[Row],
                          countDownLatch: CountDownLatch,
-                         isTempTable:Boolean) extends Callable[Void] with LazyLogging {
+                         isTempTable:    Boolean) extends Callable[Void] with LazyLogging {
 
   val writeBuffer: HashSet[String] = new HashSet[String]
   val target = {
@@ -88,15 +89,15 @@ class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonP
     val dataFrameBuilder = new StringBuilder
 
     val targetTable = insert.getTable
-    
 
     dataFrameBuilder.append("INSERT INTO ").append(targetTable).append(" (").
       append(columnList).append(") VALUES").append(Constants.INSERT_STMT_VALUE_START)
 
     columnSet.foreach(column => {
+
       val columnType = column.columnTypeName
       columnType.toLowerCase match {
-        case Constants.STRING_DATATYPE => dataFrameBuilder.append(Constants.STRING_ENCLOSER).
+        case Constants.STRING_DATATYPE | "java.lang.string"=> dataFrameBuilder.append(Constants.STRING_ENCLOSER).
           append(column.value).append(Constants.STRING_ENCLOSER)
         case "datetime" => dataFrameBuilder.append(Constants.STRING_ENCLOSER).
           append(column.value).append(Constants.STRING_ENCLOSER)
