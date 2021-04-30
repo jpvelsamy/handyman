@@ -235,8 +235,7 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
         case "timestamp" | "java.sql.timestamp" => rs.getLong(i).toString()
         case "double" | "java.lang.double" => rs.getDouble(i).toString()
         case "long" | "java.lang.long" => rs.getLong(i).toString()
-        case "int" | "java.lang.integer" => rs.getInt(i).toString()
-        
+        case "int" | "java.lang.integer" => rs.getBigDecimal(i).toString()        
       }
     }
     val isLastColumn: Boolean = {
