@@ -228,16 +228,7 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
     val columnName = rsmd.getColumnName(i)
     val columnLabel = rsmd.getColumnLabel(i)
     val scale: Int = rsmd.getScale(i)
-    val value = {
-      columnTypeName.toLowerCase match {
-        case Constants.STRING_DATATYPE | "java.lang.string" => rs.getString(i)
-        case "datetime" | "java.sql.date" => rs.getDate(i).toString()
-        case "timestamp" | "java.sql.timestamp" => rs.getLong(i).toString()
-        case "double" | "java.lang.double" => rs.getDouble(i).toString()
-        case "long" | "java.lang.long" => rs.getLong(i).toString()
-        case "int" | "java.lang.integer" => rs.getBigDecimal(i).toString()        
-      }
-    }
+    val value = rs.getObject(i)
     val isLastColumn: Boolean = {
       if (i == nrCols)
         true
