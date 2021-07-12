@@ -1,16 +1,12 @@
 package in.handyman.process.onethread
 
 import com.typesafe.scalalogging.LazyLogging
-import in.handyman.dsl.Action
-import in.handyman.command.Context
-import in.handyman.util.ResourceAccess
-import in.handyman.command.CommandProxy
-import in.handyman.util.ParameterisationEngine
-import in.handyman.util.ExceptionUtil
-import java.sql.SQLException
-import in.handyman.dsl.Expression
-import java.util.HashMap
+import in.handyman.command.{CommandProxy, Context}
+import in.handyman.dsl.{Action, Expression}
+import in.handyman.util.{ParameterisationEngine, ResourceAccess}
 import org.slf4j.MarkerFactory
+
+import java.util.HashMap
 
 class JavaAction extends in.handyman.command.Action with LazyLogging {
   val detailMap = new java.util.HashMap[String, String]

@@ -1,14 +1,12 @@
 package in.handyman.process.onethread
 
-import in.handyman.command.Context
-import in.handyman.dsl.Action
 import com.typesafe.scalalogging.LazyLogging
-import in.handyman.command.CommandProxy
-import in.handyman.util.ParameterisationEngine
+import in.handyman.command.{CommandProxy, Context}
+import in.handyman.dsl.Action
 import in.handyman.server.ProcessAST
-import in.handyman.server.ProcessExecutor
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
+import in.handyman.util.ParameterisationEngine
+
+import java.util.concurrent.{ExecutorService, Executors}
 
 class SpawnProcessAction extends in.handyman.command.Action with LazyLogging {
   val detailMap = new java.util.HashMap[String, String]

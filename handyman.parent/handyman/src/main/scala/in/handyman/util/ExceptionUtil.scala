@@ -1,7 +1,6 @@
 package in.handyman.util
 
-import java.io.StringWriter
-import java.io.PrintWriter
+import java.io.{PrintWriter, StringWriter}
 
 object ExceptionUtil {
   

@@ -2,8 +2,9 @@ package in.handyman.process.onethread
 
 import com.typesafe.scalalogging.LazyLogging
 import in.handyman.command.CommandProxy
-import java.io.File
 import in.handyman.util.ParameterisationEngine
+
+import java.io.File
 
 class DropFileAction extends in.handyman.command.Action with LazyLogging {
   val detailMap = new java.util.HashMap[String, String]

@@ -1,12 +1,10 @@
 package in.handyman.config
 
-import java.sql._
-
-import org.slf4j.Logger
-
 import com.typesafe.config._
 import com.typesafe.scalalogging.LazyLogging
 import in.handyman.HandymanException
+
+import java.sql._
 
 /**
  * @author jpvel

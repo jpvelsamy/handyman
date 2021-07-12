@@ -1,16 +1,13 @@
 package in.handyman.process.onethread
 
 import com.typesafe.scalalogging.LazyLogging
-import in.handyman.dsl.Action
-import in.handyman.command.Context
-import in.handyman.util.ResourceAccess
-import in.handyman.command.CommandProxy
-import in.handyman.util.ParameterisationEngine
-import in.handyman.util.ExceptionUtil
-import java.sql.SQLException
-import org.slf4j.MarkerFactory
-import java.sql.SQLSyntaxErrorException
 import in.handyman.audit.AuditService
+import in.handyman.command.{CommandProxy, Context}
+import in.handyman.dsl.Action
+import in.handyman.util.{ExceptionUtil, ParameterisationEngine, ResourceAccess}
+import org.slf4j.MarkerFactory
+
+import java.sql.{SQLException, SQLSyntaxErrorException}
 
 class TransformAction extends in.handyman.command.Action with LazyLogging {
   val detailMap = new java.util.HashMap[String, String]

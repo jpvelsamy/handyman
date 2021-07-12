@@ -1,12 +1,9 @@
 package in.handyman.util
 
-import java.sql.Connection
 import com.typesafe.scalalogging.LazyLogging
-import in.handyman.config.ConfigurationService
-import in.handyman.config.Resource
-import java.sql.DriverManager
-import com.typesafe.scalalogging.LazyLogging
-import com.typesafe.scalalogging.Logger
+import in.handyman.config.{ConfigurationService, Resource}
+
+import java.sql.{Connection, DriverManager}
 
 /**
  * 	Migration script added on Feb 19 2021 - 

@@ -1,23 +1,13 @@
 package in.handyman.process.onethread
 
+import com.sendgrid._
 import com.typesafe.scalalogging.LazyLogging
-import in.handyman.command.Context
-import in.handyman.command.CommandProxy
-import in.handyman.util.ParameterisationEngine
-import in.handyman.util.ResourceAccess
-import org.apache.http.impl.client.HttpClientBuilder
-import org.apache.http.client.methods.HttpGet
-import java.net.URLEncoder
-import org.apache.commons.text.StrSubstitutor
-import com.sendgrid.SendGrid
-import com.sendgrid.Request
-import com.sendgrid.Method
-import com.sendgrid.Email
-import com.sendgrid.Content
-import com.sendgrid.Mail
-import org.slf4j.MarkerFactory
-import java.util.concurrent.atomic.AtomicInteger
 import in.handyman.audit.AuditService
+import in.handyman.command.{CommandProxy, Context}
+import in.handyman.util.{ParameterisationEngine, ResourceAccess}
+import org.slf4j.MarkerFactory
+
+import java.util.concurrent.atomic.AtomicInteger
 
 class MailAction extends in.handyman.command.Action with LazyLogging {
 

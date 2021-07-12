@@ -1,8 +1,8 @@
 package in.handyman.command
 
-import java.io.StringWriter
-import java.io.PrintWriter
 import com.fasterxml.jackson.databind.ObjectMapper
+
+import java.io.{PrintWriter, StringWriter}
 
 class ErrorContext(val tryContext:Context) extends Context {
   

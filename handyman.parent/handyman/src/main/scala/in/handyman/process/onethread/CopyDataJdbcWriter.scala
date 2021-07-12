@@ -1,19 +1,14 @@
 package in.handyman.process.onethread
 
-import java.util.concurrent.BlockingQueue
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.Callable
 import com.typesafe.scalalogging.LazyLogging
-import net.sf.jsqlparser.statement.insert.Insert
-import scala.collection.mutable.HashSet
-import in.handyman.util.ResourceAccess
 import in.handyman.HandymanException
+import in.handyman.util.ResourceAccess
+import net.sf.jsqlparser.statement.insert.Insert
+
+import java.sql.{SQLException, Statement}
+import java.util.concurrent.{BlockingQueue, Callable, CountDownLatch}
+import scala.collection.mutable.HashSet
 import scala.util.control.Breaks
-import java.sql.SQLException
-import java.sql.Statement
-import java.util.concurrent.atomic.AtomicInteger
-import java.util.ArrayList
-import org.apache.commons.lang3.math.NumberUtils
 
 class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonPill: Row,
                          copyData: in.handyman.dsl.Copydata,

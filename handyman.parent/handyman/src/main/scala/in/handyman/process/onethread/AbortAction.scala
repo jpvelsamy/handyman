@@ -1,10 +1,9 @@
 package in.handyman.process.onethread
 
 import com.typesafe.scalalogging.LazyLogging
-import in.handyman.command.Context
-import in.handyman.command.CommandProxy
-import in.handyman.util.ParameterisationEngine
 import in.handyman.AbortException
+import in.handyman.command.{CommandProxy, Context}
+import in.handyman.util.ParameterisationEngine
 import org.slf4j.MarkerFactory
 
 class AbortAction extends in.handyman.command.Action with LazyLogging {

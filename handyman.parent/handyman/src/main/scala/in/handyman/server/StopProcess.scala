@@ -1,7 +1,6 @@
 package in.handyman.server
 
-import org.restlet.resource.ServerResource
-import org.restlet.resource.Get
+import org.restlet.resource.{Get, ServerResource}
 
 class StopProcess extends ServerResource{
   @Get("application/json")

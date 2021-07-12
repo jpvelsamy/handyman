@@ -1,24 +1,15 @@
 package in.handyman.process.onethread
 
+import com.facebook.ads.sdk.{APIConfig, APIContext, AdAccount, Campaign}
 import com.typesafe.scalalogging.LazyLogging
-import in.handyman.command.CommandProxy
-import com.facebook.ads.sdk.APIContext
-import com.facebook.ads.sdk.AdAccount
-import com.facebook.ads.sdk.Campaign
-import in.handyman.util.ResourceAccess
-import in.handyman.util.ParameterisationEngine
-import java.util.concurrent.atomic.AtomicInteger
-import java.sql.SQLException
-import java.util.regex.Pattern
-import com.facebook.ads.sdk.Ad
-import java.util.HashMap
-import java.time.LocalDateTime
-import java.time.ZoneOffset
-import in.handyman.config.ConfigurationService
-import in.handyman.util.ExceptionUtil
-import org.slf4j.MarkerFactory
 import in.handyman.audit.AuditService
-import com.facebook.ads.sdk.APIConfig
+import in.handyman.command.CommandProxy
+import in.handyman.config.ConfigurationService
+import in.handyman.util.{ExceptionUtil, ParameterisationEngine, ResourceAccess}
+import org.slf4j.MarkerFactory
+
+import java.sql.SQLException
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * //https://developers.facebook.com/docs/marketing-api/guides/lead-ads/retrieving/v2.9

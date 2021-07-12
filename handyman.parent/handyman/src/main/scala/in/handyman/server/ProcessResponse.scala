@@ -1,7 +1,8 @@
 package in.handyman.server
 
 import in.handyman.command.Context
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+
+import scala.beans.BeanProperty
 
 class ProcessResponse extends Serializable{
   

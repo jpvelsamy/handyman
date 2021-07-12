@@ -1,9 +1,9 @@
 package in.handyman.process.onethread
 
-import in.handyman.server.RuntimeContext
-import java.util.concurrent.Callable
 import com.typesafe.scalalogging.LazyLogging
-import in.handyman.server.ProcessExecutor
+import in.handyman.server.{ProcessExecutor, RuntimeContext}
+
+import java.util.concurrent.Callable
 
 class SpawnProcessCallable(runtimeContext: RuntimeContext) extends Callable[Void] with LazyLogging {
 

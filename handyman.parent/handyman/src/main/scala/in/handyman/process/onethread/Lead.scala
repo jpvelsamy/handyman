@@ -1,11 +1,9 @@
 package in.handyman.process.onethread
 
 import java.io.Serializable
-
-import scala.beans.{BeanProperty, BooleanBeanProperty}
+import scala.beans.BeanProperty
 
 //remove if not needed
-import scala.collection.JavaConversions._
 
 @SerialVersionUID(6636717210313067637L)
 class Lead extends Serializable {

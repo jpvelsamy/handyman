@@ -1,30 +1,21 @@
 package in.handyman.process.onethread
 
-import com.typesafe.scalalogging.LazyLogging
-import in.handyman.command.CommandProxy
-import in.handyman.dsl.GooglecontactPUT
-import in.handyman.util.ParameterisationEngine
-import in.handyman.util.ResourceAccess
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.json.JsonFactory
 import com.google.api.client.json.jackson2.JacksonFactory
+import com.google.api.services.people.v1.{PeopleService, PeopleServiceScopes}
+import com.google.api.services.people.v1.model._
+import com.typesafe.scalalogging.LazyLogging
+import in.handyman.audit.AuditService
+import in.handyman.command.CommandProxy
+import in.handyman.dsl.GooglecontactPUT
+import in.handyman.util.{ExceptionUtil, ParameterisationEngine, ResourceAccess}
+import org.slf4j.MarkerFactory
+
 import java.io.File
 import java.util.Collections
-import com.google.api.services.people.v1.PeopleServiceScopes
-import com.google.api.services.people.v1.model.Person
-import com.google.api.services.people.v1.model.PhoneNumber
-import com.google.api.services.people.v1.model.EmailAddress
-import com.google.api.services.people.v1.model.Name
-import com.google.api.services.people.v1.PeopleService
 import java.util.concurrent.atomic.AtomicInteger
-import com.google.api.services.people.v1.model.Source
-import com.google.api.services.people.v1.model.Address
-import com.google.api.services.people.v1.model.ProfileMetadata
-import com.google.api.services.people.v1.model.Url
-import org.slf4j.MarkerFactory
-import in.handyman.util.ExceptionUtil
-import in.handyman.audit.AuditService
 
 class GContactCreateAction extends in.handyman.command.Action with LazyLogging {
   val detailMap = new java.util.HashMap[String, String]

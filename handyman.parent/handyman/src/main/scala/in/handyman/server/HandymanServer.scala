@@ -1,11 +1,10 @@
 package in.handyman.server
 
 import com.typesafe.scalalogging.LazyLogging
-import org.restlet.Application
-import org.restlet.Component
+import org.knowm.sundial.SundialJobScheduler
+import org.restlet.{Application, Component}
 import org.restlet.data.Protocol
 import org.restlet.routing.Router
-import org.knowm.sundial.SundialJobScheduler
 
 object HandymanServer extends Application with LazyLogging{
   

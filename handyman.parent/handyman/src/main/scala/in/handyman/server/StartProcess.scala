@@ -1,12 +1,9 @@
 package in.handyman.server
 
-import org.restlet.resource.ServerResource
-import org.restlet.resource.Get
-import com.typesafe.scalalogging.LazyLogging
-import org.restlet.resource.Post
-import org.restlet.ext.jackson.JacksonRepresentation;
-import org.restlet.representation.Representation;
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.typesafe.scalalogging.LazyLogging
+import org.restlet.representation.Representation
+import org.restlet.resource.{Post, ServerResource}
 
 class StartProcess extends ServerResource with LazyLogging {
   val runMode = "in.handyman.process.onethread"

@@ -2,7 +2,6 @@ package in.handyman.server
 
 
 import com.typesafe.scalalogging.LazyLogging
-import in.handyman.DslStandaloneSetup
 import in.handyman.parser.antlr.DslParser
 import org.slf4j.MarkerFactory
 

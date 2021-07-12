@@ -1,11 +1,11 @@
 package in.handyman.audit
 
-import in.handyman.config.ConfigurationService
-import java.sql.DriverManager
-import java.sql.Statement
-import in.handyman.util.ResourceAccess
 import com.typesafe.scalalogging.LazyLogging
+import in.handyman.config.ConfigurationService
+import in.handyman.util.ResourceAccess
 import org.slf4j.MarkerFactory
+
+import java.sql.Statement
 
 object AuditService extends LazyLogging{
 

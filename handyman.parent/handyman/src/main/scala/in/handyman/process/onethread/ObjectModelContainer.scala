@@ -1,6 +1,5 @@
 package in.handyman.process.onethread
 
-import scala.collection.mutable.HashSet
 import scala.collection.mutable.LinkedHashSet
 
 case class ColumnInARow(columnType: Int, columnTypeName: String, columnName: String, columnLabel: String, scale: Integer, 

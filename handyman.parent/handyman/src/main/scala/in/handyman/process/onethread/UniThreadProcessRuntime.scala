@@ -1,13 +1,10 @@
 package in.handyman.process.onethread
 
-import in.handyman.dsl._
-import in.handyman.server.ProcessRuntime
-import com.typesafe.scalalogging.LazyLogging
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.typesafe.scalalogging.LazyLogging
 import in.handyman.command._
-import in.handyman.server.ProcessResponse
-import in.handyman.AbortException
-import com.fasterxml.jackson.databind.SerializationFeature
+import in.handyman.dsl._
+import in.handyman.server.{ProcessResponse, ProcessRuntime}
 import org.slf4j.MarkerFactory
 
 class UniThreadProcessRuntime(name: String, id: Int) extends ProcessRuntime with LazyLogging {

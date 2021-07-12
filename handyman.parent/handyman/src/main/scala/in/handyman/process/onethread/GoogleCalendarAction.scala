@@ -1,31 +1,22 @@
 package in.handyman.process.onethread
 
-import java.io.File
-import java.util.Arrays
-import java.util.Collections
-import java.util.Date
-import java.util.TimeZone
-
-import in.handyman.command.Context
-import in.handyman.dsl.Action
-import in.handyman.dsl.GooglecalPUT
-import in.handyman.util.ResourceAccess
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.json.JsonFactory
 import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.client.util.DateTime
-import com.google.api.client.util.store.FileDataStoreFactory
-import com.google.api.services.calendar.model.Event
-import com.google.api.services.calendar.model.EventDateTime
+import com.google.api.services.calendar.model.{Event, EventDateTime}
 import com.typesafe.scalalogging.LazyLogging
-import in.handyman.command.CommandProxy
-import in.handyman.util.ParameterisationEngine
-import java.util.concurrent.atomic.AtomicInteger
-import in.handyman.config.ConfigurationService
-import org.slf4j.MarkerFactory
 import in.handyman.audit.AuditService
+import in.handyman.command.{CommandProxy, Context}
+import in.handyman.config.ConfigurationService
+import in.handyman.dsl.{Action, GooglecalPUT}
+import in.handyman.util.{ParameterisationEngine, ResourceAccess}
+import org.slf4j.MarkerFactory
+
+import java.io.File
+import java.util.{Arrays, Collections, Date, TimeZone}
+import java.util.concurrent.atomic.AtomicInteger
 
 class GoogleCalendarAction extends in.handyman.command.Action with LazyLogging {
   val DEFAULT_TIMEZONE = "Asia/Kolkata"

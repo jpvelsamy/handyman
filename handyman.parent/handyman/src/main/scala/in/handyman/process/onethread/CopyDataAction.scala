@@ -1,30 +1,19 @@
 package in.handyman.process.onethread
 
 import com.typesafe.scalalogging.LazyLogging
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import in.handyman.command.CommandProxy
-import in.handyman.util.ParameterisationEngine
-import in.handyman.util.ResourceAccess
 import in.handyman.HandymanException
 import in.handyman.audit.AuditService
+import in.handyman.command.CommandProxy
 import in.handyman.config.ConfigurationService
-import java.sql.ResultSet
-import java.util.concurrent.BlockingQueue
-import java.util.concurrent.LinkedBlockingDeque
-import java.util.concurrent.CountDownLatch
-import java.util.Collections
+import in.handyman.util.{ParameterisationEngine, ResourceAccess}
 import net.sf.jsqlparser.parser.CCJSqlParserUtil
-import net.sf.jsqlparser.statement.select.Select
-import net.sf.jsqlparser.statement.select.PlainSelect
 import net.sf.jsqlparser.statement.insert.Insert
-import scala.collection.mutable.HashSet
-import java.sql.ResultSetMetaData
-import java.util.concurrent.atomic.AtomicInteger
-import scala.collection.mutable.LinkedHashSet
-import scala.collection.mutable.HashMap
+
+import java.sql.{ResultSet, ResultSetMetaData}
 import java.util.Random
-import scala.collection.mutable.LinkedHashMap
+import java.util.concurrent._
+import java.util.concurrent.atomic.AtomicInteger
+import scala.collection.mutable.{HashMap, LinkedHashMap, LinkedHashSet}
 
 /**
  * TODO - Still need to add more rich ness to audit trail with respect to statement warnings

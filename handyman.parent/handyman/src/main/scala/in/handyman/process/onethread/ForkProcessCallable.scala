@@ -1,12 +1,9 @@
 package in.handyman.process.onethread
 
-import java.util.concurrent.Callable
 import com.typesafe.scalalogging.LazyLogging
-import in.handyman.server.ProcessAST
-import in.handyman.server.RuntimeContext
-import in.handyman.server.ProcessExecutor
-import in.handyman.util.ExceptionUtil
-import java.util.concurrent.CountDownLatch
+import in.handyman.server.{ProcessExecutor, RuntimeContext}
+
+import java.util.concurrent.{Callable, CountDownLatch}
 
 class ForkProcessCallable(runtimeContext:RuntimeContext, countDownLatch: CountDownLatch) extends Callable[Void] with LazyLogging {
   

@@ -1,15 +1,12 @@
 package in.handyman.command
-import java.lang.reflect.{ Method, InvocationHandler, Proxy }
-import org.eclipse.emf.ecore.util.EDataTypeEList
-import org.eclipse.emf.common.util.EList
-import org.eclipse.emf.common.util.BasicEList
-import in.handyman.util.ParameterisationEngine
-import in.handyman.dsl.RestPart
-import org.eclipse.emf.ecore.util.EObjectContainmentEList
 import com.typesafe.scalalogging.LazyLogging
-import in.handyman.dsl.Expression
-import in.handyman.dsl.impl.ExpressionImpl
 import in.handyman.HandymanException
+import in.handyman.dsl.{Expression, RestPart}
+import in.handyman.util.ParameterisationEngine
+import org.eclipse.emf.common.util.BasicEList
+import org.eclipse.emf.ecore.util.{EDataTypeEList, EObjectContainmentEList}
+
+import java.lang.reflect.{InvocationHandler, Method, Proxy}
 
 object CommandProxy extends LazyLogging {
   //val eList = classOf[EList[String]].getName

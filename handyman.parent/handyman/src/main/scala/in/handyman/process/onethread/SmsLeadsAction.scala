@@ -1,18 +1,15 @@
 package in.handyman.process.onethread
 
 import com.typesafe.scalalogging.LazyLogging
-import in.handyman.command.Context
-import in.handyman.command.CommandProxy
-import in.handyman.util.ParameterisationEngine
-import in.handyman.util.ResourceAccess
-import org.apache.http.impl.client.HttpClientBuilder
-import org.apache.http.client.methods.HttpGet
-import java.net.URLEncoder
-import org.apache.commons.text.StrSubstitutor
-import org.slf4j.MarkerFactory
 import in.handyman.audit.AuditService
-import java.util.concurrent.atomic.AtomicInteger
+import in.handyman.command.{CommandProxy, Context}
+import in.handyman.util.{ParameterisationEngine, ResourceAccess}
+import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.nio.client.HttpAsyncClients
+import org.slf4j.MarkerFactory
+
+import java.net.URLEncoder
+import java.util.concurrent.atomic.AtomicInteger
 
 //https://hc.apache.org/httpcomponents-asyncclient-ga/quickstart.html
 class SmsLeadsAction extends in.handyman.command.Action with LazyLogging {
