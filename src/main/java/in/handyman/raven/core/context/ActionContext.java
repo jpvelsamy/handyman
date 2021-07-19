@@ -3,7 +3,7 @@ package in.handyman.raven.core.context;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import in.handyman.raven.core.process.ProcessStatus;
-import in.handyman.raven.core.util.UniqueID;
+import in.handyman.raven.util.UniqueID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

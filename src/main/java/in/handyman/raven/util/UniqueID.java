@@ -1,4 +1,4 @@
-package in.handyman.raven.core.util;
+package in.handyman.raven.util;
 
 import java.net.NetworkInterface;
 import java.security.SecureRandom;

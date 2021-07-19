@@ -1,4 +1,4 @@
-package in.handyman.raven.core.util;
+package in.handyman.raven.util;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

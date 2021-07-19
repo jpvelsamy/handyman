@@ -33,11 +33,12 @@ catchClause:
 ;
 
 action:
-	(copyData
+	(abort
+	|assign
+    |callProcess
+	|copyData
 	|loadCsv
-	|callProcess
-	|transform
-	|abort)
+	|transform)
 ;
 
 copyData:
@@ -77,6 +78,14 @@ callProcess:
 	'{'
 	value=STRING
 	'}' 'on-condition' condition=expression;
+
+
+assign:
+	'assign' 'as' name=STRING 'source' source=STRING 'using'
+	'{'
+		value=STRING
+	'}' 'on-condition' condition=expression
+;
 
 
 expression :'if' (lhs=STRING operator=Operator rhs=STRING);

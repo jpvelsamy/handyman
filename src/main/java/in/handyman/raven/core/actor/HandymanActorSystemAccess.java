@@ -4,7 +4,7 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import in.handyman.raven.core.audit.AuditPayload;
-import in.handyman.raven.core.util.UniqueID;
+import in.handyman.raven.util.UniqueID;
 
 public class HandymanActorSystemAccess {
 

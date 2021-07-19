@@ -5,12 +5,13 @@ import com.zaxxer.hikari.HikariDataSource;
 import in.handyman.raven.core.audit.AuditService;
 import in.handyman.raven.core.connection.ResourceAccess;
 import in.handyman.raven.core.context.ActionContext;
-import in.handyman.raven.core.util.ExceptionUtil;
-import in.handyman.raven.core.util.UniqueID;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.LambdaAutowire;
 import in.handyman.raven.lambda.LambdaExecution;
 import in.handyman.raven.lib.model.Transform;
+import in.handyman.raven.util.CommonQueryUtil;
+import in.handyman.raven.util.ExceptionUtil;
+import in.handyman.raven.util.UniqueID;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.MarkerManager;
 
@@ -49,36 +50,32 @@ public class TransformAction implements LambdaExecution {
         try (final Connection connection = hikariDataSource.getConnection()) {
             connection.setAutoCommit(false);
             for (String givenQuery : context.getValue()) {
-                var sqlWithoutQuotes = givenQuery.replaceAll("\"", "");
-                var sqlList = sqlWithoutQuotes.split(";");
-                for (var sql : sqlList) {
-                    final String sqlToExecute = sql.trim();
-                    if (!sqlToExecute.isEmpty()) {
-                        log.info("Transform with id:{}, executing script {}", actionContext.getProcessId(), givenQuery);
-                        final Long statementId = UniqueID.getId();
-                        AuditService.insertStatementAudit(statementId, actionContext.getLambdaId(),
-                                actionContext.getName(), actionContext.getProcessName());
-                        try (final Statement stmt = connection.createStatement()) {
-                            var rowCount = stmt.executeUpdate(sqlToExecute);
-                            var warnings = ExceptionUtil.completeSQLWarning(stmt.getWarnings());
-                            detailMap.put(sqlToExecute + ".count", rowCount);
-                            detailMap.put(sqlToExecute + ".stmtCount", stmt.getUpdateCount());
-                            detailMap.put(sqlToExecute + ".warnings", warnings);
-                            AuditService.updateStatementAudit(statementId, rowCount, 0, sql, 1);
-                            log.info(aMarker, "Transform id# {}, executed script {} rows returned {}", statementId.toString(), sqlToExecute, rowCount);
-                            stmt.clearWarnings();
-                        } catch (SQLSyntaxErrorException ex) {
-                            log.error(aMarker, "Stopping execution, General Error executing sql for {} with for campaign {}", sql, ex);
-                            detailMap.put(sqlToExecute + ".exception", ExceptionUtil.toString(ex));
-                            throw new HandymanException("Process failed", ex);
-                        } catch (SQLException ex) {
-                            log.error(aMarker, "Continuing to execute, even though SQL Error executing sql for {} ", sql, ex);
-                            detailMap.put(sqlToExecute + ".exception", ExceptionUtil.toString(ex));
-                        } catch (Throwable ex) {
-                            log.error(aMarker, "Stopping execution, General Error executing sql for {} with for campaign {}", sql, ex);
-                            detailMap.put(sqlToExecute + ".exception", ExceptionUtil.toString(ex));
-                            throw new HandymanException("Process failed", ex);
-                        }
+                var sqlList = CommonQueryUtil.getFormattedQuery(givenQuery);
+                for (var sqlToExecute : sqlList) {
+                    log.info("Transform with id:{}, executing script {}", actionContext.getProcessId(), givenQuery);
+                    final Long statementId = UniqueID.getId();
+                    AuditService.insertStatementAudit(statementId, actionContext.getLambdaId(),
+                            actionContext.getName(), actionContext.getProcessName());
+                    try (final Statement stmt = connection.createStatement()) {
+                        var rowCount = stmt.executeUpdate(sqlToExecute);
+                        var warnings = ExceptionUtil.completeSQLWarning(stmt.getWarnings());
+                        detailMap.put(sqlToExecute + ".count", rowCount);
+                        detailMap.put(sqlToExecute + ".stmtCount", stmt.getUpdateCount());
+                        detailMap.put(sqlToExecute + ".warnings", warnings);
+                        AuditService.updateStatementAudit(statementId, rowCount, 0, sqlToExecute, 1);
+                        log.info(aMarker, "Transform id# {}, executed script {} rows returned {}", statementId.toString(), sqlToExecute, rowCount);
+                        stmt.clearWarnings();
+                    } catch (SQLSyntaxErrorException ex) {
+                        log.error(aMarker, "Stopping execution, General Error executing sql for {} with for campaign {}", sqlToExecute, ex);
+                        detailMap.put(sqlToExecute + ".exception", ExceptionUtil.toString(ex));
+                        throw new HandymanException("Process failed", ex);
+                    } catch (SQLException ex) {
+                        log.error(aMarker, "Continuing to execute, even though SQL Error executing sql for {} ", sqlToExecute, ex);
+                        detailMap.put(sqlToExecute + ".exception", ExceptionUtil.toString(ex));
+                    } catch (Throwable ex) {
+                        log.error(aMarker, "Stopping execution, General Error executing sql for {} with for campaign {}", sqlToExecute, ex);
+                        detailMap.put(sqlToExecute + ".exception", ExceptionUtil.toString(ex));
+                        throw new HandymanException("Process failed", ex);
                     }
                 }
                 connection.commit();
