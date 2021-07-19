@@ -141,16 +141,16 @@ public class AuditService {
         throw new HandymanException("Statement Audit update failed");
     }
 
-    public Integer insertBatchAudit(final Integer statementId, final String actionName, final Integer instanceId, final Integer rowsProcessed, final Integer timeTaken) {
+    public static Integer insertBatchAudit(final Long statementId, final String actionName, final Long instanceId, final Integer rowsProcessed, final Long timeTaken) {
         log.info("Insert for Batch #{} for statement #{} for actionId# {}", statementId, actionName, instanceId);
         try (final Connection connection = DATA_SOURCE.getConnection()) {
             try (final PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SPW_AUDIT_BATCH_AUDIT,
                     Statement.RETURN_GENERATED_KEYS)) {
-                preparedStatement.setInt(1, instanceId);
+                preparedStatement.setLong(1, instanceId);
                 preparedStatement.setString(2, actionName);
-                preparedStatement.setInt(3, statementId);
+                preparedStatement.setLong(3, statementId);
                 preparedStatement.setInt(4, rowsProcessed);
-                preparedStatement.setInt(5, timeTaken);
+                preparedStatement.setLong(5, timeTaken);
                 preparedStatement.executeUpdate();
                 try (final ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
                     resultSet.next();

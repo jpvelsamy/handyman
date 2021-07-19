@@ -51,7 +51,6 @@ public class AssignAction implements LambdaExecution {
         final HikariDataSource hikariDataSource = ResourceAccess.rdbmsConn(dbSrc);
         final ObjectNode detailMap = actionContext.getDetailMap();
         try (final Connection connection = hikariDataSource.getConnection()) {
-            connection.setAutoCommit(false);
             final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(context.getValue());
             for (var sqlToExecute : formattedQuery) {
                 log.info(aMarker, "Execution query sql#{} on db=#{}", sqlToExecute, dbSrc);
