@@ -34,7 +34,7 @@ public class LambdaGeneration {
     private static final String MAIN_JAVA = "src/main/java/";
     private static final String ACTION_IMPL = "Action";
     //TODO make it dynamic
-    private static final Set<String> EXCLUDE_ACTION = Set.of("Action", "Expression", "TryClause", "CatchClause", "FinallyClause");
+    private static final Set<String> EXCLUDE_ACTION = Set.of("Action", "Expression", "TryClause", "CatchClause", "FinallyClause", "Process");
 
     public void generate(final Set<String> givenActions, final List<Class<?>> classes, final String modelTargetPackage, final String executionTargetPackage) {
         final Set<String> actions = givenActions.stream()

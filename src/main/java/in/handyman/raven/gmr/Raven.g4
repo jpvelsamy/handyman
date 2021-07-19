@@ -58,12 +58,11 @@ transform:
 	;
 
 loadCsv:
-	'loadcsv' 'as' name= STRING 'from' source= STRING 'to' to= STRING 'with'  delim= STRING 'with-fetch-batch-size'
-	 fetchBatchSize=NON_ZERO_DIGIT 'with-write-batch-size' writeBatchSize=NON_ZERO_DIGIT 'using'
+	'loadcsv' 'as' name=STRING 'pid' pid=STRING 'from' source=STRING 'to' to=STRING 'with' delim=STRING 'by-batch'
+	limit=STRING 'using'
 	'{'
-		value=STRING
-	'}' 'on-condition' condition=expression 'fielding' writeThreadCount=NON_ZERO_DIGIT
-	;
+	value=STRING
+	'}' 'on-condition' condition=expression;
 
 abort:
 	'abort' 'as' name=STRING
