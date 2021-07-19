@@ -84,7 +84,6 @@ public class ProcessExecutor {
             if (actionExecutionContextMap.containsKey(lambdaName) && actionExecutionMap.containsKey(lambdaName)) {
                 final ActionContext actionContext = ActionContext.builder()
                         .lambdaName(lambdaName)
-                        .status(ProcessStatus.STARTED)
                         .processId(processContext.getProcessId())
                         .processName(processContext.getProcessName())
                         .context(processContext.getContext())

@@ -30,7 +30,7 @@ public class HandymanApplication extends Application<HandymanConfiguration> {
     }
 
     @Override
-    public void run(final HandymanConfiguration configuration, final Environment environment) throws Exception {
+    public void run(final HandymanConfiguration configuration, final Environment environment) {
         // add your resources as usual
         environment.jersey().register(new HandymanResource());
     }
