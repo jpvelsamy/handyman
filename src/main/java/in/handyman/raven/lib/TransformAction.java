@@ -41,7 +41,7 @@ public class TransformAction implements LambdaExecution {
     }
 
     @Override
-    public void execute() throws Exception {
+    public void execute() {
         final String dbSrc = context.getOn();
         log.info("Transform action input variables id: {}, name: {}, source-database: {} ", actionContext.getLambdaId(), context.getName(), dbSrc);
         log.info("Sql input post parameter ingestion \n {}", context.getValue());

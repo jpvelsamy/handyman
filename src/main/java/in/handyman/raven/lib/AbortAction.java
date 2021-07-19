@@ -27,14 +27,14 @@ public class AbortAction implements LambdaExecution {
     }
 
     @Override
-    public void execute() throws Exception {
+    public void execute() {
         log.info(aMarker, "Abort action id#{}, name#{}, calledProcess#{}, message#{}", actionContext.getLambdaId(), actionContext.getName(),
                 actionContext.getProcessName(), context.getValue());
         throw new AbortException(context.getValue());
     }
 
     @Override
-    public boolean executeIf() throws Exception {
+    public boolean executeIf() {
         final Boolean condition = context.getCondition();
         log.info(aMarker, "Completed evaluation to execute id#{} actionId#{}, name#{}, expression#{}",
                 actionContext.getProcessId(), actionContext.getLambdaId(),

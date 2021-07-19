@@ -20,10 +20,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
@@ -191,7 +189,7 @@ public class CopyDataAction implements LambdaExecution {
     }
 
     @Override
-    public boolean executeIf() throws Exception {
+    public boolean executeIf() {
         return false;
     }
 }
