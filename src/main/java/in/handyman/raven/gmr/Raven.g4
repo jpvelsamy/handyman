@@ -37,6 +37,8 @@ action:
 	|assign
     |callProcess
 	|copyData
+	|fbFormDownload
+	|fbLead
 	|loadCsv
 	|transform)
 ;
@@ -81,6 +83,21 @@ callProcess:
 
 assign:
 	'assign' 'as' name=STRING 'source' source=STRING 'using'
+	'{'
+		value=STRING
+	'}' 'on-condition' condition=expression
+;
+
+fbLead:
+	'fblc' 'as' name=STRING 'secured-by' accessToken=STRING 'with-key' appSecret=STRING 'through-user' accountId=STRING 'for-campaign' campaignId=STRING 'into' target=STRING 'using'
+	'{'
+		value=STRING
+	'}' 'on-condition' condition=expression
+;
+
+
+fbFormDownload:
+	'fbfd' 'as' name=STRING 'secured-by' accessToken=STRING 'with-key' appSecret=STRING 'through-user' accountId=STRING 'for-form' formId=STRING 'into' target=STRING 'using'
 	'{'
 		value=STRING
 	'}' 'on-condition' condition=expression
