@@ -1,0 +1,30 @@
+process "cub.test.transform.callback"
+
+{
+
+	try {
+
+			transform as "test audit entry" on "${cub_eval}" using {"
+
+				INSERT INTO test (id,start,purpose) VALUES (${process-id},NOW(),'testing');
+
+			"} on-condition if "true"=="true"
+
+			transform as "test audit entry" on "${cub_eval}" using {"
+
+				UPDATE test SET end = NOW();
+
+			"} on-condition if "true"=="true"
+
+
+	}
+
+	catch {
+
+	}
+
+	finally {
+
+	}
+
+}

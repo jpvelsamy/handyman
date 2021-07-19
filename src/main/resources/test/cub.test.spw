@@ -1,0 +1,42 @@
+process "cub.test"
+
+{
+	
+	try {
+			
+			transform as "test audit entry" on "${cub_eval}" using {"
+			
+				INSERT INTO test (id,start,purpose) VALUES (${process-id},NOW(),'testing');
+			
+			"} on-condition if "true"=="true"
+			
+			
+			callprocess as "call for loadcsv"
+			with-target "cub.test.loadcsv"
+			from-file "Example.raven"
+			using "${cub_eval}"
+			for-every {"
+			
+				SELECT ${process-id} as incoming_id;	
+				
+			"} on-condition if "true"=="true"	
+			
+			
+			transform as "test audit entry" on "${cub_eval}" using {"
+			
+				UPDATE test SET end = NOW();
+			
+			"} on-condition if "true"=="true"
+			
+
+	}
+	
+	catch {
+
+	}
+
+	finally {
+
+	}
+
+} 
