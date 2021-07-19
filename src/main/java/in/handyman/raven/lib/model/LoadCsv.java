@@ -20,19 +20,17 @@ import lombok.NoArgsConstructor;
 public class LoadCsv implements Lambda {
   private String name;
 
+  private String pid;
+
   private String source;
 
   private String to;
 
   private String delim;
 
-  private String fetchBatchSize;
-
-  private String writeBatchSize;
+  private String limit;
 
   private String value;
 
   private Boolean condition;
-
-  private String writeThreadCount;
 }
