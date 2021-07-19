@@ -28,6 +28,14 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Action/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Dsl.ecore#//Action/condition"/>
     </genClasses>
+    <genClasses ecoreClass="Dsl.ecore#//Spawnprocess">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Spawnprocess/target"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Spawnprocess/source"/>
+    </genClasses>
+    <genClasses ecoreClass="Dsl.ecore#//Dogleg">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Dogleg/inheritContext"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Dsl.ecore#//Dogleg/processList"/>
+    </genClasses>
     <genClasses ecoreClass="Dsl.ecore#//ExecJava">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//ExecJava/classFqn"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//ExecJava/dbSrc"/>
@@ -163,6 +171,13 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Callprocess/datasource"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Callprocess/value"/>
     </genClasses>
+    <genClasses ecoreClass="Dsl.ecore#//Forkprocess">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Forkprocess/target"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Forkprocess/source"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Forkprocess/datasource"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Forkprocess/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Forkprocess/forkBatchSize"/>
+    </genClasses>
     <genClasses ecoreClass="Dsl.ecore#//Updatedaudit">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Updatedaudit/logsink"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Updatedaudit/datasource"/>
@@ -183,6 +198,9 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Copydata/source"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Copydata/to"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Copydata/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Copydata/writeThreadCount"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Copydata/fetchBatchSize"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Copydata/writeBatchSize"/>
     </genClasses>
     <genClasses ecoreClass="Dsl.ecore#//WriteCsv">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//WriteCsv/source"/>
@@ -194,11 +212,18 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//LoadCsv/source"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//LoadCsv/to"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//LoadCsv/delim"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//LoadCsv/fetchBatchSize"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//LoadCsv/writeBatchSize"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//LoadCsv/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//LoadCsv/writeThreadCount"/>
     </genClasses>
     <genClasses ecoreClass="Dsl.ecore#//Transform">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Transform/on"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Transform/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Dsl.ecore#//StartProcess">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//StartProcess/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//StartProcess/target"/>
     </genClasses>
     <genClasses ecoreClass="Dsl.ecore#//Expression">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Dsl.ecore#//Expression/lhs"/>

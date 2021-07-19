@@ -25,7 +25,9 @@ class TransformAction extends in.handyman.command.Action with LazyLogging {
     val name = transform.getName
     val id = context.getValue("process-id")
     val sqlList = transform.getValue
-    logger.info(aMarker, "Transform id#{}, name#{}, dbSrc#{}, sqlList#{}", id, name, dbSrc)
+    
+    logger.info(s"Transform action input variables id:$id,name: $name, source-database:$dbSrc ")
+    logger.info(s"Sql input post parameter ingestion \n $sqlList")
     detailMap.put("dbSrc", dbSrc)
 
     val conn = ResourceAccess.rdbmsConn(dbSrc)
@@ -39,7 +41,8 @@ class TransformAction extends in.handyman.command.Action with LazyLogging {
         val sqlList = sqlWithoutQuotes.split(";")
         sqlList.foreach { sql =>
           if (!sql.trim.isEmpty()) {
-            logger.info(aMarker, "Transform id#{}, executing script {}", id, sql.trim)
+            val sqlToExecute = sql.trim
+            logger.info(s"Transform with id:$id, executing script $sqlToExecute")
             val statementId = AuditService.insertStatementAudit(actionId, "transform->"+name, context.getValue("process-name"))
             try {
               val rowCount = stmt.executeUpdate(sql.trim)

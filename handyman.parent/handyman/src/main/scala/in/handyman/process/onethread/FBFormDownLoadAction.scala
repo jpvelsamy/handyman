@@ -19,6 +19,7 @@ import in.handyman.util.ExceptionUtil
 import org.slf4j.MarkerFactory
 import com.facebook.ads.sdk.LeadgenForm
 import in.handyman.audit.AuditService
+import com.facebook.ads.sdk.APIConfig
 
 /**
  * //https://developers.facebook.com/docs/marketing-api/guides/lead-ads/retrieving/v2.9
@@ -58,26 +59,23 @@ class FBFormDownloadAction extends in.handyman.command.Action with LazyLogging {
   val detailMap = new java.util.HashMap[String, String]
   val fbMarkerText = "FB-LEAD-INGESTION";
   val fbMarker = MarkerFactory.getMarker(fbMarkerText);
-  
-  def execute(context: in.handyman.command.Context, action: in.handyman.dsl.Action, actionId:Integer): in.handyman.command.Context = {
-    
+
+  def execute(context: in.handyman.command.Context, action: in.handyman.dsl.Action, actionId: Integer): in.handyman.command.Context = {
 
     val fbAsIs: in.handyman.dsl.FBFormDownload = action.asInstanceOf[in.handyman.dsl.FBFormDownload]
     val fb: in.handyman.dsl.FBFormDownload = CommandProxy.createProxy(fbAsIs, classOf[in.handyman.dsl.FBFormDownload], context)
-    
+
     val accessToken = fb.getAccessToken
     val appSecret = fb.getAppSecret
     val accountId = fb.getAccountId
-    
-    
+
     val formIdList = {
       if (fb.getFormId.contains(","))
         fb.getFormId.split(",")
       else
         Array(fb.getFormId)
     }
-    
-    
+
     val fieldsToSelect = fb.getValue
     val fieldArray = fieldsToSelect.split(",")
     val dbTarget = fb.getTarget
@@ -85,14 +83,16 @@ class FBFormDownloadAction extends in.handyman.command.Action with LazyLogging {
     val tgtConn = ResourceAccess.rdbmsConn(dbTarget)
     val stmt = tgtConn.prepareStatement(InsertSql)
 
-    val fbContext = new APIContext(accessToken, appSecret);
+    //val fbContext = new APIContext(accessToken, appSecret);
+    val fbContext = new APIContext(APIConfig.DEFAULT_API_BASE, APIConfig.DEFAULT_VIDEO_API_BASE, "v6.0", accessToken,
+      appSecret, "455366335002918", true).enableDebug(true);
     val fbAccount = new AdAccount(accountId, fbContext)
     val nameCleanup = ConfigurationService.getGlobalconfig().get("cleanSpecialChar").getOrElse("false")
-    val incomingLeadCount:AtomicInteger=new AtomicInteger
-    val insertedLeadCount:AtomicInteger = new AtomicInteger
-    
-    val statementId = AuditService.insertStatementAudit(actionId, "fbform->"+name, context.getValue("process-name"))
-    logger.info(fbMarker, "Form id list as is {} with account id {} and with db {}" , formIdList, accountId, dbTarget)
+    val incomingLeadCount: AtomicInteger = new AtomicInteger
+    val insertedLeadCount: AtomicInteger = new AtomicInteger
+
+    val statementId = AuditService.insertStatementAudit(actionId, "fbform->" + name, context.getValue("process-name"))
+    logger.info(fbMarker, "Form id list as is {} with account id {} and with db {}", formIdList, accountId, dbTarget)
     formIdList.foreach {
       formId =>
         {
@@ -101,131 +101,122 @@ class FBFormDownloadAction extends in.handyman.command.Action with LazyLogging {
           //Need to know how to use the lamba and keep my life simple
           //val leadList = ad.getLeads.requestAllFields().execute();
           //.setParam(\"filtering\", \"[{\\"field\\":\\"time_created\\",\\"operator\\":\\"GREATER_THAN\\",\\"value\\":1546549613}]\")
-              val leadList = form.getLeads.requestAllFields().execute();
-              if (!leadList.isEmpty()) {
+          val leadList = form.getLeads.requestAllFields().execute();
+          if (!leadList.isEmpty()) {
 
-                val leadListIter = leadList.withAutoPaginationIterator(true).iterator()
-                logger.info(fbMarker, "Iterating through campaign {} for account {}", formId, accountId)
-                
-                val leadCounter: AtomicInteger = new AtomicInteger;
-                while (leadListIter.hasNext()) {
+            val leadListIter = leadList.withAutoPaginationIterator(true).iterator()
+            logger.info(fbMarker, "Iterating through campaign {} for account {}", formId, accountId)
 
-                  val lead = leadListIter.next
-                  val createdAt = lead.getFieldCreatedTime
-                  
-                  
-                  incomingLeadCount.incrementAndGet()
-                  val leadSourceMeta = "ad_id=" + lead.getFieldAdId + ",<br/> ad_name=" + lead.getFieldAdName + "<br/>, adset_id=" + lead.getFieldAdsetId +
-                    "<br/>, adset_name=" + lead.getFieldAdsetName + "<br/>, campaign_id=" + lead.getFieldCampaignId + "<br/>,form_id=" +
-                    lead.getFieldFormId + "<br/>,id=" + lead.getFieldId + "<br/>, dailybudget=" + 0
-                  //ad.getFieldAdset.getFieldDailyBudget - will try later
+            val leadCounter: AtomicInteger = new AtomicInteger;
+            while (leadListIter.hasNext()) {
 
-                  val userGenData = lead.getFieldFieldData
+              val lead = leadListIter.next
+              val createdAt = lead.getFieldCreatedTime
 
-                  val intentMeta = new StringBuilder
-                  val myLead: Lead = new Lead
-                  if (!userGenData.isEmpty) {
-                    val usergeniter = userGenData.listIterator
+              incomingLeadCount.incrementAndGet()
+              val leadSourceMeta = "ad_id=" + lead.getFieldAdId + ",<br/> ad_name=" + lead.getFieldAdName + "<br/>, adset_id=" + lead.getFieldAdsetId +
+                "<br/>, adset_name=" + lead.getFieldAdsetName + "<br/>, campaign_id=" + lead.getFieldCampaignId + "<br/>,form_id=" +
+                lead.getFieldFormId + "<br/>,id=" + lead.getFieldId + "<br/>, dailybudget=" + 0
+              //ad.getFieldAdset.getFieldDailyBudget - will try later
 
-                    while (usergeniter.hasNext()) 
-                    {
-                      val userData = usergeniter.next()
-                      val name = userData.getFieldName.trim
-                      val value = userData.getFieldValues.toArray().mkString(",")
-                      if (name.equals("email")) 
-                      {
-                        myLead.setEmail(value)
-                      } else if (name.equals("full_name")) 
-                      {
-                          val leadName = {
-                            if(nameCleanup.equalsIgnoreCase("true"))
-                              cleanTextContent(value)
-                            else
-                              value
-                          }
-                          
-                          val existingVal = myLead.getFullName
-                          if(existingVal!=null)
-                            myLead.setFullName(existingVal+"/"+value)
-                          else
-                            myLead.setFullName(leadName)
-                      } else if (name.toLowerCase().contains("name")) 
-                      {
-                          val leadName = {
-                            if(nameCleanup.equalsIgnoreCase("true"))
-                              cleanTextContent(value)
-                            else
-                              value
-                          }
-                          val existingVal = myLead.getFullName
-                          if(existingVal!=null)
-                            myLead.setFullName(existingVal+"/"+value)        
-                          else
-                            myLead.setFullName(leadName)
-                      }
-                      else if (name.equals("city")) {
-                        myLead.setCity(value)
-                      } else if (name.equals("company_name")) 
-                      {
-                        myLead.setCompany(value)
-                      } else if (name.equals("phone_number")) {
-                        val prunedValue = {
-                          if (value.length > 10)
-                            value.substring(value.length - 10, value.length)
-                          else
-                            value
-                        }
-                        myLead.setMobile(prunedValue)
-                      } else if (name.equals("job_title")) {
-                        myLead.setProfession(value)
-                      } else {
-                        intentMeta.append(name).append("=").append(value).append("\n")
-                      }
-                      usergeniter.remove
+              val userGenData = lead.getFieldFieldData
+
+              val intentMeta = new StringBuilder
+              val myLead: Lead = new Lead
+              if (!userGenData.isEmpty) {
+                val usergeniter = userGenData.listIterator
+
+                while (usergeniter.hasNext()) {
+                  val userData = usergeniter.next()
+                  val name = userData.getFieldName.trim
+                  val value = userData.getFieldValues.toArray().mkString(",")
+                  if (name.equals("email")) {
+                    myLead.setEmail(value)
+                  } else if (name.equals("full_name")) {
+                    val leadName = {
+                      if (nameCleanup.equalsIgnoreCase("true"))
+                        cleanTextContent(value)
+                      else
+                        value
                     }
-                  }
-                  stmt.setString(EMAIL, myLead.getEmail)
-                  stmt.setString(NAME, myLead.getFullName)
-                  stmt.setString(TARGETED_CITY, myLead.getCity)
-                  stmt.setString(LOCALITY, myLead.getCity)
-                  stmt.setString(COMPANY, myLead.getCompany)
-                  stmt.setString(MOBILE, myLead.getMobile)
-                  stmt.setString(ALT_MOBILE, myLead.getMobile)
-                  stmt.setString(PROFESSION, myLead.getProfession)
-                  stmt.setString(INTENT_METADATA, intentMeta.toString)
-                  stmt.setString(LEADSOURCE_METADATA, leadSourceMeta)
-                  stmt.setString(LEADSOURCE_CAMPAIGN, lead.getFieldCampaignName)
-                  stmt.setInt(BUDGET, 0)
-                  stmt.setInt(COA_APROX, 0)
-                  stmt.setString(LEADSOURCE_CHANNEL, "FB")
-                  stmt.setString(LEADGEN_DATE, createdAt)
-                  val processid = context.getValue("process-id")
-                  stmt.setInt(BATCH_ID, Integer.parseInt(processid))
-                  try {
-                    logger.info(fbMarker, "Adding lead with name {} , phone {}, email {}, location {}",myLead.fullName, myLead.mobile, myLead.email, myLead.city)
-                    stmt.executeUpdate
-                    tgtConn.commit
-                    insertedLeadCount.incrementAndGet()
-                  } catch {
 
-                    case ex: SQLException => {
-                      logger.error("Error inserting name {} , phone {}, email {}, location {} with campaign {} and conter {}",myLead.fullName, myLead.mobile, myLead.email, myLead.city, formId, leadCounter.incrementAndGet.toString, ex)
-                      detailMap.put("exception", ExceptionUtil.completeStackTraceex(ex))
+                    val existingVal = myLead.getFullName
+                    if (existingVal != null)
+                      myLead.setFullName(existingVal + "/" + value)
+                    else
+                      myLead.setFullName(leadName)
+                  } else if (name.toLowerCase().contains("name")) {
+                    val leadName = {
+                      if (nameCleanup.equalsIgnoreCase("true"))
+                        cleanTextContent(value)
+                      else
+                        value
                     }
-                    case ex: Throwable => {
-                      logger.error("Error inserting name {} , phone {}, email {}, location {} with campaign {} and conter {}",myLead.fullName, myLead.mobile, myLead.email, myLead.city, formId, leadCounter.incrementAndGet.toString, ex)
-                      detailMap.put("exception", ExceptionUtil.completeStackTraceex(ex))
-                    }                    
+                    val existingVal = myLead.getFullName
+                    if (existingVal != null)
+                      myLead.setFullName(existingVal + "/" + value)
+                    else
+                      myLead.setFullName(leadName)
+                  } else if (name.equals("city")) {
+                    myLead.setCity(value)
+                  } else if (name.equals("company_name")) {
+                    myLead.setCompany(value)
+                  } else if (name.equals("phone_number")) {
+                    val prunedValue = {
+                      if (value.length > 10)
+                        value.substring(value.length - 10, value.length)
+                      else
+                        value
+                    }
+                    myLead.setMobile(prunedValue)
+                  } else if (name.equals("job_title")) {
+                    myLead.setProfession(value)
+                  } else {
+                    intentMeta.append(name).append("=").append(value).append("\n")
                   }
-                  detailMap.put(formId,leadCounter.intValue().toString)
-                } //leadList.iterator().hasNext()
-              } //!leadList.isEmpty()
-           
-         
-          
+                  usergeniter.remove
+                }
+              }
+              stmt.setString(EMAIL, myLead.getEmail)
+              stmt.setString(NAME, myLead.getFullName)
+              stmt.setString(TARGETED_CITY, myLead.getCity)
+              stmt.setString(LOCALITY, myLead.getCity)
+              stmt.setString(COMPANY, myLead.getCompany)
+              stmt.setString(MOBILE, myLead.getMobile)
+              stmt.setString(ALT_MOBILE, myLead.getMobile)
+              stmt.setString(PROFESSION, myLead.getProfession)
+              stmt.setString(INTENT_METADATA, intentMeta.toString)
+              stmt.setString(LEADSOURCE_METADATA, leadSourceMeta)
+              stmt.setString(LEADSOURCE_CAMPAIGN, lead.getFieldCampaignName)
+              stmt.setInt(BUDGET, 0)
+              stmt.setInt(COA_APROX, 0)
+              stmt.setString(LEADSOURCE_CHANNEL, "FB")
+              stmt.setString(LEADGEN_DATE, createdAt)
+              val processid = context.getValue("process-id")
+              stmt.setInt(BATCH_ID, Integer.parseInt(processid))
+              try {
+                logger.info(fbMarker, "Adding lead with name {} , phone {}, email {}, location {}", myLead.fullName, myLead.mobile, myLead.email, myLead.city)
+                stmt.executeUpdate
+                tgtConn.commit
+                insertedLeadCount.incrementAndGet()
+              } catch {
+
+                case ex: SQLException => {
+                  logger.error("Error inserting name {} , phone {}, email {}, location {} with campaign {} and conter {}", myLead.fullName, myLead.mobile, myLead.email, myLead.city, formId, leadCounter.incrementAndGet.toString, ex)
+                  detailMap.put("exception", ExceptionUtil.completeStackTraceex(ex))
+                }
+                case ex: Throwable => {
+                  logger.error("Error inserting name {} , phone {}, email {}, location {} with campaign {} and conter {}", myLead.fullName, myLead.mobile, myLead.email, myLead.city, formId, leadCounter.incrementAndGet.toString, ex)
+                  detailMap.put("exception", ExceptionUtil.completeStackTraceex(ex))
+                }
+              }
+              detailMap.put(formId, leadCounter.intValue().toString)
+            } //leadList.iterator().hasNext()
+          } //!leadList.isEmpty()
+
         } //form closure
     } //form iteration
-    
+
     try {}
     finally {
       stmt.close
@@ -235,7 +226,7 @@ class FBFormDownloadAction extends in.handyman.command.Action with LazyLogging {
       detailMap.put("fieldsToSelect", fieldsToSelect)
       detailMap.put("fieldArray", fieldArray.toString())
       detailMap.put("dbTarget", dbTarget)
-      detailMap.put("nameCleanup",nameCleanup)
+      detailMap.put("nameCleanup", nameCleanup)
       detailMap.put("incomingLeadCount", incomingLeadCount.intValue.toString)
       detailMap.put("insertedLeadCount", insertedLeadCount.intValue.toString)
       AuditService.updateStatementAudit(statementId, insertedLeadCount.intValue(), incomingLeadCount.intValue(), fieldsToSelect, 1)
@@ -244,35 +235,35 @@ class FBFormDownloadAction extends in.handyman.command.Action with LazyLogging {
   }
 
   def executeIf(context: in.handyman.command.Context, action: in.handyman.dsl.Action): Boolean = {
-     val fbAsIs: in.handyman.dsl.FBFormDownload = action.asInstanceOf[in.handyman.dsl.FBFormDownload]
+    val fbAsIs: in.handyman.dsl.FBFormDownload = action.asInstanceOf[in.handyman.dsl.FBFormDownload]
     val fb: in.handyman.dsl.FBFormDownload = CommandProxy.createProxy(fbAsIs, classOf[in.handyman.dsl.FBFormDownload], context)
-    val expression:in.handyman.dsl.Expression = fb.getCondition
-     try {
-      val output=ParameterisationEngine.doYieldtoTrue(expression)
+    val expression: in.handyman.dsl.Expression = fb.getCondition
+    try {
+      val output = ParameterisationEngine.doYieldtoTrue(expression)
       detailMap.putIfAbsent("condition-output", output.toString())
       output
     } finally {
-       if(expression!=null)
-        detailMap.putIfAbsent("condition", "LHS=" +expression.getLhs+", Operator="+expression.getOperator+", RHS="+expression.getRhs)
-        
+      if (expression != null)
+        detailMap.putIfAbsent("condition", "LHS=" + expression.getLhs + ", Operator=" + expression.getOperator + ", RHS=" + expression.getRhs)
+
     }
   }
-  
+
   //https://howtodoinjava.com/regex/java-clean-ascii-text-non-printable-chars/
-   def  cleanTextContent(text:String):String=
+  def cleanTextContent(text: String): String =
     {
-       var output=text;
+      var output = text;
       // strips off all non-ASCII characters
-      output = output.replaceAll("[^\\x00-\\x7F]", ""); 
-        // erases all the ASCII control characters
-      output = output.replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", "");       
+      output = output.replaceAll("[^\\x00-\\x7F]", "");
+      // erases all the ASCII control characters
+      output = output.replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", "");
       // removes non-printable characters from Unicode
-      output = output.replaceAll("\\p{C}", ""); 
+      output = output.replaceAll("\\p{C}", "");
       return output.trim();
     }
 
   //email	full_name	phone_number	city	company_name	job_title
-   def generateAudit(): java.util.Map[String, String] = {
+  def generateAudit(): java.util.Map[String, String] = {
     detailMap
   }
 

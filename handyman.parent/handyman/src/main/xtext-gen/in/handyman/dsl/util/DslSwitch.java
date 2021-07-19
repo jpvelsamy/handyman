@@ -9,6 +9,7 @@ import in.handyman.dsl.Callprocess;
 import in.handyman.dsl.Catch;
 import in.handyman.dsl.ClickSendSms;
 import in.handyman.dsl.Copydata;
+import in.handyman.dsl.Dogleg;
 import in.handyman.dsl.Doozle;
 import in.handyman.dsl.Dropfile;
 import in.handyman.dsl.DslPackage;
@@ -20,6 +21,7 @@ import in.handyman.dsl.Fetch;
 import in.handyman.dsl.Finally;
 import in.handyman.dsl.FirebaseDatabasePut;
 import in.handyman.dsl.FirebaseReactiveNotification;
+import in.handyman.dsl.Forkprocess;
 import in.handyman.dsl.GooglecalPUT;
 import in.handyman.dsl.GooglecontactPUT;
 import in.handyman.dsl.GooglecontactSelectAll;
@@ -29,6 +31,8 @@ import in.handyman.dsl.RestPart;
 import in.handyman.dsl.SendMail;
 import in.handyman.dsl.SlackPUT;
 import in.handyman.dsl.SmsLeadSms;
+import in.handyman.dsl.Spawnprocess;
+import in.handyman.dsl.StartProcess;
 import in.handyman.dsl.Transform;
 import in.handyman.dsl.TrelloGET;
 import in.handyman.dsl.TrelloPUT;
@@ -136,6 +140,22 @@ public class DslSwitch<T> extends Switch<T>
       {
         Action action = (Action)theEObject;
         T result = caseAction(action);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case DslPackage.SPAWNPROCESS:
+      {
+        Spawnprocess spawnprocess = (Spawnprocess)theEObject;
+        T result = caseSpawnprocess(spawnprocess);
+        if (result == null) result = caseAction(spawnprocess);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case DslPackage.DOGLEG:
+      {
+        Dogleg dogleg = (Dogleg)theEObject;
+        T result = caseDogleg(dogleg);
+        if (result == null) result = caseAction(dogleg);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -290,6 +310,14 @@ public class DslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case DslPackage.FORKPROCESS:
+      {
+        Forkprocess forkprocess = (Forkprocess)theEObject;
+        T result = caseForkprocess(forkprocess);
+        if (result == null) result = caseAction(forkprocess);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case DslPackage.UPDATEDAUDIT:
       {
         Updatedaudit updatedaudit = (Updatedaudit)theEObject;
@@ -343,6 +371,13 @@ public class DslSwitch<T> extends Switch<T>
         Transform transform = (Transform)theEObject;
         T result = caseTransform(transform);
         if (result == null) result = caseAction(transform);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case DslPackage.START_PROCESS:
+      {
+        StartProcess startProcess = (StartProcess)theEObject;
+        T result = caseStartProcess(startProcess);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -433,6 +468,38 @@ public class DslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseAction(Action object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Spawnprocess</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Spawnprocess</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseSpawnprocess(Spawnprocess object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Dogleg</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Dogleg</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseDogleg(Dogleg object)
   {
     return null;
   }
@@ -742,6 +809,22 @@ public class DslSwitch<T> extends Switch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>Forkprocess</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Forkprocess</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseForkprocess(Forkprocess object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>Updatedaudit</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -849,6 +932,22 @@ public class DslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseTransform(Transform object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Start Process</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Start Process</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseStartProcess(StartProcess object)
   {
     return null;
   }

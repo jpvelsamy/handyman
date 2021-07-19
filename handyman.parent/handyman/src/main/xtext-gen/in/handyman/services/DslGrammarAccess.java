@@ -220,22 +220,25 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cClickSendSmsParserRuleCall_6 = (RuleCall)cAlternatives.eContents().get(6);
 		private final RuleCall cUpdatedauditParserRuleCall_7 = (RuleCall)cAlternatives.eContents().get(7);
 		private final RuleCall cCallprocessParserRuleCall_8 = (RuleCall)cAlternatives.eContents().get(8);
-		private final RuleCall cFetchParserRuleCall_9 = (RuleCall)cAlternatives.eContents().get(9);
-		private final RuleCall cTrelloPUTParserRuleCall_10 = (RuleCall)cAlternatives.eContents().get(10);
-		private final RuleCall cTrelloGETParserRuleCall_11 = (RuleCall)cAlternatives.eContents().get(11);
-		private final RuleCall cRestParserRuleCall_12 = (RuleCall)cAlternatives.eContents().get(12);
-		private final RuleCall cDoozleParserRuleCall_13 = (RuleCall)cAlternatives.eContents().get(13);
-		private final RuleCall cDropfileParserRuleCall_14 = (RuleCall)cAlternatives.eContents().get(14);
-		private final RuleCall cFBCLeadParserRuleCall_15 = (RuleCall)cAlternatives.eContents().get(15);
-		private final RuleCall cFBFormDownloadParserRuleCall_16 = (RuleCall)cAlternatives.eContents().get(16);
-		private final RuleCall cSendMailParserRuleCall_17 = (RuleCall)cAlternatives.eContents().get(17);
-		private final RuleCall cGooglecontactPUTParserRuleCall_18 = (RuleCall)cAlternatives.eContents().get(18);
-		private final RuleCall cGooglecontactSelectAllParserRuleCall_19 = (RuleCall)cAlternatives.eContents().get(19);
-		private final RuleCall cAbortParserRuleCall_20 = (RuleCall)cAlternatives.eContents().get(20);
-		private final RuleCall cSmsLeadSmsParserRuleCall_21 = (RuleCall)cAlternatives.eContents().get(21);
-		private final RuleCall cFirebaseReactiveNotificationParserRuleCall_22 = (RuleCall)cAlternatives.eContents().get(22);
-		private final RuleCall cFirebaseDatabasePutParserRuleCall_23 = (RuleCall)cAlternatives.eContents().get(23);
-		private final RuleCall cExecJavaParserRuleCall_24 = (RuleCall)cAlternatives.eContents().get(24);
+		private final RuleCall cForkprocessParserRuleCall_9 = (RuleCall)cAlternatives.eContents().get(9);
+		private final RuleCall cFetchParserRuleCall_10 = (RuleCall)cAlternatives.eContents().get(10);
+		private final RuleCall cTrelloPUTParserRuleCall_11 = (RuleCall)cAlternatives.eContents().get(11);
+		private final RuleCall cTrelloGETParserRuleCall_12 = (RuleCall)cAlternatives.eContents().get(12);
+		private final RuleCall cRestParserRuleCall_13 = (RuleCall)cAlternatives.eContents().get(13);
+		private final RuleCall cDoozleParserRuleCall_14 = (RuleCall)cAlternatives.eContents().get(14);
+		private final RuleCall cDropfileParserRuleCall_15 = (RuleCall)cAlternatives.eContents().get(15);
+		private final RuleCall cFBCLeadParserRuleCall_16 = (RuleCall)cAlternatives.eContents().get(16);
+		private final RuleCall cFBFormDownloadParserRuleCall_17 = (RuleCall)cAlternatives.eContents().get(17);
+		private final RuleCall cSendMailParserRuleCall_18 = (RuleCall)cAlternatives.eContents().get(18);
+		private final RuleCall cGooglecontactPUTParserRuleCall_19 = (RuleCall)cAlternatives.eContents().get(19);
+		private final RuleCall cGooglecontactSelectAllParserRuleCall_20 = (RuleCall)cAlternatives.eContents().get(20);
+		private final RuleCall cAbortParserRuleCall_21 = (RuleCall)cAlternatives.eContents().get(21);
+		private final RuleCall cSmsLeadSmsParserRuleCall_22 = (RuleCall)cAlternatives.eContents().get(22);
+		private final RuleCall cFirebaseReactiveNotificationParserRuleCall_23 = (RuleCall)cAlternatives.eContents().get(23);
+		private final RuleCall cFirebaseDatabasePutParserRuleCall_24 = (RuleCall)cAlternatives.eContents().get(24);
+		private final RuleCall cExecJavaParserRuleCall_25 = (RuleCall)cAlternatives.eContents().get(25);
+		private final RuleCall cDoglegParserRuleCall_26 = (RuleCall)cAlternatives.eContents().get(26);
+		private final RuleCall cSpawnprocessParserRuleCall_27 = (RuleCall)cAlternatives.eContents().get(27);
 		
 		//Action:
 		//	Copydata
@@ -247,6 +250,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		//	| ClickSendSms
 		//	| Updatedaudit
 		//	| Callprocess
+		//	| Forkprocess
 		//	| Fetch
 		//	| TrelloPUT
 		//	| TrelloGET
@@ -262,12 +266,15 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		//	| SmsLeadSms
 		//	| FirebaseReactiveNotification
 		//	| FirebaseDatabasePut
-		//	| ExecJava;
+		//	| ExecJava
+		//	| Dogleg
+		//	| Spawnprocess;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//Copydata | LoadCsv | WriteCsv | Transform | GooglecalPUT | SlackPUT | ClickSendSms | Updatedaudit | Callprocess | Fetch
-		//| TrelloPUT | TrelloGET | Rest | Doozle | Dropfile | FBCLead | FBFormDownload | SendMail | GooglecontactPUT |
-		//GooglecontactSelectAll | Abort | SmsLeadSms | FirebaseReactiveNotification | FirebaseDatabasePut | ExecJava
+		//Copydata | LoadCsv | WriteCsv | Transform | GooglecalPUT | SlackPUT | ClickSendSms | Updatedaudit | Callprocess |
+		//Forkprocess | Fetch | TrelloPUT | TrelloGET | Rest | Doozle | Dropfile | FBCLead | FBFormDownload | SendMail |
+		//GooglecontactPUT | GooglecontactSelectAll | Abort | SmsLeadSms | FirebaseReactiveNotification | FirebaseDatabasePut |
+		//ExecJava | Dogleg | Spawnprocess
 		public Alternatives getAlternatives() { return cAlternatives; }
 		
 		//Copydata
@@ -297,53 +304,200 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		//Callprocess
 		public RuleCall getCallprocessParserRuleCall_8() { return cCallprocessParserRuleCall_8; }
 		
+		//Forkprocess
+		public RuleCall getForkprocessParserRuleCall_9() { return cForkprocessParserRuleCall_9; }
+		
 		//Fetch
-		public RuleCall getFetchParserRuleCall_9() { return cFetchParserRuleCall_9; }
+		public RuleCall getFetchParserRuleCall_10() { return cFetchParserRuleCall_10; }
 		
 		//TrelloPUT
-		public RuleCall getTrelloPUTParserRuleCall_10() { return cTrelloPUTParserRuleCall_10; }
+		public RuleCall getTrelloPUTParserRuleCall_11() { return cTrelloPUTParserRuleCall_11; }
 		
 		//TrelloGET
-		public RuleCall getTrelloGETParserRuleCall_11() { return cTrelloGETParserRuleCall_11; }
+		public RuleCall getTrelloGETParserRuleCall_12() { return cTrelloGETParserRuleCall_12; }
 		
 		//Rest
-		public RuleCall getRestParserRuleCall_12() { return cRestParserRuleCall_12; }
+		public RuleCall getRestParserRuleCall_13() { return cRestParserRuleCall_13; }
 		
 		//Doozle
-		public RuleCall getDoozleParserRuleCall_13() { return cDoozleParserRuleCall_13; }
+		public RuleCall getDoozleParserRuleCall_14() { return cDoozleParserRuleCall_14; }
 		
 		//Dropfile
-		public RuleCall getDropfileParserRuleCall_14() { return cDropfileParserRuleCall_14; }
+		public RuleCall getDropfileParserRuleCall_15() { return cDropfileParserRuleCall_15; }
 		
 		//FBCLead
-		public RuleCall getFBCLeadParserRuleCall_15() { return cFBCLeadParserRuleCall_15; }
+		public RuleCall getFBCLeadParserRuleCall_16() { return cFBCLeadParserRuleCall_16; }
 		
 		//FBFormDownload
-		public RuleCall getFBFormDownloadParserRuleCall_16() { return cFBFormDownloadParserRuleCall_16; }
+		public RuleCall getFBFormDownloadParserRuleCall_17() { return cFBFormDownloadParserRuleCall_17; }
 		
 		//SendMail
-		public RuleCall getSendMailParserRuleCall_17() { return cSendMailParserRuleCall_17; }
+		public RuleCall getSendMailParserRuleCall_18() { return cSendMailParserRuleCall_18; }
 		
 		//GooglecontactPUT
-		public RuleCall getGooglecontactPUTParserRuleCall_18() { return cGooglecontactPUTParserRuleCall_18; }
+		public RuleCall getGooglecontactPUTParserRuleCall_19() { return cGooglecontactPUTParserRuleCall_19; }
 		
 		//GooglecontactSelectAll
-		public RuleCall getGooglecontactSelectAllParserRuleCall_19() { return cGooglecontactSelectAllParserRuleCall_19; }
+		public RuleCall getGooglecontactSelectAllParserRuleCall_20() { return cGooglecontactSelectAllParserRuleCall_20; }
 		
 		//Abort
-		public RuleCall getAbortParserRuleCall_20() { return cAbortParserRuleCall_20; }
+		public RuleCall getAbortParserRuleCall_21() { return cAbortParserRuleCall_21; }
 		
 		//SmsLeadSms
-		public RuleCall getSmsLeadSmsParserRuleCall_21() { return cSmsLeadSmsParserRuleCall_21; }
+		public RuleCall getSmsLeadSmsParserRuleCall_22() { return cSmsLeadSmsParserRuleCall_22; }
 		
 		//FirebaseReactiveNotification
-		public RuleCall getFirebaseReactiveNotificationParserRuleCall_22() { return cFirebaseReactiveNotificationParserRuleCall_22; }
+		public RuleCall getFirebaseReactiveNotificationParserRuleCall_23() { return cFirebaseReactiveNotificationParserRuleCall_23; }
 		
 		//FirebaseDatabasePut
-		public RuleCall getFirebaseDatabasePutParserRuleCall_23() { return cFirebaseDatabasePutParserRuleCall_23; }
+		public RuleCall getFirebaseDatabasePutParserRuleCall_24() { return cFirebaseDatabasePutParserRuleCall_24; }
 		
 		//ExecJava
-		public RuleCall getExecJavaParserRuleCall_24() { return cExecJavaParserRuleCall_24; }
+		public RuleCall getExecJavaParserRuleCall_25() { return cExecJavaParserRuleCall_25; }
+		
+		//Dogleg
+		public RuleCall getDoglegParserRuleCall_26() { return cDoglegParserRuleCall_26; }
+		
+		//Spawnprocess
+		public RuleCall getSpawnprocessParserRuleCall_27() { return cSpawnprocessParserRuleCall_27; }
+	}
+	public class SpawnprocessElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "in.handyman.Dsl.Spawnprocess");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cSpawnKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Keyword cAsKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Assignment cNameAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cNameSTRINGTerminalRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
+		private final Keyword cWithTargetKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Assignment cTargetAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cTargetSTRINGTerminalRuleCall_4_0 = (RuleCall)cTargetAssignment_4.eContents().get(0);
+		private final Keyword cFromFileKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		private final Assignment cSourceAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final RuleCall cSourceSTRINGTerminalRuleCall_6_0 = (RuleCall)cSourceAssignment_6.eContents().get(0);
+		private final Keyword cOnConditionKeyword_7 = (Keyword)cGroup.eContents().get(7);
+		private final Assignment cConditionAssignment_8 = (Assignment)cGroup.eContents().get(8);
+		private final RuleCall cConditionExpressionParserRuleCall_8_0 = (RuleCall)cConditionAssignment_8.eContents().get(0);
+		
+		//Spawnprocess:
+		//	'spawn' 'as' name=STRING 'with-target' target=STRING 'from-file' source=STRING 'on-condition' condition=Expression;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//'spawn' 'as' name=STRING 'with-target' target=STRING 'from-file' source=STRING 'on-condition' condition=Expression
+		public Group getGroup() { return cGroup; }
+		
+		//'spawn'
+		public Keyword getSpawnKeyword_0() { return cSpawnKeyword_0; }
+		
+		//'as'
+		public Keyword getAsKeyword_1() { return cAsKeyword_1; }
+		
+		//name=STRING
+		public Assignment getNameAssignment_2() { return cNameAssignment_2; }
+		
+		//STRING
+		public RuleCall getNameSTRINGTerminalRuleCall_2_0() { return cNameSTRINGTerminalRuleCall_2_0; }
+		
+		//'with-target'
+		public Keyword getWithTargetKeyword_3() { return cWithTargetKeyword_3; }
+		
+		//target=STRING
+		public Assignment getTargetAssignment_4() { return cTargetAssignment_4; }
+		
+		//STRING
+		public RuleCall getTargetSTRINGTerminalRuleCall_4_0() { return cTargetSTRINGTerminalRuleCall_4_0; }
+		
+		//'from-file'
+		public Keyword getFromFileKeyword_5() { return cFromFileKeyword_5; }
+		
+		//source=STRING
+		public Assignment getSourceAssignment_6() { return cSourceAssignment_6; }
+		
+		//STRING
+		public RuleCall getSourceSTRINGTerminalRuleCall_6_0() { return cSourceSTRINGTerminalRuleCall_6_0; }
+		
+		//'on-condition'
+		public Keyword getOnConditionKeyword_7() { return cOnConditionKeyword_7; }
+		
+		//condition=Expression
+		public Assignment getConditionAssignment_8() { return cConditionAssignment_8; }
+		
+		//Expression
+		public RuleCall getConditionExpressionParserRuleCall_8_0() { return cConditionExpressionParserRuleCall_8_0; }
+	}
+	public class DoglegElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "in.handyman.Dsl.Dogleg");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cDoglegKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Keyword cAsKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Assignment cNameAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cNameSTRINGTerminalRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
+		private final Keyword cUseParentContextKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Assignment cInheritContextAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cInheritContextSTRINGTerminalRuleCall_4_0 = (RuleCall)cInheritContextAssignment_4.eContents().get(0);
+		private final Keyword cUsingKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		private final Keyword cLeftCurlyBracketKeyword_6 = (Keyword)cGroup.eContents().get(6);
+		private final Assignment cProcessListAssignment_7 = (Assignment)cGroup.eContents().get(7);
+		private final RuleCall cProcessListStartProcessParserRuleCall_7_0 = (RuleCall)cProcessListAssignment_7.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_8 = (Keyword)cGroup.eContents().get(8);
+		private final Keyword cOnConditionKeyword_9 = (Keyword)cGroup.eContents().get(9);
+		private final Assignment cConditionAssignment_10 = (Assignment)cGroup.eContents().get(10);
+		private final RuleCall cConditionExpressionParserRuleCall_10_0 = (RuleCall)cConditionAssignment_10.eContents().get(0);
+		
+		//Dogleg:
+		//	"dogleg" 'as' name=STRING 'use-parent-context' inheritContext=STRING 'using'
+		//	'{'
+		//	processList+=StartProcess
+		//	'}' 'on-condition' condition=Expression;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//"dogleg" 'as' name=STRING 'use-parent-context' inheritContext=STRING 'using' '{' processList+=StartProcess '}'
+		//'on-condition' condition=Expression
+		public Group getGroup() { return cGroup; }
+		
+		//"dogleg"
+		public Keyword getDoglegKeyword_0() { return cDoglegKeyword_0; }
+		
+		//'as'
+		public Keyword getAsKeyword_1() { return cAsKeyword_1; }
+		
+		//name=STRING
+		public Assignment getNameAssignment_2() { return cNameAssignment_2; }
+		
+		//STRING
+		public RuleCall getNameSTRINGTerminalRuleCall_2_0() { return cNameSTRINGTerminalRuleCall_2_0; }
+		
+		//'use-parent-context'
+		public Keyword getUseParentContextKeyword_3() { return cUseParentContextKeyword_3; }
+		
+		//inheritContext=STRING
+		public Assignment getInheritContextAssignment_4() { return cInheritContextAssignment_4; }
+		
+		//STRING
+		public RuleCall getInheritContextSTRINGTerminalRuleCall_4_0() { return cInheritContextSTRINGTerminalRuleCall_4_0; }
+		
+		//'using'
+		public Keyword getUsingKeyword_5() { return cUsingKeyword_5; }
+		
+		//'{'
+		public Keyword getLeftCurlyBracketKeyword_6() { return cLeftCurlyBracketKeyword_6; }
+		
+		//processList+=StartProcess
+		public Assignment getProcessListAssignment_7() { return cProcessListAssignment_7; }
+		
+		//StartProcess
+		public RuleCall getProcessListStartProcessParserRuleCall_7_0() { return cProcessListStartProcessParserRuleCall_7_0; }
+		
+		//'}'
+		public Keyword getRightCurlyBracketKeyword_8() { return cRightCurlyBracketKeyword_8; }
+		
+		//'on-condition'
+		public Keyword getOnConditionKeyword_9() { return cOnConditionKeyword_9; }
+		
+		//condition=Expression
+		public Assignment getConditionAssignment_10() { return cConditionAssignment_10; }
+		
+		//Expression
+		public RuleCall getConditionExpressionParserRuleCall_10_0() { return cConditionExpressionParserRuleCall_10_0; }
 	}
 	public class ExecJavaElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "in.handyman.Dsl.ExecJava");
@@ -2476,6 +2630,118 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		//Expression
 		public RuleCall getConditionExpressionParserRuleCall_14_0() { return cConditionExpressionParserRuleCall_14_0; }
 	}
+	public class ForkprocessElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "in.handyman.Dsl.Forkprocess");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cForkprocessKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Keyword cAsKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Assignment cNameAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cNameSTRINGTerminalRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
+		private final Keyword cWithTargetKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Assignment cTargetAssignment_4 = (Assignment)cGroup.eContents().get(4);
+		private final RuleCall cTargetSTRINGTerminalRuleCall_4_0 = (RuleCall)cTargetAssignment_4.eContents().get(0);
+		private final Keyword cFromFileKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		private final Assignment cSourceAssignment_6 = (Assignment)cGroup.eContents().get(6);
+		private final RuleCall cSourceSTRINGTerminalRuleCall_6_0 = (RuleCall)cSourceAssignment_6.eContents().get(0);
+		private final Keyword cUsingKeyword_7 = (Keyword)cGroup.eContents().get(7);
+		private final Assignment cDatasourceAssignment_8 = (Assignment)cGroup.eContents().get(8);
+		private final RuleCall cDatasourceSTRINGTerminalRuleCall_8_0 = (RuleCall)cDatasourceAssignment_8.eContents().get(0);
+		private final Keyword cForEveryKeyword_9 = (Keyword)cGroup.eContents().get(9);
+		private final Keyword cLeftCurlyBracketKeyword_10 = (Keyword)cGroup.eContents().get(10);
+		private final Assignment cValueAssignment_11 = (Assignment)cGroup.eContents().get(11);
+		private final RuleCall cValueSelectStatementParserRuleCall_11_0 = (RuleCall)cValueAssignment_11.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_12 = (Keyword)cGroup.eContents().get(12);
+		private final Keyword cWatermarkKeyword_13 = (Keyword)cGroup.eContents().get(13);
+		private final Assignment cForkBatchSizeAssignment_14 = (Assignment)cGroup.eContents().get(14);
+		private final RuleCall cForkBatchSizeSTRINGTerminalRuleCall_14_0 = (RuleCall)cForkBatchSizeAssignment_14.eContents().get(0);
+		private final Keyword cOnConditionKeyword_15 = (Keyword)cGroup.eContents().get(15);
+		private final Assignment cConditionAssignment_16 = (Assignment)cGroup.eContents().get(16);
+		private final RuleCall cConditionExpressionParserRuleCall_16_0 = (RuleCall)cConditionAssignment_16.eContents().get(0);
+		
+		//Forkprocess:
+		//	'forkprocess' 'as' name=STRING 'with-target' target=STRING 'from-file' source=STRING 'using' datasource=STRING
+		//	'for-every'
+		//	'{'
+		//	value=SelectStatement
+		//	'}' 'watermark' forkBatchSize=STRING 'on-condition' condition=Expression;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//'forkprocess' 'as' name=STRING 'with-target' target=STRING 'from-file' source=STRING 'using' datasource=STRING
+		//'for-every' '{' value=SelectStatement '}' 'watermark' forkBatchSize=STRING 'on-condition' condition=Expression
+		public Group getGroup() { return cGroup; }
+		
+		//'forkprocess'
+		public Keyword getForkprocessKeyword_0() { return cForkprocessKeyword_0; }
+		
+		//'as'
+		public Keyword getAsKeyword_1() { return cAsKeyword_1; }
+		
+		//name=STRING
+		public Assignment getNameAssignment_2() { return cNameAssignment_2; }
+		
+		//STRING
+		public RuleCall getNameSTRINGTerminalRuleCall_2_0() { return cNameSTRINGTerminalRuleCall_2_0; }
+		
+		//'with-target'
+		public Keyword getWithTargetKeyword_3() { return cWithTargetKeyword_3; }
+		
+		//target=STRING
+		public Assignment getTargetAssignment_4() { return cTargetAssignment_4; }
+		
+		//STRING
+		public RuleCall getTargetSTRINGTerminalRuleCall_4_0() { return cTargetSTRINGTerminalRuleCall_4_0; }
+		
+		//'from-file'
+		public Keyword getFromFileKeyword_5() { return cFromFileKeyword_5; }
+		
+		//source=STRING
+		public Assignment getSourceAssignment_6() { return cSourceAssignment_6; }
+		
+		//STRING
+		public RuleCall getSourceSTRINGTerminalRuleCall_6_0() { return cSourceSTRINGTerminalRuleCall_6_0; }
+		
+		//'using'
+		public Keyword getUsingKeyword_7() { return cUsingKeyword_7; }
+		
+		//datasource=STRING
+		public Assignment getDatasourceAssignment_8() { return cDatasourceAssignment_8; }
+		
+		//STRING
+		public RuleCall getDatasourceSTRINGTerminalRuleCall_8_0() { return cDatasourceSTRINGTerminalRuleCall_8_0; }
+		
+		//'for-every'
+		public Keyword getForEveryKeyword_9() { return cForEveryKeyword_9; }
+		
+		//'{'
+		public Keyword getLeftCurlyBracketKeyword_10() { return cLeftCurlyBracketKeyword_10; }
+		
+		//value=SelectStatement
+		public Assignment getValueAssignment_11() { return cValueAssignment_11; }
+		
+		//SelectStatement
+		public RuleCall getValueSelectStatementParserRuleCall_11_0() { return cValueSelectStatementParserRuleCall_11_0; }
+		
+		//'}'
+		public Keyword getRightCurlyBracketKeyword_12() { return cRightCurlyBracketKeyword_12; }
+		
+		//'watermark'
+		public Keyword getWatermarkKeyword_13() { return cWatermarkKeyword_13; }
+		
+		//forkBatchSize=STRING
+		public Assignment getForkBatchSizeAssignment_14() { return cForkBatchSizeAssignment_14; }
+		
+		//STRING
+		public RuleCall getForkBatchSizeSTRINGTerminalRuleCall_14_0() { return cForkBatchSizeSTRINGTerminalRuleCall_14_0; }
+		
+		//'on-condition'
+		public Keyword getOnConditionKeyword_15() { return cOnConditionKeyword_15; }
+		
+		//condition=Expression
+		public Assignment getConditionAssignment_16() { return cConditionAssignment_16; }
+		
+		//Expression
+		public RuleCall getConditionExpressionParserRuleCall_16_0() { return cConditionExpressionParserRuleCall_16_0; }
+	}
 	public class UpdatedauditElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "in.handyman.Dsl.Updatedaudit");
 		private final Group cGroup = (Group)rule.eContents().get(1);
@@ -2766,21 +3032,32 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cUsingKeyword_7 = (Keyword)cGroup.eContents().get(7);
 		private final Keyword cLeftCurlyBracketKeyword_8 = (Keyword)cGroup.eContents().get(8);
 		private final Assignment cValueAssignment_9 = (Assignment)cGroup.eContents().get(9);
-		private final RuleCall cValueSelectStatementParserRuleCall_9_0 = (RuleCall)cValueAssignment_9.eContents().get(0);
+		private final RuleCall cValueSTRINGTerminalRuleCall_9_0 = (RuleCall)cValueAssignment_9.eContents().get(0);
 		private final Keyword cRightCurlyBracketKeyword_10 = (Keyword)cGroup.eContents().get(10);
 		private final Keyword cOnConditionKeyword_11 = (Keyword)cGroup.eContents().get(11);
 		private final Assignment cConditionAssignment_12 = (Assignment)cGroup.eContents().get(12);
 		private final RuleCall cConditionExpressionParserRuleCall_12_0 = (RuleCall)cConditionAssignment_12.eContents().get(0);
+		private final Keyword cFieldingKeyword_13 = (Keyword)cGroup.eContents().get(13);
+		private final Assignment cWriteThreadCountAssignment_14 = (Assignment)cGroup.eContents().get(14);
+		private final RuleCall cWriteThreadCountSTRINGTerminalRuleCall_14_0 = (RuleCall)cWriteThreadCountAssignment_14.eContents().get(0);
+		private final Keyword cWithFetchBatchSizeKeyword_15 = (Keyword)cGroup.eContents().get(15);
+		private final Assignment cFetchBatchSizeAssignment_16 = (Assignment)cGroup.eContents().get(16);
+		private final RuleCall cFetchBatchSizeSTRINGTerminalRuleCall_16_0 = (RuleCall)cFetchBatchSizeAssignment_16.eContents().get(0);
+		private final Keyword cWithWriteBatchSizeKeyword_17 = (Keyword)cGroup.eContents().get(17);
+		private final Assignment cWriteBatchSizeAssignment_18 = (Assignment)cGroup.eContents().get(18);
+		private final RuleCall cWriteBatchSizeSTRINGTerminalRuleCall_18_0 = (RuleCall)cWriteBatchSizeAssignment_18.eContents().get(0);
 		
 		//Copydata:
 		//	'copydata' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'using'
 		//	'{'
-		//	value=SelectStatement
-		//	'}' 'on-condition' condition=Expression;
+		//	value=STRING
+		//	'}' 'on-condition' condition=Expression 'fielding' writeThreadCount=STRING 'with-fetch-batch-size'
+		//	fetchBatchSize=STRING 'with-write-batch-size' writeBatchSize=STRING;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'copydata' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'using' '{' value=SelectStatement '}' 'on-condition'
-		//condition=Expression
+		//'copydata' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'using' '{' value=STRING '}' 'on-condition'
+		//condition=Expression 'fielding' writeThreadCount=STRING 'with-fetch-batch-size' fetchBatchSize=STRING
+		//'with-write-batch-size' writeBatchSize=STRING
 		public Group getGroup() { return cGroup; }
 		
 		//'copydata'
@@ -2819,11 +3096,11 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		//'{'
 		public Keyword getLeftCurlyBracketKeyword_8() { return cLeftCurlyBracketKeyword_8; }
 		
-		//value=SelectStatement
+		//value=STRING
 		public Assignment getValueAssignment_9() { return cValueAssignment_9; }
 		
-		//SelectStatement
-		public RuleCall getValueSelectStatementParserRuleCall_9_0() { return cValueSelectStatementParserRuleCall_9_0; }
+		//STRING
+		public RuleCall getValueSTRINGTerminalRuleCall_9_0() { return cValueSTRINGTerminalRuleCall_9_0; }
 		
 		//'}'
 		public Keyword getRightCurlyBracketKeyword_10() { return cRightCurlyBracketKeyword_10; }
@@ -2836,6 +3113,33 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//Expression
 		public RuleCall getConditionExpressionParserRuleCall_12_0() { return cConditionExpressionParserRuleCall_12_0; }
+		
+		//'fielding'
+		public Keyword getFieldingKeyword_13() { return cFieldingKeyword_13; }
+		
+		//writeThreadCount=STRING
+		public Assignment getWriteThreadCountAssignment_14() { return cWriteThreadCountAssignment_14; }
+		
+		//STRING
+		public RuleCall getWriteThreadCountSTRINGTerminalRuleCall_14_0() { return cWriteThreadCountSTRINGTerminalRuleCall_14_0; }
+		
+		//'with-fetch-batch-size'
+		public Keyword getWithFetchBatchSizeKeyword_15() { return cWithFetchBatchSizeKeyword_15; }
+		
+		//fetchBatchSize=STRING
+		public Assignment getFetchBatchSizeAssignment_16() { return cFetchBatchSizeAssignment_16; }
+		
+		//STRING
+		public RuleCall getFetchBatchSizeSTRINGTerminalRuleCall_16_0() { return cFetchBatchSizeSTRINGTerminalRuleCall_16_0; }
+		
+		//'with-write-batch-size'
+		public Keyword getWithWriteBatchSizeKeyword_17() { return cWithWriteBatchSizeKeyword_17; }
+		
+		//writeBatchSize=STRING
+		public Assignment getWriteBatchSizeAssignment_18() { return cWriteBatchSizeAssignment_18; }
+		
+		//STRING
+		public RuleCall getWriteBatchSizeSTRINGTerminalRuleCall_18_0() { return cWriteBatchSizeSTRINGTerminalRuleCall_18_0; }
 	}
 	public class WriteCsvElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "in.handyman.Dsl.WriteCsv");
@@ -2952,24 +3256,35 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cWithKeyword_7 = (Keyword)cGroup.eContents().get(7);
 		private final Assignment cDelimAssignment_8 = (Assignment)cGroup.eContents().get(8);
 		private final RuleCall cDelimSTRINGTerminalRuleCall_8_0 = (RuleCall)cDelimAssignment_8.eContents().get(0);
-		private final Keyword cUsingKeyword_9 = (Keyword)cGroup.eContents().get(9);
-		private final Keyword cLeftCurlyBracketKeyword_10 = (Keyword)cGroup.eContents().get(10);
-		private final Assignment cValueAssignment_11 = (Assignment)cGroup.eContents().get(11);
-		private final RuleCall cValueSelectStatementParserRuleCall_11_0 = (RuleCall)cValueAssignment_11.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_12 = (Keyword)cGroup.eContents().get(12);
-		private final Keyword cOnConditionKeyword_13 = (Keyword)cGroup.eContents().get(13);
-		private final Assignment cConditionAssignment_14 = (Assignment)cGroup.eContents().get(14);
-		private final RuleCall cConditionExpressionParserRuleCall_14_0 = (RuleCall)cConditionAssignment_14.eContents().get(0);
+		private final Keyword cWithFetchBatchSizeKeyword_9 = (Keyword)cGroup.eContents().get(9);
+		private final Assignment cFetchBatchSizeAssignment_10 = (Assignment)cGroup.eContents().get(10);
+		private final RuleCall cFetchBatchSizeINTTerminalRuleCall_10_0 = (RuleCall)cFetchBatchSizeAssignment_10.eContents().get(0);
+		private final Keyword cWithWriteBatchSizeKeyword_11 = (Keyword)cGroup.eContents().get(11);
+		private final Assignment cWriteBatchSizeAssignment_12 = (Assignment)cGroup.eContents().get(12);
+		private final RuleCall cWriteBatchSizeINTTerminalRuleCall_12_0 = (RuleCall)cWriteBatchSizeAssignment_12.eContents().get(0);
+		private final Keyword cUsingKeyword_13 = (Keyword)cGroup.eContents().get(13);
+		private final Keyword cLeftCurlyBracketKeyword_14 = (Keyword)cGroup.eContents().get(14);
+		private final Assignment cValueAssignment_15 = (Assignment)cGroup.eContents().get(15);
+		private final RuleCall cValueSelectStatementParserRuleCall_15_0 = (RuleCall)cValueAssignment_15.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_16 = (Keyword)cGroup.eContents().get(16);
+		private final Keyword cOnConditionKeyword_17 = (Keyword)cGroup.eContents().get(17);
+		private final Assignment cConditionAssignment_18 = (Assignment)cGroup.eContents().get(18);
+		private final RuleCall cConditionExpressionParserRuleCall_18_0 = (RuleCall)cConditionAssignment_18.eContents().get(0);
+		private final Keyword cFieldingKeyword_19 = (Keyword)cGroup.eContents().get(19);
+		private final Assignment cWriteThreadCountAssignment_20 = (Assignment)cGroup.eContents().get(20);
+		private final RuleCall cWriteThreadCountINTTerminalRuleCall_20_0 = (RuleCall)cWriteThreadCountAssignment_20.eContents().get(0);
 		
 		//LoadCsv:
-		//	'loadcsv' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'with' delim=STRING 'using'
+		//	'loadcsv' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'with' delim=STRING 'with-fetch-batch-size'
+		//	fetchBatchSize=INT 'with-write-batch-size' writeBatchSize=INT 'using'
 		//	'{'
 		//	value=SelectStatement
-		//	'}' 'on-condition' condition=Expression;
+		//	'}' 'on-condition' condition=Expression 'fielding' writeThreadCount=INT;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'loadcsv' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'with' delim=STRING 'using' '{' value=SelectStatement '}'
-		//'on-condition' condition=Expression
+		//'loadcsv' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'with' delim=STRING 'with-fetch-batch-size'
+		//fetchBatchSize=INT 'with-write-batch-size' writeBatchSize=INT 'using' '{' value=SelectStatement '}' 'on-condition'
+		//condition=Expression 'fielding' writeThreadCount=INT
 		public Group getGroup() { return cGroup; }
 		
 		//'loadcsv'
@@ -3011,29 +3326,56 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		//STRING
 		public RuleCall getDelimSTRINGTerminalRuleCall_8_0() { return cDelimSTRINGTerminalRuleCall_8_0; }
 		
+		//'with-fetch-batch-size'
+		public Keyword getWithFetchBatchSizeKeyword_9() { return cWithFetchBatchSizeKeyword_9; }
+		
+		//fetchBatchSize=INT
+		public Assignment getFetchBatchSizeAssignment_10() { return cFetchBatchSizeAssignment_10; }
+		
+		//INT
+		public RuleCall getFetchBatchSizeINTTerminalRuleCall_10_0() { return cFetchBatchSizeINTTerminalRuleCall_10_0; }
+		
+		//'with-write-batch-size'
+		public Keyword getWithWriteBatchSizeKeyword_11() { return cWithWriteBatchSizeKeyword_11; }
+		
+		//writeBatchSize=INT
+		public Assignment getWriteBatchSizeAssignment_12() { return cWriteBatchSizeAssignment_12; }
+		
+		//INT
+		public RuleCall getWriteBatchSizeINTTerminalRuleCall_12_0() { return cWriteBatchSizeINTTerminalRuleCall_12_0; }
+		
 		//'using'
-		public Keyword getUsingKeyword_9() { return cUsingKeyword_9; }
+		public Keyword getUsingKeyword_13() { return cUsingKeyword_13; }
 		
 		//'{'
-		public Keyword getLeftCurlyBracketKeyword_10() { return cLeftCurlyBracketKeyword_10; }
+		public Keyword getLeftCurlyBracketKeyword_14() { return cLeftCurlyBracketKeyword_14; }
 		
 		//value=SelectStatement
-		public Assignment getValueAssignment_11() { return cValueAssignment_11; }
+		public Assignment getValueAssignment_15() { return cValueAssignment_15; }
 		
 		//SelectStatement
-		public RuleCall getValueSelectStatementParserRuleCall_11_0() { return cValueSelectStatementParserRuleCall_11_0; }
+		public RuleCall getValueSelectStatementParserRuleCall_15_0() { return cValueSelectStatementParserRuleCall_15_0; }
 		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_12() { return cRightCurlyBracketKeyword_12; }
+		public Keyword getRightCurlyBracketKeyword_16() { return cRightCurlyBracketKeyword_16; }
 		
 		//'on-condition'
-		public Keyword getOnConditionKeyword_13() { return cOnConditionKeyword_13; }
+		public Keyword getOnConditionKeyword_17() { return cOnConditionKeyword_17; }
 		
 		//condition=Expression
-		public Assignment getConditionAssignment_14() { return cConditionAssignment_14; }
+		public Assignment getConditionAssignment_18() { return cConditionAssignment_18; }
 		
 		//Expression
-		public RuleCall getConditionExpressionParserRuleCall_14_0() { return cConditionExpressionParserRuleCall_14_0; }
+		public RuleCall getConditionExpressionParserRuleCall_18_0() { return cConditionExpressionParserRuleCall_18_0; }
+		
+		//'fielding'
+		public Keyword getFieldingKeyword_19() { return cFieldingKeyword_19; }
+		
+		//writeThreadCount=INT
+		public Assignment getWriteThreadCountAssignment_20() { return cWriteThreadCountAssignment_20; }
+		
+		//INT
+		public RuleCall getWriteThreadCountINTTerminalRuleCall_20_0() { return cWriteThreadCountINTTerminalRuleCall_20_0; }
 	}
 	public class TransformElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "in.handyman.Dsl.Transform");
@@ -3154,6 +3496,41 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		//STRING
 		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
 	}
+	public class StartProcessElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "in.handyman.Dsl.StartProcess");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cStartProcessKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cNameSTRINGTerminalRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
+		private final Keyword cWithFileKeyword_2 = (Keyword)cGroup.eContents().get(2);
+		private final Assignment cTargetAssignment_3 = (Assignment)cGroup.eContents().get(3);
+		private final RuleCall cTargetSTRINGTerminalRuleCall_3_0 = (RuleCall)cTargetAssignment_3.eContents().get(0);
+		
+		//StartProcess:
+		//	'start-process' name=STRING 'with-file' target=STRING;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//'start-process' name=STRING 'with-file' target=STRING
+		public Group getGroup() { return cGroup; }
+		
+		//'start-process'
+		public Keyword getStartProcessKeyword_0() { return cStartProcessKeyword_0; }
+		
+		//name=STRING
+		public Assignment getNameAssignment_1() { return cNameAssignment_1; }
+		
+		//STRING
+		public RuleCall getNameSTRINGTerminalRuleCall_1_0() { return cNameSTRINGTerminalRuleCall_1_0; }
+		
+		//'with-file'
+		public Keyword getWithFileKeyword_2() { return cWithFileKeyword_2; }
+		
+		//target=STRING
+		public Assignment getTargetAssignment_3() { return cTargetAssignment_3; }
+		
+		//STRING
+		public RuleCall getTargetSTRINGTerminalRuleCall_3_0() { return cTargetSTRINGTerminalRuleCall_3_0; }
+	}
 	public class ExpressionElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "in.handyman.Dsl.Expression");
 		private final Group cGroup = (Group)rule.eContents().get(1);
@@ -3227,6 +3604,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	private final FinallyElements pFinally;
 	private final CatchElements pCatch;
 	private final ActionElements pAction;
+	private final SpawnprocessElements pSpawnprocess;
+	private final DoglegElements pDogleg;
 	private final ExecJavaElements pExecJava;
 	private final FirebaseDatabasePutElements pFirebaseDatabasePut;
 	private final FirebaseReactiveNotificationElements pFirebaseReactiveNotification;
@@ -3246,6 +3625,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	private final TrelloPUTElements pTrelloPUT;
 	private final FetchElements pFetch;
 	private final CallprocessElements pCallprocess;
+	private final ForkprocessElements pForkprocess;
 	private final UpdatedauditElements pUpdatedaudit;
 	private final ClickSendSmsElements pClickSendSms;
 	private final SlackPUTElements pSlackPUT;
@@ -3257,6 +3637,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	private final SelectStatementElements pSelectStatement;
 	private final NonSelectStatementElements pNonSelectStatement;
 	private final CreateStatementElements pCreateStatement;
+	private final StartProcessElements pStartProcess;
 	private final ExpressionElements pExpression;
 	private final OperatorElements pOperator;
 	
@@ -3274,6 +3655,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		this.pFinally = new FinallyElements();
 		this.pCatch = new CatchElements();
 		this.pAction = new ActionElements();
+		this.pSpawnprocess = new SpawnprocessElements();
+		this.pDogleg = new DoglegElements();
 		this.pExecJava = new ExecJavaElements();
 		this.pFirebaseDatabasePut = new FirebaseDatabasePutElements();
 		this.pFirebaseReactiveNotification = new FirebaseReactiveNotificationElements();
@@ -3293,6 +3676,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		this.pTrelloPUT = new TrelloPUTElements();
 		this.pFetch = new FetchElements();
 		this.pCallprocess = new CallprocessElements();
+		this.pForkprocess = new ForkprocessElements();
 		this.pUpdatedaudit = new UpdatedauditElements();
 		this.pClickSendSms = new ClickSendSmsElements();
 		this.pSlackPUT = new SlackPUTElements();
@@ -3304,6 +3688,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		this.pSelectStatement = new SelectStatementElements();
 		this.pNonSelectStatement = new NonSelectStatementElements();
 		this.pCreateStatement = new CreateStatementElements();
+		this.pStartProcess = new StartProcessElements();
 		this.pExpression = new ExpressionElements();
 		this.pOperator = new OperatorElements();
 	}
@@ -3399,6 +3784,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	//	| ClickSendSms
 	//	| Updatedaudit
 	//	| Callprocess
+	//	| Forkprocess
 	//	| Fetch
 	//	| TrelloPUT
 	//	| TrelloGET
@@ -3414,13 +3800,38 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	//	| SmsLeadSms
 	//	| FirebaseReactiveNotification
 	//	| FirebaseDatabasePut
-	//	| ExecJava;
+	//	| ExecJava
+	//	| Dogleg
+	//	| Spawnprocess;
 	public ActionElements getActionAccess() {
 		return pAction;
 	}
 	
 	public ParserRule getActionRule() {
 		return getActionAccess().getRule();
+	}
+	
+	//Spawnprocess:
+	//	'spawn' 'as' name=STRING 'with-target' target=STRING 'from-file' source=STRING 'on-condition' condition=Expression;
+	public SpawnprocessElements getSpawnprocessAccess() {
+		return pSpawnprocess;
+	}
+	
+	public ParserRule getSpawnprocessRule() {
+		return getSpawnprocessAccess().getRule();
+	}
+	
+	//Dogleg:
+	//	"dogleg" 'as' name=STRING 'use-parent-context' inheritContext=STRING 'using'
+	//	'{'
+	//	processList+=StartProcess
+	//	'}' 'on-condition' condition=Expression;
+	public DoglegElements getDoglegAccess() {
+		return pDogleg;
+	}
+	
+	public ParserRule getDoglegRule() {
+		return getDoglegAccess().getRule();
 	}
 	
 	//ExecJava:
@@ -3688,6 +4099,20 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		return getCallprocessAccess().getRule();
 	}
 	
+	//Forkprocess:
+	//	'forkprocess' 'as' name=STRING 'with-target' target=STRING 'from-file' source=STRING 'using' datasource=STRING
+	//	'for-every'
+	//	'{'
+	//	value=SelectStatement
+	//	'}' 'watermark' forkBatchSize=STRING 'on-condition' condition=Expression;
+	public ForkprocessElements getForkprocessAccess() {
+		return pForkprocess;
+	}
+	
+	public ParserRule getForkprocessRule() {
+		return getForkprocessAccess().getRule();
+	}
+	
 	//Updatedaudit:
 	//	'log' 'as' name=STRING 'logto' logsink=STRING 'in' datasource=STRING 'using'
 	//	'{'
@@ -3731,8 +4156,9 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	//Copydata:
 	//	'copydata' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'using'
 	//	'{'
-	//	value=SelectStatement
-	//	'}' 'on-condition' condition=Expression;
+	//	value=STRING
+	//	'}' 'on-condition' condition=Expression 'fielding' writeThreadCount=STRING 'with-fetch-batch-size'
+	//	fetchBatchSize=STRING 'with-write-batch-size' writeBatchSize=STRING;
 	public CopydataElements getCopydataAccess() {
 		return pCopydata;
 	}
@@ -3755,10 +4181,11 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//LoadCsv:
-	//	'loadcsv' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'with' delim=STRING 'using'
+	//	'loadcsv' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'with' delim=STRING 'with-fetch-batch-size'
+	//	fetchBatchSize=INT 'with-write-batch-size' writeBatchSize=INT 'using'
 	//	'{'
 	//	value=SelectStatement
-	//	'}' 'on-condition' condition=Expression;
+	//	'}' 'on-condition' condition=Expression 'fielding' writeThreadCount=INT;
 	public LoadCsvElements getLoadCsvAccess() {
 		return pLoadCsv;
 	}
@@ -3818,6 +4245,16 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	public ParserRule getCreateStatementRule() {
 		return getCreateStatementAccess().getRule();
+	}
+	
+	//StartProcess:
+	//	'start-process' name=STRING 'with-file' target=STRING;
+	public StartProcessElements getStartProcessAccess() {
+		return pStartProcess;
+	}
+	
+	public ParserRule getStartProcessRule() {
+		return getStartProcessAccess().getRule();
 	}
 	
 	//Expression:

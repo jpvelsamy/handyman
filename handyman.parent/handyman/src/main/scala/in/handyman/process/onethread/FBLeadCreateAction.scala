@@ -18,6 +18,7 @@ import in.handyman.config.ConfigurationService
 import in.handyman.util.ExceptionUtil
 import org.slf4j.MarkerFactory
 import in.handyman.audit.AuditService
+import com.facebook.ads.sdk.APIConfig
 
 /**
  * //https://developers.facebook.com/docs/marketing-api/guides/lead-ads/retrieving/v2.9
@@ -78,7 +79,9 @@ class FBLeadCreateAction extends in.handyman.command.Action with LazyLogging {
     val tgtConn = ResourceAccess.rdbmsConn(dbTarget)
     val stmt = tgtConn.prepareStatement(InsertSql)
 
-    val fbContext = new APIContext(accessToken, appSecret).enableDebug(true);
+    //val fbContext = new APIContext(accessToken, appSecret).enableDebug(true);
+    val fbContext =  new APIContext(APIConfig.DEFAULT_API_BASE, APIConfig.DEFAULT_VIDEO_API_BASE, "v6.0", accessToken,
+				appSecret, "455366335002918", true).enableDebug(true);
     val fbAccount = new AdAccount(accountId, fbContext)
     val nameCleanup = ConfigurationService.getGlobalconfig().get("cleanSpecialChar").getOrElse("false")
     

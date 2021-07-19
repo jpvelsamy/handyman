@@ -9,6 +9,7 @@ import in.handyman.dsl.Callprocess;
 import in.handyman.dsl.Catch;
 import in.handyman.dsl.ClickSendSms;
 import in.handyman.dsl.Copydata;
+import in.handyman.dsl.Dogleg;
 import in.handyman.dsl.Doozle;
 import in.handyman.dsl.Dropfile;
 import in.handyman.dsl.DslFactory;
@@ -21,6 +22,7 @@ import in.handyman.dsl.Fetch;
 import in.handyman.dsl.Finally;
 import in.handyman.dsl.FirebaseDatabasePut;
 import in.handyman.dsl.FirebaseReactiveNotification;
+import in.handyman.dsl.Forkprocess;
 import in.handyman.dsl.GooglecalPUT;
 import in.handyman.dsl.GooglecontactPUT;
 import in.handyman.dsl.GooglecontactSelectAll;
@@ -30,6 +32,8 @@ import in.handyman.dsl.RestPart;
 import in.handyman.dsl.SendMail;
 import in.handyman.dsl.SlackPUT;
 import in.handyman.dsl.SmsLeadSms;
+import in.handyman.dsl.Spawnprocess;
+import in.handyman.dsl.StartProcess;
 import in.handyman.dsl.Transform;
 import in.handyman.dsl.TrelloGET;
 import in.handyman.dsl.TrelloPUT;
@@ -102,6 +106,8 @@ public class DslFactoryImpl extends EFactoryImpl implements DslFactory
       case DslPackage.FINALLY: return createFinally();
       case DslPackage.CATCH: return createCatch();
       case DslPackage.ACTION: return createAction();
+      case DslPackage.SPAWNPROCESS: return createSpawnprocess();
+      case DslPackage.DOGLEG: return createDogleg();
       case DslPackage.EXEC_JAVA: return createExecJava();
       case DslPackage.FIREBASE_DATABASE_PUT: return createFirebaseDatabasePut();
       case DslPackage.FIREBASE_REACTIVE_NOTIFICATION: return createFirebaseReactiveNotification();
@@ -121,6 +127,7 @@ public class DslFactoryImpl extends EFactoryImpl implements DslFactory
       case DslPackage.TRELLO_PUT: return createTrelloPUT();
       case DslPackage.FETCH: return createFetch();
       case DslPackage.CALLPROCESS: return createCallprocess();
+      case DslPackage.FORKPROCESS: return createForkprocess();
       case DslPackage.UPDATEDAUDIT: return createUpdatedaudit();
       case DslPackage.CLICK_SEND_SMS: return createClickSendSms();
       case DslPackage.SLACK_PUT: return createSlackPUT();
@@ -128,6 +135,7 @@ public class DslFactoryImpl extends EFactoryImpl implements DslFactory
       case DslPackage.WRITE_CSV: return createWriteCsv();
       case DslPackage.LOAD_CSV: return createLoadCsv();
       case DslPackage.TRANSFORM: return createTransform();
+      case DslPackage.START_PROCESS: return createStartProcess();
       case DslPackage.EXPRESSION: return createExpression();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
@@ -187,6 +195,28 @@ public class DslFactoryImpl extends EFactoryImpl implements DslFactory
   {
     ActionImpl action = new ActionImpl();
     return action;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Spawnprocess createSpawnprocess()
+  {
+    SpawnprocessImpl spawnprocess = new SpawnprocessImpl();
+    return spawnprocess;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Dogleg createDogleg()
+  {
+    DoglegImpl dogleg = new DoglegImpl();
+    return dogleg;
   }
 
   /**
@@ -403,6 +433,17 @@ public class DslFactoryImpl extends EFactoryImpl implements DslFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public Forkprocess createForkprocess()
+  {
+    ForkprocessImpl forkprocess = new ForkprocessImpl();
+    return forkprocess;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public Updatedaudit createUpdatedaudit()
   {
     UpdatedauditImpl updatedaudit = new UpdatedauditImpl();
@@ -473,6 +514,17 @@ public class DslFactoryImpl extends EFactoryImpl implements DslFactory
   {
     TransformImpl transform = new TransformImpl();
     return transform;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public StartProcess createStartProcess()
+  {
+    StartProcessImpl startProcess = new StartProcessImpl();
+    return startProcess;
   }
 
   /**

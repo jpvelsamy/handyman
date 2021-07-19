@@ -261,6 +261,116 @@ public interface DslPackage extends EPackage
   int ACTION_FEATURE_COUNT = 2;
 
   /**
+   * The meta object id for the '{@link in.handyman.dsl.impl.SpawnprocessImpl <em>Spawnprocess</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see in.handyman.dsl.impl.SpawnprocessImpl
+   * @see in.handyman.dsl.impl.DslPackageImpl#getSpawnprocess()
+   * @generated
+   */
+  int SPAWNPROCESS = 5;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SPAWNPROCESS__NAME = ACTION__NAME;
+
+  /**
+   * The feature id for the '<em><b>Condition</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SPAWNPROCESS__CONDITION = ACTION__CONDITION;
+
+  /**
+   * The feature id for the '<em><b>Target</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SPAWNPROCESS__TARGET = ACTION_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Source</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SPAWNPROCESS__SOURCE = ACTION_FEATURE_COUNT + 1;
+
+  /**
+   * The number of structural features of the '<em>Spawnprocess</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SPAWNPROCESS_FEATURE_COUNT = ACTION_FEATURE_COUNT + 2;
+
+  /**
+   * The meta object id for the '{@link in.handyman.dsl.impl.DoglegImpl <em>Dogleg</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see in.handyman.dsl.impl.DoglegImpl
+   * @see in.handyman.dsl.impl.DslPackageImpl#getDogleg()
+   * @generated
+   */
+  int DOGLEG = 6;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DOGLEG__NAME = ACTION__NAME;
+
+  /**
+   * The feature id for the '<em><b>Condition</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DOGLEG__CONDITION = ACTION__CONDITION;
+
+  /**
+   * The feature id for the '<em><b>Inherit Context</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DOGLEG__INHERIT_CONTEXT = ACTION_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Process List</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DOGLEG__PROCESS_LIST = ACTION_FEATURE_COUNT + 1;
+
+  /**
+   * The number of structural features of the '<em>Dogleg</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int DOGLEG_FEATURE_COUNT = ACTION_FEATURE_COUNT + 2;
+
+  /**
    * The meta object id for the '{@link in.handyman.dsl.impl.ExecJavaImpl <em>Exec Java</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -268,7 +378,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getExecJava()
    * @generated
    */
-  int EXEC_JAVA = 5;
+  int EXEC_JAVA = 7;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -332,7 +442,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getFirebaseDatabasePut()
    * @generated
    */
-  int FIREBASE_DATABASE_PUT = 6;
+  int FIREBASE_DATABASE_PUT = 8;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -423,7 +533,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getFirebaseReactiveNotification()
    * @generated
    */
-  int FIREBASE_REACTIVE_NOTIFICATION = 7;
+  int FIREBASE_REACTIVE_NOTIFICATION = 9;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -505,7 +615,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getSmsLeadSms()
    * @generated
    */
-  int SMS_LEAD_SMS = 8;
+  int SMS_LEAD_SMS = 10;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -605,7 +715,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getAbort()
    * @generated
    */
-  int ABORT = 9;
+  int ABORT = 11;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -651,7 +761,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getGooglecontactSelectAll()
    * @generated
    */
-  int GOOGLECONTACT_SELECT_ALL = 10;
+  int GOOGLECONTACT_SELECT_ALL = 12;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -751,7 +861,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getSendMail()
    * @generated
    */
-  int SEND_MAIL = 11;
+  int SEND_MAIL = 13;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -833,7 +943,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getGooglecontactPUT()
    * @generated
    */
-  int GOOGLECONTACT_PUT = 12;
+  int GOOGLECONTACT_PUT = 14;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -933,7 +1043,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getGooglecalPUT()
    * @generated
    */
-  int GOOGLECAL_PUT = 13;
+  int GOOGLECAL_PUT = 15;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1033,7 +1143,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getFBCLead()
    * @generated
    */
-  int FBC_LEAD = 14;
+  int FBC_LEAD = 16;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1124,7 +1234,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getFBFormDownload()
    * @generated
    */
-  int FB_FORM_DOWNLOAD = 15;
+  int FB_FORM_DOWNLOAD = 17;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1215,7 +1325,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getDropfile()
    * @generated
    */
-  int DROPFILE = 16;
+  int DROPFILE = 18;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1261,7 +1371,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getDoozle()
    * @generated
    */
-  int DOOZLE = 17;
+  int DOOZLE = 19;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1325,7 +1435,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getRest()
    * @generated
    */
-  int REST = 18;
+  int REST = 20;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1479,7 +1589,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getRestPart()
    * @generated
    */
-  int REST_PART = 19;
+  int REST_PART = 21;
 
   /**
    * The feature id for the '<em><b>Part Name</b></em>' attribute.
@@ -1516,7 +1626,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getTrelloGET()
    * @generated
    */
-  int TRELLO_GET = 20;
+  int TRELLO_GET = 22;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1607,7 +1717,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getTrelloPUT()
    * @generated
    */
-  int TRELLO_PUT = 21;
+  int TRELLO_PUT = 23;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1698,7 +1808,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getFetch()
    * @generated
    */
-  int FETCH = 22;
+  int FETCH = 24;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1753,7 +1863,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getCallprocess()
    * @generated
    */
-  int CALLPROCESS = 23;
+  int CALLPROCESS = 25;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1819,6 +1929,88 @@ public interface DslPackage extends EPackage
   int CALLPROCESS_FEATURE_COUNT = ACTION_FEATURE_COUNT + 4;
 
   /**
+   * The meta object id for the '{@link in.handyman.dsl.impl.ForkprocessImpl <em>Forkprocess</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see in.handyman.dsl.impl.ForkprocessImpl
+   * @see in.handyman.dsl.impl.DslPackageImpl#getForkprocess()
+   * @generated
+   */
+  int FORKPROCESS = 26;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FORKPROCESS__NAME = ACTION__NAME;
+
+  /**
+   * The feature id for the '<em><b>Condition</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FORKPROCESS__CONDITION = ACTION__CONDITION;
+
+  /**
+   * The feature id for the '<em><b>Target</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FORKPROCESS__TARGET = ACTION_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Source</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FORKPROCESS__SOURCE = ACTION_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Datasource</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FORKPROCESS__DATASOURCE = ACTION_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Value</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FORKPROCESS__VALUE = ACTION_FEATURE_COUNT + 3;
+
+  /**
+   * The feature id for the '<em><b>Fork Batch Size</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FORKPROCESS__FORK_BATCH_SIZE = ACTION_FEATURE_COUNT + 4;
+
+  /**
+   * The number of structural features of the '<em>Forkprocess</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FORKPROCESS_FEATURE_COUNT = ACTION_FEATURE_COUNT + 5;
+
+  /**
    * The meta object id for the '{@link in.handyman.dsl.impl.UpdatedauditImpl <em>Updatedaudit</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1826,7 +2018,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getUpdatedaudit()
    * @generated
    */
-  int UPDATEDAUDIT = 24;
+  int UPDATEDAUDIT = 27;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1890,7 +2082,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getClickSendSms()
    * @generated
    */
-  int CLICK_SEND_SMS = 25;
+  int CLICK_SEND_SMS = 28;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1963,7 +2155,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getSlackPUT()
    * @generated
    */
-  int SLACK_PUT = 26;
+  int SLACK_PUT = 29;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2027,7 +2219,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getCopydata()
    * @generated
    */
-  int COPYDATA = 27;
+  int COPYDATA = 30;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2075,13 +2267,40 @@ public interface DslPackage extends EPackage
   int COPYDATA__VALUE = ACTION_FEATURE_COUNT + 2;
 
   /**
+   * The feature id for the '<em><b>Write Thread Count</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int COPYDATA__WRITE_THREAD_COUNT = ACTION_FEATURE_COUNT + 3;
+
+  /**
+   * The feature id for the '<em><b>Fetch Batch Size</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int COPYDATA__FETCH_BATCH_SIZE = ACTION_FEATURE_COUNT + 4;
+
+  /**
+   * The feature id for the '<em><b>Write Batch Size</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int COPYDATA__WRITE_BATCH_SIZE = ACTION_FEATURE_COUNT + 5;
+
+  /**
    * The number of structural features of the '<em>Copydata</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int COPYDATA_FEATURE_COUNT = ACTION_FEATURE_COUNT + 3;
+  int COPYDATA_FEATURE_COUNT = ACTION_FEATURE_COUNT + 6;
 
   /**
    * The meta object id for the '{@link in.handyman.dsl.impl.WriteCsvImpl <em>Write Csv</em>}' class.
@@ -2091,7 +2310,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getWriteCsv()
    * @generated
    */
-  int WRITE_CSV = 28;
+  int WRITE_CSV = 31;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2164,7 +2383,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getLoadCsv()
    * @generated
    */
-  int LOAD_CSV = 29;
+  int LOAD_CSV = 32;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2212,13 +2431,40 @@ public interface DslPackage extends EPackage
   int LOAD_CSV__DELIM = ACTION_FEATURE_COUNT + 2;
 
   /**
+   * The feature id for the '<em><b>Fetch Batch Size</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOAD_CSV__FETCH_BATCH_SIZE = ACTION_FEATURE_COUNT + 3;
+
+  /**
+   * The feature id for the '<em><b>Write Batch Size</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOAD_CSV__WRITE_BATCH_SIZE = ACTION_FEATURE_COUNT + 4;
+
+  /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int LOAD_CSV__VALUE = ACTION_FEATURE_COUNT + 3;
+  int LOAD_CSV__VALUE = ACTION_FEATURE_COUNT + 5;
+
+  /**
+   * The feature id for the '<em><b>Write Thread Count</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOAD_CSV__WRITE_THREAD_COUNT = ACTION_FEATURE_COUNT + 6;
 
   /**
    * The number of structural features of the '<em>Load Csv</em>' class.
@@ -2227,7 +2473,7 @@ public interface DslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int LOAD_CSV_FEATURE_COUNT = ACTION_FEATURE_COUNT + 4;
+  int LOAD_CSV_FEATURE_COUNT = ACTION_FEATURE_COUNT + 7;
 
   /**
    * The meta object id for the '{@link in.handyman.dsl.impl.TransformImpl <em>Transform</em>}' class.
@@ -2237,7 +2483,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getTransform()
    * @generated
    */
-  int TRANSFORM = 30;
+  int TRANSFORM = 33;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2285,6 +2531,43 @@ public interface DslPackage extends EPackage
   int TRANSFORM_FEATURE_COUNT = ACTION_FEATURE_COUNT + 2;
 
   /**
+   * The meta object id for the '{@link in.handyman.dsl.impl.StartProcessImpl <em>Start Process</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see in.handyman.dsl.impl.StartProcessImpl
+   * @see in.handyman.dsl.impl.DslPackageImpl#getStartProcess()
+   * @generated
+   */
+  int START_PROCESS = 34;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int START_PROCESS__NAME = 0;
+
+  /**
+   * The feature id for the '<em><b>Target</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int START_PROCESS__TARGET = 1;
+
+  /**
+   * The number of structural features of the '<em>Start Process</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int START_PROCESS_FEATURE_COUNT = 2;
+
+  /**
    * The meta object id for the '{@link in.handyman.dsl.impl.ExpressionImpl <em>Expression</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2292,7 +2575,7 @@ public interface DslPackage extends EPackage
    * @see in.handyman.dsl.impl.DslPackageImpl#getExpression()
    * @generated
    */
-  int EXPRESSION = 31;
+  int EXPRESSION = 35;
 
   /**
    * The feature id for the '<em><b>Lhs</b></em>' attribute.
@@ -2512,6 +2795,70 @@ public interface DslPackage extends EPackage
    * @generated
    */
   EReference getAction_Condition();
+
+  /**
+   * Returns the meta object for class '{@link in.handyman.dsl.Spawnprocess <em>Spawnprocess</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Spawnprocess</em>'.
+   * @see in.handyman.dsl.Spawnprocess
+   * @generated
+   */
+  EClass getSpawnprocess();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.Spawnprocess#getTarget <em>Target</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Target</em>'.
+   * @see in.handyman.dsl.Spawnprocess#getTarget()
+   * @see #getSpawnprocess()
+   * @generated
+   */
+  EAttribute getSpawnprocess_Target();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.Spawnprocess#getSource <em>Source</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Source</em>'.
+   * @see in.handyman.dsl.Spawnprocess#getSource()
+   * @see #getSpawnprocess()
+   * @generated
+   */
+  EAttribute getSpawnprocess_Source();
+
+  /**
+   * Returns the meta object for class '{@link in.handyman.dsl.Dogleg <em>Dogleg</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Dogleg</em>'.
+   * @see in.handyman.dsl.Dogleg
+   * @generated
+   */
+  EClass getDogleg();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.Dogleg#getInheritContext <em>Inherit Context</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Inherit Context</em>'.
+   * @see in.handyman.dsl.Dogleg#getInheritContext()
+   * @see #getDogleg()
+   * @generated
+   */
+  EAttribute getDogleg_InheritContext();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link in.handyman.dsl.Dogleg#getProcessList <em>Process List</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Process List</em>'.
+   * @see in.handyman.dsl.Dogleg#getProcessList()
+   * @see #getDogleg()
+   * @generated
+   */
+  EReference getDogleg_ProcessList();
 
   /**
    * Returns the meta object for class '{@link in.handyman.dsl.ExecJava <em>Exec Java</em>}'.
@@ -3771,6 +4118,71 @@ public interface DslPackage extends EPackage
   EAttribute getCallprocess_Value();
 
   /**
+   * Returns the meta object for class '{@link in.handyman.dsl.Forkprocess <em>Forkprocess</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Forkprocess</em>'.
+   * @see in.handyman.dsl.Forkprocess
+   * @generated
+   */
+  EClass getForkprocess();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.Forkprocess#getTarget <em>Target</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Target</em>'.
+   * @see in.handyman.dsl.Forkprocess#getTarget()
+   * @see #getForkprocess()
+   * @generated
+   */
+  EAttribute getForkprocess_Target();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.Forkprocess#getSource <em>Source</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Source</em>'.
+   * @see in.handyman.dsl.Forkprocess#getSource()
+   * @see #getForkprocess()
+   * @generated
+   */
+  EAttribute getForkprocess_Source();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.Forkprocess#getDatasource <em>Datasource</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Datasource</em>'.
+   * @see in.handyman.dsl.Forkprocess#getDatasource()
+   * @see #getForkprocess()
+   * @generated
+   */
+  EAttribute getForkprocess_Datasource();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.Forkprocess#getValue <em>Value</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Value</em>'.
+   * @see in.handyman.dsl.Forkprocess#getValue()
+   * @see #getForkprocess()
+   * @generated
+   */
+  EAttribute getForkprocess_Value();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.Forkprocess#getForkBatchSize <em>Fork Batch Size</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Fork Batch Size</em>'.
+   * @see in.handyman.dsl.Forkprocess#getForkBatchSize()
+   * @see #getForkprocess()
+   * @generated
+   */
+  EAttribute getForkprocess_ForkBatchSize();
+
+  /**
    * Returns the meta object for class '{@link in.handyman.dsl.Updatedaudit <em>Updatedaudit</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3954,6 +4366,39 @@ public interface DslPackage extends EPackage
   EAttribute getCopydata_Value();
 
   /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.Copydata#getWriteThreadCount <em>Write Thread Count</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Write Thread Count</em>'.
+   * @see in.handyman.dsl.Copydata#getWriteThreadCount()
+   * @see #getCopydata()
+   * @generated
+   */
+  EAttribute getCopydata_WriteThreadCount();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.Copydata#getFetchBatchSize <em>Fetch Batch Size</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Fetch Batch Size</em>'.
+   * @see in.handyman.dsl.Copydata#getFetchBatchSize()
+   * @see #getCopydata()
+   * @generated
+   */
+  EAttribute getCopydata_FetchBatchSize();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.Copydata#getWriteBatchSize <em>Write Batch Size</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Write Batch Size</em>'.
+   * @see in.handyman.dsl.Copydata#getWriteBatchSize()
+   * @see #getCopydata()
+   * @generated
+   */
+  EAttribute getCopydata_WriteBatchSize();
+
+  /**
    * Returns the meta object for class '{@link in.handyman.dsl.WriteCsv <em>Write Csv</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -4051,6 +4496,28 @@ public interface DslPackage extends EPackage
   EAttribute getLoadCsv_Delim();
 
   /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.LoadCsv#getFetchBatchSize <em>Fetch Batch Size</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Fetch Batch Size</em>'.
+   * @see in.handyman.dsl.LoadCsv#getFetchBatchSize()
+   * @see #getLoadCsv()
+   * @generated
+   */
+  EAttribute getLoadCsv_FetchBatchSize();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.LoadCsv#getWriteBatchSize <em>Write Batch Size</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Write Batch Size</em>'.
+   * @see in.handyman.dsl.LoadCsv#getWriteBatchSize()
+   * @see #getLoadCsv()
+   * @generated
+   */
+  EAttribute getLoadCsv_WriteBatchSize();
+
+  /**
    * Returns the meta object for the attribute '{@link in.handyman.dsl.LoadCsv#getValue <em>Value</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -4060,6 +4527,17 @@ public interface DslPackage extends EPackage
    * @generated
    */
   EAttribute getLoadCsv_Value();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.LoadCsv#getWriteThreadCount <em>Write Thread Count</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Write Thread Count</em>'.
+   * @see in.handyman.dsl.LoadCsv#getWriteThreadCount()
+   * @see #getLoadCsv()
+   * @generated
+   */
+  EAttribute getLoadCsv_WriteThreadCount();
 
   /**
    * Returns the meta object for class '{@link in.handyman.dsl.Transform <em>Transform</em>}'.
@@ -4092,6 +4570,38 @@ public interface DslPackage extends EPackage
    * @generated
    */
   EAttribute getTransform_Value();
+
+  /**
+   * Returns the meta object for class '{@link in.handyman.dsl.StartProcess <em>Start Process</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Start Process</em>'.
+   * @see in.handyman.dsl.StartProcess
+   * @generated
+   */
+  EClass getStartProcess();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.StartProcess#getName <em>Name</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Name</em>'.
+   * @see in.handyman.dsl.StartProcess#getName()
+   * @see #getStartProcess()
+   * @generated
+   */
+  EAttribute getStartProcess_Name();
+
+  /**
+   * Returns the meta object for the attribute '{@link in.handyman.dsl.StartProcess#getTarget <em>Target</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Target</em>'.
+   * @see in.handyman.dsl.StartProcess#getTarget()
+   * @see #getStartProcess()
+   * @generated
+   */
+  EAttribute getStartProcess_Target();
 
   /**
    * Returns the meta object for class '{@link in.handyman.dsl.Expression <em>Expression</em>}'.
@@ -4304,6 +4814,58 @@ public interface DslPackage extends EPackage
      * @generated
      */
     EReference ACTION__CONDITION = eINSTANCE.getAction_Condition();
+
+    /**
+     * The meta object literal for the '{@link in.handyman.dsl.impl.SpawnprocessImpl <em>Spawnprocess</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see in.handyman.dsl.impl.SpawnprocessImpl
+     * @see in.handyman.dsl.impl.DslPackageImpl#getSpawnprocess()
+     * @generated
+     */
+    EClass SPAWNPROCESS = eINSTANCE.getSpawnprocess();
+
+    /**
+     * The meta object literal for the '<em><b>Target</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute SPAWNPROCESS__TARGET = eINSTANCE.getSpawnprocess_Target();
+
+    /**
+     * The meta object literal for the '<em><b>Source</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute SPAWNPROCESS__SOURCE = eINSTANCE.getSpawnprocess_Source();
+
+    /**
+     * The meta object literal for the '{@link in.handyman.dsl.impl.DoglegImpl <em>Dogleg</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see in.handyman.dsl.impl.DoglegImpl
+     * @see in.handyman.dsl.impl.DslPackageImpl#getDogleg()
+     * @generated
+     */
+    EClass DOGLEG = eINSTANCE.getDogleg();
+
+    /**
+     * The meta object literal for the '<em><b>Inherit Context</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute DOGLEG__INHERIT_CONTEXT = eINSTANCE.getDogleg_InheritContext();
+
+    /**
+     * The meta object literal for the '<em><b>Process List</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference DOGLEG__PROCESS_LIST = eINSTANCE.getDogleg_ProcessList();
 
     /**
      * The meta object literal for the '{@link in.handyman.dsl.impl.ExecJavaImpl <em>Exec Java</em>}' class.
@@ -5272,6 +5834,56 @@ public interface DslPackage extends EPackage
     EAttribute CALLPROCESS__VALUE = eINSTANCE.getCallprocess_Value();
 
     /**
+     * The meta object literal for the '{@link in.handyman.dsl.impl.ForkprocessImpl <em>Forkprocess</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see in.handyman.dsl.impl.ForkprocessImpl
+     * @see in.handyman.dsl.impl.DslPackageImpl#getForkprocess()
+     * @generated
+     */
+    EClass FORKPROCESS = eINSTANCE.getForkprocess();
+
+    /**
+     * The meta object literal for the '<em><b>Target</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FORKPROCESS__TARGET = eINSTANCE.getForkprocess_Target();
+
+    /**
+     * The meta object literal for the '<em><b>Source</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FORKPROCESS__SOURCE = eINSTANCE.getForkprocess_Source();
+
+    /**
+     * The meta object literal for the '<em><b>Datasource</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FORKPROCESS__DATASOURCE = eINSTANCE.getForkprocess_Datasource();
+
+    /**
+     * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FORKPROCESS__VALUE = eINSTANCE.getForkprocess_Value();
+
+    /**
+     * The meta object literal for the '<em><b>Fork Batch Size</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FORKPROCESS__FORK_BATCH_SIZE = eINSTANCE.getForkprocess_ForkBatchSize();
+
+    /**
      * The meta object literal for the '{@link in.handyman.dsl.impl.UpdatedauditImpl <em>Updatedaudit</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -5416,6 +6028,30 @@ public interface DslPackage extends EPackage
     EAttribute COPYDATA__VALUE = eINSTANCE.getCopydata_Value();
 
     /**
+     * The meta object literal for the '<em><b>Write Thread Count</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute COPYDATA__WRITE_THREAD_COUNT = eINSTANCE.getCopydata_WriteThreadCount();
+
+    /**
+     * The meta object literal for the '<em><b>Fetch Batch Size</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute COPYDATA__FETCH_BATCH_SIZE = eINSTANCE.getCopydata_FetchBatchSize();
+
+    /**
+     * The meta object literal for the '<em><b>Write Batch Size</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute COPYDATA__WRITE_BATCH_SIZE = eINSTANCE.getCopydata_WriteBatchSize();
+
+    /**
      * The meta object literal for the '{@link in.handyman.dsl.impl.WriteCsvImpl <em>Write Csv</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -5492,12 +6128,36 @@ public interface DslPackage extends EPackage
     EAttribute LOAD_CSV__DELIM = eINSTANCE.getLoadCsv_Delim();
 
     /**
+     * The meta object literal for the '<em><b>Fetch Batch Size</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute LOAD_CSV__FETCH_BATCH_SIZE = eINSTANCE.getLoadCsv_FetchBatchSize();
+
+    /**
+     * The meta object literal for the '<em><b>Write Batch Size</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute LOAD_CSV__WRITE_BATCH_SIZE = eINSTANCE.getLoadCsv_WriteBatchSize();
+
+    /**
      * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
     EAttribute LOAD_CSV__VALUE = eINSTANCE.getLoadCsv_Value();
+
+    /**
+     * The meta object literal for the '<em><b>Write Thread Count</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute LOAD_CSV__WRITE_THREAD_COUNT = eINSTANCE.getLoadCsv_WriteThreadCount();
 
     /**
      * The meta object literal for the '{@link in.handyman.dsl.impl.TransformImpl <em>Transform</em>}' class.
@@ -5524,6 +6184,32 @@ public interface DslPackage extends EPackage
      * @generated
      */
     EAttribute TRANSFORM__VALUE = eINSTANCE.getTransform_Value();
+
+    /**
+     * The meta object literal for the '{@link in.handyman.dsl.impl.StartProcessImpl <em>Start Process</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see in.handyman.dsl.impl.StartProcessImpl
+     * @see in.handyman.dsl.impl.DslPackageImpl#getStartProcess()
+     * @generated
+     */
+    EClass START_PROCESS = eINSTANCE.getStartProcess();
+
+    /**
+     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute START_PROCESS__NAME = eINSTANCE.getStartProcess_Name();
+
+    /**
+     * The meta object literal for the '<em><b>Target</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute START_PROCESS__TARGET = eINSTANCE.getStartProcess_Target();
 
     /**
      * The meta object literal for the '{@link in.handyman.dsl.impl.ExpressionImpl <em>Expression</em>}' class.

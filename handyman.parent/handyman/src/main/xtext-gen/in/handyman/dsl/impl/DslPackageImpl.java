@@ -9,6 +9,7 @@ import in.handyman.dsl.Callprocess;
 import in.handyman.dsl.Catch;
 import in.handyman.dsl.ClickSendSms;
 import in.handyman.dsl.Copydata;
+import in.handyman.dsl.Dogleg;
 import in.handyman.dsl.Doozle;
 import in.handyman.dsl.Dropfile;
 import in.handyman.dsl.DslFactory;
@@ -21,6 +22,7 @@ import in.handyman.dsl.Fetch;
 import in.handyman.dsl.Finally;
 import in.handyman.dsl.FirebaseDatabasePut;
 import in.handyman.dsl.FirebaseReactiveNotification;
+import in.handyman.dsl.Forkprocess;
 import in.handyman.dsl.GooglecalPUT;
 import in.handyman.dsl.GooglecontactPUT;
 import in.handyman.dsl.GooglecontactSelectAll;
@@ -30,6 +32,8 @@ import in.handyman.dsl.RestPart;
 import in.handyman.dsl.SendMail;
 import in.handyman.dsl.SlackPUT;
 import in.handyman.dsl.SmsLeadSms;
+import in.handyman.dsl.Spawnprocess;
+import in.handyman.dsl.StartProcess;
 import in.handyman.dsl.Transform;
 import in.handyman.dsl.TrelloGET;
 import in.handyman.dsl.TrelloPUT;
@@ -86,6 +90,20 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * @generated
    */
   private EClass actionEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass spawnprocessEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass doglegEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -225,6 +243,13 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass forkprocessEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass updatedauditEClass = null;
 
   /**
@@ -268,6 +293,13 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * @generated
    */
   private EClass transformEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass startProcessEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -507,6 +539,66 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
   public EReference getAction_Condition()
   {
     return (EReference)actionEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getSpawnprocess()
+  {
+    return spawnprocessEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getSpawnprocess_Target()
+  {
+    return (EAttribute)spawnprocessEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getSpawnprocess_Source()
+  {
+    return (EAttribute)spawnprocessEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getDogleg()
+  {
+    return doglegEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getDogleg_InheritContext()
+  {
+    return (EAttribute)doglegEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getDogleg_ProcessList()
+  {
+    return (EReference)doglegEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -1674,6 +1766,66 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getForkprocess()
+  {
+    return forkprocessEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getForkprocess_Target()
+  {
+    return (EAttribute)forkprocessEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getForkprocess_Source()
+  {
+    return (EAttribute)forkprocessEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getForkprocess_Datasource()
+  {
+    return (EAttribute)forkprocessEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getForkprocess_Value()
+  {
+    return (EAttribute)forkprocessEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getForkprocess_ForkBatchSize()
+  {
+    return (EAttribute)forkprocessEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getUpdatedaudit()
   {
     return updatedauditEClass;
@@ -1844,6 +1996,36 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getCopydata_WriteThreadCount()
+  {
+    return (EAttribute)copydataEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getCopydata_FetchBatchSize()
+  {
+    return (EAttribute)copydataEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getCopydata_WriteBatchSize()
+  {
+    return (EAttribute)copydataEClass.getEStructuralFeatures().get(5);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getWriteCsv()
   {
     return writeCsvEClass;
@@ -1934,9 +2116,39 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getLoadCsv_Value()
+  public EAttribute getLoadCsv_FetchBatchSize()
   {
     return (EAttribute)loadCsvEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLoadCsv_WriteBatchSize()
+  {
+    return (EAttribute)loadCsvEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLoadCsv_Value()
+  {
+    return (EAttribute)loadCsvEClass.getEStructuralFeatures().get(5);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getLoadCsv_WriteThreadCount()
+  {
+    return (EAttribute)loadCsvEClass.getEStructuralFeatures().get(6);
   }
 
   /**
@@ -1967,6 +2179,36 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
   public EAttribute getTransform_Value()
   {
     return (EAttribute)transformEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getStartProcess()
+  {
+    return startProcessEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getStartProcess_Name()
+  {
+    return (EAttribute)startProcessEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getStartProcess_Target()
+  {
+    return (EAttribute)startProcessEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -2060,6 +2302,14 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     actionEClass = createEClass(ACTION);
     createEAttribute(actionEClass, ACTION__NAME);
     createEReference(actionEClass, ACTION__CONDITION);
+
+    spawnprocessEClass = createEClass(SPAWNPROCESS);
+    createEAttribute(spawnprocessEClass, SPAWNPROCESS__TARGET);
+    createEAttribute(spawnprocessEClass, SPAWNPROCESS__SOURCE);
+
+    doglegEClass = createEClass(DOGLEG);
+    createEAttribute(doglegEClass, DOGLEG__INHERIT_CONTEXT);
+    createEReference(doglegEClass, DOGLEG__PROCESS_LIST);
 
     execJavaEClass = createEClass(EXEC_JAVA);
     createEAttribute(execJavaEClass, EXEC_JAVA__CLASS_FQN);
@@ -2196,6 +2446,13 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     createEAttribute(callprocessEClass, CALLPROCESS__DATASOURCE);
     createEAttribute(callprocessEClass, CALLPROCESS__VALUE);
 
+    forkprocessEClass = createEClass(FORKPROCESS);
+    createEAttribute(forkprocessEClass, FORKPROCESS__TARGET);
+    createEAttribute(forkprocessEClass, FORKPROCESS__SOURCE);
+    createEAttribute(forkprocessEClass, FORKPROCESS__DATASOURCE);
+    createEAttribute(forkprocessEClass, FORKPROCESS__VALUE);
+    createEAttribute(forkprocessEClass, FORKPROCESS__FORK_BATCH_SIZE);
+
     updatedauditEClass = createEClass(UPDATEDAUDIT);
     createEAttribute(updatedauditEClass, UPDATEDAUDIT__LOGSINK);
     createEAttribute(updatedauditEClass, UPDATEDAUDIT__DATASOURCE);
@@ -2216,6 +2473,9 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     createEAttribute(copydataEClass, COPYDATA__SOURCE);
     createEAttribute(copydataEClass, COPYDATA__TO);
     createEAttribute(copydataEClass, COPYDATA__VALUE);
+    createEAttribute(copydataEClass, COPYDATA__WRITE_THREAD_COUNT);
+    createEAttribute(copydataEClass, COPYDATA__FETCH_BATCH_SIZE);
+    createEAttribute(copydataEClass, COPYDATA__WRITE_BATCH_SIZE);
 
     writeCsvEClass = createEClass(WRITE_CSV);
     createEAttribute(writeCsvEClass, WRITE_CSV__SOURCE);
@@ -2227,11 +2487,18 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     createEAttribute(loadCsvEClass, LOAD_CSV__SOURCE);
     createEAttribute(loadCsvEClass, LOAD_CSV__TO);
     createEAttribute(loadCsvEClass, LOAD_CSV__DELIM);
+    createEAttribute(loadCsvEClass, LOAD_CSV__FETCH_BATCH_SIZE);
+    createEAttribute(loadCsvEClass, LOAD_CSV__WRITE_BATCH_SIZE);
     createEAttribute(loadCsvEClass, LOAD_CSV__VALUE);
+    createEAttribute(loadCsvEClass, LOAD_CSV__WRITE_THREAD_COUNT);
 
     transformEClass = createEClass(TRANSFORM);
     createEAttribute(transformEClass, TRANSFORM__ON);
     createEAttribute(transformEClass, TRANSFORM__VALUE);
+
+    startProcessEClass = createEClass(START_PROCESS);
+    createEAttribute(startProcessEClass, START_PROCESS__NAME);
+    createEAttribute(startProcessEClass, START_PROCESS__TARGET);
 
     expressionEClass = createEClass(EXPRESSION);
     createEAttribute(expressionEClass, EXPRESSION__LHS);
@@ -2268,6 +2535,8 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     // Set bounds for type parameters
 
     // Add supertypes to classes
+    spawnprocessEClass.getESuperTypes().add(this.getAction());
+    doglegEClass.getESuperTypes().add(this.getAction());
     execJavaEClass.getESuperTypes().add(this.getAction());
     firebaseDatabasePutEClass.getESuperTypes().add(this.getAction());
     firebaseReactiveNotificationEClass.getESuperTypes().add(this.getAction());
@@ -2286,6 +2555,7 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     trelloPUTEClass.getESuperTypes().add(this.getAction());
     fetchEClass.getESuperTypes().add(this.getAction());
     callprocessEClass.getESuperTypes().add(this.getAction());
+    forkprocessEClass.getESuperTypes().add(this.getAction());
     updatedauditEClass.getESuperTypes().add(this.getAction());
     clickSendSmsEClass.getESuperTypes().add(this.getAction());
     slackPUTEClass.getESuperTypes().add(this.getAction());
@@ -2316,6 +2586,14 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     initEClass(actionEClass, Action.class, "Action", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getAction_Name(), ecorePackage.getEString(), "name", null, 0, 1, Action.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAction_Condition(), this.getExpression(), null, "condition", null, 0, 1, Action.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(spawnprocessEClass, Spawnprocess.class, "Spawnprocess", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getSpawnprocess_Target(), ecorePackage.getEString(), "target", null, 0, 1, Spawnprocess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getSpawnprocess_Source(), ecorePackage.getEString(), "source", null, 0, 1, Spawnprocess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(doglegEClass, Dogleg.class, "Dogleg", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getDogleg_InheritContext(), ecorePackage.getEString(), "inheritContext", null, 0, 1, Dogleg.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getDogleg_ProcessList(), this.getStartProcess(), null, "processList", null, 0, -1, Dogleg.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(execJavaEClass, ExecJava.class, "ExecJava", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getExecJava_ClassFqn(), ecorePackage.getEString(), "classFqn", null, 0, 1, ExecJava.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2452,6 +2730,13 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     initEAttribute(getCallprocess_Datasource(), ecorePackage.getEString(), "datasource", null, 0, 1, Callprocess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getCallprocess_Value(), ecorePackage.getEString(), "value", null, 0, 1, Callprocess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(forkprocessEClass, Forkprocess.class, "Forkprocess", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getForkprocess_Target(), ecorePackage.getEString(), "target", null, 0, 1, Forkprocess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getForkprocess_Source(), ecorePackage.getEString(), "source", null, 0, 1, Forkprocess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getForkprocess_Datasource(), ecorePackage.getEString(), "datasource", null, 0, 1, Forkprocess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getForkprocess_Value(), ecorePackage.getEString(), "value", null, 0, 1, Forkprocess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getForkprocess_ForkBatchSize(), ecorePackage.getEString(), "forkBatchSize", null, 0, 1, Forkprocess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     initEClass(updatedauditEClass, Updatedaudit.class, "Updatedaudit", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getUpdatedaudit_Logsink(), ecorePackage.getEString(), "logsink", null, 0, 1, Updatedaudit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getUpdatedaudit_Datasource(), ecorePackage.getEString(), "datasource", null, 0, 1, Updatedaudit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2472,6 +2757,9 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     initEAttribute(getCopydata_Source(), ecorePackage.getEString(), "source", null, 0, 1, Copydata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getCopydata_To(), ecorePackage.getEString(), "to", null, 0, 1, Copydata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getCopydata_Value(), ecorePackage.getEString(), "value", null, 0, 1, Copydata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getCopydata_WriteThreadCount(), ecorePackage.getEString(), "writeThreadCount", null, 0, 1, Copydata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getCopydata_FetchBatchSize(), ecorePackage.getEString(), "fetchBatchSize", null, 0, 1, Copydata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getCopydata_WriteBatchSize(), ecorePackage.getEString(), "writeBatchSize", null, 0, 1, Copydata.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(writeCsvEClass, WriteCsv.class, "WriteCsv", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getWriteCsv_Source(), ecorePackage.getEString(), "source", null, 0, 1, WriteCsv.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2483,11 +2771,18 @@ public class DslPackageImpl extends EPackageImpl implements DslPackage
     initEAttribute(getLoadCsv_Source(), ecorePackage.getEString(), "source", null, 0, 1, LoadCsv.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getLoadCsv_To(), ecorePackage.getEString(), "to", null, 0, 1, LoadCsv.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getLoadCsv_Delim(), ecorePackage.getEString(), "delim", null, 0, 1, LoadCsv.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLoadCsv_FetchBatchSize(), ecorePackage.getEInt(), "fetchBatchSize", null, 0, 1, LoadCsv.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLoadCsv_WriteBatchSize(), ecorePackage.getEInt(), "writeBatchSize", null, 0, 1, LoadCsv.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getLoadCsv_Value(), ecorePackage.getEString(), "value", null, 0, 1, LoadCsv.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLoadCsv_WriteThreadCount(), ecorePackage.getEInt(), "writeThreadCount", null, 0, 1, LoadCsv.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(transformEClass, Transform.class, "Transform", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTransform_On(), ecorePackage.getEString(), "on", null, 0, 1, Transform.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTransform_Value(), ecorePackage.getEString(), "value", null, 0, -1, Transform.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(startProcessEClass, StartProcess.class, "StartProcess", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getStartProcess_Name(), ecorePackage.getEString(), "name", null, 0, 1, StartProcess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getStartProcess_Target(), ecorePackage.getEString(), "target", null, 0, 1, StartProcess.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(expressionEClass, Expression.class, "Expression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getExpression_Lhs(), ecorePackage.getEString(), "lhs", null, 0, 1, Expression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

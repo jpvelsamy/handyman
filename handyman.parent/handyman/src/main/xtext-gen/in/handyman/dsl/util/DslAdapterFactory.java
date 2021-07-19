@@ -9,6 +9,7 @@ import in.handyman.dsl.Callprocess;
 import in.handyman.dsl.Catch;
 import in.handyman.dsl.ClickSendSms;
 import in.handyman.dsl.Copydata;
+import in.handyman.dsl.Dogleg;
 import in.handyman.dsl.Doozle;
 import in.handyman.dsl.Dropfile;
 import in.handyman.dsl.DslPackage;
@@ -20,6 +21,7 @@ import in.handyman.dsl.Fetch;
 import in.handyman.dsl.Finally;
 import in.handyman.dsl.FirebaseDatabasePut;
 import in.handyman.dsl.FirebaseReactiveNotification;
+import in.handyman.dsl.Forkprocess;
 import in.handyman.dsl.GooglecalPUT;
 import in.handyman.dsl.GooglecontactPUT;
 import in.handyman.dsl.GooglecontactSelectAll;
@@ -29,6 +31,8 @@ import in.handyman.dsl.RestPart;
 import in.handyman.dsl.SendMail;
 import in.handyman.dsl.SlackPUT;
 import in.handyman.dsl.SmsLeadSms;
+import in.handyman.dsl.Spawnprocess;
+import in.handyman.dsl.StartProcess;
 import in.handyman.dsl.Transform;
 import in.handyman.dsl.TrelloGET;
 import in.handyman.dsl.TrelloPUT;
@@ -132,6 +136,16 @@ public class DslAdapterFactory extends AdapterFactoryImpl
         return createActionAdapter();
       }
       @Override
+      public Adapter caseSpawnprocess(Spawnprocess object)
+      {
+        return createSpawnprocessAdapter();
+      }
+      @Override
+      public Adapter caseDogleg(Dogleg object)
+      {
+        return createDoglegAdapter();
+      }
+      @Override
       public Adapter caseExecJava(ExecJava object)
       {
         return createExecJavaAdapter();
@@ -227,6 +241,11 @@ public class DslAdapterFactory extends AdapterFactoryImpl
         return createCallprocessAdapter();
       }
       @Override
+      public Adapter caseForkprocess(Forkprocess object)
+      {
+        return createForkprocessAdapter();
+      }
+      @Override
       public Adapter caseUpdatedaudit(Updatedaudit object)
       {
         return createUpdatedauditAdapter();
@@ -260,6 +279,11 @@ public class DslAdapterFactory extends AdapterFactoryImpl
       public Adapter caseTransform(Transform object)
       {
         return createTransformAdapter();
+      }
+      @Override
+      public Adapter caseStartProcess(StartProcess object)
+      {
+        return createStartProcessAdapter();
       }
       @Override
       public Adapter caseExpression(Expression object)
@@ -359,6 +383,36 @@ public class DslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createActionAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link in.handyman.dsl.Spawnprocess <em>Spawnprocess</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see in.handyman.dsl.Spawnprocess
+   * @generated
+   */
+  public Adapter createSpawnprocessAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link in.handyman.dsl.Dogleg <em>Dogleg</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see in.handyman.dsl.Dogleg
+   * @generated
+   */
+  public Adapter createDoglegAdapter()
   {
     return null;
   }
@@ -649,6 +703,21 @@ public class DslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
+   * Creates a new adapter for an object of class '{@link in.handyman.dsl.Forkprocess <em>Forkprocess</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see in.handyman.dsl.Forkprocess
+   * @generated
+   */
+  public Adapter createForkprocessAdapter()
+  {
+    return null;
+  }
+
+  /**
    * Creates a new adapter for an object of class '{@link in.handyman.dsl.Updatedaudit <em>Updatedaudit</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -749,6 +818,21 @@ public class DslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createTransformAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link in.handyman.dsl.StartProcess <em>Start Process</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see in.handyman.dsl.StartProcess
+   * @generated
+   */
+  public Adapter createStartProcessAdapter()
   {
     return null;
   }

@@ -23,7 +23,10 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *   <li>{@link in.handyman.dsl.impl.LoadCsvImpl#getSource <em>Source</em>}</li>
  *   <li>{@link in.handyman.dsl.impl.LoadCsvImpl#getTo <em>To</em>}</li>
  *   <li>{@link in.handyman.dsl.impl.LoadCsvImpl#getDelim <em>Delim</em>}</li>
+ *   <li>{@link in.handyman.dsl.impl.LoadCsvImpl#getFetchBatchSize <em>Fetch Batch Size</em>}</li>
+ *   <li>{@link in.handyman.dsl.impl.LoadCsvImpl#getWriteBatchSize <em>Write Batch Size</em>}</li>
  *   <li>{@link in.handyman.dsl.impl.LoadCsvImpl#getValue <em>Value</em>}</li>
+ *   <li>{@link in.handyman.dsl.impl.LoadCsvImpl#getWriteThreadCount <em>Write Thread Count</em>}</li>
  * </ul>
  *
  * @generated
@@ -91,6 +94,46 @@ public class LoadCsvImpl extends ActionImpl implements LoadCsv
   protected String delim = DELIM_EDEFAULT;
 
   /**
+   * The default value of the '{@link #getFetchBatchSize() <em>Fetch Batch Size</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getFetchBatchSize()
+   * @generated
+   * @ordered
+   */
+  protected static final int FETCH_BATCH_SIZE_EDEFAULT = 0;
+
+  /**
+   * The cached value of the '{@link #getFetchBatchSize() <em>Fetch Batch Size</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getFetchBatchSize()
+   * @generated
+   * @ordered
+   */
+  protected int fetchBatchSize = FETCH_BATCH_SIZE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getWriteBatchSize() <em>Write Batch Size</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getWriteBatchSize()
+   * @generated
+   * @ordered
+   */
+  protected static final int WRITE_BATCH_SIZE_EDEFAULT = 0;
+
+  /**
+   * The cached value of the '{@link #getWriteBatchSize() <em>Write Batch Size</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getWriteBatchSize()
+   * @generated
+   * @ordered
+   */
+  protected int writeBatchSize = WRITE_BATCH_SIZE_EDEFAULT;
+
+  /**
    * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -109,6 +152,26 @@ public class LoadCsvImpl extends ActionImpl implements LoadCsv
    * @ordered
    */
   protected String value = VALUE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getWriteThreadCount() <em>Write Thread Count</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getWriteThreadCount()
+   * @generated
+   * @ordered
+   */
+  protected static final int WRITE_THREAD_COUNT_EDEFAULT = 0;
+
+  /**
+   * The cached value of the '{@link #getWriteThreadCount() <em>Write Thread Count</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getWriteThreadCount()
+   * @generated
+   * @ordered
+   */
+  protected int writeThreadCount = WRITE_THREAD_COUNT_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -205,6 +268,52 @@ public class LoadCsvImpl extends ActionImpl implements LoadCsv
    * <!-- end-user-doc -->
    * @generated
    */
+  public int getFetchBatchSize()
+  {
+    return fetchBatchSize;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setFetchBatchSize(int newFetchBatchSize)
+  {
+    int oldFetchBatchSize = fetchBatchSize;
+    fetchBatchSize = newFetchBatchSize;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.LOAD_CSV__FETCH_BATCH_SIZE, oldFetchBatchSize, fetchBatchSize));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public int getWriteBatchSize()
+  {
+    return writeBatchSize;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setWriteBatchSize(int newWriteBatchSize)
+  {
+    int oldWriteBatchSize = writeBatchSize;
+    writeBatchSize = newWriteBatchSize;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.LOAD_CSV__WRITE_BATCH_SIZE, oldWriteBatchSize, writeBatchSize));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public String getValue()
   {
     return value;
@@ -228,6 +337,29 @@ public class LoadCsvImpl extends ActionImpl implements LoadCsv
    * <!-- end-user-doc -->
    * @generated
    */
+  public int getWriteThreadCount()
+  {
+    return writeThreadCount;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setWriteThreadCount(int newWriteThreadCount)
+  {
+    int oldWriteThreadCount = writeThreadCount;
+    writeThreadCount = newWriteThreadCount;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.LOAD_CSV__WRITE_THREAD_COUNT, oldWriteThreadCount, writeThreadCount));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
@@ -239,8 +371,14 @@ public class LoadCsvImpl extends ActionImpl implements LoadCsv
         return getTo();
       case DslPackage.LOAD_CSV__DELIM:
         return getDelim();
+      case DslPackage.LOAD_CSV__FETCH_BATCH_SIZE:
+        return getFetchBatchSize();
+      case DslPackage.LOAD_CSV__WRITE_BATCH_SIZE:
+        return getWriteBatchSize();
       case DslPackage.LOAD_CSV__VALUE:
         return getValue();
+      case DslPackage.LOAD_CSV__WRITE_THREAD_COUNT:
+        return getWriteThreadCount();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -264,8 +402,17 @@ public class LoadCsvImpl extends ActionImpl implements LoadCsv
       case DslPackage.LOAD_CSV__DELIM:
         setDelim((String)newValue);
         return;
+      case DslPackage.LOAD_CSV__FETCH_BATCH_SIZE:
+        setFetchBatchSize((Integer)newValue);
+        return;
+      case DslPackage.LOAD_CSV__WRITE_BATCH_SIZE:
+        setWriteBatchSize((Integer)newValue);
+        return;
       case DslPackage.LOAD_CSV__VALUE:
         setValue((String)newValue);
+        return;
+      case DslPackage.LOAD_CSV__WRITE_THREAD_COUNT:
+        setWriteThreadCount((Integer)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -290,8 +437,17 @@ public class LoadCsvImpl extends ActionImpl implements LoadCsv
       case DslPackage.LOAD_CSV__DELIM:
         setDelim(DELIM_EDEFAULT);
         return;
+      case DslPackage.LOAD_CSV__FETCH_BATCH_SIZE:
+        setFetchBatchSize(FETCH_BATCH_SIZE_EDEFAULT);
+        return;
+      case DslPackage.LOAD_CSV__WRITE_BATCH_SIZE:
+        setWriteBatchSize(WRITE_BATCH_SIZE_EDEFAULT);
+        return;
       case DslPackage.LOAD_CSV__VALUE:
         setValue(VALUE_EDEFAULT);
+        return;
+      case DslPackage.LOAD_CSV__WRITE_THREAD_COUNT:
+        setWriteThreadCount(WRITE_THREAD_COUNT_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -313,8 +469,14 @@ public class LoadCsvImpl extends ActionImpl implements LoadCsv
         return TO_EDEFAULT == null ? to != null : !TO_EDEFAULT.equals(to);
       case DslPackage.LOAD_CSV__DELIM:
         return DELIM_EDEFAULT == null ? delim != null : !DELIM_EDEFAULT.equals(delim);
+      case DslPackage.LOAD_CSV__FETCH_BATCH_SIZE:
+        return fetchBatchSize != FETCH_BATCH_SIZE_EDEFAULT;
+      case DslPackage.LOAD_CSV__WRITE_BATCH_SIZE:
+        return writeBatchSize != WRITE_BATCH_SIZE_EDEFAULT;
       case DslPackage.LOAD_CSV__VALUE:
         return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
+      case DslPackage.LOAD_CSV__WRITE_THREAD_COUNT:
+        return writeThreadCount != WRITE_THREAD_COUNT_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -336,8 +498,14 @@ public class LoadCsvImpl extends ActionImpl implements LoadCsv
     result.append(to);
     result.append(", delim: ");
     result.append(delim);
+    result.append(", fetchBatchSize: ");
+    result.append(fetchBatchSize);
+    result.append(", writeBatchSize: ");
+    result.append(writeBatchSize);
     result.append(", value: ");
     result.append(value);
+    result.append(", writeThreadCount: ");
+    result.append(writeThreadCount);
     result.append(')');
     return result.toString();
   }

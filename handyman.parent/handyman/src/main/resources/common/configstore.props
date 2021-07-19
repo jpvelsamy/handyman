@@ -1,5 +1,5 @@
-mysql= {
-  url = "jdbc:mysql://localhost:3306/spw_config?useUnicode=true&characterEncoding=utf8&dumpQueriesOnException=true"
+config= {
+  url = "jdbc:mysql://pazzmysaz.cherry.in:3306/spw_config?useUnicode=true&characterEncoding=utf8&dumpQueriesOnException=true"
   driver = com.mysql.jdbc.Driver
   user=root
   passwd=password
@@ -11,5 +11,5 @@ mysql= {
   key_process_sql="select value from spw_process_config where process=? and variable=?"
   key_instance_sql="select value from spw_instance_config where alias =?"
   
-  resource_sql = "select config_type, user_name, password, resource_url from spw_resource_config where active='y' AND config_name=?"
+  resource_sql = "select config_type, driver_class, user_name, password, resource_url from spw_resource_config where active='y' AND config_name=?"
 }

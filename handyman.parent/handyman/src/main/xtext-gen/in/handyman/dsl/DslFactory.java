@@ -69,6 +69,24 @@ public interface DslFactory extends EFactory
   Action createAction();
 
   /**
+   * Returns a new object of class '<em>Spawnprocess</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Spawnprocess</em>'.
+   * @generated
+   */
+  Spawnprocess createSpawnprocess();
+
+  /**
+   * Returns a new object of class '<em>Dogleg</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Dogleg</em>'.
+   * @generated
+   */
+  Dogleg createDogleg();
+
+  /**
    * Returns a new object of class '<em>Exec Java</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -240,6 +258,15 @@ public interface DslFactory extends EFactory
   Callprocess createCallprocess();
 
   /**
+   * Returns a new object of class '<em>Forkprocess</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Forkprocess</em>'.
+   * @generated
+   */
+  Forkprocess createForkprocess();
+
+  /**
    * Returns a new object of class '<em>Updatedaudit</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -301,6 +328,15 @@ public interface DslFactory extends EFactory
    * @generated
    */
   Transform createTransform();
+
+  /**
+   * Returns a new object of class '<em>Start Process</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Start Process</em>'.
+   * @generated
+   */
+  StartProcess createStartProcess();
 
   /**
    * Returns a new object of class '<em>Expression</em>'.

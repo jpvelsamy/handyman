@@ -23,6 +23,9 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *   <li>{@link in.handyman.dsl.impl.CopydataImpl#getSource <em>Source</em>}</li>
  *   <li>{@link in.handyman.dsl.impl.CopydataImpl#getTo <em>To</em>}</li>
  *   <li>{@link in.handyman.dsl.impl.CopydataImpl#getValue <em>Value</em>}</li>
+ *   <li>{@link in.handyman.dsl.impl.CopydataImpl#getWriteThreadCount <em>Write Thread Count</em>}</li>
+ *   <li>{@link in.handyman.dsl.impl.CopydataImpl#getFetchBatchSize <em>Fetch Batch Size</em>}</li>
+ *   <li>{@link in.handyman.dsl.impl.CopydataImpl#getWriteBatchSize <em>Write Batch Size</em>}</li>
  * </ul>
  *
  * @generated
@@ -88,6 +91,66 @@ public class CopydataImpl extends ActionImpl implements Copydata
    * @ordered
    */
   protected String value = VALUE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getWriteThreadCount() <em>Write Thread Count</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getWriteThreadCount()
+   * @generated
+   * @ordered
+   */
+  protected static final String WRITE_THREAD_COUNT_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getWriteThreadCount() <em>Write Thread Count</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getWriteThreadCount()
+   * @generated
+   * @ordered
+   */
+  protected String writeThreadCount = WRITE_THREAD_COUNT_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getFetchBatchSize() <em>Fetch Batch Size</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getFetchBatchSize()
+   * @generated
+   * @ordered
+   */
+  protected static final String FETCH_BATCH_SIZE_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getFetchBatchSize() <em>Fetch Batch Size</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getFetchBatchSize()
+   * @generated
+   * @ordered
+   */
+  protected String fetchBatchSize = FETCH_BATCH_SIZE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getWriteBatchSize() <em>Write Batch Size</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getWriteBatchSize()
+   * @generated
+   * @ordered
+   */
+  protected static final String WRITE_BATCH_SIZE_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getWriteBatchSize() <em>Write Batch Size</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getWriteBatchSize()
+   * @generated
+   * @ordered
+   */
+  protected String writeBatchSize = WRITE_BATCH_SIZE_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -184,6 +247,75 @@ public class CopydataImpl extends ActionImpl implements Copydata
    * <!-- end-user-doc -->
    * @generated
    */
+  public String getWriteThreadCount()
+  {
+    return writeThreadCount;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setWriteThreadCount(String newWriteThreadCount)
+  {
+    String oldWriteThreadCount = writeThreadCount;
+    writeThreadCount = newWriteThreadCount;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.COPYDATA__WRITE_THREAD_COUNT, oldWriteThreadCount, writeThreadCount));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getFetchBatchSize()
+  {
+    return fetchBatchSize;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setFetchBatchSize(String newFetchBatchSize)
+  {
+    String oldFetchBatchSize = fetchBatchSize;
+    fetchBatchSize = newFetchBatchSize;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.COPYDATA__FETCH_BATCH_SIZE, oldFetchBatchSize, fetchBatchSize));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getWriteBatchSize()
+  {
+    return writeBatchSize;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setWriteBatchSize(String newWriteBatchSize)
+  {
+    String oldWriteBatchSize = writeBatchSize;
+    writeBatchSize = newWriteBatchSize;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.COPYDATA__WRITE_BATCH_SIZE, oldWriteBatchSize, writeBatchSize));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
@@ -195,6 +327,12 @@ public class CopydataImpl extends ActionImpl implements Copydata
         return getTo();
       case DslPackage.COPYDATA__VALUE:
         return getValue();
+      case DslPackage.COPYDATA__WRITE_THREAD_COUNT:
+        return getWriteThreadCount();
+      case DslPackage.COPYDATA__FETCH_BATCH_SIZE:
+        return getFetchBatchSize();
+      case DslPackage.COPYDATA__WRITE_BATCH_SIZE:
+        return getWriteBatchSize();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -217,6 +355,15 @@ public class CopydataImpl extends ActionImpl implements Copydata
         return;
       case DslPackage.COPYDATA__VALUE:
         setValue((String)newValue);
+        return;
+      case DslPackage.COPYDATA__WRITE_THREAD_COUNT:
+        setWriteThreadCount((String)newValue);
+        return;
+      case DslPackage.COPYDATA__FETCH_BATCH_SIZE:
+        setFetchBatchSize((String)newValue);
+        return;
+      case DslPackage.COPYDATA__WRITE_BATCH_SIZE:
+        setWriteBatchSize((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -241,6 +388,15 @@ public class CopydataImpl extends ActionImpl implements Copydata
       case DslPackage.COPYDATA__VALUE:
         setValue(VALUE_EDEFAULT);
         return;
+      case DslPackage.COPYDATA__WRITE_THREAD_COUNT:
+        setWriteThreadCount(WRITE_THREAD_COUNT_EDEFAULT);
+        return;
+      case DslPackage.COPYDATA__FETCH_BATCH_SIZE:
+        setFetchBatchSize(FETCH_BATCH_SIZE_EDEFAULT);
+        return;
+      case DslPackage.COPYDATA__WRITE_BATCH_SIZE:
+        setWriteBatchSize(WRITE_BATCH_SIZE_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -261,6 +417,12 @@ public class CopydataImpl extends ActionImpl implements Copydata
         return TO_EDEFAULT == null ? to != null : !TO_EDEFAULT.equals(to);
       case DslPackage.COPYDATA__VALUE:
         return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
+      case DslPackage.COPYDATA__WRITE_THREAD_COUNT:
+        return WRITE_THREAD_COUNT_EDEFAULT == null ? writeThreadCount != null : !WRITE_THREAD_COUNT_EDEFAULT.equals(writeThreadCount);
+      case DslPackage.COPYDATA__FETCH_BATCH_SIZE:
+        return FETCH_BATCH_SIZE_EDEFAULT == null ? fetchBatchSize != null : !FETCH_BATCH_SIZE_EDEFAULT.equals(fetchBatchSize);
+      case DslPackage.COPYDATA__WRITE_BATCH_SIZE:
+        return WRITE_BATCH_SIZE_EDEFAULT == null ? writeBatchSize != null : !WRITE_BATCH_SIZE_EDEFAULT.equals(writeBatchSize);
     }
     return super.eIsSet(featureID);
   }
@@ -282,6 +444,12 @@ public class CopydataImpl extends ActionImpl implements Copydata
     result.append(to);
     result.append(", value: ");
     result.append(value);
+    result.append(", writeThreadCount: ");
+    result.append(writeThreadCount);
+    result.append(", fetchBatchSize: ");
+    result.append(fetchBatchSize);
+    result.append(", writeBatchSize: ");
+    result.append(writeBatchSize);
     result.append(')');
     return result.toString();
   }

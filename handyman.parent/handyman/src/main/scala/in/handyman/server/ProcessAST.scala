@@ -23,6 +23,7 @@ object ProcessAST extends LazyLogging {
     val config: Map[String, String] = in.handyman.config.ConfigurationService.getAllConfig(instanceName)
     val inputConfig = config+("myjson"->json)
     val filePathConfig = config.get("filepath")
+    
    
     if(filePathConfig.isEmpty)
       throw new Exception("File path configuration for process "+instanceName+" is missing, check spw_process_config or spw_instance_config")
@@ -35,8 +36,8 @@ object ProcessAST extends LazyLogging {
     val path = PathResolver.resolvePath(instanceName, fileRelativePath, basePath)
    
 
-    val result = parser.parse(new java.io.FileReader(path));
-    val eRoot = result.getRootASTElement();
+    val result = parser.parse(new java.io.FileReader(path))
+    val eRoot = result.getRootASTElement()    
     val process: in.handyman.dsl.Process = eRoot.asInstanceOf[in.handyman.dsl.Process]
     RuntimeContext(process, inputConfig, path, instanceName)
   }
