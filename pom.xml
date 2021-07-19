@@ -101,7 +101,6 @@
     </dependencies>
 
     <build>
-        <finalName>handyman-core</finalName>
         <plugins>
             <plugin>
                 <groupId>org.antlr</groupId>
