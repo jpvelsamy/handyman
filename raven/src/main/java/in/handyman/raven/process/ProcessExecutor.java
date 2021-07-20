@@ -11,17 +11,13 @@ import in.handyman.raven.lambda.Lambda;
 import in.handyman.raven.lambda.LambdaAutowire;
 import in.handyman.raven.lambda.LambdaContext;
 import in.handyman.raven.lambda.LambdaExecution;
-import in.handyman.raven.metric.elastic.MetricUtil;
-import io.micrometer.core.instrument.Timer;
 import lombok.extern.log4j.Log4j2;
 import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
-import java.time.LocalTime;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -85,9 +81,6 @@ public class ProcessExecutor {
         if (context.getChild(0) != null) {
             final String lambdaName = context.getChild(0).getClass().getSimpleName().replace(CONTEXT, "");
             log.debug("Lambda Execution class {} started", lambdaName);
-            MetricUtil.add(lambdaName, processContext);
-            final Timer timer = MetricUtil.getCompositeMeterRegistry().timer(lambdaName, "processId", String.valueOf(processContext.getProcessId()), "time", LocalTime.now().toString());
-            final long start=System.nanoTime();
             if (actionExecutionContextMap.containsKey(lambdaName) && actionExecutionMap.containsKey(lambdaName)) {
                 final ActionContext actionContext = ActionContext.builder()
                         .lambdaName(lambdaName)
@@ -110,7 +103,6 @@ public class ProcessExecutor {
                     auditPayload.setAuditType(AuditPayload.AuditType.UPDATE_COMMAND_AUDIT);
                     auditPayload.setCommandDetail(actionContext.getDetailMap().toString());
                     HandymanActorSystemAccess.doAudit(auditPayload);
-                    timer.record(System.nanoTime()-start, TimeUnit.NANOSECONDS);
                 }
                 return actionContext;
             }

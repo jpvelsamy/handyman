@@ -10,24 +10,6 @@ process "cub.test"
 			
 			"} on-condition if "true"=="true"
 			
-			
-			callprocess as "call for loadcsv"
-			with-target "cub.test.loadcsv"
-			from-file "Example.raven"
-			using "${cub_eval}"
-			for-every {"
-			
-				SELECT ${process-id} as incoming_id;	
-				
-			"} on-condition if "true"=="true"	
-			
-			
-			transform as "test audit entry" on "${cub_eval}" using {"
-			
-				UPDATE test SET end = NOW();
-			
-			"} on-condition if "true"=="true"
-			
 
 	}
 	

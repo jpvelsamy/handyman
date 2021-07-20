@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,16 +25,16 @@ public class ProcessContext {
     @Builder.Default
     private Integer status = ProcessStatus.STARTED;
     private Long parentProcessId;
-
-    private Set<ActionContext> tryActions;
+    @Builder.Default
+    private Set<ActionContext> tryActions = new HashSet<>();
     @Builder.Default
     private Integer tryStatus = ProcessStatus.STARTED;
-
-    private Set<ActionContext> catchActions;
+    @Builder.Default
+    private Set<ActionContext> catchActions = new HashSet<>();
     @Builder.Default
     private Integer catchStatus = ProcessStatus.STARTED;
-
-    private Set<ActionContext> finallyActions;
+    @Builder.Default
+    private Set<ActionContext> finallyActions = new HashSet<>();
     @Builder.Default
     private Integer finallyStatus = ProcessStatus.STARTED;
 
