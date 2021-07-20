@@ -1,8 +1,8 @@
-package in.handyman.raven.core.context;
+package in.handyman.raven.context;
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import in.handyman.raven.core.process.ProcessStatus;
+import in.handyman.raven.process.ProcessStatus;
 import in.handyman.raven.util.UniqueID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

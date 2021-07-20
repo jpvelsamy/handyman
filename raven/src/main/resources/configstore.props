@@ -15,5 +15,4 @@ config= {
   resource_sql = "select config_type, driver_class, user_name, password, resource_url from spw_resource_config where active='y' AND config_name=?"
 
   scan_package_lambda= "SELECT value FROM spw_config.spw_common_config WHERE variable='scanLambdaPackage' AND active='Y' "
-
 }

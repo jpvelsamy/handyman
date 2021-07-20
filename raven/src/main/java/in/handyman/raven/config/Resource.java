@@ -1,4 +1,4 @@
-package in.handyman.raven.core.config;
+package in.handyman.raven.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

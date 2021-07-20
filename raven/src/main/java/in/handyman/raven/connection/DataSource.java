@@ -1,4 +1,4 @@
-package in.handyman.raven.core.connection;
+package in.handyman.raven.connection;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;

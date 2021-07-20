@@ -8,7 +8,7 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import in.handyman.raven.compiler.RavenParser;
-import in.handyman.raven.core.context.ActionContext;
+import in.handyman.raven.context.ActionContext;
 import in.handyman.raven.exception.HandymanException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

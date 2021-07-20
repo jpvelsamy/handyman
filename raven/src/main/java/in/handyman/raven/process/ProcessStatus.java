@@ -1,4 +1,4 @@
-package in.handyman.raven.core.process;
+package in.handyman.raven.process;
 
 public interface ProcessStatus {
 

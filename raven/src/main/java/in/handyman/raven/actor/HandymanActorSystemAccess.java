@@ -1,9 +1,9 @@
-package in.handyman.raven.core.actor;
+package in.handyman.raven.actor;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
-import in.handyman.raven.core.audit.AuditPayload;
+import in.handyman.raven.audit.AuditPayload;
 import in.handyman.raven.util.UniqueID;
 
 public class HandymanActorSystemAccess {

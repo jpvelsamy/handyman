@@ -1,8 +1,8 @@
-package in.handyman.raven.core.actor;
+package in.handyman.raven.actor;
 
 import akka.actor.AbstractActor;
-import in.handyman.raven.core.audit.AuditPayload;
-import in.handyman.raven.core.audit.AuditService;
+import in.handyman.raven.audit.AuditPayload;
+import in.handyman.raven.audit.AuditService;
 
 public class AuditActor extends AbstractActor {
 

@@ -1,9 +1,9 @@
 package in.handyman.raven.lib;
 
-import in.handyman.raven.core.audit.AuditService;
-import in.handyman.raven.core.config.ConfigurationService;
-import in.handyman.raven.core.connection.ResourceAccess;
-import in.handyman.raven.core.context.ActionContext;
+import in.handyman.raven.audit.AuditService;
+import in.handyman.raven.config.ConfigurationService;
+import in.handyman.raven.connection.ResourceAccess;
+import in.handyman.raven.context.ActionContext;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.LambdaAutowire;
 import in.handyman.raven.lambda.LambdaExecution;

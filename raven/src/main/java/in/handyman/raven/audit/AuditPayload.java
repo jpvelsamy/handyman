@@ -1,4 +1,4 @@
-package in.handyman.raven.core.audit;
+package in.handyman.raven.audit;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

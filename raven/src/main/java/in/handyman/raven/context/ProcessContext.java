@@ -1,6 +1,6 @@
-package in.handyman.raven.core.context;
+package in.handyman.raven.context;
 
-import in.handyman.raven.core.process.ProcessStatus;
+import in.handyman.raven.process.ProcessStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +18,8 @@ public class ProcessContext {
     private final Long processId;
     private final String instanceName;
     private final Map<String, String> context;
+    @Builder.Default
+    private final Long start = System.nanoTime();
 
     @Builder.Default
     private Integer status = ProcessStatus.STARTED;

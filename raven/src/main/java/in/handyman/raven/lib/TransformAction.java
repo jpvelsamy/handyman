@@ -2,9 +2,9 @@ package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zaxxer.hikari.HikariDataSource;
-import in.handyman.raven.core.audit.AuditService;
-import in.handyman.raven.core.connection.ResourceAccess;
-import in.handyman.raven.core.context.ActionContext;
+import in.handyman.raven.audit.AuditService;
+import in.handyman.raven.connection.ResourceAccess;
+import in.handyman.raven.context.ActionContext;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.LambdaAutowire;
 import in.handyman.raven.lambda.LambdaExecution;

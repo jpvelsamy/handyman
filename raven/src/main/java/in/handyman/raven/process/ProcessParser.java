@@ -1,8 +1,8 @@
-package in.handyman.raven.core.process;
+package in.handyman.raven.process;
 
 import in.handyman.raven.compiler.RavenLexer;
 import in.handyman.raven.compiler.RavenParser;
-import in.handyman.raven.core.context.ProcessContext;
+import in.handyman.raven.context.ProcessContext;
 import in.handyman.raven.exception.HandymanException;
 import lombok.extern.log4j.Log4j2;
 import org.antlr.v4.runtime.CharStream;

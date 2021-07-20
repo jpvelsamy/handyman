@@ -1,6 +1,6 @@
-package in.handyman.raven.core.process;
+package in.handyman.raven.process;
 
-import in.handyman.raven.core.context.ProcessContext;
+import in.handyman.raven.context.ProcessContext;
 import in.handyman.raven.exception.HandymanException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

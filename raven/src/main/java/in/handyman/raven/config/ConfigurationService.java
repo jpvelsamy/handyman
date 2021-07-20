@@ -1,8 +1,8 @@
-package in.handyman.raven.core.config;
+package in.handyman.raven.config;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import in.handyman.raven.core.connection.DataSource;
+import in.handyman.raven.connection.DataSource;
 import in.handyman.raven.exception.HandymanException;
 import lombok.extern.log4j.Log4j2;
 
