@@ -140,6 +140,16 @@ public interface RavenListener extends ParseTreeListener {
 	 */
 	void exitFbFormDownload(RavenParser.FbFormDownloadContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link RavenParser#dropFile}.
+	 * @param ctx the parse tree
+	 */
+	void enterDropFile(RavenParser.DropFileContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#dropFile}.
+	 * @param ctx the parse tree
+	 */
+	void exitDropFile(RavenParser.DropFileContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link RavenParser#expression}.
 	 * @param ctx the parse tree
 	 */

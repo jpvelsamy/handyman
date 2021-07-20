@@ -103,6 +103,10 @@ fbFormDownload:
 	'}' 'on-condition' condition=expression
 ;
 
+dropFile:
+	'dropfile' 'as' name=STRING 'in-path' target=STRING 'on-condition' condition=expression
+;
+
 
 expression :'if' (lhs=STRING operator=Operator rhs=STRING);
 
