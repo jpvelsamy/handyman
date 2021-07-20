@@ -11,7 +11,7 @@ import in.handyman.raven.lambda.Lambda;
 import in.handyman.raven.lambda.LambdaAutowire;
 import in.handyman.raven.lambda.LambdaContext;
 import in.handyman.raven.lambda.LambdaExecution;
-import in.handyman.raven.util.MetricUtil;
+import in.handyman.raven.metric.elastic.MetricUtil;
 import io.micrometer.core.instrument.Timer;
 import lombok.extern.log4j.Log4j2;
 import org.reflections.Reflections;

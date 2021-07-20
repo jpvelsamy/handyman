@@ -139,6 +139,7 @@ public class ProcessEngine {
             final Set<ActionContext> tryExecution = actions.stream().map(action -> ProcessExecutor.doExecute(processContext, action)).collect(Collectors.toSet());
             actionContexts.addAll(tryExecution);
         } catch (Exception e) {
+            e.printStackTrace();
             log.error(e);
             processContext.setStatus(ProcessStatus.FAILURE);
         } finally {
