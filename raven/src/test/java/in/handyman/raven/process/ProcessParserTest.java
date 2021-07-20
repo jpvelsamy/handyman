@@ -8,11 +8,9 @@ class ProcessParserTest {
     @Test
     void doProcess() {
         final ProcessContext start = ProcessEngine.start(HRequestResolver.LoadType.FILE.name(), "cub.test");
-
-        System.out.println("Hello");
-
+        System.out.println("Hello " + start);
+        assert start.getProcessId() != null;
     }
-
 
 
 }
