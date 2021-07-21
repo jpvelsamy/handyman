@@ -8,8 +8,6 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.DistributionSummary;
 import io.micrometer.core.instrument.LongTaskTimer;
 import io.micrometer.core.instrument.Meter;
-import io.micrometer.core.instrument.Tag;
-import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics;
 import io.micrometer.core.instrument.binder.jvm.DiskSpaceMetrics;
@@ -33,8 +31,6 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.joining;
 
@@ -44,7 +40,6 @@ public class MetricUtil {
     private static final PrometheusMeterRegistry registry;
     private static final String cQuery = "CREATE TABLE if not exists %s ( `name` text NOT NULL, `count` float8 NULL DEFAULT 0, `value` float8 NULL DEFAULT 0, `sum` float8 NULL DEFAULT 0, `mean` float8 NULL DEFAULT 0, `duration` float8 NULL DEFAULT 0, `max` float8 NULL DEFAULT 0, `total` float8 NULL DEFAULT 0, `unknown` float8 NULL DEFAULT 0, `active` float8 NULL DEFAULT 0, `created_on` timestamp DEFAULT current_timestamp() , tags text NULL DEFAULT '[]' ) ENGINE = InnoDB DEFAULT CHARSET = utf8;";
     private static final String iQuery = "INSERT INTO %s (name, count, value, sum, mean, duration, max, active, created_on,tags) VALUES(?,?,?,?,?,?,?,?,current_timestamp(),?);";
-
 
     static {
         registry = new PrometheusMeterRegistry(new PrometheusConfig() {
@@ -74,17 +69,7 @@ public class MetricUtil {
         new ProcessorMetrics().bindTo(registry);
         new ClassLoaderMetrics().bindTo(registry);
         new FileDescriptorMetrics().bindTo(registry);
-
     }
-
-    public static void addBefore(final ProcessContext context) {
-//        final String name = "process." + context.getProcessName();
-//        Counter.builder(name)
-//                .tag("instanceName", context.getInstanceName())
-//                .register(registry).increment();
-//        registry.publish();
-    }
-
 
     public static void addAfter(final ProcessContext context) {
         final String name = "process." + context.getProcessName();
@@ -119,10 +104,10 @@ public class MetricUtil {
                 .tag("instanceName", context.getInstanceName())
                 .tag("processId", String.valueOf(context.getProcessId()))
                 .register(registry).record(amount);
-        extracted();
+        persist();
     }
 
-    private static void extracted() {
+    private static void persist() {
         try (var conn = DataSource.getConnection()) {
             try (var stmt = conn.createStatement()) {
                 stmt.execute(String.format(cQuery, "spw_config.`micrometer-metrics`"));
@@ -154,10 +139,9 @@ public class MetricUtil {
                                 payload.setSum(functionTimer.totalTime(getBaseTimeUnit()));
                                 payload.setMean(functionTimer.mean(getBaseTimeUnit()));
                                 payload.setCount(functionTimer.count());
-                            }, MetricUtil::writeCustomMetric);
-                    final String collect = meter.getId().getTags().stream().map(t -> String.format("{\"%s\":\"%s\"}", t.getKey(), t.getValue()))
+                            }, log::debug);
+                    final String tags = meter.getId().getTags().stream().map(t -> String.format("{\"%s\":\"%s\"}", t.getKey(), t.getValue()))
                             .collect(joining(",", "[", "]"));
-
                     stmt.setString(1, meter.getId().getName());
                     stmt.setDouble(2, payload.getCount());
                     stmt.setDouble(3, payload.getValue());
@@ -166,7 +150,7 @@ public class MetricUtil {
                     stmt.setDouble(6, payload.getDuration());
                     stmt.setDouble(7, payload.getMax());
                     stmt.setDouble(8, payload.getActive());
-                    stmt.setString(9, collect);
+                    stmt.setString(9, tags);
                     stmt.addBatch();
                 }
                 stmt.executeBatch();
@@ -177,36 +161,6 @@ public class MetricUtil {
 
 
     }
-
-    private static Stream<String> writeCustomMetric(Meter meter) {
-        long wallTime = registry.config().clock().wallTime();
-        List<Tag> tags = meter.getId().getTags();
-        return StreamSupport.stream(meter.measure().spliterator(), false)
-                .map(ms -> {
-                            Tags localTags = Tags.concat(tags, "statistics", ms.getStatistic().toString());
-                            String name = meter.getId().getName();
-
-                            switch (ms.getStatistic()) {
-                                case TOTAL:
-                                case TOTAL_TIME:
-                                    name += ".sum";
-                                    break;
-                                case MAX:
-                                    name += ".max";
-                                    break;
-                                case ACTIVE_TASKS:
-                                    name += ".active.count";
-                                    break;
-                                case DURATION:
-                                    name += ".duration.sum";
-                                    break;
-                            }
-
-                            return "";
-                        }
-                );
-    }
-
 
     private static TimeUnit getBaseTimeUnit() {
         return TimeUnit.NANOSECONDS;

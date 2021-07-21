@@ -1,14 +1,14 @@
 package in.handyman.raven.process;
 
-import in.handyman.raven.compiler.RavenParser;
 import in.handyman.raven.actor.HandymanActorSystemAccess;
 import in.handyman.raven.audit.AuditPayload;
+import in.handyman.raven.compiler.RavenParser;
 import in.handyman.raven.config.ConfigurationService;
 import in.handyman.raven.context.ActionContext;
 import in.handyman.raven.context.ProcessContext;
+import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.metric.MetricUtil;
 import in.handyman.raven.util.UniqueID;
-import in.handyman.raven.exception.HandymanException;
 import lombok.extern.log4j.Log4j2;
 
 import java.net.InetAddress;
@@ -79,8 +79,6 @@ public class ProcessEngine {
                 .machine(machine)
                 .build();
         HandymanActorSystemAccess.doAudit(auditPayload);
-        MetricUtil.addBefore( processContext);
-
         try {
             tryActionsExecution(processContext, process);
         } catch (HandymanException e) {
