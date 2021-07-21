@@ -1,5 +1,8 @@
 package in.handyman.raven.process;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.compiler.RavenLexer;
 import in.handyman.raven.compiler.RavenParser;
@@ -46,7 +49,7 @@ public class CommandProxy {
                         if (field.getType() == Token.class) {
                             final Token o = (Token) fieldValue;
                             final String text = getString(o);
-                            final Method method = target.getClass().getMethod("set" + fieldName, getter.getReturnType());
+                            final Method method = getMethod(target, fieldName, getter.getReturnType());
                             Arrays.stream(method.getParameterTypes()).findFirst().ifPresent(aClass -> {
                                 final Object convertValue = mapper.convertValue(text, aClass);
                                 try {
@@ -58,10 +61,21 @@ public class CommandProxy {
                         } else if (field.getType() == RavenParser.ExpressionContext.class) {
                             final RavenParser.ExpressionContext o = (RavenParser.ExpressionContext) fieldValue;
                             final Boolean condition = condition(o);
-                            final Method method = target.getClass().getMethod("set" + fieldName, getter.getReturnType());
+                            final Method method = getMethod(target, fieldName, getter.getReturnType());
                             Arrays.stream(method.getParameterTypes()).findFirst().ifPresent(aClass -> {
                                 try {
                                     method.invoke(target, condition);
+                                } catch (IllegalAccessException | InvocationTargetException e) {
+                                    throw new HandymanException("Context mapping failed for ExpressionContext", e);
+                                }
+                            });
+                        } else if (field.getType() == RavenParser.JsonContext.class) {
+                            final RavenParser.JsonContext o = (RavenParser.JsonContext) fieldValue;
+                            final JsonNode node = mapper.readTree(o.getText());
+                            final Method method = getMethod(target, fieldName, getter.getReturnType());
+                            Arrays.stream(method.getParameterTypes()).findFirst().ifPresent(aClass -> {
+                                try {
+                                    method.invoke(target, node);
                                 } catch (IllegalAccessException | InvocationTargetException e) {
                                     throw new HandymanException("Context mapping failed for ExpressionContext", e);
                                 }
@@ -84,7 +98,7 @@ public class CommandProxy {
                                     })
                                     .collect(Collectors.toList());
                             final Class<?> returnType = getter.getReturnType();
-                            final Method method = target.getClass().getMethod("set" + fieldName, returnType);
+                            final Method method = getMethod(target, fieldName, returnType);
                             Arrays.stream(method.getParameterTypes()).findFirst().ifPresent(aClass -> {
                                 try {
                                     method.invoke(target, list);
@@ -98,9 +112,17 @@ public class CommandProxy {
                     }
                 } catch (IllegalAccessException | NoSuchMethodException e) {
                     throw new HandymanException("Context mapping failed", e);
+                } catch (JsonMappingException e) {
+                    throw new HandymanException("Json Context mapping failed", e);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
                 }
             }
         }
+    }
+
+    private static Method getMethod(final Lambda target, final String fieldName, final Class<?> returnType) throws NoSuchMethodException {
+        return target.getClass().getMethod("set" + fieldName, returnType);
     }
 
     private static String getString(final Token o) {

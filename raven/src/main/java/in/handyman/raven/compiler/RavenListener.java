@@ -150,6 +150,16 @@ public interface RavenListener extends ParseTreeListener {
 	 */
 	void exitDropFile(RavenParser.DropFileContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link RavenParser#restApi}.
+	 * @param ctx the parse tree
+	 */
+	void enterRestApi(RavenParser.RestApiContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#restApi}.
+	 * @param ctx the parse tree
+	 */
+	void exitRestApi(RavenParser.RestApiContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link RavenParser#expression}.
 	 * @param ctx the parse tree
 	 */
@@ -159,4 +169,54 @@ public interface RavenListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitExpression(RavenParser.ExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#json}.
+	 * @param ctx the parse tree
+	 */
+	void enterJson(RavenParser.JsonContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#json}.
+	 * @param ctx the parse tree
+	 */
+	void exitJson(RavenParser.JsonContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#obj}.
+	 * @param ctx the parse tree
+	 */
+	void enterObj(RavenParser.ObjContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#obj}.
+	 * @param ctx the parse tree
+	 */
+	void exitObj(RavenParser.ObjContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#pair}.
+	 * @param ctx the parse tree
+	 */
+	void enterPair(RavenParser.PairContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#pair}.
+	 * @param ctx the parse tree
+	 */
+	void exitPair(RavenParser.PairContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#arr}.
+	 * @param ctx the parse tree
+	 */
+	void enterArr(RavenParser.ArrContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#arr}.
+	 * @param ctx the parse tree
+	 */
+	void exitArr(RavenParser.ArrContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#jValue}.
+	 * @param ctx the parse tree
+	 */
+	void enterJValue(RavenParser.JValueContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#jValue}.
+	 * @param ctx the parse tree
+	 */
+	void exitJValue(RavenParser.JValueContext ctx);
 }

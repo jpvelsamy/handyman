@@ -1,5 +1,6 @@
 package in.handyman.raven.lambda;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
@@ -20,6 +21,7 @@ import org.apache.logging.log4j.MarkerManager;
 import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -33,18 +35,17 @@ public class LambdaGeneration {
     private static final String CONTEXT = "Context";
     private static final String MAIN_JAVA = "src/main/java/";
     private static final String ACTION_IMPL = "Action";
-    //TODO make it dynamic
-    private static final Set<String> EXCLUDE_ACTION = Set.of("Action", "Expression", "TryClause", "CatchClause", "FinallyClause", "Process");
 
     public void generate(final Set<String> givenActions, final List<Class<?>> classes, final String modelTargetPackage, final String executionTargetPackage) {
-        final Set<String> actions = givenActions.stream()
-                .map(s -> Character.toUpperCase(s.charAt(0)) + s.substring(1) + CONTEXT)
+        final Set<String> actions = Arrays.stream(RavenParser.ActionContext.class.getDeclaredMethods())
+                .map(Method::getReturnType).map(Class::getSimpleName)
+                .filter(s -> s.contains(CONTEXT))
                 .collect(Collectors.toSet());
         final List<JavaFile> javaFiles = new ArrayList<>();
         classes.forEach(actionContext -> {
             final String actionContextFullName = actionContext.getSimpleName();
             final String lambdaName = getLambdaName(actionContextFullName);
-            if (actions.contains(actionContextFullName) && !EXCLUDE_ACTION.contains(lambdaName)) {
+            if (actions.contains(actionContextFullName)) {
                 javaFiles.add(actionAttribute(actionContext, lambdaName, modelTargetPackage));
                 javaFiles.add(execution(actionContextFullName, modelTargetPackage, executionTargetPackage));
             }
@@ -144,6 +145,9 @@ public class LambdaGeneration {
                     builder.addField(ParameterizedTypeName.get(ClassName.get(List.class), TypeName.get(RavenParser.ActionContext.class)),
                             name, Modifier.PRIVATE);
                 }
+            } else if (type == RavenParser.JsonContext.class) {
+                builder.addField(TypeName.get(JsonNode.class),
+                        name, Modifier.PRIVATE);
             }
         });
 

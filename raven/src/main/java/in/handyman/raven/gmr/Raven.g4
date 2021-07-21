@@ -3,6 +3,8 @@ grammar Raven;
 package in.handyman.raven.compiler;
 }
 
+import JSON;
+
 process:
 	'process' name=STRING
 	'{'
@@ -37,9 +39,11 @@ action:
 	|assign
     |callProcess
 	|copyData
+	|dropFile
 	|fbFormDownload
 	|fbLead
 	|loadCsv
+	|restApi
 	|transform)
 ;
 
@@ -107,9 +111,13 @@ dropFile:
 	'dropfile' 'as' name=STRING 'in-path' target=STRING 'on-condition' condition=expression
 ;
 
+restApi:
+	'restapi' 'as' name=STRING 'url' url=STRING 'method' method=STRING 'with headers' header=json
+	'{'
+	value=json
+	'}' 'on-condition' condition=expression;
 
 expression :'if' (lhs=STRING operator=Operator rhs=STRING);
-
 
 //rules
 
@@ -125,7 +133,6 @@ fragment
 StringCharacter
 	:	~["\\]
 	;
-
 NON_ZERO_DIGIT: NON_Z_DIGIT+;
 STRING :	'"' StringCharacters? '"';
 CRLF : '\r'? '\n' | '\r' ;
