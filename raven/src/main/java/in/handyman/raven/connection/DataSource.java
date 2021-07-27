@@ -16,7 +16,7 @@ public class DataSource {
     private static final HikariDataSource SOURCE;
 
     static {
-        final Config conf = ConfigFactory.parseResources("configstore.props");
+        final Config conf = ConfigFactory.parseResources("handyman-raven-configstore.props");
         log.info("Initializing the config store from config file {}", conf.origin().url());
         final String url = conf.getString("config.url");
         final String driver = conf.getString("config.driver");

@@ -19,7 +19,7 @@ import java.util.Set;
 @Log4j2
 public class ConfigurationService {
 
-    private static final Config conf = ConfigFactory.parseResources("configstore.props");
+    private static final Config conf = ConfigFactory.parseResources("handyman-raven-configstore.props");
     private static final String keyQueryBatch = conf.getString("config.key_global_sql");
     private static final String keyQueryProcess = conf.getString("config.key_process_sql");
     private static final String allQueryBatch = conf.getString("config.batch_sql");
