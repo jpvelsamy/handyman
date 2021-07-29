@@ -106,8 +106,7 @@ public class CopyDataAction implements LambdaExecution {
                 try (final Statement stmt = sourceConnection.createStatement()) {
                     stmt.setFetchSize(fetchSize);
                     var countDownLatch = new CountDownLatch(upperThreadCount);
-
-                    IntStream.range(lowerThreadCount, upperThreadCount).forEach(i -> {
+                    IntStream.range(lowerThreadCount, upperThreadCount + 1).forEach(i -> {
                         var rowQueue = new LinkedBlockingDeque<Table.Row>();
                         var poisonPill = new Table.Row(i, null);
                         log.info(aMarker, " action is prepping up writer thread with poison pill {}", poisonPill);
@@ -164,7 +163,7 @@ public class CopyDataAction implements LambdaExecution {
     private Table.Row getRow(final ResultSet rs, final int nrCols) throws SQLException {
         var columnSet = new LinkedHashSet<Table.ColumnInARow>();
         var id = rs.getRow();
-        IntStream.range(1, nrCols).forEach(i -> {
+        IntStream.range(1, nrCols + 1).forEach(i -> {
             final Table.ColumnInARow column = createColumn(i, rs);
             columnSet.add(column);
         });
@@ -190,6 +189,6 @@ public class CopyDataAction implements LambdaExecution {
 
     @Override
     public boolean executeIf() {
-        return false;
+        return context.getCondition();
     }
 }
