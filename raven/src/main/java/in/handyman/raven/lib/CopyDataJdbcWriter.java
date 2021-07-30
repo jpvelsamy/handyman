@@ -107,6 +107,8 @@ public class CopyDataJdbcWriter implements Callable<Void> {
                         || Objects.equals(columnTypeName, "timestamp")) {
                     dataFrameBuilder.append(Constants.STRING_ENCLOSER).
                             append(column.getValue()).append(Constants.STRING_ENCLOSER);
+                } else {
+                    dataFrameBuilder.append(column.getValue());
                 }
                 if (!column.getIsLastColumn()) {
                     dataFrameBuilder.append(Constants.FIELD_SEPARATOR);
