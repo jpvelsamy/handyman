@@ -27,5 +27,5 @@ public class Transform implements Lambda {
 
   private List<String> value;
 
-  private Boolean condition;
+  private Boolean condition = true;
 }

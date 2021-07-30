@@ -29,5 +29,5 @@ public class RestApi implements Lambda {
 
   private JsonNode value;
 
-  private Boolean condition;
+  private Boolean condition = true;
 }

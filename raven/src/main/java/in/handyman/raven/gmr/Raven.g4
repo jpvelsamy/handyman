@@ -40,8 +40,6 @@ action:
     |callProcess
 	|copyData
 	|dropFile
-	|fbFormDownload
-	|fbLead
 	|loadCsv
 	|restApi
 	|transform)
@@ -89,20 +87,6 @@ assign:
 	'}' ('on-condition' condition=expression)*
 ;
 
-fbLead:
-	'fblc' 'as' name=STRING 'secured-by' accessToken=STRING 'with-key' appSecret=STRING 'through-user' accountId=STRING 'for-campaign' campaignId=STRING 'into' target=STRING 'using'
-	'{'
-		value=STRING
-	'}' ('on-condition' condition=expression)*
-;
-
-
-fbFormDownload:
-	'fbfd' 'as' name=STRING 'secured-by' accessToken=STRING 'with-key' appSecret=STRING 'through-user' accountId=STRING 'for-form' formId=STRING 'into' target=STRING 'using'
-	'{'
-		value=STRING
-	'}' ('on-condition' condition=expression)*
-;
 
 dropFile:
 	'dropfile' 'as' name=STRING 'in-path' target=STRING ('on-condition' condition=expression)*
@@ -132,7 +116,7 @@ StringCharacter
 	;
 NON_ZERO_DIGIT: NON_Z_DIGIT+;
 STRING :	'"' StringCharacters? '"';
-CRLF : '\r'? '\n' | '\r' ;
+CRLF : ('\r'? '\n' | '\r')-> channel(HIDDEN) ;
 Operator:
 	'<'|'>'|'=='|'contains'
 ;
