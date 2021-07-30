@@ -101,10 +101,10 @@ public class CopyDataJdbcWriter implements Callable<Void> {
             for (final Table.ColumnInARow column : columnSet) {
                 final String columnTypeName = column.getColumnTypeName();
 
-                if (Objects.equals(columnTypeName, Constants.STRING_DATATYPE)
-                        || Objects.equals(columnTypeName, "java.lang.string")
-                        || Objects.equals(columnTypeName, "datetime")
-                        || Objects.equals(columnTypeName, "timestamp")) {
+                if (Objects.nonNull(columnTypeName) && (Objects.equals(columnTypeName, Constants.STRING_DATATYPE)
+                        || Objects.equals(columnTypeName.toLowerCase(), "java.lang.string")
+                        || Objects.equals(columnTypeName.toLowerCase(), "datetime")
+                        || Objects.equals(columnTypeName.toLowerCase(), "timestamp"))) {
                     dataFrameBuilder.append(Constants.STRING_ENCLOSER).
                             append(column.getValue()).append(Constants.STRING_ENCLOSER);
                 } else {
