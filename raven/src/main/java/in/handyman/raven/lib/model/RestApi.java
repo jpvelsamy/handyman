@@ -3,8 +3,6 @@ package in.handyman.raven.lib.model;
 import com.fasterxml.jackson.databind.JsonNode;
 import in.handyman.raven.lambda.Lambda;
 import in.handyman.raven.lambda.LambdaContext;
-import java.lang.Boolean;
-import java.lang.String;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

@@ -2,8 +2,6 @@ package in.handyman.raven.lib.model;
 
 import in.handyman.raven.lambda.Lambda;
 import in.handyman.raven.lambda.LambdaContext;
-import java.lang.Boolean;
-import java.lang.String;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
