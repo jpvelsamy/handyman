@@ -51,30 +51,27 @@ copyData:
 	('copydata' 'as' name=STRING 'from' source=STRING 'to' to=STRING  'using'
 	'{'
 		value=STRING
-	'}' 'on-condition' condition=expression 'fielding'
-	 writeThreadCount=NON_ZERO_DIGIT 'with-fetch-batch-size'
-	fetchBatchSize=NON_ZERO_DIGIT 'with-write-batch-size' writeBatchSize=NON_ZERO_DIGIT)
+	'}' ('on-condition' condition=expression)* ('fielding' writeThreadCount=NON_ZERO_DIGIT)* ('with-fetch-batch-size' fetchBatchSize=NON_ZERO_DIGIT)* ('with-write-batch-size' writeBatchSize=NON_ZERO_DIGIT)*)
 	 ;
 
 transform:
 	'transform' 'as' name= STRING 'on' on= STRING 'using'
 	 '{'
 		value+=STRING
-	'}' 'on-condition' condition=expression
-	;
+	'}' ('on-condition' condition=expression)*;
 
 loadCsv:
 	'loadcsv' 'as' name=STRING 'pid' pid=STRING 'from' source=STRING 'to' to=STRING 'with' delim=STRING 'by-batch'
 	limit=STRING 'using'
 	'{'
 	value=STRING
-	'}' 'on-condition' condition=expression;
+	'}' ('on-condition' condition=expression)*;
 
 abort:
 	'abort' 'as' name=STRING
 	'{'
 		value=STRING
-	'}' 'on-condition' condition=expression
+	'}' ('on-condition' condition=expression)*
 ;
 
 callProcess:
@@ -82,21 +79,21 @@ callProcess:
 	'for-every'
 	'{'
 	value=STRING
-	'}' 'on-condition' condition=expression;
+	'}' ('on-condition' condition=expression)*;
 
 
 assign:
 	'assign' 'as' name=STRING 'source' source=STRING 'using'
 	'{'
 		value=STRING
-	'}' 'on-condition' condition=expression
+	'}' ('on-condition' condition=expression)*
 ;
 
 fbLead:
 	'fblc' 'as' name=STRING 'secured-by' accessToken=STRING 'with-key' appSecret=STRING 'through-user' accountId=STRING 'for-campaign' campaignId=STRING 'into' target=STRING 'using'
 	'{'
 		value=STRING
-	'}' 'on-condition' condition=expression
+	'}' ('on-condition' condition=expression)*
 ;
 
 
@@ -104,18 +101,18 @@ fbFormDownload:
 	'fbfd' 'as' name=STRING 'secured-by' accessToken=STRING 'with-key' appSecret=STRING 'through-user' accountId=STRING 'for-form' formId=STRING 'into' target=STRING 'using'
 	'{'
 		value=STRING
-	'}' 'on-condition' condition=expression
+	'}' ('on-condition' condition=expression)*
 ;
 
 dropFile:
-	'dropfile' 'as' name=STRING 'in-path' target=STRING 'on-condition' condition=expression
+	'dropfile' 'as' name=STRING 'in-path' target=STRING ('on-condition' condition=expression)*
 ;
 
 restApi:
 	'restapi' 'as' name=STRING 'url' url=STRING 'method' method=STRING 'with headers' header=json
 	'{'
 	value=json
-	'}' 'on-condition' condition=expression;
+	'}' ('on-condition' condition=expression)*;
 
 expression :'if' (lhs=STRING operator=Operator rhs=STRING);
 

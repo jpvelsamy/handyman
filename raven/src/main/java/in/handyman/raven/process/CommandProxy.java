@@ -61,25 +61,11 @@ public class CommandProxy {
                         } else if (field.getType() == RavenParser.ExpressionContext.class) {
                             final RavenParser.ExpressionContext o = (RavenParser.ExpressionContext) fieldValue;
                             final Boolean condition = condition(o);
-                            final Method method = getMethod(target, fieldName, getter.getReturnType());
-                            Arrays.stream(method.getParameterTypes()).findFirst().ifPresent(aClass -> {
-                                try {
-                                    method.invoke(target, condition);
-                                } catch (IllegalAccessException | InvocationTargetException e) {
-                                    throw new HandymanException("Context mapping failed for ExpressionContext", e);
-                                }
-                            });
+                            setValue(target, fieldName, getter, condition);
                         } else if (field.getType() == RavenParser.JsonContext.class) {
                             final RavenParser.JsonContext o = (RavenParser.JsonContext) fieldValue;
                             final JsonNode node = mapper.readTree(o.getText());
-                            final Method method = getMethod(target, fieldName, getter.getReturnType());
-                            Arrays.stream(method.getParameterTypes()).findFirst().ifPresent(aClass -> {
-                                try {
-                                    method.invoke(target, node);
-                                } catch (IllegalAccessException | InvocationTargetException e) {
-                                    throw new HandymanException("Context mapping failed for ExpressionContext", e);
-                                }
-                            });
+                            setValue(target, fieldName, getter, node);
                         } else if (field.getType() == List.class) {
                             final List<Object> tokens = (List<Object>) fieldValue;
                             final Type actualTypeArgument = ((ParameterizedType) getter.getGenericReturnType()).getActualTypeArguments()[0];
@@ -115,10 +101,21 @@ public class CommandProxy {
                 } catch (JsonMappingException e) {
                     throw new HandymanException("Json Context mapping failed", e);
                 } catch (JsonProcessingException e) {
-                    e.printStackTrace();
+                    throw new HandymanException("Unknown Context provided");
                 }
             }
         }
+    }
+
+    private static void setValue(final Lambda target, final String fieldName, final Method getter, final Object node) throws NoSuchMethodException {
+        final Method method = getMethod(target, fieldName, getter.getReturnType());
+        Arrays.stream(method.getParameterTypes()).findFirst().ifPresent(aClass -> {
+            try {
+                method.invoke(target, node);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new HandymanException("Context mapping failed for ExpressionContext", e);
+            }
+        });
     }
 
     private static Method getMethod(final Lambda target, final String fieldName, final Class<?> returnType) throws NoSuchMethodException {

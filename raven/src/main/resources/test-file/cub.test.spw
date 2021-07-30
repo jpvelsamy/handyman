@@ -1,14 +1,13 @@
 process "cub.test"
-
 {
-	
 	try {
-			
 			transform as "test audit entry" on "${cub_eval}" using {"
-			
 				INSERT INTO test (id,start,purpose) VALUES (${process-id},NOW(),'testing');
-			
-			"} on-condition if "true"=="true"
+			"}
+
+			restapi as "test rest api" url "https://idea.com" method "GET" with headers {"hey":"hi"} {
+                	{"id1":"id2"}
+                	} on-condition if "true"=="true"
 			
 
 	}
@@ -20,5 +19,4 @@ process "cub.test"
 	finally {
 
 	}
-
 } 

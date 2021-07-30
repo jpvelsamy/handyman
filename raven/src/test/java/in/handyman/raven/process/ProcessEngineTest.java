@@ -9,7 +9,9 @@ class ProcessEngineTest {
 
     @Test
     void start() {
-        final ProcessContext start = ProcessEngine.start(HRequestResolver.LoadType.FILE.name(), "test");
+        final ProcessContext start = ProcessEngine
+                .start(HRequestResolver.LoadType.FILE.name(),
+                        "cub.test");
         assert start.getTryActions().size() == 1;
     }
 }

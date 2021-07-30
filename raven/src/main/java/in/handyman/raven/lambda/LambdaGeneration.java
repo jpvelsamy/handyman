@@ -3,6 +3,7 @@ package in.handyman.raven.lambda;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -133,7 +134,7 @@ public class LambdaGeneration {
             final Class<?> type = field.getType();
             final String name = field.getName();
             if (type == RavenParser.ExpressionContext.class) {
-                builder.addField(Boolean.class, name, Modifier.PRIVATE);
+                builder.addField(FieldSpec.builder(Boolean.class, name, Modifier.PRIVATE).initializer("true").build());
             } else if (type == Token.class) {
                 builder.addField(String.class, name, Modifier.PRIVATE);
             } else if (type == List.class) {
