@@ -48,7 +48,8 @@ public class CallProcessAction implements LambdaExecution {
                 try (var rs = stmt.executeQuery(sql)) {
                     var columnCount = rs.getMetaData().getColumnCount();
                     while (rs.next()) {
-                        CommonQueryUtil.addKeyConfig(configContext, detailMap, rs, columnCount);
+                        CommonQueryUtil.addKeyConfig(configContext, detailMap,
+                                rs, columnCount,"");
                         final ProcessContext processContext = ProcessEngine.start(fileRelativePath, targetProcess, actionContext.getProcessId(), configContext);
                         log.info(aMarker, processContext);
                     }

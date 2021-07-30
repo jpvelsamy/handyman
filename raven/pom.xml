@@ -62,6 +62,12 @@
             <artifactId>akka-actor_2.13</artifactId>
             <version>2.6.15</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.9</version>
+        </dependency>
 
         <!-- LAMBDA's -->
         <dependency>

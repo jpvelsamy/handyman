@@ -123,7 +123,7 @@ public class ProcessExecutor {
             throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         final Lambda lambda = (Lambda) actionExecutionContextMap.get(lambdaName).getConstructor().newInstance();
         log.debug("Lambda Execution class {} instance created", lambdaName);
-        CommandProxy.setTarget(lambda, context.getChild(0));
+        CommandProxy.setTarget(lambda, context.getChild(0),actionContext.getContext());
         log.debug("Lambda Execution class {} context mapped", lambdaName);
         actionContext.setName(lambdaName + "->" + lambda.getName());
         final AuditPayload auditPayload = getAuditContext(actionContext);

@@ -20,12 +20,13 @@ public class CommonQueryUtil {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public static  void addKeyConfig(final Map<String, String> configContext, final ObjectNode detailMap, final ResultSet rs, final int columnCount) {
+    public static void addKeyConfig(final Map<String, String> configContext, final ObjectNode detailMap,
+                                    final ResultSet rs, final int columnCount, final String prefix) {
         IntStream.range(1, columnCount + 1).forEach(i -> {
             try {
                 var key = rs.getMetaData().getColumnLabel(i);
                 var value = rs.getString(i);
-                configContext.put(key, value);
+                configContext.put(prefix + "." + key, value);
                 detailMap.put("query.output." + key, value);
             } catch (SQLException e) {
                 throw new HandymanException("Fetch config failed", e);

@@ -1,13 +1,19 @@
 process "cub.test"
 {
 	try {
+
+	       assign as "var_hour" source "${cub_eval}" using
+    			{"
+    				SELECT 1 as maxId, '234432' as startTime;
+    			"}on-condition if  "true"=="true"
+
 			transform as "test audit entry" on "${cub_eval}" using {"
-				INSERT INTO test (id,start,purpose) VALUES (${process-id},NOW(),'testing');
+				INSERT INTO test (id,start,purpose) VALUES (${var_hour.maxId},NOW(),${var_hour.startTime});
 			"}
 
 			restapi as "test rest api" url "https://idea.com" method "GET" with headers {"hey":"hi"} {
                 	{"id1":"id2"}
-                	} on-condition if "true"=="true"
+                	}
 			
 
 	}

@@ -61,7 +61,8 @@ public class AssignAction implements LambdaExecution {
                         var columnCount = rs.getMetaData().getColumnCount();
                         while (rs.next()) {
                             final Map<String, String> configContext = actionContext.getContext();
-                            CommonQueryUtil.addKeyConfig(configContext, detailMap, rs, columnCount);
+                            CommonQueryUtil.addKeyConfig(configContext, detailMap,
+                                    rs, columnCount, context.getName());
                         }
                     }
                     var warnings = ExceptionUtil.completeSQLWarning(stmt.getWarnings());
