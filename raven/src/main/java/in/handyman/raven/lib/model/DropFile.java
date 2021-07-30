@@ -22,5 +22,5 @@ public class DropFile implements Lambda {
 
   private String target;
 
-  private Boolean condition;
+  private Boolean condition = true;
 }

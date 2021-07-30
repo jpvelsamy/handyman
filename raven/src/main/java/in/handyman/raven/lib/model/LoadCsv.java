@@ -32,5 +32,5 @@ public class LoadCsv implements Lambda {
 
   private String value;
 
-  private Boolean condition;
+  private Boolean condition = true;
 }
