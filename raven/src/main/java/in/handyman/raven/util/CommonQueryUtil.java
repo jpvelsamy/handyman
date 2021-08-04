@@ -26,7 +26,7 @@ public class CommonQueryUtil {
             try {
                 var key = rs.getMetaData().getColumnLabel(i);
                 var value = rs.getString(i);
-                configContext.put(prefix + "." + key, value);
+                configContext.put(((prefix.isBlank() || prefix.isEmpty()) ? "" : (prefix + ".")) + key, value);
                 detailMap.put("query.output." + key, value);
             } catch (SQLException e) {
                 throw new HandymanException("Fetch config failed", e);
