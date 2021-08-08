@@ -18,4 +18,11 @@ public interface Constants {
     String CLOSE_PARENTHESES = ")";
     String SPACE = " ";
 
+    String BODY_TYPE_NONE = "NONE";
+    String BODY_TYPE_JSON = "JSON";
+    String BODY_TYPE_FORM = "FORM";
+
+    String PART_TYPE_TEXT = "FORM";
+    String PART_TYPE_FILE = "FORM";
+
 }

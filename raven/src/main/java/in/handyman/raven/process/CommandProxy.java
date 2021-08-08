@@ -8,6 +8,7 @@ import in.handyman.raven.compiler.RavenLexer;
 import in.handyman.raven.compiler.RavenParser;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.Lambda;
+import in.handyman.raven.lib.model.RestPart;
 import lombok.extern.log4j.Log4j2;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -65,25 +66,32 @@ public class CommandProxy {
                             setValue(target, fieldName, getter, condition);
                         } else if (field.getType() == RavenParser.JsonContext.class) {
                             final RavenParser.JsonContext o = (RavenParser.JsonContext) fieldValue;
-                            final JsonNode node = mapper.readTree(getString(context, o.getText()));
+                            final String text = o.getText();
+                            final JsonNode node = mapper.readTree(getString(context, text));
                             setValue(target, fieldName, getter, node);
                         } else if (field.getType() == List.class) {
                             final List<Object> tokens = (List<Object>) fieldValue;
                             final Type actualTypeArgument = ((ParameterizedType) getter.getGenericReturnType()).getActualTypeArguments()[0];
-//                        actualTypeArgument.getTypeName()
                             final List<Object> list = tokens.stream()
-                                    .filter(Token.class::isInstance)
-                                    .map(Token.class::cast)
-                                    .map(token -> getString(token, context))
-                                    .map(s -> {
-                                        try {
-                                            return mapper.convertValue(s, Class.forName(actualTypeArgument.getTypeName()));
-                                        } catch (ClassNotFoundException e) {
-                                            log.warn(e);
+                                    .map(o -> {
+                                        if (o instanceof Token) {
+                                            var token = (Token) o;
+                                            var s = getString(token, context);
+                                            try {
+                                                return mapper.convertValue(s, Class.forName(actualTypeArgument.getTypeName()));
+                                            } catch (ClassNotFoundException e) {
+                                                throw new HandymanException("Context mapping failed for List", e);
+                                            }
+                                        }  else if (o instanceof RavenParser.RestPartContext) {
+                                            var token = (RavenParser.RestPartContext) o;
+                                            return RestPart.builder()
+                                                    .partName(getString(token.partName, context))
+                                                    .partData(getString(token.partData, context))
+                                                    .type(getString(token.type, context))
+                                                    .build();
                                         }
-                                        return null;
-                                    })
-                                    .collect(Collectors.toList());
+                                        throw new HandymanException("Context mapping failed for List");
+                                    }).collect(Collectors.toList());
                             final Class<?> returnType = getter.getReturnType();
                             final Method method = getMethod(target, fieldName, returnType);
                             Arrays.stream(method.getParameterTypes()).findFirst().ifPresent(aClass -> {

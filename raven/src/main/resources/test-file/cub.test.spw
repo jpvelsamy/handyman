@@ -11,10 +11,10 @@ process "cub.test"
 				INSERT INTO test (id,start,purpose) VALUES (${var_hour.maxId},NOW(),${var_hour.startTime});
 			"}
 
-			restapi as "test rest api" url "https://idea.com" method "GET" with headers {"hey":"hi"} {
-                	{"id1":"id2"}
-                	}
-			
+            restapi as "test audit entry"  source "${cub_eval}" using url "https://vada-chennai.free.beeceptor.com"
+              method "POST" with headers {{"authorization":"select 1 as maxId"}}
+              with params {{"authorization":"select 1 as maxId"}}  with body type {"JSON"}
+              {{ part as "name" with "value" type as "text"  }}
 
 	}
 	

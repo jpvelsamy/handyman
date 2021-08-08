@@ -11,9 +11,8 @@ class LambdaGenerationTest {
 
     @Test
     void generate() {
-        final Set<String> actions = Set.of(RavenParser.ruleNames);
         final List<Class<?>> classes = Arrays.asList(RavenParser.class.getDeclaredClasses());
         final LambdaGeneration lambdaGeneration = new LambdaGeneration();
-        lambdaGeneration.generate(actions, classes, "in.handyman.raven.lib.model", "in.handyman.raven.lib");
+        lambdaGeneration.generate(classes, "in.handyman.raven.lib.model", "in.handyman.raven.lib");
     }
 }

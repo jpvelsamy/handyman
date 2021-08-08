@@ -140,6 +140,16 @@ public interface RavenListener extends ParseTreeListener {
 	 */
 	void exitRestApi(RavenParser.RestApiContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link RavenParser#restPart}.
+	 * @param ctx the parse tree
+	 */
+	void enterRestPart(RavenParser.RestPartContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#restPart}.
+	 * @param ctx the parse tree
+	 */
+	void exitRestPart(RavenParser.RestPartContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link RavenParser#expression}.
 	 * @param ctx the parse tree
 	 */
