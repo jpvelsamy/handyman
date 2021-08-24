@@ -13,22 +13,22 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @LambdaContext(
-    lambdaName = "CopyData"
+        lambdaName = "CopyData"
 )
 public class CopyData implements Lambda {
-  private String name;
+    private String name;
 
-  private String source;
+    private String source;
 
-  private String to;
+    private String to;
 
-  private String value;
+    private String value;
 
-  private Boolean condition = true;
+    private Boolean condition = true;
 
-  private String writeThreadCount;
+    private String writeThreadCount;
 
-  private String fetchBatchSize;
+    private String fetchBatchSize;
 
-  private String writeBatchSize;
+    private String writeBatchSize;
 }

@@ -13,22 +13,22 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @LambdaContext(
-    lambdaName = "LoadCsv"
+        lambdaName = "LoadCsv"
 )
 public class LoadCsv implements Lambda {
-  private String name;
+    private String name;
 
-  private String pid;
+    private String pid;
 
-  private String source;
+    private String source;
 
-  private String to;
+    private String to;
 
-  private String delim;
+    private String delim;
 
-  private String limit;
+    private String limit;
 
-  private String value;
+    private String value;
 
-  private Boolean condition = true;
+    private Boolean condition = true;
 }

@@ -39,6 +39,27 @@ class SequenceGenerator {
         this.nodeId = createNodeId();
     }
 
+    private int createNodeId() {
+        int nodeId;
+        try {
+            final StringBuilder sb = new StringBuilder();
+            final Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+            while (networkInterfaces.hasMoreElements()) {
+                final NetworkInterface networkInterface = networkInterfaces.nextElement();
+                final byte[] mac = networkInterface.getHardwareAddress();
+                if (mac != null) {
+                    for (final byte b : mac) {
+                        sb.append(String.format("%02X", b));
+                    }
+                }
+            }
+            nodeId = sb.toString().hashCode();
+        } catch (Exception ex) {
+            nodeId = (new SecureRandom().nextInt());
+        }
+        return nodeId & maxNodeId;
+    }
+
     public synchronized long nextId() {
         long currentTimestamp = timestamp();
 
@@ -65,7 +86,6 @@ class SequenceGenerator {
         return id;
     }
 
-
     // Get current timestamp in milliseconds, adjust for the custom epoch.
     private static long timestamp() {
         return Instant.now().toEpochMilli() - CUSTOM_EPOCH;
@@ -77,27 +97,6 @@ class SequenceGenerator {
             currentTimestamp = timestamp();
         }
         return currentTimestamp;
-    }
-
-    private int createNodeId() {
-        int nodeId;
-        try {
-            final StringBuilder sb = new StringBuilder();
-            final Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
-            while (networkInterfaces.hasMoreElements()) {
-                final NetworkInterface networkInterface = networkInterfaces.nextElement();
-                final byte[] mac = networkInterface.getHardwareAddress();
-                if (mac != null) {
-                    for (final byte b : mac) {
-                        sb.append(String.format("%02X", b));
-                    }
-                }
-            }
-            nodeId = sb.toString().hashCode();
-        } catch (Exception ex) {
-            nodeId = (new SecureRandom().nextInt());
-        }
-        return nodeId & maxNodeId;
     }
 }
 

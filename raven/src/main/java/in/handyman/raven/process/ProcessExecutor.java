@@ -110,12 +110,6 @@ public class ProcessExecutor {
         throw new HandymanException("Unknown Action");
     }
 
-    private static void execution(final LambdaExecution lambdaExecution) throws Exception {
-        if (lambdaExecution.executeIf()) {
-            lambdaExecution.execute();
-        }
-    }
-
     private static LambdaExecution initialization(
             final ActionContext actionContext,
             final RavenParser.ActionContext context,
@@ -123,7 +117,7 @@ public class ProcessExecutor {
             throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         final Lambda lambda = (Lambda) actionExecutionContextMap.get(lambdaName).getConstructor().newInstance();
         log.debug("Lambda Execution class {} instance created", lambdaName);
-        CommandProxy.setTarget(lambda, context.getChild(0),actionContext.getContext());
+        CommandProxy.setTarget(lambda, context.getChild(0), actionContext.getContext());
         log.debug("Lambda Execution class {} context mapped", lambdaName);
         actionContext.setName(lambdaName + "->" + lambda.getName());
         final AuditPayload auditPayload = getAuditContext(actionContext);
@@ -131,6 +125,12 @@ public class ProcessExecutor {
         return (LambdaExecution) actionExecutionMap.get(lambdaName)
                 .getConstructor(ActionContext.class, Object.class)
                 .newInstance(actionContext, lambda);
+    }
+
+    private static void execution(final LambdaExecution lambdaExecution) throws Exception {
+        if (lambdaExecution.executeIf()) {
+            lambdaExecution.execute();
+        }
     }
 
     private static AuditPayload getAuditContext(final ActionContext actionContext) {

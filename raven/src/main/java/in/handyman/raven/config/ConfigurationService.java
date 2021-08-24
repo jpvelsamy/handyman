@@ -41,15 +41,6 @@ public class ConfigurationService {
         throw new HandymanException("Config failed");
     }
 
-    public static String getCommonConfig(final String key) {
-        try (final Connection conn = DataSource.getConnection()) {
-            return getGlobalConfig(conn, key);
-        } catch (SQLException e) {
-            log.error(e);
-            throw new HandymanException("Connection failed", e);
-        }
-    }
-
     private static String getProcessConfigValue(final Connection conn, final String processName, final String key) {
         try (final PreparedStatement stmt = conn.prepareStatement(keyQueryProcess)) {
             stmt.setString(1, processName);
@@ -87,30 +78,12 @@ public class ConfigurationService {
         throw new HandymanException("BatchConfig failed");
     }
 
-    public static Map<String, String> getGlobalConfig() {
+    public static String getCommonConfig(final String key) {
         try (final Connection conn = DataSource.getConnection()) {
-            try (final PreparedStatement stmt = conn.prepareStatement(allQueryBatch)) {
-                return getMap(conn, stmt);
-            } catch (SQLException e) {
-                log.error("Error reading information from config store {}", conn);
-                throw new HandymanException("Global Config failed", e);
-            }
+            return getGlobalConfig(conn, key);
         } catch (SQLException e) {
             log.error(e);
             throw new HandymanException("Connection failed", e);
-        }
-    }
-
-    private static Map<String, String> getMap(final Connection conn, final PreparedStatement stmt) {
-        try (final ResultSet rs = stmt.executeQuery()) {
-            final Map<String, String> configInfo = new HashMap<>();
-            while (rs.next()) {
-                configInfo.put(rs.getString(1), rs.getString(2));
-            }
-            return Map.copyOf(configInfo);
-        } catch (SQLException e) {
-            log.error("Error reading information from config store {}", conn);
-            throw new HandymanException("Map RS failed", e);
         }
     }
 
@@ -121,6 +94,13 @@ public class ConfigurationService {
         finalMap.putAll(getAllInstanceConfigValue(instanceName));
         finalMap.putAll(getGlobalConfig());
         return Map.copyOf(finalMap);
+    }
+
+    private static String findProcessName(final String instanceName) {
+        if (instanceName.contains("#")) {
+            return instanceName.substring(0, instanceName.lastIndexOf("#"));
+        }
+        return instanceName;
     }
 
     private static Map<String, String> getAllProcessConfigValue(final String processFqn) {
@@ -153,11 +133,31 @@ public class ConfigurationService {
         }
     }
 
-    private static String findProcessName(final String instanceName) {
-        if (instanceName.contains("#")) {
-            return instanceName.substring(0, instanceName.lastIndexOf("#"));
+    public static Map<String, String> getGlobalConfig() {
+        try (final Connection conn = DataSource.getConnection()) {
+            try (final PreparedStatement stmt = conn.prepareStatement(allQueryBatch)) {
+                return getMap(conn, stmt);
+            } catch (SQLException e) {
+                log.error("Error reading information from config store {}", conn);
+                throw new HandymanException("Global Config failed", e);
+            }
+        } catch (SQLException e) {
+            log.error(e);
+            throw new HandymanException("Connection failed", e);
         }
-        return instanceName;
+    }
+
+    private static Map<String, String> getMap(final Connection conn, final PreparedStatement stmt) {
+        try (final ResultSet rs = stmt.executeQuery()) {
+            final Map<String, String> configInfo = new HashMap<>();
+            while (rs.next()) {
+                configInfo.put(rs.getString(1), rs.getString(2));
+            }
+            return Map.copyOf(configInfo);
+        } catch (SQLException e) {
+            log.error("Error reading information from config store {}", conn);
+            throw new HandymanException("Map RS failed", e);
+        }
     }
 
     public static Resource getResourceConfig(final String name) {

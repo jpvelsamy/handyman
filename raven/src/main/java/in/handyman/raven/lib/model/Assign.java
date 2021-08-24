@@ -13,14 +13,14 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @LambdaContext(
-    lambdaName = "Assign"
+        lambdaName = "Assign"
 )
 public class Assign implements Lambda {
-  private String name;
+    private String name;
 
-  private String source;
+    private String source;
 
-  private String value;
+    private String value;
 
-  private Boolean condition = true;
+    private Boolean condition = true;
 }

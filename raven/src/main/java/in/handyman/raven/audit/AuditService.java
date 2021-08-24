@@ -27,7 +27,7 @@ public class AuditService {
     private static final String INSERT_SPW_AUDIT_BATCH_AUDIT = "INSERT INTO spw_audit.batch_audit (instance_id, command_name, statement_id, rows_processed, time_taken) VALUES (?, ?, ?, ?, ?);";
     private static final HikariDataSource DATA_SOURCE;
 
-    static  {
+    static {
         final String commonConfig = ConfigurationService.getCommonConfig("audit");
         DATA_SOURCE = ResourceAccess.rdbmsConn(commonConfig);
     }

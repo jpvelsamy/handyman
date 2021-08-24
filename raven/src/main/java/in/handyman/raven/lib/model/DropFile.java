@@ -13,12 +13,12 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @LambdaContext(
-    lambdaName = "DropFile"
+        lambdaName = "DropFile"
 )
 public class DropFile implements Lambda {
-  private String name;
+    private String name;
 
-  private String target;
+    private String target;
 
-  private Boolean condition = true;
+    private Boolean condition = true;
 }

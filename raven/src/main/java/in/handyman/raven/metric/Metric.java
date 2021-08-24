@@ -8,15 +8,6 @@ import java.lang.management.ManagementFactory;
 
 public class Metric {
 
-    @Data
-    static class MetricPayload {
-
-        private Integer loadedClassCount;
-        private Long unLoadedClassCount;
-        private Long totalCompilationTime;
-
-    }
-
     void classLoaderMetrics(final MetricPayload payload) {
         final ClassLoadingMXBean classLoadingBean = ManagementFactory.getClassLoadingMXBean();
         payload.setLoadedClassCount(classLoadingBean.getLoadedClassCount());
@@ -28,5 +19,14 @@ public class Metric {
         if (compilationBean != null && compilationBean.isCompilationTimeMonitoringSupported()) {
             payload.setTotalCompilationTime(compilationBean.getTotalCompilationTime());
         }
+    }
+
+    @Data
+    static class MetricPayload {
+
+        private Integer loadedClassCount;
+        private Long unLoadedClassCount;
+        private Long totalCompilationTime;
+
     }
 }

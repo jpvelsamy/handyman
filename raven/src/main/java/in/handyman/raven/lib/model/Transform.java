@@ -15,16 +15,16 @@ import java.util.List;
 @EqualsAndHashCode
 @NoArgsConstructor
 @LambdaContext(
-    lambdaName = "Transform"
+        lambdaName = "Transform"
 )
 public class Transform implements Lambda {
-  private String name;
+    private String name;
 
-  private String on;
+    private String on;
 
-  private String STRING;
+    private String STRING;
 
-  private List<String> value;
+    private List<String> value;
 
-  private Boolean condition = true;
+    private Boolean condition = true;
 }

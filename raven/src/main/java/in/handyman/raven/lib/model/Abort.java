@@ -13,12 +13,12 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @LambdaContext(
-    lambdaName = "Abort"
+        lambdaName = "Abort"
 )
 public class Abort implements Lambda {
-  private String name;
+    private String name;
 
-  private String value;
+    private String value;
 
-  private Boolean condition = true;
+    private Boolean condition = true;
 }

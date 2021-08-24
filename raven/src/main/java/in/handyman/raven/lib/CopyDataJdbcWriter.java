@@ -86,6 +86,30 @@ public class CopyDataJdbcWriter implements Callable<Void> {
         return null;
     }
 
+    private void writeToDb() {
+
+        var hikariDataSource = ResourceAccess.rdbmsConn(target);
+        try (final Connection sourceConnection = hikariDataSource.getConnection()) {
+            sourceConnection.setAutoCommit(false);
+            log.info("Writing to database using conn: {}", target);
+            final Long statementId = UniqueID.getId();
+            AuditService.insertStatementAudit(statementId, actionContext.getLambdaId(),
+                    actionContext.getName(), actionContext.getProcessName());
+            try (final Statement stmt = sourceConnection.createStatement()) {
+                for (var s : writeBuffer) {
+                    stmt.addBatch(s);
+                }
+                stmt.executeBatch();
+                sourceConnection.commit();
+                AuditService.updateStatementAudit(statementId, -1, 0, writeBuffer.toString(), 1);
+                writeBuffer.clear();
+            }
+        } catch (Throwable ex) {
+            log.error("CopyDataWriter: {} error closing source connection for database: {} ", actionContext.getProcessId(), target, ex);
+            throw new HandymanException("writeToDb failed", ex);
+        }
+    }
+
     private String generateDataFrame(final Table.Row row) {
 
         log.info("CopyDataWriter: Writer generating dataframe for row: {}", row);
@@ -119,30 +143,6 @@ public class CopyDataJdbcWriter implements Callable<Void> {
 
         }
         return null;
-    }
-
-    private void writeToDb() {
-
-        var hikariDataSource = ResourceAccess.rdbmsConn(target);
-        try (final Connection sourceConnection = hikariDataSource.getConnection()) {
-            sourceConnection.setAutoCommit(false);
-            log.info("Writing to database using conn: {}", target);
-            final Long statementId = UniqueID.getId();
-            AuditService.insertStatementAudit(statementId, actionContext.getLambdaId(),
-                    actionContext.getName(), actionContext.getProcessName());
-            try (final Statement stmt = sourceConnection.createStatement()) {
-                for (var s : writeBuffer) {
-                    stmt.addBatch(s);
-                }
-                stmt.executeBatch();
-                sourceConnection.commit();
-                AuditService.updateStatementAudit(statementId, -1, 0, writeBuffer.toString(), 1);
-                writeBuffer.clear();
-            }
-        } catch (Throwable ex) {
-            log.error("CopyDataWriter: {} error closing source connection for database: {} ", actionContext.getProcessId(), target, ex);
-            throw new HandymanException("writeToDb failed", ex);
-        }
     }
 
 }

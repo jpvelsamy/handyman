@@ -49,7 +49,7 @@ public class CallProcessAction implements LambdaExecution {
                     var columnCount = rs.getMetaData().getColumnCount();
                     while (rs.next()) {
                         CommonQueryUtil.addKeyConfig(configContext, detailMap,
-                                rs, columnCount,"");
+                                rs, columnCount, "");
                         final ProcessContext processContext = ProcessEngine.start(fileRelativePath, targetProcess, actionContext.getProcessId(), configContext);
                         log.info(aMarker, processContext);
                     }
@@ -58,7 +58,6 @@ public class CallProcessAction implements LambdaExecution {
         }
         log.info(aMarker, "Completed name#{}, calledProcess#{}, calledFile#{}, db=#{}", actionContext.getName(), targetProcess, fileRelativePath, dbSrc);
     }
-
 
 
     @Override

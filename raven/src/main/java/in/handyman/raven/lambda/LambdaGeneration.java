@@ -61,6 +61,24 @@ public class LambdaGeneration {
         });
     }
 
+    private String getLambdaName(final String s) {
+        return s.replace(CONTEXT, "");
+    }
+
+    private JavaFile actionAttribute(final Class<?> lambdaContextClass, final String lambdaName, final String modelTargetPackage) {
+        final TypeSpec.Builder builder = generateModel(lambdaContextClass, lambdaName);
+
+        final TypeSpec build = builder
+                .addSuperinterface(Lambda.class)
+                .addAnnotation(AnnotationSpec.builder(LambdaContext.class)
+                        .addMember("lambdaName", String.format("\"%s\"", lambdaName)).build())
+                .build();
+        return JavaFile
+                .builder(modelTargetPackage, build)
+                .build();
+
+    }
+
     private JavaFile execution(final String actionContext, final String modelTargetPackage, final String executionTargetPackage) {
         final String execution = getLambdaExecution(actionContext);
         final String lambdaName = getLambdaName(actionContext);
@@ -105,34 +123,12 @@ public class LambdaGeneration {
                 .build();
     }
 
-    private String getLambdaExecution(final String s) {
-        return s.replace(CONTEXT, ACTION_IMPL);
-    }
-
-    private String getLambdaName(final String s) {
-        return s.replace(CONTEXT, "");
-    }
-
     private void write(final JavaFile javaFile) {
         try {
             javaFile.writeTo(new File(MAIN_JAVA));
         } catch (IOException e) {
             throw new HandymanException(javaFile.typeSpec.name + " failed to write", e);
         }
-    }
-
-    private JavaFile actionAttribute(final Class<?> lambdaContextClass, final String lambdaName, final String modelTargetPackage) {
-        final TypeSpec.Builder builder = generateModel(lambdaContextClass, lambdaName);
-
-        final TypeSpec build = builder
-                .addSuperinterface(Lambda.class)
-                .addAnnotation(AnnotationSpec.builder(LambdaContext.class)
-                        .addMember("lambdaName", String.format("\"%s\"", lambdaName)).build())
-                .build();
-        return JavaFile
-                .builder(modelTargetPackage, build)
-                .build();
-
     }
 
     private TypeSpec.Builder generateModel(final Class<?> lambdaContextClass, final String lambdaName) {
@@ -168,6 +164,10 @@ public class LambdaGeneration {
             }
         });
         return builder;
+    }
+
+    private String getLambdaExecution(final String s) {
+        return s.replace(CONTEXT, ACTION_IMPL);
     }
 
 

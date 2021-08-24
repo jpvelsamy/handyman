@@ -86,6 +86,16 @@ public class LoadCsvAction implements LambdaExecution {
 
     }
 
+    private String convertArrayToInsertLine(final String[] firstLine, final String delimiter) {
+        var sb = new StringBuilder();
+        if (firstLine != null) {
+            for (var str : firstLine) {
+                sb.append(str.replace(" ", "")).append(delimiter);
+            }
+        }
+        return sb.substring(0, sb.length() - 2);
+    }
+
     private void perform(final String fileName, final String extension, final Iterator<String[]> iterator, final String column, final String ct) throws SQLException {
         var pid = context.getPid();
         var db = context.getTo();
@@ -153,17 +163,6 @@ public class LoadCsvAction implements LambdaExecution {
 
     private String getFinalQuery(final String pid, final String fileName, final String column, final List<String> iQuery) {
         return "INSERT IGNORE INTO  `" + pid + "_" + fileName.replace(".csv", "") + "`  (" + "`" + column + ")" + "VALUES " + String.join(",", iQuery) + " ;";
-    }
-
-
-    private String convertArrayToInsertLine(final String[] firstLine, final String delimiter) {
-        var sb = new StringBuilder();
-        if (firstLine != null) {
-            for (var str : firstLine) {
-                sb.append(str.replace(" ", "")).append(delimiter);
-            }
-        }
-        return sb.substring(0, sb.length() - 2);
     }
 
     @Override

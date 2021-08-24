@@ -15,7 +15,7 @@ public class Table {
     public static class Row {
         private Integer rowId;
         @Builder.Default
-        private Set<ColumnInARow> columnSet=new LinkedHashSet<>();
+        private Set<ColumnInARow> columnSet = new LinkedHashSet<>();
     }
 
     @Data

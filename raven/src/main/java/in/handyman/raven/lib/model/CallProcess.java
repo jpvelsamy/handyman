@@ -13,18 +13,18 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @LambdaContext(
-    lambdaName = "CallProcess"
+        lambdaName = "CallProcess"
 )
 public class CallProcess implements Lambda {
-  private String name;
+    private String name;
 
-  private String target;
+    private String target;
 
-  private String source;
+    private String source;
 
-  private String datasource;
+    private String datasource;
 
-  private String value;
+    private String value;
 
-  private Boolean condition = true;
+    private Boolean condition = true;
 }

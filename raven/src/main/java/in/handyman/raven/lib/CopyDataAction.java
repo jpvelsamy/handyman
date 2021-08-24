@@ -95,7 +95,7 @@ public class CopyDataAction implements LambdaExecution {
             //initializing the connection related statement
             var hikariDataSource = ResourceAccess.rdbmsConn(source);
             final Long statementId = UniqueID.getId();
-            final ExecutorService executor = Executors.newCachedThreadPool();
+            final ExecutorService executor = Executors.newWorkStealingPool();
             var rand = new Random();
             var rowQueueMap = new LinkedHashMap<Integer, BlockingQueue<Table.Row>>();
             var rowsProcessed = new AtomicInteger(0);
@@ -145,6 +145,16 @@ public class CopyDataAction implements LambdaExecution {
         }
     }
 
+    private Table.Row getRow(final ResultSet rs, final int nrCols) throws SQLException {
+        var columnSet = new LinkedHashSet<Table.ColumnInARow>();
+        var id = rs.getRow();
+        IntStream.range(1, nrCols + 1).forEach(i -> {
+            final Table.ColumnInARow column = createColumn(i, rs);
+            columnSet.add(column);
+        });
+        return new Table.Row(id, columnSet);
+    }
+
     private void addRowToQueue(final Integer upperThreadCount, final int lowerThreadCount, final Random rand, final LinkedHashMap<Integer, BlockingQueue<Table.Row>> rowQueueMap, final Table.Row row) {
         var queueNumber = rand.nextInt((upperThreadCount - lowerThreadCount) + 1) + lowerThreadCount;
         var rowQueue = rowQueueMap.get(queueNumber);
@@ -158,16 +168,6 @@ public class CopyDataAction implements LambdaExecution {
             //Taken care of batch audit
             AuditService.insertBatchAudit(statementId, name, instanceId, rowsProcessed.get(), timeTaken);
         }
-    }
-
-    private Table.Row getRow(final ResultSet rs, final int nrCols) throws SQLException {
-        var columnSet = new LinkedHashSet<Table.ColumnInARow>();
-        var id = rs.getRow();
-        IntStream.range(1, nrCols + 1).forEach(i -> {
-            final Table.ColumnInARow column = createColumn(i, rs);
-            columnSet.add(column);
-        });
-        return new Table.Row(id, columnSet);
     }
 
     private Table.ColumnInARow createColumn(final int i, final ResultSet rs) {

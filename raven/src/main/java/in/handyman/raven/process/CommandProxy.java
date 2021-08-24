@@ -82,7 +82,7 @@ public class CommandProxy {
                                             } catch (ClassNotFoundException e) {
                                                 throw new HandymanException("Context mapping failed for List", e);
                                             }
-                                        }  else if (o instanceof RavenParser.RestPartContext) {
+                                        } else if (o instanceof RavenParser.RestPartContext) {
                                             var token = (RavenParser.RestPartContext) o;
                                             return RestPart.builder()
                                                     .partName(getString(token.partName, context))
@@ -116,21 +116,6 @@ public class CommandProxy {
         }
     }
 
-    private static void setValue(final Lambda target, final String fieldName, final Method getter, final Object node) throws NoSuchMethodException {
-        final Method method = getMethod(target, fieldName, getter.getReturnType());
-        Arrays.stream(method.getParameterTypes()).findFirst().ifPresent(aClass -> {
-            try {
-                method.invoke(target, node);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new HandymanException("Context mapping failed for ExpressionContext", e);
-            }
-        });
-    }
-
-    private static Method getMethod(final Lambda target, final String fieldName, final Class<?> returnType) throws NoSuchMethodException {
-        return target.getClass().getMethod("set" + fieldName, returnType);
-    }
-
     private static String getString(final Token o, final Map<String, String> context) {
         final String text;
         if (o.getType() == RavenLexer.STRING) {
@@ -141,9 +126,8 @@ public class CommandProxy {
         return getString(context, text);
     }
 
-    private static String getString(final Map<String, String> context, final String text) {
-        var paramEngine = new StrSubstitutor(context);
-        return paramEngine.replace(text.trim());
+    private static Method getMethod(final Lambda target, final String fieldName, final Class<?> returnType) throws NoSuchMethodException {
+        return target.getClass().getMethod("set" + fieldName, returnType);
     }
 
     private static boolean condition(final RavenParser.ExpressionContext context, final Map<String, String> configMap) {
@@ -169,5 +153,21 @@ public class CommandProxy {
                         throw new HandymanException("Unknown Operator");
                     }
                 }).isPresent();
+    }
+
+    private static void setValue(final Lambda target, final String fieldName, final Method getter, final Object node) throws NoSuchMethodException {
+        final Method method = getMethod(target, fieldName, getter.getReturnType());
+        Arrays.stream(method.getParameterTypes()).findFirst().ifPresent(aClass -> {
+            try {
+                method.invoke(target, node);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new HandymanException("Context mapping failed for ExpressionContext", e);
+            }
+        });
+    }
+
+    private static String getString(final Map<String, String> context, final String text) {
+        var paramEngine = new StrSubstitutor(context);
+        return paramEngine.replace(text.trim());
     }
 }

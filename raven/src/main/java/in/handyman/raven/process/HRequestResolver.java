@@ -17,13 +17,6 @@ public class HRequestResolver {
 
     private static final String BASE_PATH = "basepath";
 
-    @Getter
-    @AllArgsConstructor
-    public enum LoadType {
-        DB("processContent"), FILE("filepath");
-        private final String variable;
-    }
-
     protected static String doResolve(final String processLoadType, final ProcessContext context) {
         final LoadType loadType = LoadType.valueOf(processLoadType);
         if (LoadType.DB == loadType) {
@@ -67,6 +60,13 @@ public class HRequestResolver {
         } else {
             throw new HandymanException("Process definition for " + fileRelativePath + " is absent");
         }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public enum LoadType {
+        DB("processContent"), FILE("filepath");
+        private final String variable;
     }
 
 }

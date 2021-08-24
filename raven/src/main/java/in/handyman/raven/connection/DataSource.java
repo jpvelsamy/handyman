@@ -29,6 +29,9 @@ public class DataSource {
         }
     }
 
+    private DataSource() {
+    }
+
     protected static HikariDataSource createHP(final String url, final String driver, final String user, final String password)
             throws ClassNotFoundException {
         Class.forName(driver);
@@ -45,9 +48,6 @@ public class DataSource {
         config.addDataSourceProperty("prepStmtCacheSize", "250");
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
         return new HikariDataSource(config);
-    }
-
-    private DataSource() {
     }
 
     public static Connection getConnection() throws SQLException {
