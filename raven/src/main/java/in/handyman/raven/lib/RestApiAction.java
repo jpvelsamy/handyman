@@ -1,6 +1,7 @@
 package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zaxxer.hikari.HikariDataSource;
 import in.handyman.raven.connection.ResourceAccess;
@@ -13,12 +14,14 @@ import in.handyman.raven.util.CommonQueryUtil;
 import in.handyman.raven.util.ExceptionUtil;
 import lombok.extern.log4j.Log4j2;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.apache.logging.log4j.MarkerManager;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +35,12 @@ import java.util.Objects;
 )
 @Log4j2
 public class RestApiAction implements LambdaExecution {
+    private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
+    private static final String APPLICATION_JSON_CHARSET_UTF_8 = "application/json; charset=utf-8";
+    private static final String POST = "POST";
+    private static final String DELETE = "DELETE";
+    private static final String GET = "GET";
+    private static final String PUT = "PUT";
     private final ActionContext actionContext;
 
     private final RestApi context;
@@ -85,22 +94,48 @@ public class RestApiAction implements LambdaExecution {
                         .forEachRemaining(stringJsonNodeEntry -> addHeader(hikariDataSource, detailMap, builder, stringJsonNodeEntry));
             }
         }
-        if (Objects.equals("GET", method)) {
-            request = builder.get().build();
-        } else if (Objects.equals("DELETE", method)) {
-            request = builder.delete().build();
+
+        final RequestBody body;
+        if (Objects.equals(Constants.BODY_TYPE_JSON, context.getBodyType())) {
+            var bodyNode = JsonNodeFactory.instance.objectNode();
+            payload.forEach(restPart -> bodyNode.put(restPart.getPartName(), restPart.getPartData()));
+            body = RequestBody.create(bodyNode.toString(), MediaType.get(APPLICATION_JSON_CHARSET_UTF_8));
+        } else if (Objects.equals(Constants.BODY_TYPE_FORM, context.getBodyType())) {
+            final MultipartBody.Builder formBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM);
+            context.getValue().forEach(restPart -> {
+                if (Objects.equals(restPart.getType(), Constants.PART_TYPE_TEXT)) {
+                    formBody.addFormDataPart(restPart.getPartName(), restPart.getPartData());
+                } else if (Objects.equals(restPart.getType(), Constants.PART_TYPE_FILE)) {
+                    final File multiPart = new File(restPart.getPartData());
+                    final String multiPartName = multiPart.getName();
+                    if (!multiPart.exists()) {
+                        throw new HandymanException(String.format("File %s not found ", multiPartName));
+                    }
+                    formBody.addFormDataPart(restPart.getPartName(), multiPartName,
+                            RequestBody.create(multiPart,
+                                    MediaType.parse(APPLICATION_OCTET_STREAM)));
+                }
+            });
+            body = formBody.build();
+        } else if (Objects.equals(Constants.BODY_TYPE_NONE, context.getBodyType())) {
+            body = RequestBody.create(new byte[0], null);
         } else {
-            final MediaType contentType = MediaType.get("application/json; charset=utf-8");
-            if (Objects.equals("POST", method)) {
-                final RequestBody body = RequestBody.create(payload.toString(), contentType);
-                request = builder.post(body).build();
-            } else if (Objects.equals("PUT", method)) {
-                final RequestBody body = RequestBody.create(payload.toString(), contentType);
-                request = builder.put(body).build();
-            } else {
-                throw new HandymanException("Unknown HTTP method");
-            }
+            throw new HandymanException("Unknown Body type");
         }
+
+        if (Objects.equals(GET, method)) {
+            request = builder.get().build();
+        } else if (Objects.equals(DELETE, method)) {
+            request = builder.delete().build();
+        } else if (Objects.equals(POST, method)) {
+            request = builder.post(body).build();
+        } else if (Objects.equals(PUT, method)) {
+            request = builder.put(body).build();
+        } else {
+            throw new HandymanException("Unknown HTTP method");
+        }
+
         try {
             final Response execute = client.newCall(request).execute();
             log.info("Rest Api Response Content: " + execute.body() + " for URL: " + url);

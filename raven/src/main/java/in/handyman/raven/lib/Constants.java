@@ -22,7 +22,7 @@ public interface Constants {
     String BODY_TYPE_JSON = "JSON";
     String BODY_TYPE_FORM = "FORM";
 
-    String PART_TYPE_TEXT = "FORM";
-    String PART_TYPE_FILE = "FORM";
+    String PART_TYPE_TEXT = "TEXT";
+    String PART_TYPE_FILE = "FILE";
 
 }
