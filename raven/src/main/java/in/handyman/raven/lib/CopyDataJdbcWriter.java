@@ -125,7 +125,7 @@ public class CopyDataJdbcWriter implements Callable<Void> {
             for (final Table.ColumnInARow column : columnSet) {
                 final String columnTypeName = column.getColumnTypeName();
 
-                if (Objects.nonNull(columnTypeName) && (Objects.equals(columnTypeName, Constants.STRING_DATATYPE)
+                if (Objects.nonNull(columnTypeName) && (Objects.equals(columnTypeName.toLowerCase(), Constants.STRING_DATATYPE)
                         || Objects.equals(columnTypeName.toLowerCase(), "java.lang.string")
                         || Objects.equals(columnTypeName.toLowerCase(), "datetime")
                         || Objects.equals(columnTypeName.toLowerCase(), "timestamp"))) {
