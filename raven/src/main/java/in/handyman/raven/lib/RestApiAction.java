@@ -98,7 +98,7 @@ public class RestApiAction implements LambdaExecution {
         final RequestBody body;
         if (Objects.equals(Constants.BODY_TYPE_JSON, context.getBodyType())) {
             var bodyNode = JsonNodeFactory.instance.objectNode();
-            payload.forEach(restPart -> bodyNode.put(restPart.getPartName(), restPart.getPartData()));
+            payload.forEach(restPart -> bodyNode.put(restPart.getPartName(), getResult(hikariDataSource, detailMap, restPart.getPartData())));
             body = RequestBody.create(bodyNode.toString(), MediaType.get(APPLICATION_JSON_CHARSET_UTF_8));
         } else if (Objects.equals(Constants.BODY_TYPE_FORM, context.getBodyType())) {
             final MultipartBody.Builder formBody = new MultipartBody.Builder()
@@ -145,15 +145,19 @@ public class RestApiAction implements LambdaExecution {
         }
     }
 
+    private String getResult(final HikariDataSource hikariDataSource, final ObjectNode detailMap, final String partData) {
+        return CommonQueryUtil.getResult(hikariDataSource, partData, detailMap);
+    }
+
     private void addParam(final HikariDataSource hikariDataSource, final ObjectNode detailMap, final List<String> paramList, final Map.Entry<String, JsonNode> stringJsonNodeEntry) {
-        final String result = CommonQueryUtil.getResult(hikariDataSource, stringJsonNodeEntry.getValue().textValue(), detailMap);
+        final String result = getResult(hikariDataSource, detailMap, stringJsonNodeEntry.getValue().textValue());
         if (Objects.nonNull(result)) {
             paramList.add(String.format("%s=\"%s\"", stringJsonNodeEntry.getKey(), result));
         }
     }
 
     private void addHeader(final HikariDataSource hikariDataSource, final ObjectNode detailMap, final Request.Builder builder, final Map.Entry<String, JsonNode> stringJsonNodeEntry) {
-        final String result = CommonQueryUtil.getResult(hikariDataSource, stringJsonNodeEntry.getValue().textValue(), detailMap);
+        final String result = getResult(hikariDataSource, detailMap, stringJsonNodeEntry.getValue().textValue());
         if (Objects.nonNull(result)) {
             builder.header(stringJsonNodeEntry.getKey(), result);
         }

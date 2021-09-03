@@ -12,6 +12,6 @@ class ProcessEngineTest {
         final ProcessContext start = ProcessEngine
                 .start(HRequestResolver.LoadType.FILE.name(),
                         "cub.test");
-        assert start.getTryActions().size() == 3;
+        assert start.getTryActions().size() == 1;
     }
 }

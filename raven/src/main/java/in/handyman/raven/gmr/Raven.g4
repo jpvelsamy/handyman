@@ -94,14 +94,14 @@ dropFile:
 
 restApi:
 	'restapi' 'as' name=STRING 'source' source=STRING 'using' 'url' url=STRING 'method' method=STRING
-	 ('with headers' '{' headers=json '}')* ('with params' '{' params=json '}')*
+	 ('with headers'  headers=json)* ('with params'  params=json )*
 	 ('with body type' '{' bodyType=STRING '}')
 	'{'
 	(value+=restPart)*
 	'}' ('on-condition' condition=expression)*;
 
 restPart:
-	'{ part' 'as' partName=STRING 'with' partData=STRING 'type as' type=STRING ' }';
+	'{ part' 'as' partName=STRING 'with' partData=STRING 'type as' type=STRING '}';
 
 expression :'if' (lhs=STRING operator=Operator rhs=STRING);
 

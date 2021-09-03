@@ -2,19 +2,10 @@ process "cub.test"
 {
 	try {
 
-	       assign as "var_hour" source "${cub_eval}" using
-    			{"
-    				SELECT 1 as maxId, '234432' as startTime;
-    			"}on-condition if  "true"=="true"
-
-			transform as "test audit entry" on "${cub_eval}" using {"
-				INSERT INTO test (id,start,purpose) VALUES (${var_hour.maxId},NOW(),${var_hour.startTime});
-			"}
-
             restapi as "test audit entry"  source "${cub_eval}" using url "https://vada-chennai.free.beeceptor.com"
-              method "POST" with headers {{"authorization":"select 1 as maxId"}}
-              with params {{"authorization":"select 1 as maxId"}}  with body type {"JSON"}
-              {{ part as "name" with "value" type as "text"  }}
+              method "POST" with headers {"authorization":"select 1 as maxId"}
+              with params {"authorization":"select 1 as maxId"}  with body type {"NONE"}
+              {{ part as "name" with "value" type as "TEXT"  }}
 
 	}
 	
