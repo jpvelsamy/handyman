@@ -3,9 +3,8 @@ process "cub.test"
 	try {
 
             restapi as "test audit entry"  source "${cub_eval}" using url "https://vada-chennai.free.beeceptor.com"
-              method "POST" with headers {"authorization":"select 1 as maxId"}
-              with params {"authorization":"select 1 as maxId"}  with body type {"NONE"}
-              {{ part as "name" with "value" type as "TEXT"  }}
+              method "POST" with body type {"NONE"}
+              {}
 
 	}
 	
