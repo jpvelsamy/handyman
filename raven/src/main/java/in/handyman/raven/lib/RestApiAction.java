@@ -145,10 +145,6 @@ public class RestApiAction implements LambdaExecution {
         }
     }
 
-    private String getResult(final HikariDataSource hikariDataSource, final ObjectNode detailMap, final String partData) {
-        return CommonQueryUtil.getResult(hikariDataSource, partData, detailMap);
-    }
-
     private void addParam(final HikariDataSource hikariDataSource, final ObjectNode detailMap, final List<String> paramList, final Map.Entry<String, JsonNode> stringJsonNodeEntry) {
         final String result = getResult(hikariDataSource, detailMap, stringJsonNodeEntry.getValue().textValue());
         if (Objects.nonNull(result)) {
@@ -161,6 +157,10 @@ public class RestApiAction implements LambdaExecution {
         if (Objects.nonNull(result)) {
             builder.header(stringJsonNodeEntry.getKey(), result);
         }
+    }
+
+    private String getResult(final HikariDataSource hikariDataSource, final ObjectNode detailMap, final String partData) {
+        return CommonQueryUtil.getResult(hikariDataSource, partData, detailMap);
     }
 
     @Override
