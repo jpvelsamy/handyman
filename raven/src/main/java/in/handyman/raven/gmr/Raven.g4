@@ -101,7 +101,7 @@ restApi:
 	'}' ('on-condition' condition=expression)*;
 
 restPart:
-	'{ part' 'as' partName=STRING 'with' partData=STRING 'type as' type=STRING '}';
+	'{ part' 'as' partName=STRING 'with' partData=STRING ('type as' type=STRING)* '}';
 
 expression :'if' (lhs=STRING operator=Operator rhs=STRING);
 

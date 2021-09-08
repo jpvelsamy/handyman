@@ -3,8 +3,6 @@ package in.handyman.raven.process;
 import in.handyman.raven.context.ProcessContext;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-
 class ProcessEngineTest {
 
     @Test
@@ -12,6 +10,6 @@ class ProcessEngineTest {
         final ProcessContext start = ProcessEngine
                 .start(HRequestResolver.LoadType.FILE.name(),
                         "cub.test");
-        assert start.getTryActions().size() == 1;
+        assert start.getTryActions().size() == 3;
     }
 }

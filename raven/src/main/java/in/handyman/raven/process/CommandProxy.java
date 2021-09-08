@@ -117,13 +117,17 @@ public class CommandProxy {
     }
 
     private static String getString(final Token o, final Map<String, String> context) {
-        final String text;
-        if (o.getType() == RavenLexer.STRING) {
-            text = o.getText().substring(1, o.getText().length() - 1);
+        if (Objects.nonNull(o)) {
+            final String text;
+            if (o.getType() == RavenLexer.STRING) {
+                text = o.getText().substring(1, o.getText().length() - 1);
+            } else {
+                text = o.getText();
+            }
+            return getString(context, text);
         } else {
-            text = o.getText();
+            return null;
         }
-        return getString(context, text);
     }
 
     private static Method getMethod(final Lambda target, final String fieldName, final Class<?> returnType) throws NoSuchMethodException {

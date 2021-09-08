@@ -105,9 +105,9 @@ public class RestApiAction implements LambdaExecution {
                     .setType(MultipartBody.FORM);
             context.getValue().forEach(restPart -> {
                 if (Objects.equals(restPart.getType(), Constants.PART_TYPE_TEXT)) {
-                    formBody.addFormDataPart(restPart.getPartName(), restPart.getPartData());
+                    formBody.addFormDataPart(restPart.getPartName(), getResult(hikariDataSource, detailMap, restPart.getPartData()));
                 } else if (Objects.equals(restPart.getType(), Constants.PART_TYPE_FILE)) {
-                    final File multiPart = new File(restPart.getPartData());
+                    final File multiPart = new File(getResult(hikariDataSource, detailMap, restPart.getPartData()));
                     final String multiPartName = multiPart.getName();
                     if (!multiPart.exists()) {
                         throw new HandymanException(String.format("File %s not found ", multiPartName));
