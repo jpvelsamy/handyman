@@ -35,6 +35,7 @@ import java.util.Objects;
 )
 @Log4j2
 public class RestApiAction implements LambdaExecution {
+
     private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
     private static final String APPLICATION_JSON_CHARSET_UTF_8 = "application/json; charset=utf-8";
     private static final String POST = "POST";

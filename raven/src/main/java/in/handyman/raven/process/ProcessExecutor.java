@@ -15,6 +15,7 @@ import lombok.extern.log4j.Log4j2;
 import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -30,16 +31,8 @@ public class ProcessExecutor {
     static {
         try {
             log.info("Lambda Execution classes loader initialized");
-            final Set<String> lambdaPackageNames = ConfigurationService.getPackageLambda();
-            final Set<Class<?>> lambdaContext = lambdaPackageNames.stream().flatMap(packageName -> {
-                try {
-                    final Reflections reflections = new Reflections(packageName);
-                    return reflections.getTypesAnnotatedWith(LambdaContext.class).stream();
-                } catch (Exception e) {
-                    log.error("LambdaContext failed for the package name {}", packageName, e);
-                    return null;
-                }
-            }).filter(Objects::nonNull).collect(Collectors.toSet());
+            final Set<String> lambdaPackageNames = getPackageLambda();
+            final Set<Class<?>> lambdaContext = getLambdaContext(lambdaPackageNames);
             final Set<Class<?>> lambdaAutowire = lambdaPackageNames.stream().flatMap(packageName -> {
                 try {
                     final Reflections reflections = new Reflections(packageName);
@@ -54,13 +47,7 @@ public class ProcessExecutor {
                 throw new HandymanException("Size mismatched or Empty Lambda initialization");
             }
 
-            actionExecutionContextMap = lambdaContext.stream()
-                    .filter(aClass -> {
-                        final LambdaContext annotation = aClass.getAnnotation(LambdaContext.class);
-                        return Lambda.class.isAssignableFrom(aClass) &&
-                                Objects.nonNull(annotation) && !annotation.lambdaName().isEmpty() && !annotation.lambdaName().isBlank();
-                    }).collect(Collectors.toMap(aClass -> aClass.getAnnotation(LambdaContext.class).lambdaName(),
-                            aClass -> aClass, (p, q) -> p));
+            actionExecutionContextMap = getActionExecutionContextMap(lambdaContext);
             actionExecutionMap = lambdaAutowire.stream()
                     .filter(aClass -> {
                         final LambdaAutowire annotation = aClass.getAnnotation(LambdaAutowire.class);
@@ -75,6 +62,32 @@ public class ProcessExecutor {
         } catch (Exception e) {
             throw new HandymanException(e.getMessage(), e);
         }
+    }
+
+    private static Set<String> getPackageLambda() {
+        return ConfigurationService.getPackageLambda();
+    }
+
+    private static Set<Class<?>> getLambdaContext(final Set<String> lambdaPackageNames) {
+        return lambdaPackageNames.stream().flatMap(packageName -> {
+            try {
+                final Reflections reflections = new Reflections(packageName);
+                return reflections.getTypesAnnotatedWith(LambdaContext.class).stream();
+            } catch (Exception e) {
+                log.error("LambdaContext failed for the package name {}", packageName, e);
+                return null;
+            }
+        }).filter(Objects::nonNull).collect(Collectors.toSet());
+    }
+
+    private static Map<String, ? extends Class<?>> getActionExecutionContextMap(final Set<Class<?>> lambdaContext) {
+        return lambdaContext.stream()
+                .filter(aClass -> {
+                    final LambdaContext annotation = aClass.getAnnotation(LambdaContext.class);
+                    return Lambda.class.isAssignableFrom(aClass) &&
+                            Objects.nonNull(annotation) && !annotation.lambdaName().isEmpty() && !annotation.lambdaName().isBlank();
+                }).collect(Collectors.toMap(aClass -> aClass.getAnnotation(LambdaContext.class).lambdaName(),
+                        aClass -> aClass, (p, q) -> p));
     }
 
     protected static ActionContext doExecute(final ProcessContext processContext, final RavenParser.ActionContext context) {
@@ -144,5 +157,20 @@ public class ProcessExecutor {
                 .build();
     }
 
+
+    public static Map<String, Object> getLambdas() {
+        final Set<String> lambdaPackageNames = getPackageLambda();
+        final Set<Class<?>> lambdaContext = getLambdaContext(lambdaPackageNames);
+        var lambdas = new HashMap<String, Object>();
+        getActionExecutionContextMap(lambdaContext).forEach((s, aClass) -> {
+            try {
+                final Object o = aClass.getConstructor().newInstance();
+                lambdas.put(s, o);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                throw new HandymanException(aClass.getName() + " new instance failed", e);
+            }
+        });
+        return lambdas;
+    }
 
 }
