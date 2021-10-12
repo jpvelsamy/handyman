@@ -64,32 +64,6 @@ public class ProcessExecutor {
         }
     }
 
-    private static Set<String> getPackageLambda() {
-        return ConfigurationService.getPackageLambda();
-    }
-
-    private static Set<Class<?>> getLambdaContext(final Set<String> lambdaPackageNames) {
-        return lambdaPackageNames.stream().flatMap(packageName -> {
-            try {
-                final Reflections reflections = new Reflections(packageName);
-                return reflections.getTypesAnnotatedWith(LambdaContext.class).stream();
-            } catch (Exception e) {
-                log.error("LambdaContext failed for the package name {}", packageName, e);
-                return null;
-            }
-        }).filter(Objects::nonNull).collect(Collectors.toSet());
-    }
-
-    private static Map<String, ? extends Class<?>> getActionExecutionContextMap(final Set<Class<?>> lambdaContext) {
-        return lambdaContext.stream()
-                .filter(aClass -> {
-                    final LambdaContext annotation = aClass.getAnnotation(LambdaContext.class);
-                    return Lambda.class.isAssignableFrom(aClass) &&
-                            Objects.nonNull(annotation) && !annotation.lambdaName().isEmpty() && !annotation.lambdaName().isBlank();
-                }).collect(Collectors.toMap(aClass -> aClass.getAnnotation(LambdaContext.class).lambdaName(),
-                        aClass -> aClass, (p, q) -> p));
-    }
-
     protected static ActionContext doExecute(final ProcessContext processContext, final RavenParser.ActionContext context) {
         if (context.getChild(0) != null) {
             final String lambdaName = context.getChild(0).getClass().getSimpleName().replace(CONTEXT, "");
@@ -157,7 +131,6 @@ public class ProcessExecutor {
                 .build();
     }
 
-
     public static Map<String, Object> getLambdas() {
         final Set<String> lambdaPackageNames = getPackageLambda();
         final Set<Class<?>> lambdaContext = getLambdaContext(lambdaPackageNames);
@@ -171,6 +144,32 @@ public class ProcessExecutor {
             }
         });
         return lambdas;
+    }
+
+    private static Set<String> getPackageLambda() {
+        return ConfigurationService.getPackageLambda();
+    }
+
+    private static Set<Class<?>> getLambdaContext(final Set<String> lambdaPackageNames) {
+        return lambdaPackageNames.stream().flatMap(packageName -> {
+            try {
+                final Reflections reflections = new Reflections(packageName);
+                return reflections.getTypesAnnotatedWith(LambdaContext.class).stream();
+            } catch (Exception e) {
+                log.error("LambdaContext failed for the package name {}", packageName, e);
+                return null;
+            }
+        }).filter(Objects::nonNull).collect(Collectors.toSet());
+    }
+
+    private static Map<String, ? extends Class<?>> getActionExecutionContextMap(final Set<Class<?>> lambdaContext) {
+        return lambdaContext.stream()
+                .filter(aClass -> {
+                    final LambdaContext annotation = aClass.getAnnotation(LambdaContext.class);
+                    return Lambda.class.isAssignableFrom(aClass) &&
+                            Objects.nonNull(annotation) && !annotation.lambdaName().isEmpty() && !annotation.lambdaName().isBlank();
+                }).collect(Collectors.toMap(aClass -> aClass.getAnnotation(LambdaContext.class).lambdaName(),
+                        aClass -> aClass, (p, q) -> p));
     }
 
 }
