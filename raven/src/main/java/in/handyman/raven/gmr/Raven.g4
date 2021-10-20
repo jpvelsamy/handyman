@@ -45,10 +45,7 @@ action:
 	|dropFile
 	|loadCsv
 	|restApi
-	|transform
-	|googleContactCreate
-	|googleCalendarCreate
-	|googleContactFetchAll)
+	|transform)
 ;
 
 // this is for creating POJO WRT definition
@@ -132,26 +129,6 @@ restApi:
 
 restPart:
 	'{ part' 'as' partName=STRING 'with' partData=STRING ('type as' type=STRING)* '}';
-
-
-googleContactCreate:
-	'gcontact' 'as' name=STRING 'through-account' account=STRING 'secured-by' privateKey=STRING 'with-key' ptwelveFile=STRING 'for-project' project=STRING 'on-behalf-of' impersonatedUser=STRING 'from-source' dbSrc=STRING 'using'
-	'{'
-		value=STRING
-	'}' ('on-condition' condition=expression)*;
-
-googleCalendarCreate:
-	'gcalendar' 'as' name=STRING 'through-account' account=STRING 'secured-by' privateKey=STRING 'with-key' ptwelveFile=STRING 'for-project' project=STRING 'on-behalf-of' impersonatedUser=STRING 'from-source' dbSrc=STRING 'using'
-	'{'
-		value=STRING
-	'}' ('on-condition' condition=expression)*;
-
-
-googleContactFetchAll:
-	'gcontact-fetchall' 'as' name=STRING 'through-account' account=STRING 'secured-by' privateKey=STRING 'with-key' ptwelveFile=STRING 'for-project' project=STRING 'on-behalf-of' impersonatedUser=STRING 'to-target' dbSrc=STRING 'using'
-	'{'
-		value=STRING
-	'}' ('on-condition' condition=expression)*;
 
 
 expression :'if' (lhs=STRING operator=Operator rhs=STRING);
