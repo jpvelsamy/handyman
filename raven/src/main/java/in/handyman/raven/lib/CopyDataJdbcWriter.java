@@ -2,7 +2,7 @@ package in.handyman.raven.lib;
 
 import in.handyman.raven.audit.AuditService;
 import in.handyman.raven.connection.ResourceAccess;
-import in.handyman.raven.context.ActionContext;
+import in.handyman.raven.process.Context;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lib.model.CopyData;
 import in.handyman.raven.util.Table;
@@ -28,7 +28,7 @@ public class CopyDataJdbcWriter implements Callable<Void> {
 
     private final Insert insert;
     private final Table.Row poisonPill;
-    private final ActionContext actionContext;
+    private final Context context;
     private final LinkedBlockingDeque<Table.Row> rowQueue;
     private final CountDownLatch countDownLatch;
 
@@ -38,18 +38,18 @@ public class CopyDataJdbcWriter implements Callable<Void> {
     private final String columnList;
 
     public CopyDataJdbcWriter(final Map<String, String> configMap, final Insert insert,
-                              final Table.Row poisonPill, final CopyData context, final ActionContext actionContext,
+                              final Table.Row poisonPill, final CopyData copyData, final Context context,
                               final LinkedBlockingDeque<Table.Row> rowQueue, final CountDownLatch countDownLatch) {
         this.insert = insert;
         this.poisonPill = poisonPill;
-        this.actionContext = actionContext;
+        this.context = context;
         this.rowQueue = rowQueue;
         this.countDownLatch = countDownLatch;
 
-        this.target = Optional.ofNullable(context.getTo()).map(String::trim)
+        this.target = Optional.ofNullable(copyData.getTo()).map(String::trim)
                 .filter(s -> !s.isEmpty() && !s.isBlank())
-                .orElseThrow(() -> new HandymanException("target data source cannot be empty for copyData for " + context.getName()));
-        this.writeSize = Optional.ofNullable(context.getWriteBatchSize())
+                .orElseThrow(() -> new HandymanException("target data source cannot be empty for copyData for " + copyData.getName()));
+        this.writeSize = Optional.ofNullable(copyData.getWriteBatchSize())
                 .map(String::trim)
                 .map(Integer::valueOf)
                 .filter(integer -> integer > 0)
@@ -93,8 +93,8 @@ public class CopyDataJdbcWriter implements Callable<Void> {
             sourceConnection.setAutoCommit(false);
             log.info("Writing to database using conn: {}", target);
             final Long statementId = UniqueID.getId();
-            AuditService.insertStatementAudit(statementId, actionContext.getLambdaId(),
-                    actionContext.getName(), actionContext.getProcessName());
+            AuditService.insertStatementAudit(statementId, context.getLambdaId(),
+                    context.getName(), context.getProcessName());
             try (final Statement stmt = sourceConnection.createStatement()) {
                 for (var s : writeBuffer) {
                     stmt.addBatch(s);
@@ -105,7 +105,7 @@ public class CopyDataJdbcWriter implements Callable<Void> {
                 writeBuffer.clear();
             }
         } catch (Throwable ex) {
-            log.error("CopyDataWriter: {} error closing source connection for database: {} ", actionContext.getProcessId(), target, ex);
+            log.error("CopyDataWriter: {} error closing source connection for database: {} ", context.getProcessId(), target, ex);
             throw new HandymanException("writeToDb failed", ex);
         }
     }

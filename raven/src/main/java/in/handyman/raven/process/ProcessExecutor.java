@@ -4,7 +4,6 @@ import in.handyman.raven.actor.HandymanActorSystemAccess;
 import in.handyman.raven.audit.AuditPayload;
 import in.handyman.raven.compiler.RavenParser;
 import in.handyman.raven.config.ConfigurationService;
-import in.handyman.raven.context.ProcessContext;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.action.Action;
 import in.handyman.raven.action.ActionContext;
@@ -63,16 +62,16 @@ public class ProcessExecutor {
         }
     }
 
-    protected static in.handyman.raven.context.ActionContext doExecute(final ProcessContext processContext, final RavenParser.ActionContext context) {
+    protected static Context doExecute(final Process process, final RavenParser.ActionContext context) {
         if (context.getChild(0) != null) {
             final String lambdaName = context.getChild(0).getClass().getSimpleName().replace(CONTEXT, "");
             log.debug("IAction Execution class {} started", lambdaName);
             if (actionExecutionContextMap.containsKey(lambdaName) && actionExecutionMap.containsKey(lambdaName)) {
-                final in.handyman.raven.context.ActionContext actionContext = in.handyman.raven.context.ActionContext.builder()
+                final Context actionContext = Context.builder()
                         .lambdaName(lambdaName)
-                        .processId(processContext.getProcessId())
-                        .processName(processContext.getProcessName())
-                        .context(processContext.getContext())
+                        .processId(process.getProcessId())
+                        .processName(process.getProcessName())
+                        .context(process.getContext())
                         .build();
                 try {
                     final IActionExecution IActionExecution = initialization(actionContext, context, lambdaName);
@@ -97,7 +96,7 @@ public class ProcessExecutor {
     }
 
     private static IActionExecution initialization(
-            final in.handyman.raven.context.ActionContext actionContext,
+            final Context actionContext,
             final RavenParser.ActionContext context,
             final String lambdaName)
             throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -109,7 +108,7 @@ public class ProcessExecutor {
         final AuditPayload auditPayload = getAuditContext(actionContext);
         HandymanActorSystemAccess.doAudit(auditPayload);
         return (IActionExecution) actionExecutionMap.get(lambdaName)
-                .getConstructor(in.handyman.raven.context.ActionContext.class, Object.class)
+                .getConstructor(Context.class, Object.class)
                 .newInstance(actionContext, IAction);
     }
 
@@ -119,14 +118,14 @@ public class ProcessExecutor {
         }
     }
 
-    private static AuditPayload getAuditContext(final in.handyman.raven.context.ActionContext actionContext) {
+    private static AuditPayload getAuditContext(final Context context) {
         return AuditPayload.builder()
                 .auditType(AuditPayload.AuditType.CREATE_COMMAND_AUDIT)
-                .processId(actionContext.getProcessId())
-                .actionId(actionContext.getLambdaId())
-                .instanceName(actionContext.getProcessName())
-                .processName(actionContext.getProcessName())
-                .actionName(actionContext.getName())
+                .processId(context.getProcessId())
+                .actionId(context.getLambdaId())
+                .instanceName(context.getProcessName())
+                .processName(context.getProcessName())
+                .actionName(context.getName())
                 .build();
     }
 
@@ -155,7 +154,7 @@ public class ProcessExecutor {
                 final Reflections reflections = new Reflections(packageName);
                 return reflections.getTypesAnnotatedWith(ActionContext.class).stream();
             } catch (Exception e) {
-                log.error("ActionContext failed for the package name {}", packageName, e);
+                log.error("Context failed for the package name {}", packageName, e);
                 return null;
             }
         }).filter(Objects::nonNull).collect(Collectors.toSet());

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zaxxer.hikari.HikariDataSource;
 import in.handyman.raven.audit.AuditService;
 import in.handyman.raven.connection.ResourceAccess;
-import in.handyman.raven.context.ActionContext;
+import in.handyman.raven.process.Context;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.action.Action;
 import in.handyman.raven.action.IActionExecution;
@@ -31,38 +31,38 @@ import java.util.Map;
 @Log4j2
 public class AssignAction implements IActionExecution {
 
-    private final ActionContext actionContext;
-    private final Assign context;
+    private final Context context;
+    private final Assign assign;
     private final MarkerManager.Log4jMarker aMarker;
 
-    public AssignAction(final ActionContext actionContext, final Object context) {
-        this.context = (Assign) context;
-        this.actionContext = actionContext;
+    public AssignAction(final Context context, final Object assign) {
+        this.assign = (Assign) assign;
+        this.context = context;
         this.aMarker = new MarkerManager.Log4jMarker("Assign");
-        this.actionContext.getDetailMap().putPOJO("context", context);
+        this.context.getDetailMap().putPOJO("context", assign);
     }
 
     @Override
     public void execute() throws Exception {
-        final String dbSrc = context.getSource();
-        log.info("Transform action input variables id: {}, name: {}, source-database: {} ", actionContext.getLambdaId(), context.getName(), dbSrc);
-        log.info("Sql input post parameter ingestion \n {}", context.getValue());
+        final String dbSrc = assign.getSource();
+        log.info("Transform action input variables id: {}, name: {}, source-database: {} ", context.getLambdaId(), assign.getName(), dbSrc);
+        log.info("Sql input post parameter ingestion \n {}", assign.getValue());
         final HikariDataSource hikariDataSource = ResourceAccess.rdbmsConn(dbSrc);
-        final ObjectNode detailMap = actionContext.getDetailMap();
+        final ObjectNode detailMap = context.getDetailMap();
         try (final Connection connection = hikariDataSource.getConnection()) {
-            final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(context.getValue());
+            final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(assign.getValue());
             for (var sqlToExecute : formattedQuery) {
                 log.info(aMarker, "Execution query sql#{} on db=#{}", sqlToExecute, dbSrc);
                 final Long statementId = UniqueID.getId();
-                AuditService.insertStatementAudit(statementId, actionContext.getLambdaId(),
-                        actionContext.getName(), actionContext.getProcessName());
+                AuditService.insertStatementAudit(statementId, context.getLambdaId(),
+                        assign.getName(), context.getProcessName());
                 try (final Statement stmt = connection.createStatement()) {
                     try (var rs = stmt.executeQuery(sqlToExecute)) {
                         var columnCount = rs.getMetaData().getColumnCount();
                         while (rs.next()) {
-                            final Map<String, String> configContext = actionContext.getContext();
+                            final Map<String, String> configContext = context.getContext();
                             CommonQueryUtil.addKeyConfig(configContext, detailMap,
-                                    rs, columnCount, context.getName());
+                                    rs, columnCount, assign.getName());
                         }
                     }
                     var warnings = ExceptionUtil.completeSQLWarning(stmt.getWarnings());
@@ -89,6 +89,6 @@ public class AssignAction implements IActionExecution {
 
     @Override
     public boolean executeIf() {
-        return context.getCondition();
+        return assign.getCondition();
     }
 }

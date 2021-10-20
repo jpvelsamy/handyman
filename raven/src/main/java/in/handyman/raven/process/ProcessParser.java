@@ -2,7 +2,6 @@ package in.handyman.raven.process;
 
 import in.handyman.raven.compiler.RavenLexer;
 import in.handyman.raven.compiler.RavenParser;
-import in.handyman.raven.context.ProcessContext;
 import in.handyman.raven.exception.HandymanException;
 import lombok.extern.log4j.Log4j2;
 import org.antlr.v4.runtime.CharStream;
@@ -14,8 +13,8 @@ import java.util.Map;
 @Log4j2
 public class ProcessParser {
 
-    protected static RavenParser.ProcessContext doParse(final String processFile, final ProcessContext processContext) {
-        final String tokenMappedProcessFile = bindToken(processFile, processContext.getContext());
+    protected static RavenParser.ProcessContext doParse(final String processFile,  final Map<String, String> context ) {
+        final String tokenMappedProcessFile = bindToken(processFile, context);
         final CharStream input = CharStreams.fromString(tokenMappedProcessFile);
         // create lexer
         final RavenLexer lexer = new RavenLexer(input);

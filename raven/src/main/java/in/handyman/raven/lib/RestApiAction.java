@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zaxxer.hikari.HikariDataSource;
 import in.handyman.raven.connection.ResourceAccess;
-import in.handyman.raven.context.ActionContext;
+import in.handyman.raven.process.Context;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.action.Action;
 import in.handyman.raven.action.IActionExecution;
@@ -42,34 +42,34 @@ public class RestApiAction implements IActionExecution {
     private static final String DELETE = "DELETE";
     private static final String GET = "GET";
     private static final String PUT = "PUT";
-    private final ActionContext actionContext;
+    private final Context context;
 
-    private final RestApi context;
+    private final RestApi restApi;
 
     private final MarkerManager.Log4jMarker aMarker;
 
-    public RestApiAction(final ActionContext actionContext, final Object context) {
-        this.context = (RestApi) context;
-        this.actionContext = actionContext;
+    public RestApiAction(final Context context, final Object restApi) {
+        this.restApi = (RestApi) restApi;
+        this.context = context;
         this.aMarker = new MarkerManager.Log4jMarker("RestApi");
-        this.actionContext.getDetailMap().putPOJO("context", context);
+        this.context.getDetailMap().putPOJO("context", restApi);
     }
 
     @Override
     public void execute() throws Exception {
-        var url = new StringBuilder(context.getUrl());
-        var source = context.getSource();
-        var method = context.getMethod();
-        var name = context.getName();
-        var payload = context.getValue();
-        var id = actionContext.getProcessId();
-        var header = context.getHeaders();
+        var url = new StringBuilder(restApi.getUrl());
+        var source = restApi.getSource();
+        var method = restApi.getMethod();
+        var name = restApi.getName();
+        var payload = restApi.getValue();
+        var id = context.getProcessId();
+        var header = restApi.getHeaders();
         final HikariDataSource hikariDataSource = ResourceAccess.rdbmsConn(source);
-        final ObjectNode detailMap = actionContext.getDetailMap();
+        final ObjectNode detailMap = context.getDetailMap();
         log.info(aMarker, " id#{}, name#{}, url#{}, payload#{}", id, name, url, payload);
         final OkHttpClient client = new OkHttpClient();
         final Request request;
-        final JsonNode params = context.getParams();
+        final JsonNode params = restApi.getParams();
         if (Objects.nonNull(params)) {
             final List<String> paramList = new ArrayList<>();
             if (params.isArray()) {
@@ -97,14 +97,14 @@ public class RestApiAction implements IActionExecution {
         }
 
         final RequestBody body;
-        if (Objects.equals(Constants.BODY_TYPE_JSON, context.getBodyType())) {
+        if (Objects.equals(Constants.BODY_TYPE_JSON, restApi.getBodyType())) {
             var bodyNode = JsonNodeFactory.instance.objectNode();
             payload.forEach(restPart -> bodyNode.put(restPart.getPartName(), getResult(hikariDataSource, detailMap, restPart.getPartData())));
             body = RequestBody.create(bodyNode.toString(), MediaType.get(APPLICATION_JSON_CHARSET_UTF_8));
-        } else if (Objects.equals(Constants.BODY_TYPE_FORM, context.getBodyType())) {
+        } else if (Objects.equals(Constants.BODY_TYPE_FORM, restApi.getBodyType())) {
             final MultipartBody.Builder formBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM);
-            context.getValue().forEach(restPart -> {
+            restApi.getValue().forEach(restPart -> {
                 if (Objects.equals(restPart.getType(), Constants.PART_TYPE_TEXT)) {
                     formBody.addFormDataPart(restPart.getPartName(), getResult(hikariDataSource, detailMap, restPart.getPartData()));
                 } else if (Objects.equals(restPart.getType(), Constants.PART_TYPE_FILE)) {
@@ -119,7 +119,7 @@ public class RestApiAction implements IActionExecution {
                 }
             });
             body = formBody.build();
-        } else if (Objects.equals(Constants.BODY_TYPE_NONE, context.getBodyType())) {
+        } else if (Objects.equals(Constants.BODY_TYPE_NONE, restApi.getBodyType())) {
             body = RequestBody.create(new byte[0], null);
         } else {
             throw new HandymanException("Unknown Body type");
@@ -142,7 +142,7 @@ public class RestApiAction implements IActionExecution {
             log.info("Rest Api Response Content: " + execute.body() + " for URL: " + url);
         } catch (Exception e) {
             log.error(aMarker, "Stopping execution, {}", url, e);
-            actionContext.getDetailMap().put("Exception", ExceptionUtil.toString(e));
+            context.getDetailMap().put("Exception", ExceptionUtil.toString(e));
         }
     }
 
@@ -166,6 +166,6 @@ public class RestApiAction implements IActionExecution {
 
     @Override
     public boolean executeIf() throws Exception {
-        return context.getCondition();
+        return restApi.getCondition();
     }
 }

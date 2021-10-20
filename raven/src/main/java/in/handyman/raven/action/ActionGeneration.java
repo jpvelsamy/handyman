@@ -10,6 +10,7 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import in.handyman.raven.compiler.RavenParser;
+import in.handyman.raven.process.Context;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lib.model.RestPart;
 import in.handyman.raven.lib.model.StartProcess;
@@ -108,12 +109,12 @@ public class ActionGeneration {
                         .addMember("actionName", String.format("\"%s\"", actionName)).build())
                 .addAnnotation(Log4j2.class)
                 .addModifiers(Modifier.PUBLIC)
-                .addField(in.handyman.raven.context.ActionContext.class, "actionContext", Modifier.FINAL, Modifier.PRIVATE)
+                .addField(Context.class, "actionContext", Modifier.FINAL, Modifier.PRIVATE)
                 .addField(actionAttributeClassName, "context", Modifier.FINAL, Modifier.PRIVATE)
                 .addField(MarkerManager.Log4jMarker.class, "aMarker", Modifier.FINAL, Modifier.PRIVATE)
                 .addMethod(MethodSpec.constructorBuilder()
                         .addModifiers(Modifier.PUBLIC)
-                        .addParameter(in.handyman.raven.context.ActionContext.class, "actionContext", Modifier.FINAL)
+                        .addParameter(Context.class, "actionContext", Modifier.FINAL)
                         .addParameter(Object.class, "context", Modifier.FINAL)
                         .addStatement("this.context = ($T) context", actionAttributeClassName)
                         .addStatement("this.actionContext = actionContext")

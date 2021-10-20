@@ -1,6 +1,6 @@
 package in.handyman.raven.lib;
 
-import in.handyman.raven.context.ActionContext;
+import in.handyman.raven.process.Context;
 import in.handyman.raven.action.Action;
 import in.handyman.raven.action.IActionExecution;
 import in.handyman.raven.lib.model.DropFile;
@@ -17,22 +17,22 @@ import java.nio.file.Files;
 @Log4j2
 public class DropFileAction implements IActionExecution {
 
-    private final ActionContext actionContext;
-    private final DropFile context;
+    private final Context context;
+    private final DropFile dropFile;
     private final MarkerManager.Log4jMarker aMarker;
 
-    public DropFileAction(final ActionContext actionContext, final Object context) {
-        this.context = (DropFile) context;
-        this.actionContext = actionContext;
+    public DropFileAction(final Context context, final Object dropFile) {
+        this.dropFile = (DropFile) dropFile;
+        this.context = context;
         this.aMarker = new MarkerManager.Log4jMarker("DropFile");
-        this.actionContext.getDetailMap().putPOJO("context", context);
+        this.context.getDetailMap().putPOJO("context", dropFile);
     }
 
     @Override
     public void execute() throws Exception {
-        var filePath = context.getTarget();
-        var name = context.getName();
-        var id = actionContext.getProcessId();
+        var filePath = dropFile.getTarget();
+        var name = dropFile.getName();
+        var id = context.getProcessId();
 
         log.info(aMarker, " id#{}, name#{}, file#{}", id, name, filePath);
 
@@ -43,6 +43,6 @@ public class DropFileAction implements IActionExecution {
 
     @Override
     public boolean executeIf() throws Exception {
-        return context.getCondition();
+        return dropFile.getCondition();
     }
 }

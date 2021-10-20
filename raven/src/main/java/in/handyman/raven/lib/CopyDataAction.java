@@ -3,7 +3,7 @@ package in.handyman.raven.lib;
 import in.handyman.raven.audit.AuditService;
 import in.handyman.raven.config.ConfigurationService;
 import in.handyman.raven.connection.ResourceAccess;
-import in.handyman.raven.context.ActionContext;
+import in.handyman.raven.process.Context;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.action.Action;
 import in.handyman.raven.action.IActionExecution;
@@ -39,47 +39,47 @@ import java.util.stream.IntStream;
 @Log4j2
 public class CopyDataAction implements IActionExecution {
 
-    private final ActionContext actionContext;
-    private final CopyData context;
+    private final Context context;
+    private final CopyData copyData;
     private final MarkerManager.Log4jMarker aMarker;
 
-    public CopyDataAction(final ActionContext actionContext, final Object context) {
-        this.context = (CopyData) context;
-        this.actionContext = actionContext;
+    public CopyDataAction(final Context context, final Object copyData) {
+        this.copyData = (CopyData) copyData;
+        this.context = context;
         this.aMarker = new MarkerManager.Log4jMarker("CopyData");
-        this.actionContext.getDetailMap().putPOJO("context", context);
+        this.context.getDetailMap().putPOJO("context", copyData);
     }
 
     @Override
     public void execute() throws Exception {
         //Retrieving the global config map for default value
         var configMap = ConfigurationService.getGlobalConfig();
-        var instanceId = actionContext.getProcessId();
-        var name = actionContext.getName();
-        var source = Optional.ofNullable(context.getSource()).map(String::trim)
+        var instanceId = context.getProcessId();
+        var name = copyData.getName();
+        var source = Optional.ofNullable(copyData.getSource()).map(String::trim)
                 .filter(s -> !s.isEmpty() && !s.isBlank())
                 .orElseThrow(() -> new HandymanException("source data source cannot be empty for copyData for " + name));
-        var target = Optional.ofNullable(context.getTo()).map(String::trim)
+        var target = Optional.ofNullable(copyData.getTo()).map(String::trim)
                 .filter(s -> !s.isEmpty() && !s.isBlank())
                 .orElseThrow(() -> new HandymanException("target data source cannot be empty for copyData for " + name));
-        var fetchSize = Optional.ofNullable(context.getFetchBatchSize())
+        var fetchSize = Optional.ofNullable(copyData.getFetchBatchSize())
                 .map(String::trim)
                 .map(Integer::valueOf)
                 .filter(integer -> integer > 0)
                 .orElseGet(() -> Integer.valueOf(configMap.getOrDefault(Constants.READ_SIZE, Constants.DEFAULT_READ_SIZE).trim()));
-        var writeSize = Optional.ofNullable(context.getWriteBatchSize())
+        var writeSize = Optional.ofNullable(copyData.getWriteBatchSize())
                 .map(String::trim)
                 .map(Integer::valueOf)
                 .filter(integer -> integer > 0)
                 .orElseGet(() -> Integer.valueOf(configMap.getOrDefault(Constants.WRITE_SIZE, Constants.DEFAULT_WRITE_SIZE).trim()));
-        var upperThreadCount = Optional.ofNullable(context.getWriteThreadCount())
+        var upperThreadCount = Optional.ofNullable(copyData.getWriteThreadCount())
                 .map(String::trim)
                 .map(Integer::valueOf)
                 .filter(integer -> integer > 0)
                 .orElseGet(() -> Integer.valueOf(configMap.getOrDefault(Constants.WRITER_THREAD, Constants.DEFAULT_WRITER_COUNT).trim()));
         var lowerThreadCount = 1;
         //retrieving the insert into sql statement
-        var insertStatement = Optional.ofNullable(context.getValue()).map(String::trim)
+        var insertStatement = Optional.ofNullable(copyData.getValue()).map(String::trim)
                 .map(s -> s.replaceAll("\"", ""))
                 .filter(s -> !s.isEmpty() && !s.isBlank())
                 .orElseThrow(() -> new HandymanException("INSERT INTO SELECT .... cannot be empty for copyData for " + name));
@@ -101,8 +101,8 @@ public class CopyDataAction implements IActionExecution {
             var rowsProcessed = new AtomicInteger(0);
 
             try (final Connection sourceConnection = hikariDataSource.getConnection()) {
-                AuditService.insertStatementAudit(statementId, actionContext.getLambdaId(),
-                        actionContext.getName(), actionContext.getProcessName());
+                AuditService.insertStatementAudit(statementId, context.getLambdaId(),
+                        copyData.getName(), context.getProcessName());
                 try (final Statement stmt = sourceConnection.createStatement()) {
                     stmt.setFetchSize(fetchSize);
                     var countDownLatch = new CountDownLatch(upperThreadCount);
@@ -110,8 +110,8 @@ public class CopyDataAction implements IActionExecution {
                         var rowQueue = new LinkedBlockingDeque<Table.Row>();
                         var poisonPill = new Table.Row(i, null);
                         log.info(aMarker, " action is prepping up writer thread with poison pill {}", poisonPill);
-                        final CopyDataJdbcWriter jdbcWriter = new CopyDataJdbcWriter(configMap, insert, poisonPill, context,
-                                actionContext, rowQueue, countDownLatch);
+                        final CopyDataJdbcWriter jdbcWriter = new CopyDataJdbcWriter(configMap, insert, poisonPill, copyData,
+                                context, rowQueue, countDownLatch);
                         executor.submit(jdbcWriter);
                         rowQueueMap.put(poisonPill.getRowId(), rowQueue);
                     });
@@ -189,6 +189,6 @@ public class CopyDataAction implements IActionExecution {
 
     @Override
     public boolean executeIf() {
-        return context.getCondition();
+        return copyData.getCondition();
     }
 }

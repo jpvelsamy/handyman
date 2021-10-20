@@ -4,11 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import in.handyman.raven.action.IAction;
 import in.handyman.raven.compiler.RavenLexer;
 import in.handyman.raven.compiler.RavenParser;
 import in.handyman.raven.exception.HandymanException;
-import in.handyman.raven.action.IAction;
 import in.handyman.raven.lib.model.RestPart;
+import in.handyman.raven.lib.model.StartProcess;
 import lombok.extern.log4j.Log4j2;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -88,6 +89,12 @@ public class CommandProxy {
                                                     .partName(getString(token.partName, context))
                                                     .partData(getString(token.partData, context))
                                                     .type(getString(token.type, context))
+                                                    .build();
+                                        } else if (o instanceof RavenParser.StartProcessContext) {
+                                            var token = (RavenParser.StartProcessContext) o;
+                                            return StartProcess.builder()
+                                                    .name(getString(token.name, context))
+                                                    .target(getString(token.target, context))
                                                     .build();
                                         }
                                         throw new HandymanException("Context mapping failed for List");

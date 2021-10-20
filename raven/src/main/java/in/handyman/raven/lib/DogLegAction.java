@@ -2,7 +2,7 @@ package in.handyman.raven.lib;
 
 import in.handyman.raven.action.Action;
 import in.handyman.raven.action.IActionExecution;
-import in.handyman.raven.context.ActionContext;
+import in.handyman.raven.process.Context;
 import in.handyman.raven.lib.model.DogLeg;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.MarkerManager;
@@ -21,32 +21,32 @@ import java.util.concurrent.Executors;
 )
 @Log4j2
 public class DogLegAction implements IActionExecution {
-    private final ActionContext actionContext;
+    private final Context context;
 
-    private final DogLeg context;
+    private final DogLeg dogLeg;
 
     private final MarkerManager.Log4jMarker aMarker;
 
-    public DogLegAction(final ActionContext actionContext, final Object context) {
-        this.context = (DogLeg) context;
-        this.actionContext = actionContext;
+    public DogLegAction(final Context context, final Object dogLeg) {
+        this.dogLeg = (DogLeg) dogLeg;
+        this.context = context;
         this.aMarker = new MarkerManager.Log4jMarker("DogLeg");
-        this.actionContext.getDetailMap().putPOJO("context", context);
+        this.context.getDetailMap().putPOJO("context", dogLeg);
     }
 
     @Override
     public void execute() throws Exception {
-        var processList = context.getProcessList();
-        log.info(aMarker," id: {}, name: {}", actionContext.getLambdaId(), context.getName());
+        var processList = dogLeg.getProcessList();
+        log.info(aMarker," id: {}, name: {}", context.getLambdaId(), dogLeg.getName());
         var countDownLatch = new CountDownLatch(processList.size());
-        var inheritContext = Objects.equals(context.getInheritContext(), "true");
+        var inheritContext = Objects.equals(dogLeg.getInheritContext(), "true");
         var executor = Executors.newWorkStealingPool();
-        final Map<String, String> config = inheritContext ? actionContext.getContext() : Collections.emptyMap();
+        final Map<String, String> config = inheritContext ? context.getContext() : Collections.emptyMap();
         processList.forEach(process -> {
             var processName = process.getName();
             var fileRelativePath = process.getTarget();
             var processWorker = new LambdaCallable(fileRelativePath,
-                    processName, actionContext.getProcessId(),
+                    processName, context.getProcessId(),
                     config, countDownLatch);
             executor.submit(processWorker);
         });
@@ -55,6 +55,6 @@ public class DogLegAction implements IActionExecution {
 
     @Override
     public boolean executeIf() throws Exception {
-        return context.getCondition();
+        return dogLeg.getCondition();
     }
 }

@@ -2,12 +2,11 @@ package in.handyman.raven.lib;
 
 import in.handyman.raven.action.Action;
 import in.handyman.raven.action.IActionExecution;
-import in.handyman.raven.context.ActionContext;
+import in.handyman.raven.process.Context;
 import in.handyman.raven.lib.model.SpawnProcess;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.MarkerManager;
 
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 
 /**
@@ -18,31 +17,31 @@ import java.util.concurrent.Executors;
 )
 @Log4j2
 public class SpawnProcessAction implements IActionExecution {
-    private final ActionContext actionContext;
+    private final Context context;
 
-    private final SpawnProcess context;
+    private final SpawnProcess spawnProcess;
 
     private final MarkerManager.Log4jMarker aMarker;
 
-    public SpawnProcessAction(final ActionContext actionContext, final Object context) {
-        this.context = (SpawnProcess) context;
-        this.actionContext = actionContext;
+    public SpawnProcessAction(final Context context, final Object spawnProcess) {
+        this.spawnProcess = (SpawnProcess) spawnProcess;
+        this.context = context;
         this.aMarker = new MarkerManager.Log4jMarker("SpawnProcess");
-        this.actionContext.getDetailMap().putPOJO("context", context);
+        this.context.getDetailMap().putPOJO("context", spawnProcess);
     }
 
     @Override
     public void execute() throws Exception {
-        log.info(aMarker," id: {}, name: {}", actionContext.getLambdaId(), context.getName());
+        log.info(aMarker, " id: {}, name: {}", context.getLambdaId(), spawnProcess.getName());
         var executor = Executors.newWorkStealingPool();
-        var processWorker = new LambdaCallable(context.getSource(),
-                context.getTarget(), actionContext.getProcessId(),
-                actionContext.getContext(), null);
+        var processWorker = new LambdaCallable(spawnProcess.getSource(),
+                spawnProcess.getTarget(), context.getProcessId(),
+                context.getContext(), null);
         executor.submit(processWorker);
     }
 
     @Override
     public boolean executeIf() throws Exception {
-        return context.getCondition();
+        return spawnProcess.getCondition();
     }
 }

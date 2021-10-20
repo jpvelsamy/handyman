@@ -1,6 +1,5 @@
 package in.handyman.raven.process;
 
-import in.handyman.raven.context.ProcessContext;
 import in.handyman.raven.exception.HandymanException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,25 +16,25 @@ public class HRequestResolver {
 
     private static final String BASE_PATH = "basepath";
 
-    protected static String doResolve(final String processLoadType, final ProcessContext context) {
+    protected static String doResolve(final String processLoadType, final Process process) {
         final LoadType loadType = LoadType.valueOf(processLoadType);
         if (LoadType.DB == loadType) {
-            return dbResolve(context, loadType);
+            return dbResolve(process, loadType);
         } else if (LoadType.FILE == loadType) {
-            return fileResolve(context, loadType);
+            return fileResolve(process, loadType);
         } else {
-            throw new HandymanException("Process definition for " + context.getProcessName() + " is unknown");
+            throw new HandymanException("Process definition for " + process.getProcessName() + " is unknown");
         }
     }
 
-    private static String dbResolve(final ProcessContext context, final LoadType loadType) {
-        return context.getContext().get(loadType.getVariable());
+    private static String dbResolve(final Process process, final LoadType loadType) {
+        return process.getContext().get(loadType.getVariable());
     }
 
-    private static String fileResolve(final ProcessContext context, final LoadType loadType) {
-        final String filePath = context.getContext().getOrDefault(loadType.getVariable(), "");
-        final String basePath = context.getContext().getOrDefault(BASE_PATH, "");
-        final String instanceName = context.getInstanceName();
+    private static String fileResolve(final Process process, final LoadType loadType) {
+        final String filePath = process.getContext().getOrDefault(loadType.getVariable(), "");
+        final String basePath = process.getContext().getOrDefault(BASE_PATH, "");
+        final String instanceName = process.getLambdaName();
         if (filePath.isEmpty()) {
             throw new HandymanException("File path configuration for process " + instanceName + " is missing, check spw_process_config or spw_instance_config");
         }

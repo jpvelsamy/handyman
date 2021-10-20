@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zaxxer.hikari.HikariDataSource;
 import in.handyman.raven.audit.AuditService;
 import in.handyman.raven.connection.ResourceAccess;
-import in.handyman.raven.context.ActionContext;
+import in.handyman.raven.process.Context;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.action.Action;
 import in.handyman.raven.action.IActionExecution;
@@ -29,33 +29,33 @@ import java.sql.Statement;
 @Log4j2
 public class TransformAction implements IActionExecution {
 
-    private final ActionContext actionContext;
-    private final Transform context;
+    private final Context context;
+    private final Transform transform;
     private final MarkerManager.Log4jMarker aMarker;
 
-    public TransformAction(final ActionContext actionContext, final Object context) {
-        this.context = (Transform) context;
-        this.actionContext = actionContext;
+    public TransformAction(final Context context, final Object transform) {
+        this.transform = (Transform) transform;
+        this.context = context;
         this.aMarker = new MarkerManager.Log4jMarker("Transform");
-        this.actionContext.getDetailMap().putPOJO("context", context);
+        this.context.getDetailMap().putPOJO("context", transform);
     }
 
     @Override
     public void execute() {
-        final String dbSrc = context.getOn();
-        log.info("Transform action input variables id: {}, name: {}, source-database: {} ", actionContext.getLambdaId(), context.getName(), dbSrc);
-        log.info("Sql input post parameter ingestion \n {}", context.getValue());
-        final ObjectNode detailMap = actionContext.getDetailMap();
+        final String dbSrc = transform.getOn();
+        log.info("Transform action input variables id: {}, name: {}, source-database: {} ", context.getLambdaId(), transform.getName(), dbSrc);
+        log.info("Sql input post parameter ingestion \n {}", transform.getValue());
+        final ObjectNode detailMap = context.getDetailMap();
         final HikariDataSource hikariDataSource = ResourceAccess.rdbmsConn(dbSrc);
         try (final Connection connection = hikariDataSource.getConnection()) {
             connection.setAutoCommit(false);
-            for (String givenQuery : context.getValue()) {
+            for (String givenQuery : transform.getValue()) {
                 var sqlList = CommonQueryUtil.getFormattedQuery(givenQuery);
                 for (var sqlToExecute : sqlList) {
-                    log.info("Transform with id:{}, executing script {}", actionContext.getProcessId(), givenQuery);
+                    log.info("Transform with id:{}, executing script {}", context.getProcessId(), givenQuery);
                     final Long statementId = UniqueID.getId();
-                    AuditService.insertStatementAudit(statementId, actionContext.getLambdaId(),
-                            actionContext.getName(), actionContext.getProcessName());
+                    AuditService.insertStatementAudit(statementId, context.getLambdaId(),
+                            transform.getName(), context.getProcessName());
                     try (final Statement stmt = connection.createStatement()) {
                         var rowCount = stmt.executeUpdate(sqlToExecute);
                         var warnings = ExceptionUtil.completeSQLWarning(stmt.getWarnings());
@@ -79,7 +79,7 @@ public class TransformAction implements IActionExecution {
                     }
                 }
                 connection.commit();
-                log.info(aMarker, "Completed Transform id#{}, name#{}, dbSrc#{}, sqlList#{}", actionContext.getProcessId(), actionContext.getName()
+                log.info(aMarker, "Completed Transform id#{}, name#{}, dbSrc#{}, sqlList#{}", context.getProcessId(), transform.getName()
                         , dbSrc, sqlList);
             }
         } catch (SQLException ex) {
@@ -92,6 +92,6 @@ public class TransformAction implements IActionExecution {
 
     @Override
     public boolean executeIf() {
-        return context.getCondition();
+        return transform.getCondition();
     }
 }

@@ -1,6 +1,6 @@
 package in.handyman.raven.lib;
 
-import in.handyman.raven.context.ActionContext;
+import in.handyman.raven.process.Context;
 import in.handyman.raven.exception.AbortException;
 import in.handyman.raven.action.Action;
 import in.handyman.raven.action.IActionExecution;
@@ -15,31 +15,31 @@ import org.apache.logging.log4j.MarkerManager;
 @Log4j2
 public class AbortAction implements IActionExecution {
 
-    private final ActionContext actionContext;
-    private final Abort context;
+    private final Context context;
+    private final Abort abort;
     private final MarkerManager.Log4jMarker aMarker;
 
-    public AbortAction(final ActionContext actionContext, final Object context) {
-        this.context = (Abort) context;
-        this.actionContext = actionContext;
+    public AbortAction(final Context context, final Object abort) {
+        this.abort = (Abort) abort;
+        this.context = context;
         this.aMarker = new MarkerManager.Log4jMarker("Abort");
-        this.actionContext.getDetailMap().putPOJO("context", context);
+        this.context.getDetailMap().putPOJO("context", this.context);
     }
 
     @Override
     public void execute() {
-        log.info(aMarker, "Abort action id#{}, name#{}, calledProcess#{}, message#{}", actionContext.getLambdaId(), actionContext.getName(),
-                actionContext.getProcessName(), context.getValue());
-        throw new AbortException(context.getValue());
+        log.info(aMarker, "Abort action id#{}, name#{}, calledProcess#{}, message#{}", context.getLambdaId(), context.getName(),
+                context.getProcessName(), abort.getValue());
+        throw new AbortException(abort.getValue());
     }
 
     @Override
     public boolean executeIf() {
-        final Boolean condition = context.getCondition();
+        final Boolean condition = abort.getCondition();
         log.info(aMarker, "Completed evaluation to execute id#{} actionId#{}, name#{}, expression#{}",
-                actionContext.getProcessId(), actionContext.getLambdaId(),
-                actionContext.getName(), condition);
-        actionContext.getDetailMap().put("condition-output", condition);
+                context.getProcessId(), context.getLambdaId(),
+                context.getName(), condition);
+        context.getDetailMap().put("condition-output", condition);
         return condition;
     }
 }

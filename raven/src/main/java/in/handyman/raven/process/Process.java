@@ -1,6 +1,6 @@
-package in.handyman.raven.context;
+package in.handyman.raven.process;
 
-import in.handyman.raven.process.ProcessStatus;
+import in.handyman.raven.compiler.RavenParser;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,35 +14,38 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Builder
 @Data
-public class ProcessContext {
+public class Process {
 
     private final Long processId;
-    private final String instanceName;
+    private final String lambdaName;
+
     private final Map<String, String> context;
+    private RavenParser.ProcessContext ravenParser;
+
     @Builder.Default
     private final Long start = System.nanoTime();
 
     @Builder.Default
     private Integer status = ProcessStatus.STARTED;
-    private Long parentProcessId;
+    private Long parentPipelineId;
     @Builder.Default
-    private Set<ActionContext> tryActions = new HashSet<>();
+    private Set<Context> tryActions = new HashSet<>();
     @Builder.Default
     private Integer tryStatus = ProcessStatus.STARTED;
     @Builder.Default
-    private Set<ActionContext> catchActions = new HashSet<>();
+    private Set<Context> catchActions = new HashSet<>();
     @Builder.Default
     private Integer catchStatus = ProcessStatus.STARTED;
     @Builder.Default
-    private Set<ActionContext> finallyActions = new HashSet<>();
+    private Set<Context> finallyActions = new HashSet<>();
     @Builder.Default
     private Integer finallyStatus = ProcessStatus.STARTED;
 
     public String getProcessName() {
-        if (instanceName.contains("#")) {
-            return instanceName.substring(0, instanceName.lastIndexOf("#"));
+        if (lambdaName.contains("#")) {
+            return lambdaName.substring(0, lambdaName.lastIndexOf("#"));
         }
-        return instanceName;
+        return lambdaName;
     }
 
     public void setStatus(final Integer status) {

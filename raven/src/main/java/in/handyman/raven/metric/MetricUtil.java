@@ -1,7 +1,7 @@
 package in.handyman.raven.metric;
 
 import in.handyman.raven.connection.DataSource;
-import in.handyman.raven.context.ProcessContext;
+import in.handyman.raven.process.Process;
 import io.github.mweirauch.micrometer.jvm.extras.ProcessMemoryMetrics;
 import io.github.mweirauch.micrometer.jvm.extras.ProcessThreadMetrics;
 import io.micrometer.core.instrument.Counter;
@@ -71,37 +71,37 @@ public class MetricUtil {
         new FileDescriptorMetrics().bindTo(registry);
     }
 
-    public static void addAfter(final ProcessContext context) {
+    public static void addAfter(final Process context) {
         final String name = "process." + context.getProcessName();
         Counter.builder(name)
-                .tag("instanceName", context.getInstanceName())
+                .tag("instanceName", context.getLambdaName())
                 .tag("status", String.valueOf(context.getStatus()))
                 .register(registry).increment();
         Counter.builder(name + ".try")
                 .description("Number of Try Actions")
-                .tag("instanceName", context.getInstanceName())
+                .tag("instanceName", context.getLambdaName())
                 .tags("status", String.valueOf(context.getTryStatus()))
                 .register(registry).increment();
         Counter.builder(name + ".catch")
                 .description("Number of Catch Actions")
-                .tag("instanceName", context.getInstanceName())
+                .tag("instanceName", context.getLambdaName())
                 .tags("status", String.valueOf(context.getCatchStatus()))
                 .register(registry).increment();
         Counter.builder(name + ".finally")
                 .description("Number of Finally Actions")
-                .tag("instanceName", context.getInstanceName())
+                .tag("instanceName", context.getLambdaName())
                 .tags("status", String.valueOf(context.getFinallyStatus()))
                 .register(registry).increment();
         final long amount = System.nanoTime() - context.getStart();
         Timer.builder(name + ".requests")
-                .tag("instanceName", context.getInstanceName())
+                .tag("instanceName", context.getLambdaName())
                 .register(registry)
                 .record(amount, TimeUnit.NANOSECONDS);
         LongTaskTimer.builder(name + ".requests.slow")
-                .tag("instanceName", context.getInstanceName())
+                .tag("instanceName", context.getLambdaName())
                 .register(registry);
         DistributionSummary.builder(name + ".detail")
-                .tag("instanceName", context.getInstanceName())
+                .tag("instanceName", context.getLambdaName())
                 .tag("processId", String.valueOf(context.getProcessId()))
                 .register(registry).record(amount);
         persist();

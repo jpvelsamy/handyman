@@ -2,12 +2,12 @@ package in.handyman.raven.lib;
 
 import com.opencsv.CSVReader;
 import com.zaxxer.hikari.HikariDataSource;
-import in.handyman.raven.audit.AuditService;
-import in.handyman.raven.connection.ResourceAccess;
-import in.handyman.raven.context.ActionContext;
-import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.action.Action;
 import in.handyman.raven.action.IActionExecution;
+import in.handyman.raven.audit.AuditService;
+import in.handyman.raven.connection.ResourceAccess;
+import in.handyman.raven.process.Context;
+import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lib.model.LoadCsv;
 import in.handyman.raven.util.UniqueID;
 import lombok.extern.log4j.Log4j2;
@@ -31,21 +31,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Log4j2
 public class LoadCsvAction implements IActionExecution {
 
-    private final ActionContext actionContext;
-    private final LoadCsv context;
+    private final Context context;
+    private final LoadCsv loadCsv;
     private final MarkerManager.Log4jMarker aMarker;
 
-    public LoadCsvAction(final ActionContext actionContext, final Object context) {
-        this.context = (LoadCsv) context;
-        this.actionContext = actionContext;
+    public LoadCsvAction(final Context context, final Object loadCsv) {
+        this.loadCsv = (LoadCsv) loadCsv;
+        this.context = context;
         this.aMarker = new MarkerManager.Log4jMarker("LoadCsv");
-        this.actionContext.getDetailMap().putPOJO("context", context);
+        this.context.getDetailMap().putPOJO("context", loadCsv);
     }
 
     @Override
     public void execute() throws Exception {
-        var csvFile = context.getSource();
-        var sqlList = context.getValue().replace("\"", "");
+        var csvFile = loadCsv.getSource();
+        var sqlList = loadCsv.getValue().replace("\"", "");
         final String fileName;
         if (csvFile.contains("\\")) {
             var counter = csvFile.length() - csvFile.replace("\\\\", "").length();
@@ -56,7 +56,7 @@ public class LoadCsvAction implements IActionExecution {
             var file = csvFile.split("/", counter + 1);
             fileName = file[counter];
         }
-        log.info(aMarker, "id#{}, name#{}, from#{}, sqlList#{}", actionContext.getProcessId(), actionContext.getName(), context.getSource(), sqlList);
+        log.info(aMarker, "id#{}, name#{}, from#{}, sqlList#{}", context.getProcessId(), loadCsv.getName(), loadCsv.getSource(), sqlList);
         final String csvExtension = ".csv";
         final String tsvExtension = ".tsv";
         try (final CSVReader csvReader = new CSVReader(new FileReader(csvFile))) {
@@ -97,18 +97,18 @@ public class LoadCsvAction implements IActionExecution {
     }
 
     private void perform(final String fileName, final String extension, final Iterator<String[]> iterator, final String column, final String ct) throws SQLException {
-        var pid = context.getPid();
-        var db = context.getTo();
-        var name = context.getName();
-        var id = actionContext.getProcessId();
-        var limit = Integer.parseInt(context.getLimit());
+        var pid = loadCsv.getPid();
+        var db = loadCsv.getTo();
+        var name = loadCsv.getName();
+        var id = context.getProcessId();
+        var limit = Integer.parseInt(loadCsv.getLimit());
         final HikariDataSource hikariDataSource = ResourceAccess.rdbmsConn(db);
         try (final Connection connection = hikariDataSource.getConnection()) {
             connection.setAutoCommit(false);
             try (final Statement st = connection.createStatement()) {
                 final Long statementId = UniqueID.getId();
-                AuditService.insertStatementAudit(statementId, actionContext.getLambdaId(),
-                        actionContext.getName(), actionContext.getProcessName());
+                AuditService.insertStatementAudit(statementId, context.getLambdaId(),
+                        loadCsv.getName(), context.getProcessName());
                 final String dQuery = "drop table if exists `" + pid + "_" + fileName.replace(extension, "") + "`;";
                 log.info(aMarker, "id#{}, name#{}, from#{}, Query#{}", id, name, db, dQuery);
                 st.execute(dQuery);
@@ -122,8 +122,8 @@ public class LoadCsvAction implements IActionExecution {
             final List<String> iQuery = new ArrayList<>();
             try (final Statement st = connection.createStatement()) {
                 final Long statementId = UniqueID.getId();
-                AuditService.insertStatementAudit(statementId, actionContext.getLambdaId(),
-                        actionContext.getName(), actionContext.getProcessName());
+                AuditService.insertStatementAudit(statementId, context.getLambdaId(),
+                        loadCsv.getName(), context.getProcessName());
                 iterator.forEachRemaining(nextLine -> {
                     if (Objects.nonNull(nextLine)) {
                         final String row = String.join("", nextLine).replace("\t", "~ ").replace("\"\"", "\\\"");

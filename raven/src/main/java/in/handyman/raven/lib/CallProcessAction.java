@@ -2,11 +2,11 @@ package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zaxxer.hikari.HikariDataSource;
-import in.handyman.raven.connection.ResourceAccess;
-import in.handyman.raven.context.ActionContext;
-import in.handyman.raven.context.ProcessContext;
 import in.handyman.raven.action.Action;
 import in.handyman.raven.action.IActionExecution;
+import in.handyman.raven.connection.ResourceAccess;
+import in.handyman.raven.process.Context;
+import in.handyman.raven.process.Process;
 import in.handyman.raven.lib.model.CallProcess;
 import in.handyman.raven.process.ProcessEngine;
 import in.handyman.raven.util.CommonQueryUtil;
@@ -22,46 +22,46 @@ import java.util.Map;
 @Log4j2
 public class CallProcessAction implements IActionExecution {
 
-    private final ActionContext actionContext;
-    private final CallProcess context;
+    private final Context context;
+    private final CallProcess callProcess;
     private final MarkerManager.Log4jMarker aMarker;
 
-    public CallProcessAction(final ActionContext actionContext, final Object context) {
-        this.context = (CallProcess) context;
-        this.actionContext = actionContext;
+    public CallProcessAction(final Context context, final Object callProcess) {
+        this.callProcess = (CallProcess) callProcess;
+        this.context = context;
         this.aMarker = new MarkerManager.Log4jMarker("CallProcess");
-        this.actionContext.getDetailMap().putPOJO("context", context);
+        this.context.getDetailMap().putPOJO("context", callProcess);
     }
 
     @Override
     public void execute() throws Exception {
-        final String fileRelativePath = context.getSource();
-        var targetProcess = context.getTarget();
-        var dbSrc = context.getDatasource();
-        var sql = context.getValue().replaceAll("\"", "");
-        log.info(aMarker, " id#{}, name#{}, calledProcess#{}, calledFile#{}, db=#{}", actionContext.getProcessId(), actionContext.getName(), targetProcess, fileRelativePath, dbSrc);
+        final String fileRelativePath = callProcess.getSource();
+        var targetProcess = callProcess.getTarget();
+        var dbSrc = callProcess.getDatasource();
+        var sql = callProcess.getValue().replaceAll("\"", "");
+        log.info(aMarker, " id#{}, name#{}, calledProcess#{}, calledFile#{}, db=#{}", context.getProcessId(), callProcess.getName(), targetProcess, fileRelativePath, dbSrc);
         final HikariDataSource source = ResourceAccess.rdbmsConn(dbSrc);
         try (var conn = source.getConnection()) {
             try (var stmt = conn.createStatement()) {
-                final Map<String, String> configContext = actionContext.getContext();
-                final ObjectNode detailMap = actionContext.getDetailMap();
+                final Map<String, String> configContext = context.getContext();
+                final ObjectNode detailMap = context.getDetailMap();
                 try (var rs = stmt.executeQuery(sql)) {
                     var columnCount = rs.getMetaData().getColumnCount();
                     while (rs.next()) {
                         CommonQueryUtil.addKeyConfig(configContext, detailMap,
                                 rs, columnCount, "");
-                        final ProcessContext processContext = ProcessEngine.start(fileRelativePath, targetProcess, actionContext.getProcessId(), configContext);
-                        log.info(aMarker, processContext);
+                        final Process process = ProcessEngine.start(fileRelativePath, targetProcess, context.getProcessId(), configContext);
+                        log.info(aMarker, process);
                     }
                 }
             }
         }
-        log.info(aMarker, "Completed name#{}, calledProcess#{}, calledFile#{}, db=#{}", actionContext.getName(), targetProcess, fileRelativePath, dbSrc);
+        log.info(aMarker, "Completed name#{}, calledProcess#{}, calledFile#{}, db=#{}", callProcess.getName(), targetProcess, fileRelativePath, dbSrc);
     }
 
 
     @Override
     public boolean executeIf() {
-        return context.getCondition();
+        return callProcess.getCondition();
     }
 }

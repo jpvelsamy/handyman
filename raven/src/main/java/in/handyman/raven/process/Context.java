@@ -1,4 +1,4 @@
-package in.handyman.raven.context;
+package in.handyman.raven.process;
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -13,7 +13,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Data
 @Builder
-public class ActionContext {
+public class Context {
 
     @Builder.Default
     private Long lambdaId = UniqueID.getId();

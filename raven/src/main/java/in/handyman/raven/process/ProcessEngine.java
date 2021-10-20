@@ -4,12 +4,11 @@ import in.handyman.raven.actor.HandymanActorSystemAccess;
 import in.handyman.raven.audit.AuditPayload;
 import in.handyman.raven.compiler.RavenParser;
 import in.handyman.raven.config.ConfigurationService;
-import in.handyman.raven.context.ActionContext;
-import in.handyman.raven.context.ProcessContext;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.metric.MetricUtil;
 import in.handyman.raven.util.UniqueID;
 import lombok.extern.log4j.Log4j2;
+import org.jetbrains.annotations.NotNull;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -24,28 +23,42 @@ import java.util.stream.Collectors;
 @Log4j2
 public class ProcessEngine {
 
-    public static ProcessContext start(final String processLoadType, final String instanceName) {
-        log.debug("Handyman Engine start for {}", instanceName);
-        final Map<String, String> allConfig = new HashMap<>(ConfigurationService.getAllConfig(instanceName));
-        final ProcessContext processContext = ProcessContext.builder()
-                .processId(UniqueID.getId())
-                .context(allConfig)
-                .instanceName(instanceName)
-                .build();
-        allConfig.put("process-id", String.valueOf(processContext.getProcessId()));
-        final String processFile = HRequestResolver.doResolve(processLoadType, processContext);
+    public static Process start(final String processLoadType, final String lambdaName) {
+        final Map<String, String> context = new HashMap<>(ConfigurationService.getAllConfig(lambdaName));
+        final Process process = getProcess(lambdaName, null, context);
+        final String processFile = HRequestResolver.doResolve(processLoadType, process);
         if (Objects.isNull(processFile)) {
-            throw new HandymanException("Content configuration for process " + instanceName + " is missing, check spw_process_config or spw_instance_config");
+            throw new HandymanException("Content configuration for process " + lambdaName + " is missing, check spw_process_config or spw_instance_config");
         }
-
         if (processFile.isEmpty()) {
-            throw new HandymanException("Content configuration for process " + instanceName + " is missing, check spw_process_config or spw_instance_config");
+            throw new HandymanException("Content configuration for process " + lambdaName + " is missing, check spw_process_config or spw_instance_config");
         }
-        final RavenParser.ProcessContext process = ProcessParser.doParse(processFile, processContext);
-        return run(processContext, process);
+        log.debug("Handyman Engine start for {}", lambdaName);
+        final RavenParser.ProcessContext ravenParser = ProcessParser.doParse(processFile, process.getContext());
+        process.setRavenParser(ravenParser);
+        return run(process);
     }
 
-    private static ProcessContext run(final ProcessContext processContext, final RavenParser.ProcessContext process) {
+    public static Process start(final String relativePath, final String lambdaName, final Long parentPipelineId, final Map<String, String> inheritedContext) {
+        final Process process = newInstanceProcess(relativePath, lambdaName, parentPipelineId, inheritedContext);
+        return run(process);
+    }
+
+    public static Process newInstanceProcess(final String relativePath, final String lambdaName, final Long parentPipelineId, final Map<String, String> inheritedContext) {
+        log.debug("Handyman Engine start for {}", lambdaName);
+        final Map<String, String> context = new HashMap<>(ConfigurationService.getAllConfig(lambdaName));
+        context.putAll(inheritedContext);
+        final RavenParser.ProcessContext ravenParser = doRavenParser(relativePath, lambdaName, context);
+        final Process process = getProcess(lambdaName, parentPipelineId, context);
+        process.setRavenParser(ravenParser);
+        return process;
+    }
+
+    public static Process run(final Process process) {
+        final RavenParser.ProcessContext ravenParser = process.getRavenParser();
+        if (Objects.isNull(ravenParser)) {
+            throw new HandymanException(RavenParser.ProcessContext.class.getSimpleName() + " not found ");
+        }
         final String machine;
         try {
             machine = InetAddress.getLocalHost().getHostAddress();
@@ -55,102 +68,103 @@ public class ProcessEngine {
 
         final AuditPayload auditPayload = AuditPayload.builder()
                 .auditType(AuditPayload.AuditType.CREATE_INSTANCE_AUDIT)
-                .processId(processContext.getProcessId())
-                .instanceName(processContext.getInstanceName())
-                .runMode("in.handyman.process.onethread")
+                .processId(process.getProcessId())
+                .processName(process.getLambdaName())
+                .runMode("RAVEN")
                 .machine(machine)
                 .build();
         HandymanActorSystemAccess.doAudit(auditPayload);
         try {
-            tryActionsExecution(processContext, process);
+            tryActionsExecution(process, ravenParser);
         } catch (HandymanException e) {
             log.error(e);
-            processContext.setStatus(ProcessStatus.FAILURE);
-            catchActionsExecution(processContext, process);
+            process.setStatus(ProcessStatus.FAILURE);
+            catchActionsExecution(process, ravenParser);
         } finally {
-            finallyActionsExecution(processContext, process);
+            finallyActionsExecution(process, ravenParser);
             auditPayload.setAuditType(AuditPayload.AuditType.UPDATE_INSTANCE_AUDIT);
-            auditPayload.setStatus(processContext.getStatus());
+            auditPayload.setStatus(process.getStatus());
             HandymanActorSystemAccess.doAudit(auditPayload);
         }
-        MetricUtil.addAfter(processContext);
-        return processContext;
+        MetricUtil.addAfter(process);
+        return process;
     }
 
-    private static void tryActionsExecution(final ProcessContext processContext, final RavenParser.ProcessContext process) {
-        final Set<ActionContext> actionContexts = new HashSet<>();
+    private static void tryActionsExecution(final Process processContext, final RavenParser.ProcessContext process) {
+        final Set<Context> contexts = new HashSet<>();
         try {
             final List<RavenParser.ActionContext> actions = process.tryBlock.actions;
-            final Set<ActionContext> tryExecution = actions.stream().map(action -> ProcessExecutor.doExecute(processContext, action)).collect(Collectors.toSet());
-            actionContexts.addAll(tryExecution);
+            final Set<Context> tryExecution = actions.stream().map(action -> ProcessExecutor.doExecute(processContext, action)).collect(Collectors.toSet());
+            contexts.addAll(tryExecution);
         } catch (Exception e) {
             e.printStackTrace();
             log.error(e);
             processContext.setStatus(ProcessStatus.FAILURE);
         } finally {
-            if (actionContexts.stream().allMatch(actionContext -> ProcessStatus.SUCCESS.equals(actionContext.getStatus()))) {
+            if (contexts.stream().allMatch(actionContext -> ProcessStatus.SUCCESS.equals(actionContext.getStatus()))) {
                 processContext.setTryStatus(ProcessStatus.SUCCESS);
             } else {
                 processContext.setTryStatus(ProcessStatus.FAILURE);
             }
-            processContext.setTryActions(actionContexts);
+            processContext.setTryActions(contexts);
         }
     }
 
-    private static void catchActionsExecution(final ProcessContext processContext, final RavenParser.ProcessContext process) {
-        final Set<ActionContext> actionContexts = new HashSet<>();
+    private static void catchActionsExecution(final Process processContext, final RavenParser.ProcessContext process) {
+        final Set<Context> contexts = new HashSet<>();
         try {
             final List<RavenParser.ActionContext> actions = process.catchBlock.actions;
-            final Set<ActionContext> catchExecution = actions.stream().map(action -> ProcessExecutor.doExecute(processContext, action)).collect(Collectors.toSet());
-            actionContexts.addAll(catchExecution);
+            final Set<Context> catchExecution = actions.stream().map(action -> ProcessExecutor.doExecute(processContext, action)).collect(Collectors.toSet());
+            contexts.addAll(catchExecution);
         } catch (Exception e) {
             log.error(e);
             processContext.setStatus(ProcessStatus.FAILURE);
         } finally {
-            if (actionContexts.stream().allMatch(actionContext -> ProcessStatus.SUCCESS.equals(actionContext.getStatus()))) {
+            if (contexts.stream().allMatch(actionContext -> ProcessStatus.SUCCESS.equals(actionContext.getStatus()))) {
                 processContext.setCatchStatus(ProcessStatus.SUCCESS);
             } else {
                 processContext.setCatchStatus(ProcessStatus.FAILURE);
             }
-            processContext.setCatchActions(actionContexts);
+            processContext.setCatchActions(contexts);
         }
     }
 
-    private static void finallyActionsExecution(final ProcessContext processContext, final RavenParser.ProcessContext process) {
-        final Set<ActionContext> actionContexts = new HashSet<>();
+    private static void finallyActionsExecution(final Process processContext, final RavenParser.ProcessContext process) {
+        final Set<Context> contexts = new HashSet<>();
         try {
             final List<RavenParser.ActionContext> actions = process.finallyBlock.actions;
-            final Set<ActionContext> finallyExecution = actions.stream().map(action -> ProcessExecutor.doExecute(processContext, action)).collect(Collectors.toSet());
-            actionContexts.addAll(finallyExecution);
+            final Set<Context> finallyExecution = actions.stream().map(action -> ProcessExecutor.doExecute(processContext, action)).collect(Collectors.toSet());
+            contexts.addAll(finallyExecution);
         } catch (Exception e) {
             log.error(e);
             processContext.setStatus(ProcessStatus.FAILURE);
         } finally {
-            if (actionContexts.stream().allMatch(actionContext -> ProcessStatus.SUCCESS.equals(actionContext.getStatus()))) {
+            if (contexts.stream().allMatch(actionContext -> ProcessStatus.SUCCESS.equals(actionContext.getStatus()))) {
                 processContext.setFinallyStatus(ProcessStatus.SUCCESS);
             } else {
                 processContext.setFinallyStatus(ProcessStatus.FAILURE);
             }
-            processContext.setFinallyActions(actionContexts);
+            processContext.setFinallyActions(contexts);
         }
     }
 
-    public static ProcessContext start(final String relativePath, final String instanceName, final Long parentProcessId, final Map<String, String> config) {
-        log.debug("Handyman Engine start for {}", instanceName);
-        final Map<String, String> allConfig = new HashMap<>(ConfigurationService.getAllConfig(instanceName));
-        allConfig.putAll(config);
-        final ProcessContext processContext = ProcessContext.builder()
+    private static Process getProcess(final String lambdaName, final Long parentPipelineId, final Map<String, String> context) {
+        final Process process = Process.builder()
                 .processId(UniqueID.getId())
-                .parentProcessId(parentProcessId)
-                .context(allConfig)
-                .instanceName(instanceName)
+                .parentPipelineId(parentPipelineId)
+                .context(context)
+                .lambdaName(lambdaName)
                 .build();
+        context.put("process-id", String.valueOf(process.getProcessId()));
+        return process;
+    }
+
+    private static RavenParser.ProcessContext doRavenParser(final String relativePath, final String lambdaName, final Map<String, String> context) {
         final String processFile = HRequestResolver.readFile(relativePath, "");
         if (processFile.isEmpty()) {
-            throw new HandymanException("Content configuration for process " + instanceName + " is missing, check spw_process_config or spw_instance_config");
+            throw new HandymanException("Content configuration for process " + lambdaName + " is missing, check spw_process_config or spw_instance_config");
         }
-        final RavenParser.ProcessContext process = ProcessParser.doParse(processFile, processContext);
-        return run(processContext, process);
+        return ProcessParser.doParse(processFile, context);
     }
 
 }
