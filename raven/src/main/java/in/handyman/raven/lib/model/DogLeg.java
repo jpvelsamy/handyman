@@ -2,6 +2,9 @@ package in.handyman.raven.lib.model;
 
 import in.handyman.raven.action.ActionContext;
 import in.handyman.raven.action.IAction;
+import java.lang.Boolean;
+import java.lang.String;
+import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -13,12 +16,14 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @ActionContext(
-        actionName = "Abort"
+    actionName = "DogLeg"
 )
-public class Abort implements IAction {
-    private String name;
+public class DogLeg implements IAction {
+  private String name;
 
-    private String value;
+  private String inheritContext;
 
-    private Boolean condition = true;
+  private List<StartProcess> processList;
+
+  private Boolean condition = true;
 }

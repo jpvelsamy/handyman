@@ -1,6 +1,6 @@
-package in.handyman.raven.lambda;
+package in.handyman.raven.action;
 
-public interface LambdaExecution {
+public interface IActionExecution {
 
     void execute() throws Exception;
 

@@ -1,4 +1,4 @@
-package in.handyman.raven.lambda;
+package in.handyman.raven.action;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,8 +7,8 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface LambdaContext {
+public @interface ActionContext {
 
-    String lambdaName() default "";
+    String actionName() default "";
 
 }

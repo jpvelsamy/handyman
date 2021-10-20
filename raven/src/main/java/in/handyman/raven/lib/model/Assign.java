@@ -1,7 +1,7 @@
 package in.handyman.raven.lib.model;
 
-import in.handyman.raven.lambda.Lambda;
-import in.handyman.raven.lambda.LambdaContext;
+import in.handyman.raven.action.IAction;
+import in.handyman.raven.action.ActionContext;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor
-@LambdaContext(
-        lambdaName = "Assign"
+@ActionContext(
+        actionName = "Assign"
 )
-public class Assign implements Lambda {
+public class Assign implements IAction {
     private String name;
 
     private String source;

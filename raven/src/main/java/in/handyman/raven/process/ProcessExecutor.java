@@ -4,13 +4,12 @@ import in.handyman.raven.actor.HandymanActorSystemAccess;
 import in.handyman.raven.audit.AuditPayload;
 import in.handyman.raven.compiler.RavenParser;
 import in.handyman.raven.config.ConfigurationService;
-import in.handyman.raven.context.ActionContext;
 import in.handyman.raven.context.ProcessContext;
 import in.handyman.raven.exception.HandymanException;
-import in.handyman.raven.lambda.Lambda;
-import in.handyman.raven.lambda.LambdaAutowire;
-import in.handyman.raven.lambda.LambdaContext;
-import in.handyman.raven.lambda.LambdaExecution;
+import in.handyman.raven.action.Action;
+import in.handyman.raven.action.ActionContext;
+import in.handyman.raven.action.IAction;
+import in.handyman.raven.action.IActionExecution;
 import lombok.extern.log4j.Log4j2;
 import org.reflections.Reflections;
 
@@ -30,56 +29,56 @@ public class ProcessExecutor {
 
     static {
         try {
-            log.info("Lambda Execution classes loader initialized");
+            log.info("IAction Execution classes loader initialized");
             final Set<String> lambdaPackageNames = getPackageLambda();
             final Set<Class<?>> lambdaContext = getLambdaContext(lambdaPackageNames);
             final Set<Class<?>> lambdaAutowire = lambdaPackageNames.stream().flatMap(packageName -> {
                 try {
                     final Reflections reflections = new Reflections(packageName);
-                    return reflections.getTypesAnnotatedWith(LambdaAutowire.class).stream();
+                    return reflections.getTypesAnnotatedWith(Action.class).stream();
                 } catch (Exception e) {
-                    log.error("LambdaAutowire failed for the package name {}", packageName, e);
+                    log.error("Action failed for the package name {}", packageName, e);
                     return null;
                 }
             }).filter(Objects::nonNull).collect(Collectors.toSet());
 
             if (lambdaAutowire.isEmpty() || lambdaContext.isEmpty() || lambdaAutowire.size() != lambdaContext.size()) {
-                throw new HandymanException("Size mismatched or Empty Lambda initialization");
+                throw new HandymanException("Size mismatched or Empty IAction initialization");
             }
 
             actionExecutionContextMap = getActionExecutionContextMap(lambdaContext);
             actionExecutionMap = lambdaAutowire.stream()
                     .filter(aClass -> {
-                        final LambdaAutowire annotation = aClass.getAnnotation(LambdaAutowire.class);
-                        return LambdaExecution.class.isAssignableFrom(aClass) &&
-                                Objects.nonNull(annotation) && !annotation.lambdaName().isEmpty() && !annotation.lambdaName().isBlank();
-                    }).collect(Collectors.toMap(aClass -> aClass.getAnnotation(LambdaAutowire.class).lambdaName(),
+                        final Action annotation = aClass.getAnnotation(Action.class);
+                        return IActionExecution.class.isAssignableFrom(aClass) &&
+                                Objects.nonNull(annotation) && !annotation.actionName().isEmpty() && !annotation.actionName().isBlank();
+                    }).collect(Collectors.toMap(aClass -> aClass.getAnnotation(Action.class).actionName(),
                             aClass -> aClass, (p, q) -> p));
             if (!actionExecutionMap.keySet().containsAll(actionExecutionContextMap.keySet())) {
                 throw new HandymanException("Mismatched lambdaName");
             }
-            log.info("Lambda Execution classes successfully loaded");
+            log.info("IAction Execution classes successfully loaded");
         } catch (Exception e) {
             throw new HandymanException(e.getMessage(), e);
         }
     }
 
-    protected static ActionContext doExecute(final ProcessContext processContext, final RavenParser.ActionContext context) {
+    protected static in.handyman.raven.context.ActionContext doExecute(final ProcessContext processContext, final RavenParser.ActionContext context) {
         if (context.getChild(0) != null) {
             final String lambdaName = context.getChild(0).getClass().getSimpleName().replace(CONTEXT, "");
-            log.debug("Lambda Execution class {} started", lambdaName);
+            log.debug("IAction Execution class {} started", lambdaName);
             if (actionExecutionContextMap.containsKey(lambdaName) && actionExecutionMap.containsKey(lambdaName)) {
-                final ActionContext actionContext = ActionContext.builder()
+                final in.handyman.raven.context.ActionContext actionContext = in.handyman.raven.context.ActionContext.builder()
                         .lambdaName(lambdaName)
                         .processId(processContext.getProcessId())
                         .processName(processContext.getProcessName())
                         .context(processContext.getContext())
                         .build();
                 try {
-                    final LambdaExecution lambdaExecution = initialization(actionContext, context, lambdaName);
-                    log.debug("Lambda Execution class {} initialized", lambdaName);
-                    execution(lambdaExecution);
-                    log.debug("Lambda Execution class {} executed", lambdaName);
+                    final IActionExecution IActionExecution = initialization(actionContext, context, lambdaName);
+                    log.debug("IAction Execution class {} initialized", lambdaName);
+                    execution(IActionExecution);
+                    log.debug("IAction Execution class {} executed", lambdaName);
                     actionContext.setStatus(ProcessStatus.SUCCESS);
                 } catch (Exception e) {
                     actionContext.setStatus(ProcessStatus.FAILURE);
@@ -94,33 +93,33 @@ public class ProcessExecutor {
                 return actionContext;
             }
         }
-        throw new HandymanException("Unknown Action");
+        throw new HandymanException("Unknown IAction");
     }
 
-    private static LambdaExecution initialization(
-            final ActionContext actionContext,
+    private static IActionExecution initialization(
+            final in.handyman.raven.context.ActionContext actionContext,
             final RavenParser.ActionContext context,
             final String lambdaName)
             throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        final Lambda lambda = (Lambda) actionExecutionContextMap.get(lambdaName).getConstructor().newInstance();
-        log.debug("Lambda Execution class {} instance created", lambdaName);
-        CommandProxy.setTarget(lambda, context.getChild(0), actionContext.getContext());
-        log.debug("Lambda Execution class {} context mapped", lambdaName);
-        actionContext.setName(lambdaName + "->" + lambda.getName());
+        final IAction IAction = (IAction) actionExecutionContextMap.get(lambdaName).getConstructor().newInstance();
+        log.debug("IAction Execution class {} instance created", lambdaName);
+        CommandProxy.setTarget(IAction, context.getChild(0), actionContext.getContext());
+        log.debug("IAction Execution class {} context mapped", lambdaName);
+        actionContext.setName(lambdaName + "->" + IAction.getName());
         final AuditPayload auditPayload = getAuditContext(actionContext);
         HandymanActorSystemAccess.doAudit(auditPayload);
-        return (LambdaExecution) actionExecutionMap.get(lambdaName)
-                .getConstructor(ActionContext.class, Object.class)
-                .newInstance(actionContext, lambda);
+        return (IActionExecution) actionExecutionMap.get(lambdaName)
+                .getConstructor(in.handyman.raven.context.ActionContext.class, Object.class)
+                .newInstance(actionContext, IAction);
     }
 
-    private static void execution(final LambdaExecution lambdaExecution) throws Exception {
-        if (lambdaExecution.executeIf()) {
-            lambdaExecution.execute();
+    private static void execution(final IActionExecution IActionExecution) throws Exception {
+        if (IActionExecution.executeIf()) {
+            IActionExecution.execute();
         }
     }
 
-    private static AuditPayload getAuditContext(final ActionContext actionContext) {
+    private static AuditPayload getAuditContext(final in.handyman.raven.context.ActionContext actionContext) {
         return AuditPayload.builder()
                 .auditType(AuditPayload.AuditType.CREATE_COMMAND_AUDIT)
                 .processId(actionContext.getProcessId())
@@ -154,9 +153,9 @@ public class ProcessExecutor {
         return lambdaPackageNames.stream().flatMap(packageName -> {
             try {
                 final Reflections reflections = new Reflections(packageName);
-                return reflections.getTypesAnnotatedWith(LambdaContext.class).stream();
+                return reflections.getTypesAnnotatedWith(ActionContext.class).stream();
             } catch (Exception e) {
-                log.error("LambdaContext failed for the package name {}", packageName, e);
+                log.error("ActionContext failed for the package name {}", packageName, e);
                 return null;
             }
         }).filter(Objects::nonNull).collect(Collectors.toSet());
@@ -165,10 +164,10 @@ public class ProcessExecutor {
     private static Map<String, ? extends Class<?>> getActionExecutionContextMap(final Set<Class<?>> lambdaContext) {
         return lambdaContext.stream()
                 .filter(aClass -> {
-                    final LambdaContext annotation = aClass.getAnnotation(LambdaContext.class);
-                    return Lambda.class.isAssignableFrom(aClass) &&
-                            Objects.nonNull(annotation) && !annotation.lambdaName().isEmpty() && !annotation.lambdaName().isBlank();
-                }).collect(Collectors.toMap(aClass -> aClass.getAnnotation(LambdaContext.class).lambdaName(),
+                    final ActionContext annotation = aClass.getAnnotation(ActionContext.class);
+                    return IAction.class.isAssignableFrom(aClass) &&
+                            Objects.nonNull(annotation) && !annotation.actionName().isEmpty() && !annotation.actionName().isBlank();
+                }).collect(Collectors.toMap(aClass -> aClass.getAnnotation(ActionContext.class).actionName(),
                         aClass -> aClass, (p, q) -> p));
     }
 

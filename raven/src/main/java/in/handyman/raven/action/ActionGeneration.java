@@ -1,4 +1,4 @@
-package in.handyman.raven.lambda;
+package in.handyman.raven.action;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.squareup.javapoet.AnnotationSpec;
@@ -10,9 +10,9 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import in.handyman.raven.compiler.RavenParser;
-import in.handyman.raven.context.ActionContext;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lib.model.RestPart;
+import in.handyman.raven.lib.model.StartProcess;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class LambdaGeneration {
+public class ActionGeneration {
 
     private static final String CONTEXT = "Context";
     private static final String MAIN_JAVA = "src/main/java/";
@@ -43,14 +43,23 @@ public class LambdaGeneration {
                 .map(Method::getReturnType).map(Class::getSimpleName)
                 .filter(s -> s.contains(CONTEXT))
                 .collect(Collectors.toSet());
+        final Set<String> attributes = Arrays.stream(RavenParser.AttributeContext.class.getDeclaredMethods())
+                .map(Method::getReturnType).map(Class::getSimpleName)
+                .filter(s -> s.contains(CONTEXT))
+                .collect(Collectors.toSet());
         final List<JavaFile> javaFiles = new ArrayList<>();
-        classes.forEach(actionContext -> {
-            final String actionContextFullName = actionContext.getSimpleName();
-            final String lambdaName = getLambdaName(actionContextFullName);
-            if (actions.contains(actionContextFullName)) {
-                javaFiles.add(actionAttribute(actionContext, lambdaName, modelTargetPackage));
-                javaFiles.add(execution(actionContextFullName, modelTargetPackage, executionTargetPackage));
+        classes.forEach(context -> {
+            final String contextFullName = context.getSimpleName();
+            final String name = getName(contextFullName);
+            if (actions.contains(contextFullName)) {
+                javaFiles.add(actionContext(context, name, modelTargetPackage));
+                javaFiles.add(execution(contextFullName, modelTargetPackage, executionTargetPackage));
             }
+            //TODO auto creation of attributes POJO
+            /*else
+            if (attributes.contains(contextFullName)) {
+                javaFiles.add(attributeContext(context, name, modelTargetPackage));
+            }*/
         });
         javaFiles.forEach(javaFile -> {
             final File file = new File(MAIN_JAVA + javaFile.packageName.replace(".", "/")
@@ -61,17 +70,25 @@ public class LambdaGeneration {
         });
     }
 
-    private String getLambdaName(final String s) {
+    private JavaFile attributeContext(final Class<?> contextClass, final String name, final String modelTargetPackage) {
+        final TypeSpec.Builder builder = generateModel(contextClass, name);
+        final TypeSpec build = builder.build();
+        return JavaFile
+                .builder(modelTargetPackage, build)
+                .build();
+    }
+
+    private String getName(final String s) {
         return s.replace(CONTEXT, "");
     }
 
-    private JavaFile actionAttribute(final Class<?> lambdaContextClass, final String lambdaName, final String modelTargetPackage) {
-        final TypeSpec.Builder builder = generateModel(lambdaContextClass, lambdaName);
+    private JavaFile actionContext(final Class<?> contextClass, final String actionName, final String modelTargetPackage) {
+        final TypeSpec.Builder builder = generateModel(contextClass, actionName);
 
         final TypeSpec build = builder
-                .addSuperinterface(Lambda.class)
-                .addAnnotation(AnnotationSpec.builder(LambdaContext.class)
-                        .addMember("lambdaName", String.format("\"%s\"", lambdaName)).build())
+                .addSuperinterface(IAction.class)
+                .addAnnotation(AnnotationSpec.builder(ActionContext.class)
+                        .addMember("actionName", String.format("\"%s\"", actionName)).build())
                 .build();
         return JavaFile
                 .builder(modelTargetPackage, build)
@@ -81,26 +98,26 @@ public class LambdaGeneration {
 
     private JavaFile execution(final String actionContext, final String modelTargetPackage, final String executionTargetPackage) {
         final String execution = getLambdaExecution(actionContext);
-        final String lambdaName = getLambdaName(actionContext);
-        final ClassName actionAttributeClassName = ClassName.get(modelTargetPackage, lambdaName);
+        final String actionName = getName(actionContext);
+        final ClassName actionAttributeClassName = ClassName.get(modelTargetPackage, actionName);
         final TypeSpec typeSpec = TypeSpec
                 .classBuilder(execution)
-                .addSuperinterface(LambdaExecution.class)
+                .addSuperinterface(IActionExecution.class)
                 .addJavadoc("Auto Generated By Raven")
-                .addAnnotation(AnnotationSpec.builder(LambdaAutowire.class)
-                        .addMember("lambdaName", String.format("\"%s\"", lambdaName)).build())
+                .addAnnotation(AnnotationSpec.builder(Action.class)
+                        .addMember("actionName", String.format("\"%s\"", actionName)).build())
                 .addAnnotation(Log4j2.class)
                 .addModifiers(Modifier.PUBLIC)
-                .addField(ActionContext.class, "actionContext", Modifier.FINAL, Modifier.PRIVATE)
+                .addField(in.handyman.raven.context.ActionContext.class, "actionContext", Modifier.FINAL, Modifier.PRIVATE)
                 .addField(actionAttributeClassName, "context", Modifier.FINAL, Modifier.PRIVATE)
                 .addField(MarkerManager.Log4jMarker.class, "aMarker", Modifier.FINAL, Modifier.PRIVATE)
                 .addMethod(MethodSpec.constructorBuilder()
                         .addModifiers(Modifier.PUBLIC)
-                        .addParameter(ActionContext.class, "actionContext", Modifier.FINAL)
+                        .addParameter(in.handyman.raven.context.ActionContext.class, "actionContext", Modifier.FINAL)
                         .addParameter(Object.class, "context", Modifier.FINAL)
                         .addStatement("this.context = ($T) context", actionAttributeClassName)
                         .addStatement("this.actionContext = actionContext")
-                        .addStatement(String.format("this.aMarker = new $T(\"%s\")", lambdaName), MarkerManager.Log4jMarker.class)
+                        .addStatement(String.format("this.aMarker = new $T(\"%s\")", actionName), MarkerManager.Log4jMarker.class)
                         .addStatement("this.actionContext.getDetailMap().putPOJO(\"context\", context)")
                         .build())
                 .addMethod(MethodSpec
@@ -131,15 +148,20 @@ public class LambdaGeneration {
         }
     }
 
-    private TypeSpec.Builder generateModel(final Class<?> lambdaContextClass, final String lambdaName) {
+    private TypeSpec.Builder generateModel(final Class<?> contextClass, final String className) {
         final TypeSpec.Builder builder = TypeSpec
-                .classBuilder(lambdaName)
+                .classBuilder(className)
                 .addJavadoc("Auto Generated By Raven")
                 .addAnnotation(Data.class)
                 .addAnnotation(EqualsAndHashCode.class)
                 .addAnnotation(NoArgsConstructor.class)
                 .addModifiers(Modifier.PUBLIC);
-        Arrays.asList(lambdaContextClass.getDeclaredFields()).forEach(field -> {
+        addFieldMember(contextClass, builder);
+        return builder;
+    }
+
+    private void addFieldMember(final Class<?> contextClass, final TypeSpec.Builder builder) {
+        Arrays.asList(contextClass.getDeclaredFields()).forEach(field -> {
             final Class<?> type = field.getType();
             final String name = field.getName();
             if (type == RavenParser.ExpressionContext.class) {
@@ -157,13 +179,15 @@ public class LambdaGeneration {
                 } else if (actualTypeArgument == RavenParser.RestPartContext.class) {
                     builder.addField(ParameterizedTypeName.get(ClassName.get(List.class), TypeName.get(RestPart.class)),
                             name, Modifier.PRIVATE);
+                } else if (actualTypeArgument == RavenParser.StartProcessContext.class) {
+                    builder.addField(ParameterizedTypeName.get(ClassName.get(List.class), TypeName.get(StartProcess.class)),
+                            name, Modifier.PRIVATE);
                 }
             } else if (type == RavenParser.JsonContext.class) {
                 builder.addField(TypeName.get(JsonNode.class),
                         name, Modifier.PRIVATE);
             }
         });
-        return builder;
     }
 
     private String getLambdaExecution(final String s) {

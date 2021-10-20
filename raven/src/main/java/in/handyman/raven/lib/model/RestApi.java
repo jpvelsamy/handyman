@@ -1,8 +1,8 @@
 package in.handyman.raven.lib.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import in.handyman.raven.lambda.Lambda;
-import in.handyman.raven.lambda.LambdaContext;
+import in.handyman.raven.action.ActionContext;
+import in.handyman.raven.action.IAction;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -16,10 +16,10 @@ import java.util.List;
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor
-@LambdaContext(
-        lambdaName = "RestApi"
+@ActionContext(
+        actionName = "RestApi"
 )
-public class RestApi implements Lambda {
+public class RestApi implements IAction {
     private String name;
 
     private String source;

@@ -38,12 +38,18 @@ action:
 	(abort
 	|assign
     |callProcess
+    |forkProcess
+    |spawnProcess
+    |dogLeg
 	|copyData
 	|dropFile
 	|loadCsv
 	|restApi
 	|transform)
 ;
+
+// this is for creating POJO WRT definition
+attribute:(startProcess);
 
 copyData:
 	('copydata' 'as' name=STRING 'from' source=STRING 'to' to=STRING  'using'
@@ -79,6 +85,27 @@ callProcess:
 	value=STRING
 	'}' ('on-condition' condition=expression)*;
 
+
+forkProcess:
+	'forkprocess' 'as' name=STRING 'with-target' target=STRING 'from-file' source=STRING 'using' datasource=STRING 'for-every'
+	'{'
+	value=STRING
+	'}' ('watermark' forkBatchSize=STRING)* ('on-condition' condition=expression)*;
+
+
+spawnProcess:
+	'spawn' 'as' name=STRING 'with-target' target=STRING 'from-file' source=STRING  ('on-condition' condition=expression)*;
+
+
+dogLeg:
+	'dogleg' 'as' name=STRING 'use-parent-context' inheritContext=STRING 'using'
+	'{'
+		processList+=startProcess
+	'}'   ('on-condition' condition=expression)*;
+
+startProcess:
+	'start-process' name=STRING 'with-file' target=STRING
+;
 
 assign:
 	'assign' 'as' name=STRING 'source' source=STRING 'using'

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.compiler.RavenLexer;
 import in.handyman.raven.compiler.RavenParser;
 import in.handyman.raven.exception.HandymanException;
-import in.handyman.raven.lambda.Lambda;
+import in.handyman.raven.action.IAction;
 import in.handyman.raven.lib.model.RestPart;
 import lombok.extern.log4j.Log4j2;
 import org.antlr.v4.runtime.Token;
@@ -35,7 +35,7 @@ public class CommandProxy {
     private CommandProxy() {
     }
 
-    public static void setTarget(final Lambda target, final ParseTree source, final Map<String, String> context) {
+    public static void setTarget(final IAction target, final ParseTree source, final Map<String, String> context) {
         final Map<String, Method> methodNames = Arrays.stream(target.getClass().getMethods())
                 .filter(method -> method.getName().startsWith("get"))
                 .collect(Collectors.toMap(method -> method.getName().substring(3), method -> method, (p, q) -> p));
@@ -130,7 +130,7 @@ public class CommandProxy {
         }
     }
 
-    private static Method getMethod(final Lambda target, final String fieldName, final Class<?> returnType) throws NoSuchMethodException {
+    private static Method getMethod(final IAction target, final String fieldName, final Class<?> returnType) throws NoSuchMethodException {
         return target.getClass().getMethod("set" + fieldName, returnType);
     }
 
@@ -159,7 +159,7 @@ public class CommandProxy {
                 }).isPresent();
     }
 
-    private static void setValue(final Lambda target, final String fieldName, final Method getter, final Object node) throws NoSuchMethodException {
+    private static void setValue(final IAction target, final String fieldName, final Method getter, final Object node) throws NoSuchMethodException {
         final Method method = getMethod(target, fieldName, getter.getReturnType());
         Arrays.stream(method.getParameterTypes()).findFirst().ifPresent(aClass -> {
             try {

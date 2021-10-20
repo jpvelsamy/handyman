@@ -196,15 +196,15 @@ public class ConfigurationService {
                     return result;
                 } catch (SQLException e) {
                     log.error("Error reading information from config store {}", conn);
-                    throw new HandymanException("Issue fetching configuration from Lambda Scan Package Name", e);
+                    throw new HandymanException("Issue fetching configuration from IAction Scan Package Name", e);
                 }
             } catch (SQLException e) {
                 log.error("Error reading information from config store {}", conn);
-                throw new HandymanException("Issue fetching configuration from  Lambda Scan Package Name", e);
+                throw new HandymanException("Issue fetching configuration from  IAction Scan Package Name", e);
             }
         } catch (SQLException e) {
             log.error(e);
-            throw new HandymanException("Issue fetching configuration from  Lambda Scan Package Name", e);
+            throw new HandymanException("Issue fetching configuration from  IAction Scan Package Name", e);
         }
     }
 

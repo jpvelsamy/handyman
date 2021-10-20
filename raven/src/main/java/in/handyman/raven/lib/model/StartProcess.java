@@ -1,7 +1,5 @@
 package in.handyman.raven.lib.model;
 
-import in.handyman.raven.action.ActionContext;
-import in.handyman.raven.action.IAction;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -12,13 +10,8 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor
-@ActionContext(
-        actionName = "DropFile"
-)
-public class DropFile implements IAction {
+public class StartProcess {
     private String name;
 
     private String target;
-
-    private Boolean condition = true;
 }

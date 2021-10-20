@@ -1,7 +1,7 @@
 package in.handyman.raven.lib.model;
 
-import in.handyman.raven.lambda.Lambda;
-import in.handyman.raven.lambda.LambdaContext;
+import in.handyman.raven.action.ActionContext;
+import in.handyman.raven.action.IAction;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -14,10 +14,10 @@ import java.util.List;
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor
-@LambdaContext(
-        lambdaName = "Transform"
+@ActionContext(
+        actionName = "Transform"
 )
-public class Transform implements Lambda {
+public class Transform implements IAction {
     private String name;
 
     private String on;

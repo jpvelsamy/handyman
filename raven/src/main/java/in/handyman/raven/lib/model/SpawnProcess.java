@@ -2,6 +2,8 @@ package in.handyman.raven.lib.model;
 
 import in.handyman.raven.action.ActionContext;
 import in.handyman.raven.action.IAction;
+import java.lang.Boolean;
+import java.lang.String;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -13,12 +15,14 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @ActionContext(
-        actionName = "Abort"
+    actionName = "SpawnProcess"
 )
-public class Abort implements IAction {
-    private String name;
+public class SpawnProcess implements IAction {
+  private String name;
 
-    private String value;
+  private String target;
 
-    private Boolean condition = true;
+  private String source;
+
+  private Boolean condition = true;
 }
