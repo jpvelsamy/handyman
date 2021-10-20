@@ -10,10 +10,10 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import in.handyman.raven.compiler.RavenParser;
-import in.handyman.raven.process.Context;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lib.model.RestPart;
 import in.handyman.raven.lib.model.StartProcess;
+import in.handyman.raven.process.Context;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -97,9 +97,16 @@ public class ActionGeneration {
 
     }
 
+    private static String createVariableName(final String className) {
+        if (className != null) {
+            return className.substring(0, 1).toLowerCase() + className.substring(1);
+        } return null;
+    }
+
     private JavaFile execution(final String actionContext, final String modelTargetPackage, final String executionTargetPackage) {
         final String execution = getLambdaExecution(actionContext);
         final String actionName = getName(actionContext);
+        final String variableName = createVariableName(actionName);
         final ClassName actionAttributeClassName = ClassName.get(modelTargetPackage, actionName);
         final TypeSpec typeSpec = TypeSpec
                 .classBuilder(execution)
@@ -109,17 +116,17 @@ public class ActionGeneration {
                         .addMember("actionName", String.format("\"%s\"", actionName)).build())
                 .addAnnotation(Log4j2.class)
                 .addModifiers(Modifier.PUBLIC)
-                .addField(Context.class, "actionContext", Modifier.FINAL, Modifier.PRIVATE)
-                .addField(actionAttributeClassName, "context", Modifier.FINAL, Modifier.PRIVATE)
+                .addField(Context.class, "context", Modifier.FINAL, Modifier.PRIVATE)
+                .addField(actionAttributeClassName, variableName, Modifier.FINAL, Modifier.PRIVATE)
                 .addField(MarkerManager.Log4jMarker.class, "aMarker", Modifier.FINAL, Modifier.PRIVATE)
                 .addMethod(MethodSpec.constructorBuilder()
                         .addModifiers(Modifier.PUBLIC)
-                        .addParameter(Context.class, "actionContext", Modifier.FINAL)
-                        .addParameter(Object.class, "context", Modifier.FINAL)
-                        .addStatement("this.context = ($T) context", actionAttributeClassName)
-                        .addStatement("this.actionContext = actionContext")
+                        .addParameter(Context.class, "context", Modifier.FINAL)
+                        .addParameter(Object.class, variableName, Modifier.FINAL)
+                        .addStatement(String.format("this.%s = ($T) %s", variableName, variableName), actionAttributeClassName)
+                        .addStatement("this.context = context")
                         .addStatement(String.format("this.aMarker = new $T(\"%s\")", actionName), MarkerManager.Log4jMarker.class)
-                        .addStatement("this.actionContext.getDetailMap().putPOJO(\"context\", context)")
+                        .addStatement("this.context.getDetailMap().putPOJO(\"context\", context)")
                         .build())
                 .addMethod(MethodSpec
                         .methodBuilder("execute")

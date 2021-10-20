@@ -90,6 +90,16 @@ public interface RavenListener extends ParseTreeListener {
 	 */
 	void exitTransform(RavenParser.TransformContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link RavenParser#transformNew}.
+	 * @param ctx the parse tree
+	 */
+	void enterTransformNew(RavenParser.TransformNewContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#transformNew}.
+	 * @param ctx the parse tree
+	 */
+	void exitTransformNew(RavenParser.TransformNewContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link RavenParser#loadCsv}.
 	 * @param ctx the parse tree
 	 */

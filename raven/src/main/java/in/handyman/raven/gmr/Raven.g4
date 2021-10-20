@@ -45,7 +45,8 @@ action:
 	|dropFile
 	|loadCsv
 	|restApi
-	|transform)
+	|transform
+	|transformNew)
 ;
 
 // this is for creating POJO WRT definition
@@ -59,6 +60,12 @@ copyData:
 	 ;
 
 transform:
+	'transform' 'as' name= STRING 'on' on= STRING 'using'
+	 '{'
+		value+=STRING
+	'}' ('on-condition' condition=expression)*;
+
+transformNew:
 	'transform' 'as' name= STRING 'on' on= STRING 'using'
 	 '{'
 		value+=STRING
