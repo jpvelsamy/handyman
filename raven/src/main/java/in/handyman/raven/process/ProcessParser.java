@@ -13,7 +13,7 @@ import java.util.Map;
 @Log4j2
 public class ProcessParser {
 
-    protected static RavenParser.ProcessContext doParse(final String processFile,  final Map<String, String> context ) {
+    protected static RavenParser.ProcessContext doParse(final String processFile, final Map<String, String> context) {
         final String tokenMappedProcessFile = bindToken(processFile, context);
         final CharStream input = CharStreams.fromString(tokenMappedProcessFile);
         // create lexer

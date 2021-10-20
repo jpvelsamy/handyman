@@ -8,7 +8,6 @@ import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.metric.MetricUtil;
 import in.handyman.raven.util.UniqueID;
 import lombok.extern.log4j.Log4j2;
-import org.jetbrains.annotations.NotNull;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -39,18 +38,14 @@ public class ProcessEngine {
         return run(process);
     }
 
-    public static Process start(final String relativePath, final String lambdaName, final Long parentPipelineId, final Map<String, String> inheritedContext) {
-        final Process process = newInstanceProcess(relativePath, lambdaName, parentPipelineId, inheritedContext);
-        return run(process);
-    }
-
-    public static Process newInstanceProcess(final String relativePath, final String lambdaName, final Long parentPipelineId, final Map<String, String> inheritedContext) {
-        log.debug("Handyman Engine start for {}", lambdaName);
-        final Map<String, String> context = new HashMap<>(ConfigurationService.getAllConfig(lambdaName));
-        context.putAll(inheritedContext);
-        final RavenParser.ProcessContext ravenParser = doRavenParser(relativePath, lambdaName, context);
-        final Process process = getProcess(lambdaName, parentPipelineId, context);
-        process.setRavenParser(ravenParser);
+    private static Process getProcess(final String lambdaName, final Long parentPipelineId, final Map<String, String> context) {
+        final Process process = Process.builder()
+                .processId(UniqueID.getId())
+                .parentPipelineId(parentPipelineId)
+                .context(context)
+                .lambdaName(lambdaName)
+                .build();
+        context.put("process-id", String.valueOf(process.getProcessId()));
         return process;
     }
 
@@ -148,14 +143,18 @@ public class ProcessEngine {
         }
     }
 
-    private static Process getProcess(final String lambdaName, final Long parentPipelineId, final Map<String, String> context) {
-        final Process process = Process.builder()
-                .processId(UniqueID.getId())
-                .parentPipelineId(parentPipelineId)
-                .context(context)
-                .lambdaName(lambdaName)
-                .build();
-        context.put("process-id", String.valueOf(process.getProcessId()));
+    public static Process start(final String relativePath, final String lambdaName, final Long parentPipelineId, final Map<String, String> inheritedContext) {
+        final Process process = newInstanceProcess(relativePath, lambdaName, parentPipelineId, inheritedContext);
+        return run(process);
+    }
+
+    public static Process newInstanceProcess(final String relativePath, final String lambdaName, final Long parentPipelineId, final Map<String, String> inheritedContext) {
+        log.debug("Handyman Engine start for {}", lambdaName);
+        final Map<String, String> context = new HashMap<>(ConfigurationService.getAllConfig(lambdaName));
+        context.putAll(inheritedContext);
+        final RavenParser.ProcessContext ravenParser = doRavenParser(relativePath, lambdaName, context);
+        final Process process = getProcess(lambdaName, parentPipelineId, context);
+        process.setRavenParser(ravenParser);
         return process;
     }
 

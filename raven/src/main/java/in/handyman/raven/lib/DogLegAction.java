@@ -2,8 +2,8 @@ package in.handyman.raven.lib;
 
 import in.handyman.raven.action.ActionExecution;
 import in.handyman.raven.action.IActionExecution;
-import in.handyman.raven.process.Context;
 import in.handyman.raven.lib.model.DogLeg;
+import in.handyman.raven.process.Context;
 import in.handyman.raven.process.Process;
 import in.handyman.raven.process.ProcessEngine;
 import lombok.extern.log4j.Log4j2;
@@ -39,7 +39,7 @@ public class DogLegAction implements IActionExecution {
     @Override
     public void execute() throws Exception {
         var processList = dogLeg.getProcessList();
-        log.info(aMarker," id: {}, name: {}", context.getLambdaId(), dogLeg.getName());
+        log.info(aMarker, " id: {}, name: {}", context.getLambdaId(), dogLeg.getName());
         var countDownLatch = new CountDownLatch(processList.size());
         var inheritContext = Objects.equals(dogLeg.getInheritContext(), "true");
         var executor = Executors.newWorkStealingPool();

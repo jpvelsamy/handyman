@@ -37,7 +37,7 @@ public class ActionGeneration {
 
     private static final String CONTEXT = "Context";
     private static final String MAIN_JAVA = "src/main/java/";
-    private static final String ACTION_IMPL = "ActionExecution";
+    private static final String ACTION_IMPL = "Action";
 
     public void generate(final List<Class<?>> classes, final String modelTargetPackage, final String executionTargetPackage) {
         final Set<String> actions = Arrays.stream(RavenParser.ActionContext.class.getDeclaredMethods())
@@ -71,14 +71,6 @@ public class ActionGeneration {
         });
     }
 
-    private JavaFile attributeContext(final Class<?> contextClass, final String name, final String modelTargetPackage) {
-        final TypeSpec.Builder builder = generateModel(contextClass, name);
-        final TypeSpec build = builder.build();
-        return JavaFile
-                .builder(modelTargetPackage, build)
-                .build();
-    }
-
     private String getName(final String s) {
         return s.replace(CONTEXT, "");
     }
@@ -95,12 +87,6 @@ public class ActionGeneration {
                 .builder(modelTargetPackage, build)
                 .build();
 
-    }
-
-    private static String createVariableName(final String className) {
-        if (className != null) {
-            return className.substring(0, 1).toLowerCase() + className.substring(1);
-        } return null;
     }
 
     private JavaFile execution(final String actionContext, final String modelTargetPackage, final String executionTargetPackage) {
@@ -168,6 +154,17 @@ public class ActionGeneration {
         return builder;
     }
 
+    private String getLambdaExecution(final String s) {
+        return s.replace(CONTEXT, ACTION_IMPL);
+    }
+
+    private static String createVariableName(final String className) {
+        if (className != null) {
+            return className.substring(0, 1).toLowerCase() + className.substring(1);
+        }
+        return null;
+    }
+
     private void addFieldMember(final Class<?> contextClass, final TypeSpec.Builder builder) {
         Arrays.asList(contextClass.getDeclaredFields()).forEach(field -> {
             final Class<?> type = field.getType();
@@ -198,8 +195,12 @@ public class ActionGeneration {
         });
     }
 
-    private String getLambdaExecution(final String s) {
-        return s.replace(CONTEXT, ACTION_IMPL);
+    private JavaFile attributeContext(final Class<?> contextClass, final String name, final String modelTargetPackage) {
+        final TypeSpec.Builder builder = generateModel(contextClass, name);
+        final TypeSpec build = builder.build();
+        return JavaFile
+                .builder(modelTargetPackage, build)
+                .build();
     }
 
 

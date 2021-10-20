@@ -13,14 +13,24 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @ActionContext(
-        actionName = "SpawnProcess"
+        actionName = "GoogleContactFetchAll"
 )
-public class SpawnProcess implements IActionContext {
+public class GoogleContactFetchAll implements IActionContext {
     private String name;
 
-    private String target;
+    private String account;
 
-    private String source;
+    private String privateKey;
+
+    private String ptwelveFile;
+
+    private String project;
+
+    private String impersonatedUser;
+
+    private String dbSrc;
+
+    private String value;
 
     private Boolean condition = true;
 }

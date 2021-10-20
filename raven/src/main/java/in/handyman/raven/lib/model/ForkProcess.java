@@ -2,9 +2,6 @@ package in.handyman.raven.lib.model;
 
 import in.handyman.raven.action.ActionContext;
 import in.handyman.raven.action.IActionContext;
-import java.lang.Boolean;
-import java.lang.String;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -16,20 +13,20 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @ActionContext(
-    actionName = "ForkProcess"
+        actionName = "ForkProcess"
 )
 public class ForkProcess implements IActionContext {
-  private String name;
+    private String name;
 
-  private String target;
+    private String target;
 
-  private String source;
+    private String source;
 
-  private String datasource;
+    private String datasource;
 
-  private String value;
+    private String value;
 
-  private String forkBatchSize;
+    private String forkBatchSize;
 
-  private Boolean condition = true;
+    private Boolean condition = true;
 }

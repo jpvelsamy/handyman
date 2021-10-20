@@ -20,11 +20,9 @@ public class Process {
     private final String lambdaName;
 
     private final Map<String, String> context;
-    private RavenParser.ProcessContext ravenParser;
-
     @Builder.Default
     private final Long start = System.nanoTime();
-
+    private RavenParser.ProcessContext ravenParser;
     @Builder.Default
     private Integer status = ProcessStatus.STARTED;
     private Long parentPipelineId;
