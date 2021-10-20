@@ -1,7 +1,7 @@
 package in.handyman.raven.lib.model;
 
 import in.handyman.raven.action.ActionContext;
-import in.handyman.raven.action.IAction;
+import in.handyman.raven.action.IActionContext;
 import java.lang.Boolean;
 import java.lang.String;
 import lombok.Data;
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @ActionContext(
     actionName = "SpawnProcess"
 )
-public class SpawnProcess implements IAction {
+public class SpawnProcess implements IActionContext {
   private String name;
 
   private String target;

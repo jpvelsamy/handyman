@@ -1,9 +1,10 @@
 package in.handyman.raven.lib.model;
 
 import in.handyman.raven.action.ActionContext;
-import in.handyman.raven.action.IAction;
+import in.handyman.raven.action.IActionContext;
 import java.lang.Boolean;
 import java.lang.String;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 @ActionContext(
     actionName = "ForkProcess"
 )
-public class ForkProcess implements IAction {
+public class ForkProcess implements IActionContext {
   private String name;
 
   private String target;

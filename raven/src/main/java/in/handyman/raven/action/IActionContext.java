@@ -1,5 +1,5 @@
 package in.handyman.raven.action;
 
-public interface IAction {
+public interface IActionContext {
     String getName();
 }

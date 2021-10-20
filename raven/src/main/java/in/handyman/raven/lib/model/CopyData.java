@@ -1,7 +1,7 @@
 package in.handyman.raven.lib.model;
 
 import in.handyman.raven.action.ActionContext;
-import in.handyman.raven.action.IAction;
+import in.handyman.raven.action.IActionContext;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @ActionContext(
         actionName = "CopyData"
 )
-public class CopyData implements IAction {
+public class CopyData implements IActionContext {
     private String name;
 
     private String source;

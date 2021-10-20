@@ -1,10 +1,11 @@
 package in.handyman.raven.lib.model;
 
 import in.handyman.raven.action.ActionContext;
-import in.handyman.raven.action.IAction;
+import in.handyman.raven.action.IActionContext;
 import java.lang.Boolean;
 import java.lang.String;
 import java.util.List;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
 @ActionContext(
     actionName = "DogLeg"
 )
-public class DogLeg implements IAction {
+public class DogLeg implements IActionContext {
   private String name;
 
   private String inheritContext;

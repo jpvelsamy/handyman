@@ -1,7 +1,7 @@
 package in.handyman.raven.lib.model;
 
 import in.handyman.raven.action.ActionContext;
-import in.handyman.raven.action.IAction;
+import in.handyman.raven.action.IActionContext;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.List;
 @ActionContext(
         actionName = "Transform"
 )
-public class Transform implements IAction {
+public class Transform implements IActionContext {
     private String name;
 
     private String on;

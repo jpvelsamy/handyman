@@ -185,7 +185,7 @@ public class ConfigurationService {
         }
     }
 
-    public static Set<String> getPackageLambda() {
+    public static Set<String> getPackageAction() {
         try (final Connection conn = DataSource.getConnection()) {
             try (final PreparedStatement stmt = conn.prepareStatement(scanPackageLambda)) {
                 try (final ResultSet rs = stmt.executeQuery()) {
@@ -196,15 +196,15 @@ public class ConfigurationService {
                     return result;
                 } catch (SQLException e) {
                     log.error("Error reading information from config store {}", conn);
-                    throw new HandymanException("Issue fetching configuration from IAction Scan Package Name", e);
+                    throw new HandymanException("Issue fetching configuration from IActionContext Scan Package Name", e);
                 }
             } catch (SQLException e) {
                 log.error("Error reading information from config store {}", conn);
-                throw new HandymanException("Issue fetching configuration from  IAction Scan Package Name", e);
+                throw new HandymanException("Issue fetching configuration from  IActionContext Scan Package Name", e);
             }
         } catch (SQLException e) {
             log.error(e);
-            throw new HandymanException("Issue fetching configuration from  IAction Scan Package Name", e);
+            throw new HandymanException("Issue fetching configuration from  IActionContext Scan Package Name", e);
         }
     }
 

@@ -2,7 +2,7 @@ package in.handyman.raven.lib.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import in.handyman.raven.action.ActionContext;
-import in.handyman.raven.action.IAction;
+import in.handyman.raven.action.IActionContext;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.List;
 @ActionContext(
         actionName = "RestApi"
 )
-public class RestApi implements IAction {
+public class RestApi implements IActionContext {
     private String name;
 
     private String source;

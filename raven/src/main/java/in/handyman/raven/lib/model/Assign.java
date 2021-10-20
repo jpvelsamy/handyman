@@ -1,6 +1,6 @@
 package in.handyman.raven.lib.model;
 
-import in.handyman.raven.action.IAction;
+import in.handyman.raven.action.IActionContext;
 import in.handyman.raven.action.ActionContext;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @ActionContext(
         actionName = "Assign"
 )
-public class Assign implements IAction {
+public class Assign implements IActionContext {
     private String name;
 
     private String source;

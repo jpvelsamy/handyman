@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import in.handyman.raven.action.IAction;
+import in.handyman.raven.action.IActionContext;
 import in.handyman.raven.compiler.RavenLexer;
 import in.handyman.raven.compiler.RavenParser;
 import in.handyman.raven.exception.HandymanException;
@@ -36,7 +36,7 @@ public class CommandProxy {
     private CommandProxy() {
     }
 
-    public static void setTarget(final IAction target, final ParseTree source, final Map<String, String> context) {
+    public static void setTarget(final IActionContext target, final ParseTree source, final Map<String, String> context) {
         final Map<String, Method> methodNames = Arrays.stream(target.getClass().getMethods())
                 .filter(method -> method.getName().startsWith("get"))
                 .collect(Collectors.toMap(method -> method.getName().substring(3), method -> method, (p, q) -> p));
@@ -137,7 +137,7 @@ public class CommandProxy {
         }
     }
 
-    private static Method getMethod(final IAction target, final String fieldName, final Class<?> returnType) throws NoSuchMethodException {
+    private static Method getMethod(final IActionContext target, final String fieldName, final Class<?> returnType) throws NoSuchMethodException {
         return target.getClass().getMethod("set" + fieldName, returnType);
     }
 
@@ -166,7 +166,7 @@ public class CommandProxy {
                 }).isPresent();
     }
 
-    private static void setValue(final IAction target, final String fieldName, final Method getter, final Object node) throws NoSuchMethodException {
+    private static void setValue(final IActionContext target, final String fieldName, final Method getter, final Object node) throws NoSuchMethodException {
         final Method method = getMethod(target, fieldName, getter.getReturnType());
         Arrays.stream(method.getParameterTypes()).findFirst().ifPresent(aClass -> {
             try {
