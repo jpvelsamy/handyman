@@ -2,8 +2,10 @@ package in.handyman.raven.lib;
 
 import in.handyman.raven.action.Action;
 import in.handyman.raven.action.IActionExecution;
-import in.handyman.raven.process.Context;
 import in.handyman.raven.lib.model.SpawnProcess;
+import in.handyman.raven.process.Context;
+import in.handyman.raven.process.Process;
+import in.handyman.raven.process.ProcessEngine;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.MarkerManager;
 
@@ -34,9 +36,9 @@ public class SpawnProcessAction implements IActionExecution {
     public void execute() throws Exception {
         log.info(aMarker, " id: {}, name: {}", context.getLambdaId(), spawnProcess.getName());
         var executor = Executors.newWorkStealingPool();
-        var processWorker = new LambdaCallable(spawnProcess.getSource(),
-                spawnProcess.getTarget(), context.getProcessId(),
-                context.getContext(), null);
+        final Process process = ProcessEngine.newInstanceProcess(spawnProcess.getSource(),
+                spawnProcess.getTarget(), context.getProcessId(), context.getContext());
+        var processWorker = new LambdaCallable(process, null);
         executor.submit(processWorker);
     }
 

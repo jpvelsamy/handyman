@@ -4,6 +4,8 @@ import in.handyman.raven.action.Action;
 import in.handyman.raven.action.IActionExecution;
 import in.handyman.raven.process.Context;
 import in.handyman.raven.lib.model.DogLeg;
+import in.handyman.raven.process.Process;
+import in.handyman.raven.process.ProcessEngine;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.MarkerManager;
 
@@ -42,12 +44,11 @@ public class DogLegAction implements IActionExecution {
         var inheritContext = Objects.equals(dogLeg.getInheritContext(), "true");
         var executor = Executors.newWorkStealingPool();
         final Map<String, String> config = inheritContext ? context.getContext() : Collections.emptyMap();
-        processList.forEach(process -> {
-            var processName = process.getName();
-            var fileRelativePath = process.getTarget();
-            var processWorker = new LambdaCallable(fileRelativePath,
-                    processName, context.getProcessId(),
-                    config, countDownLatch);
+        processList.forEach(startProcess -> {
+            var processName = startProcess.getName();
+            var fileRelativePath = startProcess.getTarget();
+            final Process process = ProcessEngine.newInstanceProcess(fileRelativePath, processName, context.getProcessId(), config);
+            var processWorker = new LambdaCallable(process, countDownLatch);
             executor.submit(processWorker);
         });
         countDownLatch.await();
