@@ -1,0 +1,18 @@
+config= {
+  url = "jdbc:mysql://pazzmysaz.cherry.in:3306/spw_config?useUnicode=true&characterEncoding=utf8&dumpQueriesOnException=true"
+  driver = org.mariadb.jdbc.Driver
+  user=root
+  passwd=password
+
+  batch_sql="select variable, value from spw_common_config"
+  process_sql="select variable, value from spw_process_config where process=?"
+  instance_sql="select variable, value from spw_instance_config where instance=?"
+  
+  key_global_sql="select value from spw_common_config where variable=?"
+  key_process_sql="select value from spw_process_config where process=? and variable=?"
+  key_instance_sql="select value from spw_instance_config where alias =?"
+
+  resource_sql = "select config_type, driver_class, user_name, password, resource_url from spw_resource_config where active='y' AND config_name=?"
+
+  scan_package_lambda= "SELECT value FROM spw_config.spw_common_config WHERE variable='scanLambdaPackage' AND active='Y' "
+}

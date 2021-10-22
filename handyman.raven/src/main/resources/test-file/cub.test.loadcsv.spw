@@ -1,0 +1,23 @@
+process "cub.test.loadcsv"
+
+{
+	
+	try {
+			
+			loadcsv as "loadcsv" pid "${incoming_id}" from "${csv.storagepath}" to "${cub_eval}" with "${delimiter}" with-fetch-batch-size 200 with-write-batch-size 200 using {"
+			
+				select 1;
+				
+			"} on-condition "true"=="true"	fielding 1
+			
+	}
+	
+	catch {
+
+	}
+
+	finally {
+
+	}
+
+}
