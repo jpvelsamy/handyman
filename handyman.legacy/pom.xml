@@ -52,9 +52,10 @@
 				<configuration>
 					<mainClass>org.eclipse.emf.mwe2.launch.runtime.Mwe2Launcher</mainClass>
 					<arguments>
-						<argument>/${project.basedir}/src/main/java/in/handyman/GenerateDsl.mwe2</argument>
+						<argument>${basedir}/src/main/java/in/handyman/GenerateDsl.mwe2</argument>
 						<argument>-p</argument>
-						<argument>rootPath=/${project.basedir}/..</argument>
+						<argument>rootPath=${basedir}</argument>
+                        <argument>baseName=.</argument>
 					</arguments>
 					<classpathScope>compile</classpathScope>
 					<includePluginDependencies>true</includePluginDependencies>
@@ -72,13 +73,7 @@
 				<configuration>
 					<filesets combine.children="append">
 						<fileset>
-							<directory>${basedir}/../handyman/src/main/xtext-gen/</directory>
-							<includes>
-								<include>**/*</include>
-							</includes>
-						</fileset>
-						<fileset>
-							<directory>${basedir}/../handyman.ide/src/main/xtext-gen/</directory>
+							<directory>${basedir}/src/main/xtext-gen/</directory>
 							<includes>
 								<include>**/*</include>
 							</includes>
