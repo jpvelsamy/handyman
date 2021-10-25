@@ -10,7 +10,6 @@
 	<artifactId>handyman.legacy</artifactId>
 	<packaging>jar</packaging>
 	<properties>
-		<scala.version>2.13.6</scala.version>
 		<scala.logging.version>3.9.4</scala.logging.version>
 		<scala.xml.version>2.0.1</scala.xml.version>
 		<restlet.core.version>2.4.0</restlet.core.version>
@@ -25,7 +24,6 @@
 		<google.cal.version>v3-rev20210804-1.32.1</google.cal.version>
 		<logback.classic.version>1.2.6</logback.classic.version>
 		<presto-parser.version>0.263.1</presto-parser.version>
-		
 	</properties>
 	<repositories>
 		<repository>
