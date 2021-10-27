@@ -62,6 +62,17 @@
             <version>2.7.3</version>
         </dependency>
         <dependency>
+            <groupId>org.mariadb</groupId>
+            <artifactId>r2dbc-mariadb</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.r2dbc/r2dbc-pool -->
+        <dependency>
+            <groupId>io.r2dbc</groupId>
+            <artifactId>r2dbc-pool</artifactId>
+            <version>0.8.7.RELEASE</version>
+        </dependency>
+        <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>5.0.0</version>
@@ -154,7 +165,6 @@
             <artifactId>google-api-services-people</artifactId>
             <version>${google.people.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.google.apis</groupId>
             <artifactId>google-api-services-calendar</artifactId>

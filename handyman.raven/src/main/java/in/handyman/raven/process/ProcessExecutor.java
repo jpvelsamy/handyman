@@ -1,5 +1,6 @@
 package in.handyman.raven.process;
 
+import in.handyman.raven.access.ConfigAccess;
 import in.handyman.raven.action.ActionContext;
 import in.handyman.raven.action.ActionExecution;
 import in.handyman.raven.action.IActionContext;
@@ -7,7 +8,6 @@ import in.handyman.raven.action.IActionExecution;
 import in.handyman.raven.actor.HandymanActorSystemAccess;
 import in.handyman.raven.audit.AuditPayload;
 import in.handyman.raven.compiler.RavenParser;
-import in.handyman.raven.config.ConfigurationService;
 import in.handyman.raven.exception.HandymanException;
 import lombok.extern.log4j.Log4j2;
 import org.reflections.Reflections;
@@ -137,7 +137,7 @@ public class ProcessExecutor {
     }
 
     private static Set<String> getPackageAction() {
-        return ConfigurationService.getPackageAction();
+        return ConfigAccess.getPackageAction();
     }
 
     private static Set<Class<?>> getActionContextClass(final Set<String> packageNames) {

@@ -1,9 +1,9 @@
 package in.handyman.raven.process;
 
+import in.handyman.raven.access.ConfigAccess;
 import in.handyman.raven.actor.HandymanActorSystemAccess;
 import in.handyman.raven.audit.AuditPayload;
 import in.handyman.raven.compiler.RavenParser;
-import in.handyman.raven.config.ConfigurationService;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.metric.MetricUtil;
 import in.handyman.raven.util.UniqueID;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class ProcessEngine {
 
     public static Process start(final String processLoadType, final String lambdaName) {
-        final Map<String, String> context = new HashMap<>(ConfigurationService.getAllConfig(lambdaName));
+        final Map<String, String> context = new HashMap<>(ConfigAccess.getAllConfig(lambdaName));
         final Process process = getProcess(lambdaName, null, context);
         final String processFile = HRequestResolver.doResolve(processLoadType, process);
         if (Objects.isNull(processFile)) {
@@ -150,7 +150,7 @@ public class ProcessEngine {
 
     public static Process newInstanceProcess(final String relativePath, final String lambdaName, final Long parentPipelineId, final Map<String, String> inheritedContext) {
         log.debug("Handyman Engine start for {}", lambdaName);
-        final Map<String, String> context = new HashMap<>(ConfigurationService.getAllConfig(lambdaName));
+        final Map<String, String> context = new HashMap<>(ConfigAccess.getAllConfig(lambdaName));
         context.putAll(inheritedContext);
         final RavenParser.ProcessContext ravenParser = doRavenParser(relativePath, lambdaName, context);
         final Process process = getProcess(lambdaName, parentPipelineId, context);

@@ -1,9 +1,9 @@
 package in.handyman.raven.lib;
 
+import in.handyman.raven.access.ConfigAccess;
 import in.handyman.raven.action.ActionExecution;
 import in.handyman.raven.action.IActionExecution;
 import in.handyman.raven.audit.AuditService;
-import in.handyman.raven.config.ConfigurationService;
 import in.handyman.raven.connection.ResourceAccess;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lib.model.CopyData;
@@ -53,7 +53,7 @@ public class CopyDataAction implements IActionExecution {
     @Override
     public void execute() throws Exception {
         //Retrieving the global config map for default value
-        var configMap = ConfigurationService.getGlobalConfig();
+        var configMap = ConfigAccess.getCommonConfig();
         var instanceId = context.getProcessId();
         var name = copyData.getName();
         var source = Optional.ofNullable(copyData.getSource()).map(String::trim)

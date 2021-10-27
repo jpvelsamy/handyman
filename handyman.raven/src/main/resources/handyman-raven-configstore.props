@@ -1,8 +1,17 @@
 config= {
-  url = "jdbc:mysql://pazzmysaz.cherry.in:3306/spw_config?useUnicode=true&characterEncoding=utf8&dumpQueriesOnException=true"
+  host = localhost
+  port = 3306
+  database= handyman_vm
   driver = org.mariadb.jdbc.Driver
   user=root
-  passwd=password
+  password=password
+
+
+  resource_connection_select_stmt="SELECT  created_by, created_date, last_modified_by, last_modified_date,name, active, config_type, driver_class_name, password, url, user_name FROM resource_config  where active = '1' AND name=?"
+
+  config_select_stmt="SELECT  created_by, created_date, last_modified_by, last_modified_date ,config_type_id, name, variable, active, value FROM config_entity where config_type_id=? and  active = '1' "
+  config_select_stmt_by_name="SELECT  created_by, created_date, last_modified_by, last_modified_date ,config_type_id, name, variable, active, value FROM config_entity where config_type_id=? and name=? and  active = '1' "
+  config_select_stmt_by_var= "SELECT value FROM config_entity WHERE config_type_id=? and name=? and variable=? AND  active = '1'  "
 
   batch_sql="select variable, value from spw_common_config"
   process_sql="select variable, value from spw_process_config where process=?"
@@ -12,7 +21,6 @@ config= {
   key_process_sql="select value from spw_process_config where process=? and variable=?"
   key_instance_sql="select value from spw_instance_config where alias =?"
 
-  resource_sql = "select config_type, driver_class, user_name, password, resource_url from spw_resource_config where active='y' AND config_name=?"
+  resource_sql="select config_type, driver_class, user_name, password, resource_url from resource_config where active = '1' AND name=?"
 
-  scan_package_lambda= "SELECT value FROM spw_config.spw_common_config WHERE variable='scanLambdaPackage' AND active='Y' "
 }
