@@ -1,4 +1,5 @@
 config= {
+
   host = localhost
   port = 3306
   database= handyman_vm
@@ -6,21 +7,13 @@ config= {
   user=root
   password=password
 
-
   resource_connection_select_stmt="SELECT  created_by, created_date, last_modified_by, last_modified_date,name, active, config_type, driver_class_name, password, url, user_name FROM resource_config  where active = '1' AND name=?"
 
   config_select_stmt="SELECT  created_by, created_date, last_modified_by, last_modified_date ,config_type_id, name, variable, active, value FROM config_entity where config_type_id=? and  active = '1' "
   config_select_stmt_by_name="SELECT  created_by, created_date, last_modified_by, last_modified_date ,config_type_id, name, variable, active, value FROM config_entity where config_type_id=? and name=? and  active = '1' "
   config_select_stmt_by_var= "SELECT value FROM config_entity WHERE config_type_id=? and name=? and variable=? AND  active = '1'  "
 
-  batch_sql="select variable, value from spw_common_config"
-  process_sql="select variable, value from spw_process_config where process=?"
-  instance_sql="select variable, value from spw_instance_config where instance=?"
-  
-  key_global_sql="select value from spw_common_config where variable=?"
-  key_process_sql="select value from spw_process_config where process=? and variable=?"
-  key_instance_sql="select value from spw_instance_config where alias =?"
-
-  resource_sql="select config_type, driver_class, user_name, password, resource_url from resource_config where active = '1' AND name=?"
-
+  pipeline_audit_insert_stmt="INSERT INTO pipeline_audit (pipeline_id, created_by, created_date, last_modified_by, last_modified_date, context_node, execution_status_id, lambda_name, parent_pipeline_id, parent_pipeline_name, pipeline_name, file_content, host_name, mode_of_execution, pipeline_load_type, relative_path, request_body, thread_name, parent_action_id, parent_action_name) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+  action_audit_insert_stmt="INSERT INTO action_audit (action_id, created_by, created_date, last_modified_by, last_modified_date, context_node, execution_status_id, lambda_name, parent_pipeline_id, parent_pipeline_name, parent_action_id, parent_action_name, pipeline_name, action_name, input_node, pipeline_id,log) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)"
+  statement_audit_insert_stmt="INSERT INTO statement_audit (statement_id, action_id, created_by, created_date, last_modified_by, last_modified_date, rows_processed, rows_read, rows_written, time_taken,statement) VALUES(?, ?, ?, ?, ?, ?,?,?,?,?,?)"
 }

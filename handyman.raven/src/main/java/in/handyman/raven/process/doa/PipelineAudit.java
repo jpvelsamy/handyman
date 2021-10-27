@@ -2,6 +2,7 @@ package in.handyman.raven.process.doa;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import in.handyman.raven.util.UniqueID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +21,8 @@ import lombok.ToString;
 public class PipelineAudit extends AbstractAudit {
 
 
-    private Long pipelineId;
+    @Builder.Default
+    private Long pipelineId = UniqueID.getId();
 
     private String modeOfExecution;
     private String hostName;

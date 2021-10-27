@@ -1,11 +1,8 @@
 package in.handyman.raven.process.doa;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import in.handyman.raven.util.UniqueID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,16 +18,17 @@ import lombok.ToString;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ActionAudit extends AbstractAudit {
+public class StatementAudit extends Auditable {
 
-    @Builder.Default
-    private Long actionId = UniqueID.getId();
+    private Long statementId;
 
-    private String actionName;
+    private Long actionId;
 
-    private Long pipelineId;
+    private String statement;
 
-    private JsonNode input;
+    private Integer rowsWritten;
+    private Integer rowsRead;
+    private Integer rowsProcessed;
+    private Double timeTaken;
 
-    private String log;
 }
