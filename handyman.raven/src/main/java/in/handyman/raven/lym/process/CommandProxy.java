@@ -1,4 +1,4 @@
-package in.handyman.raven.process;
+package in.handyman.raven.lym.process;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -58,7 +58,7 @@ public class CommandProxy {
                                 try {
                                     method.invoke(target, convertValue);
                                 } catch (IllegalAccessException | InvocationTargetException e) {
-                                    throw new HandymanException("Context mapping failed for Token", e);
+                                    throw new HandymanException("RavenParserContext mapping failed for Token", e);
                                 }
                             });
                         } else if (field.getType() == RavenParser.ExpressionContext.class) {
@@ -81,7 +81,7 @@ public class CommandProxy {
                                             try {
                                                 return mapper.convertValue(s, Class.forName(actualTypeArgument.getTypeName()));
                                             } catch (ClassNotFoundException e) {
-                                                throw new HandymanException("Context mapping failed for List", e);
+                                                throw new HandymanException("RavenParserContext mapping failed for List", e);
                                             }
                                         } else if (o instanceof RavenParser.RestPartContext) {
                                             var token = (RavenParser.RestPartContext) o;
@@ -97,7 +97,7 @@ public class CommandProxy {
                                                     .target(getString(token.target, context))
                                                     .build();
                                         }
-                                        throw new HandymanException("Context mapping failed for List");
+                                        throw new HandymanException("RavenParserContext mapping failed for List");
                                     }).collect(Collectors.toList());
                             final Class<?> returnType = getter.getReturnType();
                             final Method method = getMethod(target, fieldName, returnType);
@@ -105,19 +105,19 @@ public class CommandProxy {
                                 try {
                                     method.invoke(target, list);
                                 } catch (IllegalAccessException | InvocationTargetException e) {
-                                    throw new HandymanException("Context mapping failed for List", e);
+                                    throw new HandymanException("RavenParserContext mapping failed for List", e);
                                 }
                             });
                         } else {
-                            throw new HandymanException("Unknown Context provided");
+                            throw new HandymanException("Unknown RavenParserContext provided");
                         }
                     }
                 } catch (IllegalAccessException | NoSuchMethodException e) {
-                    throw new HandymanException("Context mapping failed", e);
+                    throw new HandymanException("RavenParserContext mapping failed", e);
                 } catch (JsonMappingException e) {
-                    throw new HandymanException("Json Context mapping failed", e);
+                    throw new HandymanException("Json RavenParserContext mapping failed", e);
                 } catch (JsonProcessingException e) {
-                    throw new HandymanException("Unknown Context provided");
+                    throw new HandymanException("Unknown RavenParserContext provided");
                 }
             }
         }
@@ -148,6 +148,8 @@ public class CommandProxy {
                     final String operator = getString(context.operator, configMap);
                     final String lhsText = getString(context.lhs, configMap);
                     final String rhsText = getString(context.rhs, configMap);
+                    assert lhsText != null;
+                    assert rhsText != null;
                     if (Objects.equals(operator, "<")) {
                         final double lhs = Double.parseDouble(lhsText);
                         final double rhs = Double.parseDouble(rhsText);
@@ -172,7 +174,7 @@ public class CommandProxy {
             try {
                 method.invoke(target, node);
             } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new HandymanException("Context mapping failed for ExpressionContext", e);
+                throw new HandymanException("RavenParserContext mapping failed for ExpressionContext", e);
             }
         });
     }

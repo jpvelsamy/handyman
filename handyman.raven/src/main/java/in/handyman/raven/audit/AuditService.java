@@ -1,7 +1,7 @@
 package in.handyman.raven.audit;
 
 import com.zaxxer.hikari.HikariDataSource;
-import in.handyman.raven.access.ConfigAccess;
+import in.handyman.raven.lym.access.ConfigAccess;
 import in.handyman.raven.connection.ResourceAccess;
 import in.handyman.raven.exception.HandymanException;
 import lombok.extern.log4j.Log4j2;

@@ -6,12 +6,14 @@ import in.handyman.raven.util.UniqueID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
 @AllArgsConstructor
 @Data
 @Builder
+@NoArgsConstructor
 public class Context {
 
     @Builder.Default

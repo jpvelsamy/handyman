@@ -1,10 +1,12 @@
 package in.handyman.raven.process;
 
-import in.handyman.raven.access.ConfigAccess;
-import in.handyman.raven.actor.HandymanActorSystemAccess;
+import in.handyman.raven.lym.access.ConfigAccess;
 import in.handyman.raven.audit.AuditPayload;
 import in.handyman.raven.compiler.RavenParser;
 import in.handyman.raven.exception.HandymanException;
+import in.handyman.raven.lym.process.HRequestResolver;
+import in.handyman.raven.lym.process.LambdaParser;
+import in.handyman.raven.lym.process.ProcessExecutor;
 import in.handyman.raven.metric.MetricUtil;
 import in.handyman.raven.util.UniqueID;
 import lombok.extern.log4j.Log4j2;
@@ -33,7 +35,7 @@ public class ProcessEngine {
             throw new HandymanException("Content configuration for process " + lambdaName + " is missing, check spw_process_config or spw_instance_config");
         }
         log.debug("Handyman Engine start for {}", lambdaName);
-        final RavenParser.ProcessContext ravenParser = ProcessParser.doParse(processFile, process.getContext());
+        final RavenParser.ProcessContext ravenParser = LambdaParser.doParse(processFile, process.getContext());
         process.setRavenParser(ravenParser);
         return run(process);
     }
@@ -60,7 +62,6 @@ public class ProcessEngine {
         } catch (UnknownHostException e) {
             throw new HandymanException("machine not found ", e);
         }
-
         final AuditPayload auditPayload = AuditPayload.builder()
                 .auditType(AuditPayload.AuditType.CREATE_INSTANCE_AUDIT)
                 .processId(process.getProcessId())
@@ -68,7 +69,6 @@ public class ProcessEngine {
                 .runMode("RAVEN")
                 .machine(machine)
                 .build();
-        HandymanActorSystemAccess.doAudit(auditPayload);
         try {
             tryActionsExecution(process, ravenParser);
         } catch (HandymanException e) {
@@ -79,7 +79,7 @@ public class ProcessEngine {
             finallyActionsExecution(process, ravenParser);
             auditPayload.setAuditType(AuditPayload.AuditType.UPDATE_INSTANCE_AUDIT);
             auditPayload.setStatus(process.getStatus());
-            HandymanActorSystemAccess.doAudit(auditPayload);
+//            HandymanActorSystemAccess.doAudit(auditPayload);
         }
         MetricUtil.addAfter(process);
         return process;
@@ -163,7 +163,7 @@ public class ProcessEngine {
         if (processFile.isEmpty()) {
             throw new HandymanException("Content configuration for process " + lambdaName + " is missing, check spw_process_config or spw_instance_config");
         }
-        return ProcessParser.doParse(processFile, context);
+        return LambdaParser.doParse(processFile, context);
     }
 
 }

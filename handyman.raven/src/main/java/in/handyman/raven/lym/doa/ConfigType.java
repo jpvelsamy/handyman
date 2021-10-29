@@ -1,4 +1,4 @@
-package in.handyman.raven.process.doa;
+package in.handyman.raven.lym.doa;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

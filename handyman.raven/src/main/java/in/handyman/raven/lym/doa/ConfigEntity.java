@@ -1,4 +1,4 @@
-package in.handyman.raven.process.doa;
+package in.handyman.raven.lym.doa;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

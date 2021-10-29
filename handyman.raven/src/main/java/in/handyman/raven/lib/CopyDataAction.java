@@ -1,6 +1,6 @@
 package in.handyman.raven.lib;
 
-import in.handyman.raven.access.ConfigAccess;
+import in.handyman.raven.lym.access.ConfigAccess;
 import in.handyman.raven.action.ActionExecution;
 import in.handyman.raven.action.IActionExecution;
 import in.handyman.raven.audit.AuditService;

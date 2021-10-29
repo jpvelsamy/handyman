@@ -1,4 +1,4 @@
-package in.handyman.raven.process;
+package in.handyman.raven.lym.process;
 
 import in.handyman.raven.compiler.RavenLexer;
 import in.handyman.raven.compiler.RavenParser;
@@ -11,7 +11,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import java.util.Map;
 
 @Log4j2
-public class ProcessParser {
+public class LambdaParser {
 
     protected static RavenParser.ProcessContext doParse(final String processFile, final Map<String, String> context) {
         final String tokenMappedProcessFile = bindToken(processFile, context);

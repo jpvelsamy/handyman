@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 
 public class ActionGeneration {
 
-    private static final String CONTEXT = "Context";
+    private static final String CONTEXT = "RavenParserContext";
     private static final String MAIN_JAVA = "src/main/java/";
     private static final String ACTION_IMPL = "Action";
 

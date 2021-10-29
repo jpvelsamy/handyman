@@ -1,4 +1,4 @@
-package in.handyman.raven.access;
+package in.handyman.raven.lym.access;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;

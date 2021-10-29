@@ -1,9 +1,8 @@
-package in.handyman.raven.process.doa;
+package in.handyman.raven.lym.doa;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import in.handyman.raven.util.UniqueID;
 import lombok.AllArgsConstructor;
@@ -12,6 +11,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.slf4j.event.SubstituteLoggingEvent;
+
+import java.util.ArrayDeque;
 
 @Getter
 @Setter
@@ -21,7 +23,7 @@ import lombok.ToString;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ActionAudit extends AbstractAudit {
+public class Action extends AbstractAudit {
 
     @Builder.Default
     private Long actionId = UniqueID.getId();
@@ -33,4 +35,9 @@ public class ActionAudit extends AbstractAudit {
     private JsonNode input;
 
     private String log;
+
+    @JsonIgnore
+    private final ArrayDeque<SubstituteLoggingEvent> eventQueue = new ArrayDeque<>();
+
+
 }

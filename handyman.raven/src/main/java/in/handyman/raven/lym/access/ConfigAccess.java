@@ -1,10 +1,10 @@
-package in.handyman.raven.access;
+package in.handyman.raven.lym.access;
 
-import in.handyman.raven.process.doa.Auditable;
-import in.handyman.raven.process.doa.ConfigEntity;
-import in.handyman.raven.process.doa.ConfigID;
-import in.handyman.raven.process.doa.ConfigType;
-import in.handyman.raven.process.doa.ResourceConnection;
+import in.handyman.raven.lym.doa.Auditable;
+import in.handyman.raven.lym.doa.ConfigEntity;
+import in.handyman.raven.lym.doa.ConfigID;
+import in.handyman.raven.lym.doa.ConfigType;
+import in.handyman.raven.lym.doa.ResourceConnection;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Row;
@@ -156,9 +156,11 @@ public class ConfigAccess {
     }
 
 
-    private static String getLambdaName(final String pipelineName) {
-        if (pipelineName.contains("#")) {
-            return pipelineName.substring(0, pipelineName.lastIndexOf("#"));
+    public static String getLambdaName(final String pipelineName) {
+        if (pipelineName != null) {
+            if (pipelineName.contains("#")) {
+                return pipelineName.substring(0, pipelineName.lastIndexOf("#"));
+            }
         }
         return pipelineName;
     }

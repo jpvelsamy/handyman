@@ -3,38 +3,30 @@ package in.handyman.raven.actor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
-import in.handyman.raven.audit.AuditPayload;
-import in.handyman.raven.process.doa.ActionAudit;
-import in.handyman.raven.process.doa.PipelineAudit;
-import in.handyman.raven.process.doa.StatementAudit;
-import in.handyman.raven.util.UniqueID;
+import in.handyman.raven.lym.doa.Action;
+import in.handyman.raven.lym.doa.Pipeline;
+import in.handyman.raven.lym.doa.Statement;
 
 public class HandymanActorSystemAccess {
 
     private static final ActorSystem SYSTEM = ActorSystem.create("Handyman-DAO-system");
 
-    public static void doAudit(final AuditPayload context) {
+    public static void insert(final Pipeline pipeline) {
         final ActorRef actorRef = SYSTEM.actorOf(Props.create(AuditActor.class),
-                context.getAuditType().name() + "-" + UniqueID.getId());
-        actorRef.tell(context, ActorRef.noSender());
+                pipeline.getPipelineName() + "#" + pipeline.getPipelineId());
+        actorRef.tell(pipeline, ActorRef.noSender());
     }
 
-    public static void insert(final PipelineAudit pipelineAudit) {
+    public static void insert(final Action action) {
         final ActorRef actorRef = SYSTEM.actorOf(Props.create(AuditActor.class),
-                pipelineAudit.getPipelineName() + "#" + pipelineAudit.getPipelineId());
-        actorRef.tell(pipelineAudit, ActorRef.noSender());
+                action.getActionName() + "#" + action.getActionId());
+        actorRef.tell(action, ActorRef.noSender());
     }
 
-    public static void insert(final ActionAudit actionAudit) {
+    public static void insert(final Statement statement) {
         final ActorRef actorRef = SYSTEM.actorOf(Props.create(AuditActor.class),
-                actionAudit.getActionName() + "#" + actionAudit.getActionId());
-        actorRef.tell(actionAudit, ActorRef.noSender());
-    }
-
-    public static void insert(final StatementAudit statementAudit) {
-        final ActorRef actorRef = SYSTEM.actorOf(Props.create(AuditActor.class),
-                statementAudit.getStatementId() + "#" + statementAudit.getActionId());
-        actorRef.tell(statementAudit, ActorRef.noSender());
+                statement.getStatementId() + "#" + statement.getActionId());
+        actorRef.tell(statement, ActorRef.noSender());
     }
 
 }
