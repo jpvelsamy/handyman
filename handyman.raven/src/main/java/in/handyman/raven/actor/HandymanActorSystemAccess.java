@@ -13,7 +13,7 @@ public class HandymanActorSystemAccess {
 
     public static void insert(final Pipeline pipeline) {
         final ActorRef actorRef = SYSTEM.actorOf(Props.create(AuditActor.class),
-                pipeline.getPipelineName() + "#" + pipeline.getPipelineId());
+                pipeline.getPipelineName() + ":" + pipeline.getPipelineId());
         actorRef.tell(pipeline, ActorRef.noSender());
     }
 

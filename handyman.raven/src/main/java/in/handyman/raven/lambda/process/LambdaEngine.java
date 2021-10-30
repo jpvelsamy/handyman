@@ -2,6 +2,7 @@ package in.handyman.raven.lambda.process;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import in.handyman.raven.actor.HandymanActorSystemAccess;
 import in.handyman.raven.compiler.RavenParser;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ConfigAccess;
@@ -78,6 +79,7 @@ public class LambdaEngine {
                 pipeline.setExecutionStatusId(ExecutionStatus.FAILED.getId());
             } finally {
                 extracted(pipeline, ravenParserContext.getFinallyContext(), context, ExecutionGroup.FINALLY);
+                HandymanActorSystemAccess.insert(pipeline);
             }
         } catch (Exception e) {
             log.error(e);
@@ -141,6 +143,7 @@ public class LambdaEngine {
                 });
                 action.setLog(stringBuilder.toString());
                 log.info(stringBuilder);
+                HandymanActorSystemAccess.insert(action);
             }
         });
     }
