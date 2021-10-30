@@ -36,6 +36,8 @@ public class Action extends AbstractAudit {
 
     private String log;
 
+    private Integer executionGroupId;
+
     @JsonIgnore
     private final ArrayDeque<SubstituteLoggingEvent> eventQueue = new ArrayDeque<>();
 

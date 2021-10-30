@@ -1,7 +1,6 @@
 package in.handyman.raven.metric;
 
 import in.handyman.raven.connection.DataSource;
-import in.handyman.raven.process.Process;
 import io.github.mweirauch.micrometer.jvm.extras.ProcessMemoryMetrics;
 import io.github.mweirauch.micrometer.jvm.extras.ProcessThreadMetrics;
 import io.micrometer.core.instrument.Counter;

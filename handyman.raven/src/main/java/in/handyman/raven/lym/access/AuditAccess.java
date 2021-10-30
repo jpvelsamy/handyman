@@ -59,7 +59,8 @@ public class AuditAccess {
                     .bind(13, action.getActionName())
                     .bind(14, action.getInput())
                     .bind(15, action.getPipelineId())
-                    .bind(16, action.getLog());
+                    .bind(16, action.getLog())
+                    .bind(17, action.getExecutionGroupId());
             Mono.from(statement.execute()).subscribe();
         } finally {
             connection.close();
