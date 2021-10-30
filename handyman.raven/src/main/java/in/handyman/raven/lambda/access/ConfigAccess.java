@@ -110,8 +110,8 @@ public class ConfigAccess {
                             .name(row.get(5, String.class))
                             .variable(row.get(6, String.class))
                             .build())
-                    .active(Boolean.TRUE.equals(row.get(5, Boolean.class)))
-                    .value(row.get(6, String.class))
+                    .active(Boolean.TRUE.equals(row.get(7, Boolean.class)))
+                    .value(row.get(8, String.class))
                     .build();
             addAuditable(row, configEntity);
             return configEntity;
