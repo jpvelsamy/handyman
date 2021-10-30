@@ -15,9 +15,13 @@ import java.util.Map;
 @Data
 public class LContext {
 
+    //Load Enum
     private String processLoadType;
+    // Config name
     private String pipelineName;
+    // Auto set
     private String lambdaName;
+    // Start lambda Engine by path file
     private String relativePath;
     @Builder.Default
     private Map<String, String> inheritedContext = new HashMap<>();

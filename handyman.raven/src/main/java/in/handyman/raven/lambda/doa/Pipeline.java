@@ -28,6 +28,7 @@ public class Pipeline extends AbstractAudit {
     private String hostName;
     private String threadName;
     private String pipelineLoadType;
+    // Input audit
     private String fileContent;
     private String requestBody;
     private String relativePath;

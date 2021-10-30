@@ -37,6 +37,10 @@ public class LambdaEngine {
     private LambdaEngine() {
     }
 
+    /**
+     * Execution starts from here
+     * @param lContext
+     */
     public static void start(final LContext lContext) {
         final String hostName;
         try {
@@ -72,13 +76,13 @@ public class LambdaEngine {
             pipeline.setContext(context);
             pipeline.setExecutionStatusId(ExecutionStatus.STARTED.getId());
             try {
-                extracted(pipeline, ravenParserContext.getTryContext(), context, ExecutionGroup.TRY);
+                run(pipeline, ravenParserContext.getTryContext(), context, ExecutionGroup.TRY);
                 pipeline.setExecutionStatusId(ExecutionStatus.COMPLETED.getId());
             } catch (Exception e) {
-                extracted(pipeline, ravenParserContext.getCatchContext(), context, ExecutionGroup.CATCH);
+                run(pipeline, ravenParserContext.getCatchContext(), context, ExecutionGroup.CATCH);
                 pipeline.setExecutionStatusId(ExecutionStatus.FAILED.getId());
             } finally {
-                extracted(pipeline, ravenParserContext.getFinallyContext(), context, ExecutionGroup.FINALLY);
+                run(pipeline, ravenParserContext.getFinallyContext(), context, ExecutionGroup.FINALLY);
                 HandymanActorSystemAccess.insert(pipeline);
             }
         } catch (Exception e) {
@@ -102,10 +106,10 @@ public class LambdaEngine {
         return getRavenParserContext(processFile, lambdaName, context);
     }
 
-    private static void extracted(final Pipeline pipeline,
-                                  final List<RavenParser.ActionContext> contexts,
-                                  final Map<String, String> context,
-                                  final ExecutionGroup executionGroup) {
+    private static void run(final Pipeline pipeline,
+                            final List<RavenParser.ActionContext> contexts,
+                            final Map<String, String> context,
+                            final ExecutionGroup executionGroup) {
         contexts.forEach(actionContext -> {
             var action = Action.builder()
                     .executionGroupId(executionGroup.getId())
