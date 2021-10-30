@@ -117,6 +117,10 @@ public class LambdaEngine {
                 final IActionExecution execution = load(actionContext, action);
                 execute(execution, action);
 //                return action;
+            } catch (Exception e) {
+                log.error("Failed " + action, e);
+                final SubstituteLogger logger = getLogger(action);
+                logger.error("Exception", e);
             } finally {
                 final StringBuilder stringBuilder = new StringBuilder();
                 action.getEventQueue().forEach(event -> {
@@ -136,6 +140,7 @@ public class LambdaEngine {
                     stringBuilder.append("\n");
                 });
                 action.setLog(stringBuilder.toString());
+                log.info(stringBuilder);
             }
         });
     }
