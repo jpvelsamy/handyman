@@ -7,6 +7,9 @@ config= {
   user=root
   password=password
 
+  in-memory=true
+  in-memory-db-path=/nimbus/db/
+
   resource_connection_select_stmt="SELECT  created_by, created_date, last_modified_by, last_modified_date,name, active, config_type, driver_class_name, password, url, user_name FROM resource_config  where active = '1' AND name=?"
 
   config_select_stmt="SELECT  created_by, created_date, last_modified_by, last_modified_date ,config_type_id, name, variable, active, value FROM config_entity where config_type_id=? and  active = '1' "
