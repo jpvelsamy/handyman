@@ -12,6 +12,7 @@ import io.r2dbc.spi.Connection;
 import lombok.extern.log4j.Log4j2;
 import org.mariadb.r2dbc.MariadbConnectionConfiguration;
 import org.mariadb.r2dbc.MariadbConnectionFactory;
+import org.mariadb.r2dbc.api.MariadbConnection;
 
 import java.time.Duration;
 

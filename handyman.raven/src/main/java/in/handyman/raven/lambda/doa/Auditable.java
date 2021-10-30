@@ -2,8 +2,8 @@ package in.handyman.raven.lambda.doa;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -12,14 +12,16 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Auditable {
-
-    private LocalDateTime createdDate;
+public abstract class Auditable {
+    @Builder.Default
+    private LocalDateTime createdDate = LocalDateTime.now();
+    @Builder.Default
     private LocalDateTime lastModifiedDate;
-    private Long createdBy;
-    private Long lastModifiedBy;
+    @Builder.Default
+    private Long createdBy = -1L;
+    @Builder.Default
+    private Long lastModifiedBy = -1L;
 
 }

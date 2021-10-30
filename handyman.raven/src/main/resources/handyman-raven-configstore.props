@@ -6,7 +6,7 @@ config= {
   driver = org.mariadb.jdbc.Driver
   user=root
   password=password
-
+  create-on-init=false
   in-memory=false
   in-memory-db-path=/nimbus/db/
 

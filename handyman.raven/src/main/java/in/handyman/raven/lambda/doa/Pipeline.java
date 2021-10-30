@@ -29,8 +29,12 @@ public class Pipeline extends AbstractAudit {
     private String threadName;
     private String pipelineLoadType;
     // Input audit
-    private String fileContent;
-    private String requestBody;
-    private String relativePath;
+    @Builder.Default
+    private String fileContent = "";
+    @Builder.Default
+    private String requestBody = "";
+    @Builder.Default
+    private String relativePath = "";
+
 
 }
