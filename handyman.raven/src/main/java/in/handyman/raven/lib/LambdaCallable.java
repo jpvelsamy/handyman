@@ -1,7 +1,7 @@
 package in.handyman.raven.lib;
 
-import in.handyman.raven.lym.process.LContext;
-import in.handyman.raven.lym.process.LambdaEngine;
+import in.handyman.raven.lambda.process.LContext;
+import in.handyman.raven.lambda.process.LambdaEngine;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 

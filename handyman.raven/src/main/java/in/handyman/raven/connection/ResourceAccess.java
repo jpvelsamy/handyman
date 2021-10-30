@@ -3,8 +3,8 @@ package in.handyman.raven.connection;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import in.handyman.raven.exception.HandymanException;
-import in.handyman.raven.lym.access.ConfigAccess;
-import in.handyman.raven.lym.doa.ResourceConnection;
+import in.handyman.raven.lambda.access.ConfigAccess;
+import in.handyman.raven.lambda.doa.ResourceConnection;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2

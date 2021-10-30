@@ -1,10 +1,10 @@
 package in.handyman.raven.actor;
 
 import akka.actor.AbstractActor;
-import in.handyman.raven.lym.access.AuditAccess;
-import in.handyman.raven.lym.doa.Action;
-import in.handyman.raven.lym.doa.Pipeline;
-import in.handyman.raven.lym.doa.Statement;
+import in.handyman.raven.lambda.access.AuditAccess;
+import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.Pipeline;
+import in.handyman.raven.lambda.doa.Statement;
 
 public class AuditActor extends AbstractActor {
 

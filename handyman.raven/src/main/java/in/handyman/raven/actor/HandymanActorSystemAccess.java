@@ -3,9 +3,9 @@ package in.handyman.raven.actor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
-import in.handyman.raven.lym.doa.Action;
-import in.handyman.raven.lym.doa.Pipeline;
-import in.handyman.raven.lym.doa.Statement;
+import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.Pipeline;
+import in.handyman.raven.lambda.doa.Statement;
 
 public class HandymanActorSystemAccess {
 
