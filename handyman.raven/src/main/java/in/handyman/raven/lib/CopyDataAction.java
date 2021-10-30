@@ -1,6 +1,5 @@
 package in.handyman.raven.lib;
 
-import in.handyman.raven.audit.AuditService;
 import in.handyman.raven.connection.ResourceAccess;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lib.model.CopyData;
@@ -103,7 +102,7 @@ public class CopyDataAction implements IActionExecution {
             var rowsProcessed = new AtomicInteger(0);
 
             try (final Connection sourceConnection = hikariDataSource.getConnection()) {
-              //TODO AUDIT
+                //TODO AUDIT
                 try (final Statement stmt = sourceConnection.createStatement()) {
                     stmt.setFetchSize(fetchSize);
                     var countDownLatch = new CountDownLatch(upperThreadCount);
@@ -134,8 +133,6 @@ public class CopyDataAction implements IActionExecution {
                             }
                         }
                     }
-
-                    AuditService.updateStatementAudit(statementId, -1, 0, insertStatement, 1);
                 }
             } catch (Exception ex) {
                 log.error(aMarker, "{} error closing source connection for database {}", pipelineId, source, ex);
@@ -167,7 +164,6 @@ public class CopyDataAction implements IActionExecution {
             var endTime = System.currentTimeMillis();
             var timeTaken = endTime - startTime;
             //Taken care of batch audit
-            AuditService.insertBatchAudit(statementId, name, instanceId, rowsProcessed.get(), timeTaken);
         }
     }
 

@@ -25,21 +25,15 @@ import java.util.ArrayDeque;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Action extends AbstractAudit {
 
-    @Builder.Default
-    private Long actionId = UniqueID.getId();
-
-    private String actionName;
-
-    private Long pipelineId;
-
-    private JsonNode input;
-
-    private String log;
-
-    private Integer executionGroupId;
-
     @JsonIgnore
     private final ArrayDeque<SubstituteLoggingEvent> eventQueue = new ArrayDeque<>();
+    @Builder.Default
+    private Long actionId = UniqueID.getId();
+    private String actionName;
+    private Long pipelineId;
+    private JsonNode input;
+    private String log;
+    private Integer executionGroupId;
 
 
 }

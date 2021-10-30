@@ -55,6 +55,14 @@ public class ConfigAccess {
         return DBAccess.getConnection();
     }
 
+    private static void addAuditable(final Row row, final Auditable auditable) {
+        auditable.setCreatedBy(row.get(0, Long.class));
+        auditable.setCreatedDate(row.get(1, LocalDateTime.class));
+        auditable.setLastModifiedBy(row.get(2, Long.class));
+        auditable.setLastModifiedDate(row.get(3, LocalDateTime.class));
+        log.debug(auditable);
+    }
+
     public static Map<String, String> getAllConfig(final String pipelineName) {
         final String lambdaName = getLambdaName(pipelineName);
         final Map<String, String> pipelineConfig = toMap(findConfigEntities(ConfigType.PIPELINE, pipelineName));
@@ -74,31 +82,6 @@ public class ConfigAccess {
         return findConfigEntities(ConfigType.COMMON, configName, variable).map(ConfigEntity::getValue).orElse(null);
     }
 
-    public static Set<String> getPackageAction() {
-        return findConfigEntities(ConfigType.COMMON, SYS_PACKAGE).stream().map(ConfigEntity::getValue).collect(Collectors.toSet());
-    }
-
-    private static Map<String, String> toMap(final List<ConfigEntity> configEntities) {
-        return configEntities.stream()
-                .collect(Collectors
-                        .toMap((configEntity -> Optional.ofNullable(configEntity.getId())
-                                        .map(ConfigID::getVariable).orElse(null)),
-                                ConfigEntity::getValue,
-                                (p, q) -> p));
-    }
-
-    private static List<ConfigEntity> findConfigEntities(final ConfigType configType, final String configName) {
-        var connection = getConnection();
-        try {
-            final Statement statement = connection.createStatement(DBAccess.CONFIG.getString("config.config_select_stmt_by_name"))
-                    .bind(0, configType.getId()).bind(1, configName);
-            //config_type_id, name, variable, active, value
-            return getConfigEntities(statement);
-        } finally {
-            connection.close();
-        }
-    }
-
     private static Optional<ConfigEntity> findConfigEntities(final ConfigType configType, final String configName, final String variable) {
         var connection = getConnection();
         try {
@@ -107,17 +90,6 @@ public class ConfigAccess {
                     .bind(2, variable);
             //config_type_id, name, variable, active, value
             return getConfigEntities(statement).stream().findFirst();
-        } finally {
-            connection.close();
-        }
-    }
-
-    private static List<ConfigEntity> findConfigEntities(final ConfigType configType) {
-        var connection = getConnection();
-        try {
-            final Statement statement = connection.createStatement(DBAccess.CONFIG.getString("config.config_select_stmt"))
-                    .bind(0, configType.getId());
-            return getConfigEntities(statement);
         } finally {
             connection.close();
         }
@@ -146,15 +118,41 @@ public class ConfigAccess {
         });
     }
 
-
-    private static void addAuditable(final Row row, final Auditable auditable) {
-        auditable.setCreatedBy(row.get(0, Long.class));
-        auditable.setCreatedDate(row.get(1, LocalDateTime.class));
-        auditable.setLastModifiedBy(row.get(2, Long.class));
-        auditable.setLastModifiedDate(row.get(3, LocalDateTime.class));
-        log.debug(auditable);
+    public static Set<String> getPackageAction() {
+        return findConfigEntities(ConfigType.COMMON, SYS_PACKAGE).stream().map(ConfigEntity::getValue).collect(Collectors.toSet());
     }
 
+    private static List<ConfigEntity> findConfigEntities(final ConfigType configType, final String configName) {
+        var connection = getConnection();
+        try {
+            final Statement statement = connection.createStatement(DBAccess.CONFIG.getString("config.config_select_stmt_by_name"))
+                    .bind(0, configType.getId()).bind(1, configName);
+            //config_type_id, name, variable, active, value
+            return getConfigEntities(statement);
+        } finally {
+            connection.close();
+        }
+    }
+
+    private static Map<String, String> toMap(final List<ConfigEntity> configEntities) {
+        return configEntities.stream()
+                .collect(Collectors
+                        .toMap((configEntity -> Optional.ofNullable(configEntity.getId())
+                                        .map(ConfigID::getVariable).orElse(null)),
+                                ConfigEntity::getValue,
+                                (p, q) -> p));
+    }
+
+    private static List<ConfigEntity> findConfigEntities(final ConfigType configType) {
+        var connection = getConnection();
+        try {
+            final Statement statement = connection.createStatement(DBAccess.CONFIG.getString("config.config_select_stmt"))
+                    .bind(0, configType.getId());
+            return getConfigEntities(statement);
+        } finally {
+            connection.close();
+        }
+    }
 
     public static String getLambdaName(final String pipelineName) {
         if (pipelineName != null) {

@@ -1,6 +1,5 @@
 package in.handyman.raven.lib;
 
-import in.handyman.raven.audit.AuditService;
 import in.handyman.raven.connection.ResourceAccess;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lib.model.CopyData;
@@ -57,7 +56,7 @@ public class CopyDataJdbcWriter implements Callable<Void> {
                 .orElseGet(() -> Integer.valueOf(configMap.getOrDefault(Constants.WRITE_SIZE, Constants.DEFAULT_WRITE_SIZE).trim()));
         this.columnList = insert.getColumns().stream().map(Column::getColumnName).collect(Collectors.joining(","));
 
-        this.log= LambdaEngine.getLogger(action);
+        this.log = LambdaEngine.getLogger(action);
     }
 
 
@@ -95,14 +94,13 @@ public class CopyDataJdbcWriter implements Callable<Void> {
             sourceConnection.setAutoCommit(false);
             log.info("Writing to database using conn: {}", target);
             final Long statementId = UniqueID.getId();
-         //TODO audit
+            //TODO audit
             try (final Statement stmt = sourceConnection.createStatement()) {
                 for (var s : writeBuffer) {
                     stmt.addBatch(s);
                 }
                 stmt.executeBatch();
                 sourceConnection.commit();
-                AuditService.updateStatementAudit(statementId, -1, 0, writeBuffer.toString(), 1);
                 writeBuffer.clear();
             }
         } catch (Throwable ex) {

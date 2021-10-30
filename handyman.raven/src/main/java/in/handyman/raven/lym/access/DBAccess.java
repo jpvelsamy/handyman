@@ -15,8 +15,8 @@ import java.time.Duration;
 @Log4j2
 public class DBAccess {
 
-    private static final ConnectionPool POOL;
     protected static final Config CONFIG;
+    private static final ConnectionPool POOL;
 
     static {
 

@@ -1,6 +1,8 @@
 package in.handyman.raven.metric;
 
 import in.handyman.raven.connection.DataSource;
+import in.handyman.raven.lym.doa.Action;
+import in.handyman.raven.lym.doa.ExecutionStatus;
 import io.github.mweirauch.micrometer.jvm.extras.ProcessMemoryMetrics;
 import io.github.mweirauch.micrometer.jvm.extras.ProcessThreadMetrics;
 import io.micrometer.core.instrument.Counter;
@@ -70,38 +72,38 @@ public class MetricUtil {
         new FileDescriptorMetrics().bindTo(registry);
     }
 
-    public static void addAfter(final Process context) {
-        final String name = "process." + context.getProcessName();
+    public static void addAfter(final Action action) {
+        final String name = "process." + action.getPipelineName();
         Counter.builder(name)
-                .tag("instanceName", context.getLambdaName())
-                .tag("status", String.valueOf(context.getStatus()))
+                .tag("LambdaName", action.getLambdaName())
+                .tag("status", Optional.ofNullable(ExecutionStatus.get(action.getExecutionStatusId())).map(ExecutionStatus::name).orElse(""))
                 .register(registry).increment();
         Counter.builder(name + ".try")
                 .description("Number of Try Actions")
-                .tag("instanceName", context.getLambdaName())
-                .tags("status", String.valueOf(context.getTryStatus()))
+                .tag("LambdaName", action.getLambdaName())
+                .tag("status", Optional.ofNullable(ExecutionStatus.get(action.getExecutionStatusId())).map(ExecutionStatus::name).orElse(""))
                 .register(registry).increment();
         Counter.builder(name + ".catch")
                 .description("Number of Catch Actions")
-                .tag("instanceName", context.getLambdaName())
-                .tags("status", String.valueOf(context.getCatchStatus()))
+                .tag("LambdaName", action.getLambdaName())
+                .tag("status", Optional.ofNullable(ExecutionStatus.get(action.getExecutionStatusId())).map(ExecutionStatus::name).orElse(""))
                 .register(registry).increment();
         Counter.builder(name + ".finally")
                 .description("Number of Finally Actions")
-                .tag("instanceName", context.getLambdaName())
-                .tags("status", String.valueOf(context.getFinallyStatus()))
+                .tag("LambdaName", action.getLambdaName())
+                .tag("status", Optional.ofNullable(ExecutionStatus.get(action.getExecutionStatusId())).map(ExecutionStatus::name).orElse(""))
                 .register(registry).increment();
-        final long amount = System.nanoTime() - context.getStart();
+        final long amount = System.nanoTime() - action.getCreatedDate().getNano();
         Timer.builder(name + ".requests")
-                .tag("instanceName", context.getLambdaName())
+                .tag("LambdaName", action.getLambdaName())
                 .register(registry)
                 .record(amount, TimeUnit.NANOSECONDS);
         LongTaskTimer.builder(name + ".requests.slow")
-                .tag("instanceName", context.getLambdaName())
+                .tag("LambdaName", action.getLambdaName())
                 .register(registry);
         DistributionSummary.builder(name + ".detail")
-                .tag("instanceName", context.getLambdaName())
-                .tag("processId", String.valueOf(context.getProcessId()))
+                .tag("LambdaName", action.getLambdaName())
+                .tag("ActionId", String.valueOf(action.getActionId()))
                 .register(registry).record(amount);
         persist();
     }
