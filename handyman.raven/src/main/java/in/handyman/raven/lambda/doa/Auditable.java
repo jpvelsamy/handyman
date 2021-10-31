@@ -15,13 +15,9 @@ import java.time.LocalDateTime;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class Auditable {
-    @Builder.Default
     private LocalDateTime createdDate = LocalDateTime.now();
-    @Builder.Default
     private LocalDateTime lastModifiedDate;
-    @Builder.Default
     private Long createdBy = -1L;
-    @Builder.Default
     private Long lastModifiedBy = -1L;
 
 }

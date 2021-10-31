@@ -51,12 +51,14 @@ public class AuditAccess {
                 .bind(17, wrap(audit.getThreadName()))
                 .bind(18, wrap(audit.getParentActionId()))
                 .bind(19, wrap(audit.getParentActionName())).execute()).log()
-                .doOnNext(data -> log.info("created: {}", data))
+                .doOnNext(data -> {
+                    log.info("created: {}", data);
+                    Mono.from(data).block();
+                })
                 .doOnError(e -> {
                     log.error("Pipeline persist failed", e);
                     throw new HandymanException("Persist failed", e);
-                }).doFinally(signalType -> conn.close())
-                .wait();
+                }).doFinally(signalType -> conn.close()).block();
 
     }
 

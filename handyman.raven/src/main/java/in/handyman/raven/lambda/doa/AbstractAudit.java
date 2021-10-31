@@ -27,13 +27,9 @@ public abstract class AbstractAudit extends Auditable {
     private String lambdaName;
     private String pipelineName;
 
-    @Builder.Default
     private Long parentPipelineId = -1L;
-    @Builder.Default
     private String parentPipelineName = "";
-    @Builder.Default
     private Long parentActionId = -1L;
-    @Builder.Default
     private String parentActionName = "";
 
     private Integer executionStatusId;

@@ -1,4 +1,4 @@
-package in.handyman.raven.connection;
+package in.handyman.raven.lambda.access;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -21,7 +21,7 @@ public class ResourceAccess {
         }
     }
 
-    private static HikariDataSource createHP(final String url, final String driver, final String user, final String password)
+    protected static HikariDataSource createHP(final String url, final String driver, final String user, final String password)
             throws ClassNotFoundException {
         Class.forName(driver);
         final HikariConfig config = new HikariConfig();

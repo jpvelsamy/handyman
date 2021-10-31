@@ -45,8 +45,7 @@ action:
 	|dropFile
 	|loadCsv
 	|restApi
-	|transform
-	|transform2)
+	|transform)
 ;
 
 // this is for creating POJO WRT definition

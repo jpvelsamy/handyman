@@ -1,13 +1,13 @@
 config= {
 
   host = localhost
-  port = 3306
+  port = 3365
   database= handyman_vm
   driver = org.mariadb.jdbc.Driver
   user=root
   password=password
   create-on-init=false
-  in-memory=false
+  in-memory=true
   in-memory-db-path=/nimbus/db/
 
   resource_connection_select_stmt="SELECT  created_by, created_date, last_modified_by, last_modified_date,name, active, config_type, driver_class_name, password, url, user_name FROM resource_config  where active = '1' AND name=?"

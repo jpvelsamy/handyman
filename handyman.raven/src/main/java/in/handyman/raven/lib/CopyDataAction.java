@@ -1,6 +1,6 @@
 package in.handyman.raven.lib;
 
-import in.handyman.raven.connection.ResourceAccess;
+import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lib.model.CopyData;
 import in.handyman.raven.lambda.access.ConfigAccess;

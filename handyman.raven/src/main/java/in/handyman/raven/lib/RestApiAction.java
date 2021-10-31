@@ -3,7 +3,7 @@ package in.handyman.raven.lib;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.zaxxer.hikari.HikariDataSource;
-import in.handyman.raven.connection.ResourceAccess;
+import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lib.model.RestApi;
 import in.handyman.raven.lambda.action.ActionExecution;

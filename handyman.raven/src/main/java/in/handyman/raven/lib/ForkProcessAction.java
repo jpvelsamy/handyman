@@ -1,7 +1,7 @@
 package in.handyman.raven.lib;
 
 import com.zaxxer.hikari.HikariDataSource;
-import in.handyman.raven.connection.ResourceAccess;
+import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lib.model.ForkProcess;
 import in.handyman.raven.lambda.action.ActionExecution;
