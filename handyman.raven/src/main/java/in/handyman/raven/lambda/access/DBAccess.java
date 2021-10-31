@@ -97,7 +97,7 @@ public class DBAccess {
             final Connection connection = getConnection();
             Mono.just(connection)
                     .map(connection1 -> {
-                        Stream.of(queries).forEach(s1 -> Mono.from(connection.createStatement(s1+";").execute()).doFinally(signalType -> connection1.commitTransaction()).block());
+                         Stream.of(queries).forEach(s1 -> Mono.from(connection.createStatement(s1+";").execute()).doFinally(signalType -> connection1.commitTransaction()).block());
                         return connection1;
                     })
                     .doOnError(throwable -> log.error("Failed",throwable))
