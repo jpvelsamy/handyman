@@ -27,6 +27,7 @@
         <google.cal.version>v3-rev20210804-1.32.1</google.cal.version>
         <junit.version>5.8.1</junit.version>
         <jackson.version>2.13.0</jackson.version>
+        <elastic.version>7.15.1</elastic.version>
     </properties>
     <dependencies>
 
@@ -199,7 +200,7 @@
         <dependency>
             <groupId>org.elasticsearch.client</groupId>
             <artifactId>elasticsearch-rest-high-level-client</artifactId>
-            <version>7.15.0</version>
+            <version>${elastic.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
