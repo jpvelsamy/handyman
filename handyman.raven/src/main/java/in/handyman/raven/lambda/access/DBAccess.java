@@ -69,6 +69,7 @@ public class DBAccess {
         POOL = new ConnectionPool(poolConfig);
         log.info("Config Loaded {}", CONFIG.entrySet());
         CONNECTION_FACTORY = ConnectionFactories.get(H2_URL + CONFIG.getString(CONFIG_DATABASE));
+        init();
 
     }
 
