@@ -10,11 +10,11 @@ config= {
   in-memory=false
   in-memory-db-path=/nimbus/db/
 
-  resource_connection_select_stmt="SELECT  created_by, created_date, last_modified_by, last_modified_date,name, active, config_type, driver_class_name, password, url, user_name FROM resource_config  where active = '1' AND name=?"
+  resource_connection_select_stmt="SELECT  *  FROM resource_connection  where active = 'true' AND name = '%s' "
 
-  config_select_stmt="SELECT  created_by, created_date, last_modified_by, last_modified_date ,config_type_id, name, variable, active, value FROM config_entity where config_type_id=? and  active = '1' "
-  config_select_stmt_by_name="SELECT  created_by, created_date, last_modified_by, last_modified_date ,config_type_id, name, variable, active, value FROM config_entity where config_type_id=? and name=? and  active = '1' "
-  config_select_stmt_by_var= "SELECT value FROM config_entity WHERE config_type_id=? and name=? and variable=? AND  active = '1'  "
+  config_select_stmt="SELECT  * FROM config_entity where config_type_id= '%s' and  active = 'true' "
+  config_select_stmt_by_name="SELECT  * FROM config_entity where config_type_id= '%s' and name= '%s' and  active = 'true' "
+  config_select_stmt_by_var= "SELECT * FROM config_entity WHERE config_type_id=? and name=? and variable=? AND  active = 'true'  "
 
   pipeline_audit_insert_stmt="INSERT INTO pipeline_audit (pipeline_id, created_by, created_date, last_modified_by, last_modified_date, context_node, execution_status_id, lambda_name, parent_pipeline_id, parent_pipeline_name, pipeline_name, file_content, host_name, mode_of_execution, pipeline_load_type, relative_path, request_body, thread_name, parent_action_id, parent_action_name) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
   action_audit_insert_stmt="INSERT INTO action_audit (action_id, created_by, created_date, last_modified_by, last_modified_date, context_node, execution_status_id, lambda_name, parent_pipeline_id, parent_pipeline_name, parent_action_id, parent_action_name, pipeline_name, action_name, input_node, pipeline_id,log,execution_group_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)"

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.base.CaseFormat;
 import in.handyman.raven.exception.HandymanException;
 import lombok.extern.log4j.Log4j2;
@@ -46,7 +47,11 @@ import java.util.stream.StreamSupport;
 @Log4j2
 public class ElasticsearchAccessApi {
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    protected static final ObjectMapper MAPPER = new ObjectMapper();
+
+    static {
+        MAPPER.registerModule(new JavaTimeModule());
+    }
 
     private static final RestHighLevelClient CLIENT = getRestHighLevelClientConnection();
 
@@ -66,7 +71,8 @@ public class ElasticsearchAccessApi {
             indexNames.stream().map(ElasticsearchAccessApi::toIndexName).forEach(indexName -> {
                 log.info("Index creation for {} has been initiated", indexName);
                 try {
-                    if (!CLIENT.indices().exists(new GetIndexRequest(indexName), RequestOptions.DEFAULT)) {
+                    final boolean exists = isExists(indexName);
+                    if (!exists) {
                         final CreateIndexRequest request = new CreateIndexRequest(indexName);
                         request.settings(Settings.builder().put("number_of_shards", 2).put("number_of_replicas", 1)
                                 .put("mapping.total_fields.limit", 200000000));
@@ -84,6 +90,10 @@ public class ElasticsearchAccessApi {
             throw new HandymanException("Index creation failed", ex);
         }
 
+    }
+
+    protected static boolean isExists(final String indexName) throws IOException {
+        return CLIENT.indices().exists(new GetIndexRequest(indexName), RequestOptions.DEFAULT);
     }
 
 
@@ -169,7 +179,7 @@ public class ElasticsearchAccessApi {
 
     protected static ArrayNode fetch(final String query) {
         final Request request = new Request("POST", "/_sql?format=json");
-        request.setJsonEntity(String.format("{\"query\":\"%S\"}", query));
+        request.setJsonEntity(String.format("{\"query\":\"%s\"}", query));
         try {
             var response = CLIENT.getLowLevelClient().performRequest(request);
             var responseBody = EntityUtils.toString(response.getEntity());
