@@ -27,9 +27,10 @@ public class HandymanActorSystemAccess {
     }
 
     public static void insert(final Statement statement) {
-        final ActorRef actorRef = SYSTEM.actorOf(Props.create(AuditActor.class),
-                statement.getStatementId() + "#" + statement.getActionId());
-        actorRef.tell(statement, ActorRef.noSender());
+//        final ActorRef actorRef = SYSTEM.actorOf(Props.create(AuditActor.class),
+//                statement.getStatementId() + "#" + statement.getActionId());
+//        actorRef.tell(statement, ActorRef.noSender());
+        AuditAccess.insertStatement(statement);
     }
 
 }

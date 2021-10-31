@@ -7,8 +7,10 @@ import in.handyman.raven.lambda.doa.Action;
 import in.handyman.raven.lambda.doa.Pipeline;
 import in.handyman.raven.lambda.doa.Statement;
 import io.r2dbc.spi.Connection;
+import io.r2dbc.spi.Result;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
+import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
@@ -29,32 +31,31 @@ public class AuditAccess {
             throw new HandymanException("Persist failed", e);
         }
 
-        Mono.just(conn).map(connection -> connection.createStatement(DBAccess.CONFIG.getString("config.pipeline_audit_insert_stmt"))
-                        .bind(0, wrap(audit.getPipelineId()))
-                        .bind(1, audit.getCreatedBy())
-                        .bind(2, audit.getCreatedDate())
-                        .bind(3, audit.getLastModifiedBy())
-                        .bind(4, LocalDateTime.now())
-                        .bind(5, value)
-                        .bind(6, wrap(audit.getExecutionStatusId()))
-                        .bind(7, wrap(audit.getLambdaName()))
-                        .bind(8, wrap(audit.getParentPipelineId()))
-                        .bind(9, wrap(audit.getParentPipelineName()))
-                        .bind(10, wrap(audit.getPipelineName()))
-                        .bind(11, wrap(audit.getFileContent()))
-                        .bind(12, wrap(audit.getHostName()))
-                        .bind(13, wrap(audit.getModeOfExecution()))
-                        .bind(14, wrap(audit.getPipelineLoadType()))
-                        .bind(15, wrap(audit.getRelativePath()))
-                        .bind(16, wrap(audit.getRequestBody()))
-                        .bind(17, wrap(audit.getThreadName()))
-                        .bind(18, wrap(audit.getParentActionId()))
-                        .bind(19, wrap(audit.getParentActionName())).execute()).log()
-                .doOnNext(data -> {
-                    log.info("created: {}", data);
-                    Mono.from(data).block();
-                })
-                .doOnError(e -> {
+        Mono.just(conn).map(connection -> {
+                    final Publisher<? extends Result> execute = connection.createStatement(DBAccess.CONFIG.getString("config.pipeline_audit_insert_stmt"))
+                            .bind(0, wrap(audit.getPipelineId()))
+                            .bind(1, audit.getCreatedBy())
+                            .bind(2, audit.getCreatedDate())
+                            .bind(3, audit.getLastModifiedBy())
+                            .bind(4, LocalDateTime.now())
+                            .bind(5, value)
+                            .bind(6, wrap(audit.getExecutionStatusId()))
+                            .bind(7, wrap(audit.getLambdaName()))
+                            .bind(8, wrap(audit.getParentPipelineId()))
+                            .bind(9, wrap(audit.getParentPipelineName()))
+                            .bind(10, wrap(audit.getPipelineName()))
+                            .bind(11, wrap(audit.getFileContent()))
+                            .bind(12, wrap(audit.getHostName()))
+                            .bind(13, wrap(audit.getModeOfExecution()))
+                            .bind(14, wrap(audit.getPipelineLoadType()))
+                            .bind(15, wrap(audit.getRelativePath()))
+                            .bind(16, wrap(audit.getRequestBody()))
+                            .bind(17, wrap(audit.getThreadName()))
+                            .bind(18, wrap(audit.getParentActionId()))
+                            .bind(19, wrap(audit.getParentActionName())).execute();
+                    Mono.from(execute).block();
+                    return connection;
+                }).doOnError(e -> {
                     log.error("Pipeline persist failed", e);
                     throw new HandymanException("Persist failed", e);
                 }).doFinally(signalType -> conn.close()).block();
