@@ -7,9 +7,14 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.base.CaseFormat;
+import com.typesafe.config.ConfigFactory;
 import in.handyman.raven.exception.HandymanException;
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.nio.reactor.IOReactorConfig;
 import org.apache.http.util.EntityUtils;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -48,6 +53,7 @@ import java.util.stream.StreamSupport;
 public class ElasticsearchAccessApi {
 
     protected static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final String RAVEN_CONFIGSTORE_PROPS = "handyman-raven-configstore.props";
 
     static {
         MAPPER.registerModule(new JavaTimeModule());
@@ -57,12 +63,22 @@ public class ElasticsearchAccessApi {
 
     private static RestHighLevelClient getRestHighLevelClientConnection() {
         //TODO move to config
+        var config = ConfigFactory.parseResources(RAVEN_CONFIGSTORE_PROPS);
+        final CredentialsProvider credentialsProvider =
+                new BasicCredentialsProvider();
+        credentialsProvider.setCredentials(AuthScope.ANY,
+                new UsernamePasswordCredentials(config.getString("config.es.username"), config.getString("config.es.password")));
         final RestClientBuilder builder = RestClient
-                .builder(new HttpHost("localhost", 9200))
-                .setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.setDefaultIOReactorConfig(
-                        IOReactorConfig.custom()
-                                .setIoThreadCount(5)
-                                .build()));
+                .builder(new HttpHost(config.getString("config.es.host"), config.getInt("config.es.port")))
+                .setHttpClientConfigCallback(httpAsyncClientBuilder -> {
+                    httpAsyncClientBuilder.setMaxConnTotal(500);
+                    httpAsyncClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+                    httpAsyncClientBuilder.setDefaultIOReactorConfig(
+                            IOReactorConfig.custom()
+                                    .setIoThreadCount(10)
+                                    .build());
+                    return httpAsyncClientBuilder;
+                });
         return new RestHighLevelClient(builder);
     }
 
