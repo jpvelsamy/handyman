@@ -2,15 +2,18 @@ package in.handyman.raven.lambda.access.repo;
 
 import com.typesafe.config.ConfigFactory;
 import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.ConfigEntity;
 import in.handyman.raven.lambda.doa.ConfigType;
 import in.handyman.raven.lambda.doa.Pipeline;
+import in.handyman.raven.lambda.doa.PipelineExecutionAudit;
 import in.handyman.raven.lambda.doa.ResourceConnection;
 import in.handyman.raven.lambda.doa.Statement;
 import io.r2dbc.spi.ConnectionFactories;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.relational.core.query.Query;
+import org.springframework.data.relational.core.query.Update;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -130,4 +133,49 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
         audit.setLastModifiedDate(LocalDateTime.now());
         r2dbcEntityTemplate.insert(Statement.class).using(audit).block();
     }
+
+    @Override
+    public void insert(final PipelineExecutionAudit audit) {
+        audit.setLastModifiedDate(LocalDateTime.now());
+        r2dbcEntityTemplate.insert(PipelineExecutionAudit.class).using(audit).block();
+    }
+
+    @Override
+    public void insert(final ActionExecutionAudit audit) {
+        audit.setLastModifiedDate(LocalDateTime.now());
+        r2dbcEntityTemplate.insert(ActionExecutionAudit.class).using(audit).block();
+    }
+
+    @Override
+    public void update(final Pipeline audit) {
+        audit.setLastModifiedDate(LocalDateTime.now());
+        r2dbcEntityTemplate.update(Pipeline.class)
+                .matching(Query.query(where("pipeline_id").is(audit.getPipelineId())))
+                .apply(Update.update("execution_status_id", audit.getExecutionStatusId())
+                        .set("last_modified_date", audit.getLastModifiedDate())
+                        .set("context_node", audit.getContextNode())).block();
+    }
+
+    @Override
+    public void update(final Action audit) {
+        audit.setLastModifiedDate(LocalDateTime.now());
+        r2dbcEntityTemplate.update(Action.class)
+                .matching(Query.query(where("action_id").is(audit.getActionId())))
+                .apply(Update.update("execution_status_id", audit.getExecutionStatusId())
+                        .set("last_modified_date", audit.getLastModifiedDate())
+                        .set("context_node", audit.getContextNode())
+                        .set("input_node", audit.getInputNode())
+                        .set("lambda_name", audit.getLambdaName())
+                        .set("execution_group_id", audit.getExecutionGroupId())
+                        .set("log", audit.getLog())
+                        .set("pipeline_id", audit.getPipelineId())
+                        .set("action_name", audit.getActionName())
+                        .set("pipeline_name", audit.getPipelineName())
+                        .set("parent_action_name", audit.getParentActionName())
+                        .set("parent_action_id", audit.getParentActionId())
+                        .set("parent_pipeline_name", audit.getParentPipelineName())
+                        .set("parent_pipeline_id", audit.getParentPipelineId())).block();
+    }
+
+
 }

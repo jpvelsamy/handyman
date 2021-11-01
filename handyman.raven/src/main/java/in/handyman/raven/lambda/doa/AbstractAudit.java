@@ -45,9 +45,10 @@ public abstract class AbstractAudit extends Auditable {
     @JsonIgnore
     private String contextNode;
 
-    @JsonIgnore
-    public String getContextNode() {
-        return Optional.ofNullable(context).map(x -> {
+
+    public void setContext(final Map<String, String> context) {
+        this.context = context;
+        this.contextNode = Optional.ofNullable(context).map(x -> {
             try {
                 return MAPPER.writeValueAsString(context);
             } catch (JsonProcessingException e) {
@@ -55,4 +56,6 @@ public abstract class AbstractAudit extends Auditable {
             }
         }).orElse(null);
     }
+
+
 }

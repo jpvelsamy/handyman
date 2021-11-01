@@ -33,4 +33,11 @@ public class HandymanActorSystemAccess {
         AuditAccess.insertStatement(statement);
     }
 
+    public static void update(final Pipeline pipeline) {
+        AuditAccess.update(pipeline);
+    }
+
+    public static void update(final Action action) {
+        AuditAccess.update(action);
+    }
 }

@@ -39,6 +39,7 @@ public class LambdaEngine {
 
     /**
      * Execution starts from here
+     *
      * @param lContext
      */
     public static void start(final LContext lContext) {
@@ -63,7 +64,8 @@ public class LambdaEngine {
             pipeline.setParentPipelineName(lContext.getParentPipelineName());
             pipeline.setParentActionId(lContext.getParentActionId());
             pipeline.setParentActionName(lContext.getParentActionName());
-            pipeline.setExecutionStatusId(ExecutionStatus.STAGED.getId());
+            HandymanActorSystemAccess.insert(pipeline);
+            pipeline.updateExecutionStatusId(ExecutionStatus.STAGED.getId());
 
             final RavenParserContext ravenParserContext = lContext.getParentPipelineId() != null ? newInstance(lContext.getProcessLoadType(),
                     lContext.getLambdaName(), pipeline)
@@ -74,23 +76,25 @@ public class LambdaEngine {
             context.put("process-id", String.valueOf(pipeline.getPipelineId()));
 
             pipeline.setContext(context);
-            pipeline.setExecutionStatusId(ExecutionStatus.STARTED.getId());
+            HandymanActorSystemAccess.update(pipeline);
+            pipeline.updateExecutionStatusId(ExecutionStatus.STARTED.getId());
             try {
                 run(pipeline, ravenParserContext.getTryContext(), context, ExecutionGroup.TRY);
-                pipeline.setExecutionStatusId(ExecutionStatus.COMPLETED.getId());
+                pipeline.updateExecutionStatusId(ExecutionStatus.COMPLETED.getId());
             } catch (Exception e) {
                 run(pipeline, ravenParserContext.getCatchContext(), context, ExecutionGroup.CATCH);
-                pipeline.setExecutionStatusId(ExecutionStatus.FAILED.getId());
-                log.error(e);            e.printStackTrace();
+                pipeline.updateExecutionStatusId(ExecutionStatus.FAILED.getId());
+                log.error(e); throw new HandymanException("Failed", e);
 
             } finally {
                 run(pipeline, ravenParserContext.getFinallyContext(), context, ExecutionGroup.FINALLY);
-                HandymanActorSystemAccess.insert(pipeline);
+                HandymanActorSystemAccess.update(pipeline);
             }
         } catch (Exception e) {
             log.error(e);
-            e.printStackTrace();
-            pipeline.setExecutionStatusId(ExecutionStatus.FAILED.getId());
+            pipeline.updateExecutionStatusId(ExecutionStatus.FAILED.getId());
+            HandymanActorSystemAccess.update(pipeline);
+            throw new HandymanException("Failed", e);
         }
     }
 
@@ -120,8 +124,9 @@ public class LambdaEngine {
                     .build();
             action.setContext(context);
             toAction(action, pipeline);
-            action.setExecutionStatusId(ExecutionStatus.STAGED.getId());
-            //TODO action
+            HandymanActorSystemAccess.insert(action);
+            action.updateExecutionStatusId(ExecutionStatus.STAGED.getId());
+            HandymanActorSystemAccess.update(action);
             try {
                 final IActionExecution execution = load(actionContext, action);
                 execute(execution, action);
@@ -130,7 +135,9 @@ public class LambdaEngine {
                 log.error("Failed " + action, e);
                 final SubstituteLogger logger = getLogger(action);
                 logger.error("Exception", e);
+                throw new HandymanException("Failed to convert", e);
             } finally {
+                HandymanActorSystemAccess.update(action);
                 final StringBuilder stringBuilder = new StringBuilder();
                 action.getEventQueue().forEach(event -> {
                     //TODO format this
@@ -150,7 +157,7 @@ public class LambdaEngine {
                 });
                 action.setLog(stringBuilder.toString());
                 log.info(stringBuilder);
-                HandymanActorSystemAccess.insert(action);
+                HandymanActorSystemAccess.update(action);
             }
         });
     }
@@ -200,7 +207,7 @@ public class LambdaEngine {
             logger.info("Execution class {} staged", actionName);
             if (ProcessExecutor.ACTION_CONTEXT_MAP.containsKey(actionName) && ProcessExecutor.ACTION_EXECUTION_MAP.containsKey(actionName)) {
                 try {
-                    action.setExecutionStatusId(ExecutionStatus.STARTED.getId());
+                    action.updateExecutionStatusId(ExecutionStatus.STARTED.getId());
                     return initialization(child, action);
                 } catch (Exception e) {
                     logger.trace("Error at Initialization " + actionName, e);
@@ -216,17 +223,17 @@ public class LambdaEngine {
         final Logger logger = getLogger(action);
         final String actionName = action.getActionName();
         try {
-            action.setExecutionStatusId(ExecutionStatus.RUNNING.getId());
+            action.updateExecutionStatusId(ExecutionStatus.RUNNING.getId());
             logger.info("Execution class {} loaded", actionName);
             if (execution.executeIf()) {
                 logger.info("Execution class {} condition passed", actionName);
                 execution.execute();
                 logger.info("Execution class {} executed", actionName);
             }
-            action.setExecutionStatusId(ExecutionStatus.COMPLETED.getId());
+            action.updateExecutionStatusId(ExecutionStatus.COMPLETED.getId());
         } catch (Exception e) {
             logger.trace("Error at Execution " + actionName, e);
-            action.setExecutionStatusId(ExecutionStatus.FAILED.getId());
+            action.updateExecutionStatusId(ExecutionStatus.FAILED.getId());
         }
     }
 
@@ -246,6 +253,7 @@ public class LambdaEngine {
         CommandProxy.setTarget(actionContext, child, action.getContext());
         logger.debug("actionContext Execution class {} actionContext mapped", actionName);
         action.setInput(MAPPER.convertValue(actionContext, JsonNode.class));
+        HandymanActorSystemAccess.update(action);
         return (IActionExecution) ProcessExecutor.ACTION_EXECUTION_MAP.get(actionName)
                 .getConstructor(Action.class, Logger.class, Object.class)
                 .newInstance(action, logger, actionContext);

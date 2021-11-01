@@ -2,6 +2,7 @@ package in.handyman.raven.lambda.doa;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import in.handyman.raven.lambda.access.AuditAccess;
 import in.handyman.raven.util.UniqueID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +24,6 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table
 public class Pipeline extends AbstractAudit {
 
-
     @Builder.Default
     @Id
     private Long pipelineId = UniqueID.getId();
@@ -39,5 +39,12 @@ public class Pipeline extends AbstractAudit {
     private String requestBody = "";
     @Builder.Default
     private String relativePath = "";
+
+
+    public void updateExecutionStatusId(final Integer executionStatusId) {
+        this.setExecutionStatusId(executionStatusId);
+        AuditAccess.insert(PipelineExecutionAudit.builder().pipelineId(this.pipelineId).executionStatusId(executionStatusId).build());
+    }
+
 
 }

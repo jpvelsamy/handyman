@@ -6,9 +6,11 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.ConfigEntity;
 import in.handyman.raven.lambda.doa.ConfigType;
 import in.handyman.raven.lambda.doa.Pipeline;
+import in.handyman.raven.lambda.doa.PipelineExecutionAudit;
 import in.handyman.raven.lambda.doa.ResourceConnection;
 import in.handyman.raven.lambda.doa.Statement;
 
@@ -107,6 +109,26 @@ public class HandymanRepoESImpl extends AbstractAccess implements HandymanRepo {
     @Override
     public void insertStatement(final Statement audit) {
         ElasticsearchAccessApi.saveIndex(String.valueOf(audit.getStatementId()), audit);
+    }
+
+    @Override
+    public void insert(final PipelineExecutionAudit audit) {
+
+    }
+
+    @Override
+    public void insert(final ActionExecutionAudit audit) {
+
+    }
+
+    @Override
+    public void update(final Pipeline audit) {
+
+    }
+
+    @Override
+    public void update(final Action audit) {
+
     }
 
 

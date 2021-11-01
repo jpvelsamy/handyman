@@ -1,9 +1,11 @@
 package in.handyman.raven.lambda.access.repo;
 
 import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.ConfigEntity;
 import in.handyman.raven.lambda.doa.ConfigType;
 import in.handyman.raven.lambda.doa.Pipeline;
+import in.handyman.raven.lambda.doa.PipelineExecutionAudit;
 import in.handyman.raven.lambda.doa.ResourceConnection;
 import in.handyman.raven.lambda.doa.Statement;
 
@@ -32,4 +34,13 @@ public interface HandymanRepo {
     void insertAction(final Action audit);
 
     void insertStatement(final Statement audit);
+
+    void insert(final PipelineExecutionAudit audit);
+
+    void insert(final ActionExecutionAudit audit);
+
+    void update(final Pipeline audit);
+
+    void update(final Action audit);
+
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
+import in.handyman.raven.lambda.access.AuditAccess;
 import in.handyman.raven.util.UniqueID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,10 +47,14 @@ public class Action extends AbstractAudit {
     @JsonIgnore
     private String inputNode;
 
-    @JsonIgnore
-    public String getInputNode(){
-        return Optional.ofNullable(input).map(JsonNode::toString).orElse(null);
+    public void setInput(final JsonNode input) {
+        this.input = input;
+        this.inputNode = Optional.ofNullable(input).map(JsonNode::toString).orElse(null);
     }
 
-
+    public void updateExecutionStatusId(final Integer executionStatusId) {
+        this.setExecutionStatusId(executionStatusId);
+        AuditAccess.insert(ActionExecutionAudit.builder().actionId(actionId)
+                .pipelineId(this.pipelineId).executionStatusId(executionStatusId).build());
+    }
 }
