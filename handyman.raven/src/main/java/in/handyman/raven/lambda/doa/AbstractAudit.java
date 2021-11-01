@@ -1,16 +1,19 @@
 package in.handyman.raven.lambda.doa;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import lombok.Builder;
+import in.handyman.raven.exception.HandymanException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.Transient;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -38,4 +41,18 @@ public abstract class AbstractAudit extends Auditable {
     @Transient
     private Map<String, String> context;
 
+
+    @JsonIgnore
+    private String contextNode;
+
+    @JsonIgnore
+    public String getContextNode() {
+        return Optional.ofNullable(context).map(x -> {
+            try {
+                return MAPPER.writeValueAsString(context);
+            } catch (JsonProcessingException e) {
+                throw new HandymanException("Failed to convert", e);
+            }
+        }).orElse(null);
+    }
 }

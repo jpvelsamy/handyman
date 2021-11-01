@@ -17,6 +17,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.ArrayDeque;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -41,6 +42,14 @@ public class Action extends AbstractAudit {
     private JsonNode input;
     private String log;
     private Integer executionGroupId;
+
+    @JsonIgnore
+    private String inputNode;
+
+    @JsonIgnore
+    public String getInputNode(){
+        return Optional.ofNullable(input).map(JsonNode::toString).orElse(null);
+    }
 
 
 }
