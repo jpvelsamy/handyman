@@ -2,6 +2,8 @@ package in.handyman.raven.lambda.access.repo;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.Action;
 import in.handyman.raven.lambda.doa.ConfigEntity;
@@ -19,9 +21,12 @@ import java.util.stream.Collectors;
 
 public class HandymanRepoESImpl extends AbstractAccess implements HandymanRepo {
 
+    private final Config config;
+
     public HandymanRepoESImpl() {
         ElasticsearchAccessApi.createIndices(Set.of(ResourceConnection.class, ConfigEntity.class, Pipeline.class,
                 Action.class, Statement.class));
+        config = ConfigFactory.parseResources("handyman-raven-configstore.props");
     }
 
     @Override
@@ -43,7 +48,7 @@ public class HandymanRepoESImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public ResourceConnection getResourceConfig(final String name) {
-        final String format = String.format(DBAccess.CONFIG.getString("config.resource_connection_select_stmt"), name);
+        final String format = String.format(config.getString("config.resource_connection_select_stmt"), name);
         final ArrayNode fetch = ElasticsearchAccessApi.fetch(format);
         final List<ResourceConnection> connections = getList(fetch);
         return connections.stream().findFirst().orElseThrow(() -> new HandymanException("Not found"));
@@ -61,7 +66,7 @@ public class HandymanRepoESImpl extends AbstractAccess implements HandymanRepo {
 
 
     private Optional<ConfigEntity> findConfigEntities(final ConfigType configType, final String configName, final String variable) {
-        final String format = String.format(DBAccess.CONFIG.getString("config.config_select_stmt_by_var"), configType.getId(), configName, variable);
+        final String format = String.format(config.getString("config.config_select_stmt_by_var"), configType.getId(), configName, variable);
         final ArrayNode fetch = ElasticsearchAccessApi.fetch(format);
         final List<ConfigEntity> configEntity = ElasticsearchAccessApi.MAPPER.convertValue(fetch, new TypeReference<>() {
         });
@@ -71,14 +76,14 @@ public class HandymanRepoESImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public List<ConfigEntity> findConfigEntities(final ConfigType configType, final String configName) {
-        final String format = String.format(DBAccess.CONFIG.getString("config.config_select_stmt_by_name"), configType.getId(), configName);
+        final String format = String.format(config.getString("config.config_select_stmt_by_name"), configType.getId(), configName);
         final ArrayNode fetch = ElasticsearchAccessApi.fetch(format);
         return ElasticsearchAccessApi.MAPPER.convertValue(fetch, new TypeReference<>() {
         });
     }
 
     private List<ConfigEntity> findConfigEntities(final ConfigType configType) {
-        final String format = String.format(DBAccess.CONFIG.getString("config.config_select_stmt"), configType.getId());
+        final String format = String.format(config.getString("config.config_select_stmt"), configType.getId());
         final ArrayNode fetch = ElasticsearchAccessApi.fetch(format);
         return ElasticsearchAccessApi.MAPPER.convertValue(fetch, new TypeReference<>() {
         });
@@ -90,17 +95,17 @@ public class HandymanRepoESImpl extends AbstractAccess implements HandymanRepo {
     }
 
     @Override
-    public  void insertPipeline(final Pipeline audit) {
+    public void insertPipeline(final Pipeline audit) {
         ElasticsearchAccessApi.saveIndex(String.valueOf(audit.getPipelineId()), audit);
     }
 
     @Override
-    public  void insertAction(final Action audit) {
+    public void insertAction(final Action audit) {
         ElasticsearchAccessApi.saveIndex(String.valueOf(audit.getActionId()), audit);
     }
 
     @Override
-    public  void insertStatement(final Statement audit) {
+    public void insertStatement(final Statement audit) {
         ElasticsearchAccessApi.saveIndex(String.valueOf(audit.getStatementId()), audit);
     }
 

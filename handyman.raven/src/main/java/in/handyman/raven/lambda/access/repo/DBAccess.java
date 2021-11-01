@@ -16,6 +16,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 @Log4j2
+@Deprecated
 public class DBAccess {
 
     public static final Config CONFIG;
