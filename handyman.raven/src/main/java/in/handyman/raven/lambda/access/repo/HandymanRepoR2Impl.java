@@ -1,0 +1,133 @@
+package in.handyman.raven.lambda.access.repo;
+
+import com.typesafe.config.ConfigFactory;
+import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.ConfigEntity;
+import in.handyman.raven.lambda.doa.ConfigType;
+import in.handyman.raven.lambda.doa.Pipeline;
+import in.handyman.raven.lambda.doa.ResourceConnection;
+import in.handyman.raven.lambda.doa.Statement;
+import io.r2dbc.spi.ConnectionFactories;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
+import org.springframework.data.relational.core.query.Query;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.springframework.data.relational.core.query.Criteria.where;
+
+@Log4j2
+public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
+
+    private static final String CONFIG_PASSWORD = "config.r2.password";
+    private static final String CONFIG_USER = "config.r2.user";
+    private static final String CONFIG_DRIVER = "config.r2.driver";
+    private static final String CONFIG_PORT = "config.r2.port";
+    private static final String CONFIG_HOST = "config.r2.host";
+    protected static final String CONFIG_DATABASE = "config.r2.database";
+
+    private static final String CONFIG_TYPE_ID = "config_type_id";
+    private static final String NAME = "name";
+
+    private final R2dbcEntityTemplate r2dbcEntityTemplate;
+
+    public HandymanRepoR2Impl() {
+        var CONFIG = ConfigFactory.parseResources("handyman-raven-configstore.props");
+        log.info("Initializing the config store from config file {}", CONFIG.origin().url());
+
+        final String driver = CONFIG.getString(CONFIG_DRIVER);
+        final String username = CONFIG.getString(CONFIG_USER);
+        final String password = CONFIG.getString(CONFIG_PASSWORD);
+        final String host = CONFIG.getString(CONFIG_HOST);
+        final int port = CONFIG.getInt(CONFIG_PORT);
+        final String database = CONFIG.getString(CONFIG_DATABASE);
+
+        var connectionFactory = ConnectionFactories.get(String.format("r2dbc:%s://%s:%s@%s:%s/%s?option1=value", driver, username, password, host, port, database));
+        r2dbcEntityTemplate = new R2dbcEntityTemplate(connectionFactory);
+    }
+
+    @Override
+    public Map<String, String> getAllConfig(final String pipelineName) {
+        final String lambdaName = getLambdaName(pipelineName);
+        final Map<String, String> pipelineConfig = toMap(findConfigEntities(ConfigType.PIPELINE, pipelineName));
+        final Map<String, String> lambdaConfig = toMap(findConfigEntities(ConfigType.LAMBDA, lambdaName));
+        final Map<String, String> commonConfig = getCommonConfig();
+        final Map<String, String> finalMap = new HashMap<>(pipelineConfig);
+        finalMap.putAll(lambdaConfig);
+        finalMap.putAll(commonConfig);
+        return Map.copyOf(finalMap);
+    }
+
+    @Override
+    public Map<String, String> getCommonConfig() {
+        final List<ConfigEntity> configEntities = r2dbcEntityTemplate
+                .select(ConfigEntity.class)
+                .matching(Query.query(where(CONFIG_TYPE_ID)
+                        .is(ConfigType.COMMON.getId())))
+                .all().toStream().collect(Collectors.toList());
+        return toMap(configEntities);
+    }
+
+    @Override
+    public ResourceConnection getResourceConfig(final String name) {
+        return r2dbcEntityTemplate
+                .select(ResourceConnection.class)
+                .matching(Query.query(where(NAME)
+                        .is(name))).one().blockOptional().orElse(null);
+    }
+
+    @Override
+    public String findValueCommonConfig(final String configName, final String variable) {
+        return r2dbcEntityTemplate
+                .select(ConfigEntity.class)
+                .matching(Query.query(where(CONFIG_TYPE_ID)
+                        .is(ConfigType.COMMON.getId())
+                        .and(where(NAME).is(SYS_PACKAGE))))
+                .one().blockOptional().map(ConfigEntity::getValue).orElse(null);
+    }
+
+    @Override
+    public Set<String> getPackageAction() {
+        final List<ConfigEntity> configEntities = r2dbcEntityTemplate
+                .select(ConfigEntity.class)
+                .matching(Query.query(where(CONFIG_TYPE_ID)
+                        .is(ConfigType.COMMON.getId())
+                        .and(where(NAME).is(SYS_PACKAGE))))
+                .all().toStream().collect(Collectors.toList());
+        return configEntities.stream().map(ConfigEntity::getValue).collect(Collectors.toSet());
+    }
+
+    @Override
+    public List<ConfigEntity> findConfigEntities(final ConfigType configType, final String configName) {
+        return r2dbcEntityTemplate
+                .select(ConfigEntity.class)
+                .matching(Query.query(where(NAME)
+                        .is(configName).and(where(CONFIG_TYPE_ID)
+                                .is(configType.getId()))))
+                .all().toStream().collect(Collectors.toList());
+    }
+
+    @Override
+    public void insertPipeline(final Pipeline audit) {
+        audit.setLastModifiedDate(LocalDateTime.now());
+        r2dbcEntityTemplate.insert(Pipeline.class).using(audit).block();
+    }
+
+    @Override
+    public void insertAction(final Action audit) {
+        audit.setLastModifiedDate(LocalDateTime.now());
+        r2dbcEntityTemplate.insert(Action.class).using(audit).block();
+
+    }
+
+    @Override
+    public void insertStatement(final Statement audit) {
+        audit.setLastModifiedDate(LocalDateTime.now());
+        r2dbcEntityTemplate.insert(Statement.class).using(audit).block();
+    }
+}

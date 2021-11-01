@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.annotation.Transient;
 
 import java.util.Map;
 
@@ -33,7 +34,8 @@ public abstract class AbstractAudit extends Auditable {
     private String parentActionName = "";
 
     private Integer executionStatusId;
-    private Map<String, String> context;
 
+    @Transient
+    private Map<String, String> context;
 
 }

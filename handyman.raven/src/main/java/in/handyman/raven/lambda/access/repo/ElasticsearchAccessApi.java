@@ -1,4 +1,4 @@
-package in.handyman.raven.lambda.access;
+package in.handyman.raven.lambda.access.repo;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -52,7 +52,7 @@ import java.util.stream.StreamSupport;
 @Log4j2
 public class ElasticsearchAccessApi {
 
-    protected static final ObjectMapper MAPPER = new ObjectMapper();
+    public static final ObjectMapper MAPPER = new ObjectMapper();
     private static final String RAVEN_CONFIGSTORE_PROPS = "handyman-raven-configstore.props";
 
     static {
@@ -82,7 +82,7 @@ public class ElasticsearchAccessApi {
         return new RestHighLevelClient(builder);
     }
 
-    protected static void createIndices(final Set<Class<?>> indexNames) {
+    public static void createIndices(final Set<Class<?>> indexNames) {
         try {
             indexNames.stream().map(ElasticsearchAccessApi::toIndexName).forEach(indexName -> {
                 log.info("Index creation for {} has been initiated", indexName);
@@ -108,12 +108,12 @@ public class ElasticsearchAccessApi {
 
     }
 
-    protected static boolean isExists(final String indexName) throws IOException {
+    public static boolean isExists(final String indexName) throws IOException {
         return CLIENT.indices().exists(new GetIndexRequest(indexName), RequestOptions.DEFAULT);
     }
 
 
-    protected static void saveIndex(final String indexId, final Object payload) {
+    public static void saveIndex(final String indexId, final Object payload) {
         try {
             final String indexName = toIndexName(payload.getClass());
             log.debug("save IndexName {} ID {} payload {}", indexName, indexId, payload);
@@ -189,11 +189,11 @@ public class ElasticsearchAccessApi {
         }
     }
 
-    protected static String toIndexName(final Class<?> aClass) {
+    public static String toIndexName(final Class<?> aClass) {
         return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, aClass.getSimpleName());
     }
 
-    protected static ArrayNode fetch(final String query) {
+    public static ArrayNode fetch(final String query) {
         final Request request = new Request("POST", "/_sql?format=json");
         request.setJsonEntity(String.format("{\"query\":\"%s\"}", query));
         try {

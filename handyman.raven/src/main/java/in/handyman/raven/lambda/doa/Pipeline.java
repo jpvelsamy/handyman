@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
 @Getter
 @Setter
@@ -18,10 +20,12 @@ import lombok.ToString;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Table
 public class Pipeline extends AbstractAudit {
 
 
     @Builder.Default
+    @Id
     private Long pipelineId = UniqueID.getId();
 
     private String modeOfExecution;
@@ -35,6 +39,5 @@ public class Pipeline extends AbstractAudit {
     private String requestBody = "";
     @Builder.Default
     private String relativePath = "";
-
 
 }

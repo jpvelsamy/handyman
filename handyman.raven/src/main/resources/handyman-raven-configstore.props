@@ -1,27 +1,36 @@
 config= {
 
-es.host=localhost
-es.port=9200
-es.username=elastic
-es.password=password
+    es.host=localhost
+    es.port=9200
+    es.username=elastic
+    es.password=password
 
-  host = localhost
-  port = 3306
-  database= handyman_vm
-  driver = org.mariadb.jdbc.Driver
-  user=root
-  password=password
-  create-on-init=false
-  in-memory=false
-  in-memory-db-path=/nimbus/db/
+    host = localhost
+    port = 3306
+    database= handyman_vm
+    driver = org.mariadb.jdbc.Driver
+    user=root
+    password=password
 
-  resource_connection_select_stmt="SELECT  *  FROM resource_connection  where active = 'true' AND name = '%s' "
+    r2.host = localhost
+    r2.port = 3306
+    r2.database= handyman_vm
+    r2.driver = mariadb
+    r2.user=root
+    r2.password=password
 
-  config_select_stmt="SELECT  * FROM config_entity where id.configTypeId= '%s' and  active = 'true' "
-  config_select_stmt_by_name="SELECT  * FROM config_entity where id.configTypeId= '%s' and id.name= '%s' and  active = 'true' "
-  config_select_stmt_by_var= "SELECT * FROM config_entity WHERE id.configTypeId=? and id.name=? and id.variable=? AND  active = 'true'  "
+    create-on-init=false
+    in-memory=false
+    in-memory-db-path=/nimbus/db/
 
-  pipeline_audit_insert_stmt="INSERT INTO pipeline_audit (pipeline_id, created_by, created_date, last_modified_by, last_modified_date, context_node, execution_status_id, lambda_name, parent_pipeline_id, parent_pipeline_name, pipeline_name, file_content, host_name, mode_of_execution, pipeline_load_type, relative_path, request_body, thread_name, parent_action_id, parent_action_name) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-  action_audit_insert_stmt="INSERT INTO action_audit (action_id, created_by, created_date, last_modified_by, last_modified_date, context_node, execution_status_id, lambda_name, parent_pipeline_id, parent_pipeline_name, parent_action_id, parent_action_name, pipeline_name, action_name, input_node, pipeline_id,log,execution_group_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)"
-  statement_audit_insert_stmt="INSERT INTO statement_audit (statement_id, action_id, created_by, created_date, last_modified_by, last_modified_date, rows_processed, rows_read, rows_written, time_taken,statement) VALUES(?, ?, ?, ?, ?, ?,?,?,?,?,?)"
+    resource_connection_select_stmt="SELECT  *  FROM resource_connection  where active = 'true' AND name = '%s' "
+
+    config_select_stmt="SELECT  * FROM config_entity where id.configTypeId= '%s' and  active = 'true' "
+    config_select_stmt_by_name="SELECT  * FROM config_entity where id.configTypeId= '%s' and id.name= '%s' and  active = 'true' "
+    config_select_stmt_by_var= "SELECT * FROM config_entity WHERE id.configTypeId=? and id.name=? and id.variable=? AND  active = 'true'  "
+
+    pipeline_audit_insert_stmt="INSERT INTO pipeline_audit (pipeline_id, created_by, created_date, last_modified_by, last_modified_date, context_node, execution_status_id, lambda_name, parent_pipeline_id, parent_pipeline_name, pipeline_name, file_content, host_name, mode_of_execution, pipeline_load_type, relative_path, request_body, thread_name, parent_action_id, parent_action_name) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    action_audit_insert_stmt="INSERT INTO action_audit (action_id, created_by, created_date, last_modified_by, last_modified_date, context_node, execution_status_id, lambda_name, parent_pipeline_id, parent_pipeline_name, parent_action_id, parent_action_name, pipeline_name, action_name, input_node, pipeline_id,log,execution_group_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)"
+    statement_audit_insert_stmt="INSERT INTO statement_audit (statement_id, action_id, created_by, created_date, last_modified_by, last_modified_date, rows_processed, rows_read, rows_written, time_taken,statement) VALUES(?, ?, ?, ?, ?, ?,?,?,?,?,?)"
+
 }

@@ -81,12 +81,15 @@ public class LambdaEngine {
             } catch (Exception e) {
                 run(pipeline, ravenParserContext.getCatchContext(), context, ExecutionGroup.CATCH);
                 pipeline.setExecutionStatusId(ExecutionStatus.FAILED.getId());
+                log.error(e);            e.printStackTrace();
+
             } finally {
                 run(pipeline, ravenParserContext.getFinallyContext(), context, ExecutionGroup.FINALLY);
                 HandymanActorSystemAccess.insert(pipeline);
             }
         } catch (Exception e) {
             log.error(e);
+            e.printStackTrace();
             pipeline.setExecutionStatusId(ExecutionStatus.FAILED.getId());
         }
     }

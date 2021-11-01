@@ -1,6 +1,6 @@
 package in.handyman.raven.metric;
 
-import in.handyman.raven.lambda.access.DBAccess;
+import in.handyman.raven.lambda.access.repo.DBAccess;
 import in.handyman.raven.lambda.doa.Action;
 import in.handyman.raven.lambda.doa.ExecutionStatus;
 import io.github.mweirauch.micrometer.jvm.extras.ProcessMemoryMetrics;

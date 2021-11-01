@@ -1,5 +1,6 @@
 package in.handyman.raven.lambda.access;
 
+import in.handyman.raven.lambda.access.repo.DBAccess;
 import org.junit.jupiter.api.Test;
 
 class DBAccessTest {

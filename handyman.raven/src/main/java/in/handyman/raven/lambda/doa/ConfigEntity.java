@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
 @Getter
 @Setter
@@ -17,9 +19,15 @@ import lombok.ToString;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Table
 public class ConfigEntity extends Auditable {
 
-    private ConfigID id;
+    @Id
+    private Long id;
+
+    private String name;
+    private String variable;
+    private Integer configTypeId;
 
     private String value;
     private boolean active;

@@ -1,6 +1,7 @@
 package in.handyman.raven.lambda.access;
 
 import in.handyman.raven.exception.HandymanException;
+import in.handyman.raven.lambda.access.repo.ElasticsearchAccessApi;
 import in.handyman.raven.lambda.doa.ConfigEntity;
 import in.handyman.raven.lambda.doa.ConfigID;
 import in.handyman.raven.lambda.doa.ResourceConnection;
@@ -29,11 +30,10 @@ class ElasticsearchAccessApiTest {
             if (ElasticsearchAccessApi.isExists(ElasticsearchAccessApi.toIndexName(ConfigEntity.class))) {
                 ElasticsearchAccessApi.saveIndex(UUID.randomUUID().toString(), ConfigEntity.builder()
                         .active(false)
-                        .id(ConfigID.builder()
-                                .name("")
-                                .configTypeId(0)
-                                .variable("")
-                                .build())
+                        .name("")
+                        .configTypeId(0)
+                        .variable("")
+                        .id(1L)
                         .value("")
                         .build());
             }

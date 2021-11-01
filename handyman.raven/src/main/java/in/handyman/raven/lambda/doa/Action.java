@@ -12,6 +12,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.slf4j.event.SubstituteLoggingEvent;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.ArrayDeque;
 
@@ -23,14 +26,18 @@ import java.util.ArrayDeque;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Table
 public class Action extends AbstractAudit {
 
     @JsonIgnore
+    @Transient
     private final ArrayDeque<SubstituteLoggingEvent> eventQueue = new ArrayDeque<>();
     @Builder.Default
+    @Id
     private Long actionId = UniqueID.getId();
     private String actionName;
     private Long pipelineId;
+    @Transient
     private JsonNode input;
     private String log;
     private Integer executionGroupId;

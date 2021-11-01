@@ -1,4 +1,4 @@
-package in.handyman.raven.lambda.access;
+package in.handyman.raven.lambda.access.repo;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 @Log4j2
 public class DBAccess {
 
-    protected static final Config CONFIG;
+    public static final Config CONFIG;
     private static final ConnectionFactory POOL;
     private static final ConnectionFactory CONNECTION_FACTORY;
 
