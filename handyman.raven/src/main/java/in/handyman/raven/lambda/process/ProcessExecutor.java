@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 @Log4j2
 public class ProcessExecutor {
 
-    protected static final String CONTEXT = "Context";
     public static final Map<String, ? extends Class<?>> ACTION_CONTEXT_MAP;
     public static final Map<String, ? extends Class<?>> ACTION_EXECUTION_MAP;
+    protected static final String CONTEXT = "Context";
 
     static {
         try {

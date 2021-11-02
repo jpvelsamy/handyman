@@ -3,6 +3,9 @@
 
 // Derived from http://json.org
 grammar JSON;
+@header {
+package in.handyman.raven.compiler;
+}
 
 json
    : obj|arr

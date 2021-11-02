@@ -131,6 +131,41 @@ public class LambdaEngine {
         });
     }
 
+    private static HashMap<String, String> getEContext(final String lambdaName) {
+        return new HashMap<>(ConfigAccess.getAllConfig(lambdaName));
+    }
+
+    private static String getProcessFile(final String processLoadType, final String lambdaName, final Map<String, String> context, final String relativePath) {
+        final String processFile = relativePath != null ? HRequestResolver.readFile(relativePath, "") : HRequestResolver.doResolve(lambdaName, processLoadType, context);
+        if (Objects.isNull(processFile)) {
+            throw new HandymanException("Content configuration for process " + lambdaName + " is missing, check spw_process_config or spw_instance_config");
+        }
+        if (processFile.isEmpty()) {
+            throw new HandymanException("Content configuration for process " + lambdaName + " is missing, check spw_process_config or spw_instance_config");
+        }
+        return processFile;
+    }
+
+    private static RavenParserContext getRavenParserContext(final String processFile, final String lambdaName, final Map<String, String> context) {
+        log.debug("Handyman Engine start for {}", lambdaName);
+        final RavenParser.ProcessContext ravenParser = LambdaParser.doParse(processFile, context);
+        return RavenParserContext.builder()
+                .tryContext(ravenParser.tryBlock.actions)
+                .catchContext(ravenParser.catchBlock.actions)
+                .finallyContext(ravenParser.finallyBlock.actions)
+                .context(context)
+                .build();
+    }
+
+    public static void toAction(final Action action, final AbstractAudit abstractAudit) {
+        action.setPipelineName(abstractAudit.getPipelineName());
+        action.setLambdaName(action.getLambdaName());
+        action.setParentActionId(abstractAudit.getParentActionId());
+        action.setParentActionName(abstractAudit.getParentActionName());
+        action.setParentPipelineId(abstractAudit.getParentPipelineId());
+        action.setParentPipelineName(abstractAudit.getParentPipelineName());
+    }
+
     public static void doAction(final Action action, final RavenParser.ActionContext actionContext) {
         HandymanActorSystemAccess.insert(action);
         action.updateExecutionStatusId(ExecutionStatus.STAGED.getId());
@@ -167,41 +202,6 @@ public class LambdaEngine {
             log.info(stringBuilder);
             HandymanActorSystemAccess.update(action);
         }
-    }
-
-    private static HashMap<String, String> getEContext(final String lambdaName) {
-        return new HashMap<>(ConfigAccess.getAllConfig(lambdaName));
-    }
-
-    private static String getProcessFile(final String processLoadType, final String lambdaName, final Map<String, String> context, final String relativePath) {
-        final String processFile = relativePath != null ? HRequestResolver.readFile(relativePath, "") : HRequestResolver.doResolve(lambdaName, processLoadType, context);
-        if (Objects.isNull(processFile)) {
-            throw new HandymanException("Content configuration for process " + lambdaName + " is missing, check spw_process_config or spw_instance_config");
-        }
-        if (processFile.isEmpty()) {
-            throw new HandymanException("Content configuration for process " + lambdaName + " is missing, check spw_process_config or spw_instance_config");
-        }
-        return processFile;
-    }
-
-    private static RavenParserContext getRavenParserContext(final String processFile, final String lambdaName, final Map<String, String> context) {
-        log.debug("Handyman Engine start for {}", lambdaName);
-        final RavenParser.ProcessContext ravenParser = LambdaParser.doParse(processFile, context);
-        return RavenParserContext.builder()
-                .tryContext(ravenParser.tryBlock.actions)
-                .catchContext(ravenParser.catchBlock.actions)
-                .finallyContext(ravenParser.finallyBlock.actions)
-                .context(context)
-                .build();
-    }
-
-    public static void toAction(final Action action, final AbstractAudit abstractAudit) {
-        action.setPipelineName(abstractAudit.getPipelineName());
-        action.setLambdaName(action.getLambdaName());
-        action.setParentActionId(abstractAudit.getParentActionId());
-        action.setParentActionName(abstractAudit.getParentActionName());
-        action.setParentPipelineId(abstractAudit.getParentPipelineId());
-        action.setParentPipelineName(abstractAudit.getParentPipelineName());
     }
 
     private static IActionExecution load(final RavenParser.ActionContext actionContext, final Action action) {

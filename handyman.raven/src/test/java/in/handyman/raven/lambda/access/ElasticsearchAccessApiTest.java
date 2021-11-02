@@ -3,7 +3,6 @@ package in.handyman.raven.lambda.access;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.repo.ElasticsearchAccessApi;
 import in.handyman.raven.lambda.doa.ConfigEntity;
-import in.handyman.raven.lambda.doa.ConfigID;
 import in.handyman.raven.lambda.doa.ResourceConnection;
 import org.junit.jupiter.api.Test;
 

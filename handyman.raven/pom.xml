@@ -245,6 +245,7 @@
     </dependencies>
 
     <build>
+        <finalName>handyman-raven-vm-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.antlr</groupId>

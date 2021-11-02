@@ -18,4 +18,4 @@
 
 ## Jar
 
-### Generated jar file available in handyman.raven/target folder as *handyman.raven-<version>-SNAPSHOT.jar*
+### Generated jar file available in handyman.raven/target folder as *handyman-raven-vm-<version>-SNAPSHOT.jar*
