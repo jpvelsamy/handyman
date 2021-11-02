@@ -143,7 +143,7 @@ public class LambdaEngine {
                 action.getEventQueue().forEach(event -> {
                     //TODO format this
                     stringBuilder.append(String.format("Level {%s} Marker {%s} ThreadName {%s} Time {%s} Message {%s}", event.getLevel(),
-                            event.getMarkers(), event.getThreadName(),
+                            event.getMarker(), event.getThreadName(),
                             Instant.ofEpochMilli(event.getTimeStamp()),
                             MessageFormatter.arrayFormat(event.getMessage(), event.getArgumentArray()).getMessage()));
                     if (event.getThrowable() != null) {

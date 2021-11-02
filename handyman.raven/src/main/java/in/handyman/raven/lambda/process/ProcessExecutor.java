@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 public class ProcessExecutor {
 
     protected static final String CONTEXT = "Context";
-    protected static final Map<String, ? extends Class<?>> ACTION_CONTEXT_MAP;
-    protected static final Map<String, ? extends Class<?>> ACTION_EXECUTION_MAP;
+    public static final Map<String, ? extends Class<?>> ACTION_CONTEXT_MAP;
+    public static final Map<String, ? extends Class<?>> ACTION_EXECUTION_MAP;
 
     static {
         try {
