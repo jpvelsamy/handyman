@@ -22,7 +22,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Table
-public class ActionExecutionAudit extends Auditable{
+public class ActionExecutionAudit extends Auditable {
 
     @Builder.Default
     @Id

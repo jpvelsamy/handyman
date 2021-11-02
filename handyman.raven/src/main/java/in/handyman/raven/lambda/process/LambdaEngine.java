@@ -84,7 +84,8 @@ public class LambdaEngine {
             } catch (Exception e) {
                 run(pipeline, ravenParserContext.getCatchContext(), context, ExecutionGroup.CATCH);
                 pipeline.updateExecutionStatusId(ExecutionStatus.FAILED.getId());
-                log.error(e); throw new HandymanException("Failed", e);
+                log.error(e);
+                throw new HandymanException("Failed", e);
 
             } finally {
                 run(pipeline, ravenParserContext.getFinallyContext(), context, ExecutionGroup.FINALLY);

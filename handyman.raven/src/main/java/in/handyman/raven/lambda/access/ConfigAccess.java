@@ -14,11 +14,11 @@ public class ConfigAccess {
     private static final HandymanRepo REPO = new HandymanRepoR2Impl();
 
     public static ResourceConnection getResourceConfig(final String name) {
-      return REPO.getResourceConfig(name);
+        return REPO.getResourceConfig(name);
     }
 
     public static Map<String, String> getAllConfig(final String pipelineName) {
-      return REPO.getAllConfig(pipelineName);
+        return REPO.getAllConfig(pipelineName);
     }
 
     public static Map<String, String> getCommonConfig() {
@@ -29,7 +29,7 @@ public class ConfigAccess {
         return REPO.getPackageAction();
     }
 
-    public static  String getLambdaName(final String pipelineName) {
+    public static String getLambdaName(final String pipelineName) {
         if (pipelineName != null) {
             if (pipelineName.contains("#")) {
                 return pipelineName.substring(0, pipelineName.lastIndexOf("#"));

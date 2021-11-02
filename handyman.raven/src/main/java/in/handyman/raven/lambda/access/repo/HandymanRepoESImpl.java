@@ -44,8 +44,23 @@ public class HandymanRepoESImpl extends AbstractAccess implements HandymanRepo {
     }
 
     @Override
+    public List<ConfigEntity> findConfigEntities(final ConfigType configType, final String configName) {
+        final String format = String.format(config.getString("config.config_select_stmt_by_name"), configType.getId(), configName);
+        final ArrayNode fetch = ElasticsearchAccessApi.fetch(format);
+        return ElasticsearchAccessApi.MAPPER.convertValue(fetch, new TypeReference<>() {
+        });
+    }
+
+    @Override
     public Map<String, String> getCommonConfig() {
         return toMap(findConfigEntities(ConfigType.COMMON));
+    }
+
+    private List<ConfigEntity> findConfigEntities(final ConfigType configType) {
+        final String format = String.format(config.getString("config.config_select_stmt"), configType.getId());
+        final ArrayNode fetch = ElasticsearchAccessApi.fetch(format);
+        return ElasticsearchAccessApi.MAPPER.convertValue(fetch, new TypeReference<>() {
+        });
     }
 
     @Override
@@ -56,16 +71,15 @@ public class HandymanRepoESImpl extends AbstractAccess implements HandymanRepo {
         return connections.stream().findFirst().orElseThrow(() -> new HandymanException("Not found"));
     }
 
+    private List<ResourceConnection> getList(final ArrayNode fetch) {
+        return ElasticsearchAccessApi.MAPPER.convertValue(fetch, new TypeReference<>() {
+        });
+    }
+
     @Override
     public String findValueCommonConfig(final String configName, final String variable) {
         return findConfigEntities(ConfigType.COMMON, configName, variable).map(ConfigEntity::getValue).orElse(null);
     }
-
-    @Override
-    public Set<String> getPackageAction() {
-        return findConfigEntities(ConfigType.COMMON, SYS_PACKAGE).stream().map(ConfigEntity::getValue).collect(Collectors.toSet());
-    }
-
 
     private Optional<ConfigEntity> findConfigEntities(final ConfigType configType, final String configName, final String variable) {
         final String format = String.format(config.getString("config.config_select_stmt_by_var"), configType.getId(), configName, variable);
@@ -75,25 +89,9 @@ public class HandymanRepoESImpl extends AbstractAccess implements HandymanRepo {
         return configEntity.stream().findFirst();
     }
 
-
     @Override
-    public List<ConfigEntity> findConfigEntities(final ConfigType configType, final String configName) {
-        final String format = String.format(config.getString("config.config_select_stmt_by_name"), configType.getId(), configName);
-        final ArrayNode fetch = ElasticsearchAccessApi.fetch(format);
-        return ElasticsearchAccessApi.MAPPER.convertValue(fetch, new TypeReference<>() {
-        });
-    }
-
-    private List<ConfigEntity> findConfigEntities(final ConfigType configType) {
-        final String format = String.format(config.getString("config.config_select_stmt"), configType.getId());
-        final ArrayNode fetch = ElasticsearchAccessApi.fetch(format);
-        return ElasticsearchAccessApi.MAPPER.convertValue(fetch, new TypeReference<>() {
-        });
-    }
-
-    private List<ResourceConnection> getList(final ArrayNode fetch) {
-        return ElasticsearchAccessApi.MAPPER.convertValue(fetch, new TypeReference<>() {
-        });
+    public Set<String> getPackageAction() {
+        return findConfigEntities(ConfigType.COMMON, SYS_PACKAGE).stream().map(ConfigEntity::getValue).collect(Collectors.toSet());
     }
 
     @Override

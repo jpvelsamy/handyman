@@ -1,8 +1,6 @@
 package in.handyman.raven.actor;
 
-import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
-import akka.actor.Props;
 import in.handyman.raven.lambda.access.AuditAccess;
 import in.handyman.raven.lambda.doa.Action;
 import in.handyman.raven.lambda.doa.Pipeline;

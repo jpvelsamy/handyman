@@ -1,12 +1,12 @@
 package in.handyman.raven.lib;
 
 import com.zaxxer.hikari.HikariDataSource;
-import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.exception.HandymanException;
-import in.handyman.raven.lib.model.Assign;
+import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lib.model.Assign;
 import in.handyman.raven.util.CommonQueryUtil;
 import in.handyman.raven.util.ExceptionUtil;
 import in.handyman.raven.util.UniqueID;
@@ -66,7 +66,7 @@ public class AssignAction implements IActionExecution {
                     var warnings = ExceptionUtil.completeSQLWarning(stmt.getWarnings());
                     log.info(sqlToExecute + ".stmtCount", stmt.getUpdateCount());
                     log.info(sqlToExecute + ".warnings", warnings);
-                    log.info(aMarker, " id# {}, executed script {} rows returned {}", statementId.toString(), sqlToExecute, 0);
+                    log.info(aMarker, " id# {}, executed script {} rows returned {}", statementId, sqlToExecute, 0);
                     stmt.clearWarnings();
                 } catch (SQLSyntaxErrorException ex) {
                     log.error(aMarker, "Stopping execution, General Error executing sql for {} with for campaign {}", sqlToExecute, ex);

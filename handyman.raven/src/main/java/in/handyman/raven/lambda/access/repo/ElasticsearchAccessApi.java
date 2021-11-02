@@ -54,12 +54,11 @@ public class ElasticsearchAccessApi {
 
     public static final ObjectMapper MAPPER = new ObjectMapper();
     private static final String RAVEN_CONFIGSTORE_PROPS = "handyman-raven-configstore.props";
+    private static final RestHighLevelClient CLIENT = getRestHighLevelClientConnection();
 
     static {
         MAPPER.registerModule(new JavaTimeModule());
     }
-
-    private static final RestHighLevelClient CLIENT = getRestHighLevelClientConnection();
 
     private static RestHighLevelClient getRestHighLevelClientConnection() {
         //TODO move to config
@@ -108,10 +107,13 @@ public class ElasticsearchAccessApi {
 
     }
 
+    public static String toIndexName(final Class<?> aClass) {
+        return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, aClass.getSimpleName());
+    }
+
     public static boolean isExists(final String indexName) throws IOException {
         return CLIENT.indices().exists(new GetIndexRequest(indexName), RequestOptions.DEFAULT);
     }
-
 
     public static void saveIndex(final String indexId, final Object payload) {
         try {
@@ -187,10 +189,6 @@ public class ElasticsearchAccessApi {
         } catch (Exception ex) {
             throw new HandymanException("GetDOC failed", ex);
         }
-    }
-
-    public static String toIndexName(final Class<?> aClass) {
-        return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, aClass.getSimpleName());
     }
 
     public static ArrayNode fetch(final String query) {

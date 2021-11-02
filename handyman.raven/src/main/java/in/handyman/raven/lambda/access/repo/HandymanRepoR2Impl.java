@@ -27,13 +27,12 @@ import static org.springframework.data.relational.core.query.Criteria.where;
 @Log4j2
 public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
 
+    protected static final String CONFIG_DATABASE = "config.r2.database";
     private static final String CONFIG_PASSWORD = "config.r2.password";
     private static final String CONFIG_USER = "config.r2.user";
     private static final String CONFIG_DRIVER = "config.r2.driver";
     private static final String CONFIG_PORT = "config.r2.port";
     private static final String CONFIG_HOST = "config.r2.host";
-    protected static final String CONFIG_DATABASE = "config.r2.database";
-
     private static final String CONFIG_TYPE_ID = "config_type_id";
     private static final String NAME = "name";
 
@@ -64,6 +63,16 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
         finalMap.putAll(lambdaConfig);
         finalMap.putAll(commonConfig);
         return Map.copyOf(finalMap);
+    }
+
+    @Override
+    public List<ConfigEntity> findConfigEntities(final ConfigType configType, final String configName) {
+        return r2dbcEntityTemplate
+                .select(ConfigEntity.class)
+                .matching(Query.query(where(NAME)
+                        .is(configName).and(where(CONFIG_TYPE_ID)
+                                .is(configType.getId()))))
+                .all().toStream().collect(Collectors.toList());
     }
 
     @Override
@@ -103,16 +112,6 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
                         .and(where(NAME).is(SYS_PACKAGE))))
                 .all().toStream().collect(Collectors.toList());
         return configEntities.stream().map(ConfigEntity::getValue).collect(Collectors.toSet());
-    }
-
-    @Override
-    public List<ConfigEntity> findConfigEntities(final ConfigType configType, final String configName) {
-        return r2dbcEntityTemplate
-                .select(ConfigEntity.class)
-                .matching(Query.query(where(NAME)
-                        .is(configName).and(where(CONFIG_TYPE_ID)
-                                .is(configType.getId()))))
-                .all().toStream().collect(Collectors.toList());
     }
 
     @Override

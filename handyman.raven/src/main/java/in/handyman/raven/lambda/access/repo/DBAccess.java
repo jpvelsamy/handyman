@@ -20,11 +20,9 @@ import java.util.stream.Stream;
 public class DBAccess {
 
     public static final Config CONFIG;
+    protected static final String CONFIG_DATABASE = "config.database";
     private static final ConnectionFactory POOL;
     private static final ConnectionFactory CONNECTION_FACTORY;
-
-    protected static final String CONFIG_DATABASE = "config.database";
-
     private static final String CONFIG_PASSWORD = "config.password";
 
     private static final String CONFIG_USER = "config.user";
@@ -51,18 +49,6 @@ public class DBAccess {
         log.info("Config Loaded {}", CONFIG.entrySet());
         init();
 
-    }
-
-    public static Connection getConnection() {
-        final boolean inMemory = isInMemory();
-
-        var connection = inMemory ? Mono.from(CONNECTION_FACTORY.create()).block() : Mono.from(POOL.create()).block();
-
-        if (connection != null) {
-            return connection;
-        } else {
-            throw new HandymanException("Connection not available");
-        }
     }
 
     public static void init() {
@@ -96,6 +82,18 @@ public class DBAccess {
                 System.out.println(stringBuffer);
                 log.info(e);
             }
+        }
+    }
+
+    public static Connection getConnection() {
+        final boolean inMemory = isInMemory();
+
+        var connection = inMemory ? Mono.from(CONNECTION_FACTORY.create()).block() : Mono.from(POOL.create()).block();
+
+        if (connection != null) {
+            return connection;
+        } else {
+            throw new HandymanException("Connection not available");
         }
     }
 
