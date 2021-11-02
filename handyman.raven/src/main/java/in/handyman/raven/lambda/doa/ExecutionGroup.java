@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public enum ExecutionGroup {
 
-    TRY(1), CATCH(2), FINALLY(3);
+    TRY(1), CATCH(2), FINALLY(3), ACTION(4);
 
     private final Integer id;
 

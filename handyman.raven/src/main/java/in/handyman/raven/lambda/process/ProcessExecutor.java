@@ -43,7 +43,7 @@ public class ProcessExecutor {
         }
     }
 
-    private static Set<Class<?>> getActionExecutionClass(final Set<String> packageNames) {
+    protected static Set<Class<?>> getActionExecutionClass(final Set<String> packageNames) {
         return packageNames.stream().flatMap(packageName -> {
             try {
                 final Reflections reflections = new Reflections(packageName);

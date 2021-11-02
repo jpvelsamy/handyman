@@ -45,11 +45,17 @@ action:
 	|dropFile
 	|loadCsv
 	|restApi
-	|transform)
-;
+	|transform
+	|multitude);
+
+multitude:
+    'multitude' 'as' name=STRING 'on' on= STRING 'using'
+    '{'
+		(actions+=action)*
+    '}' ('on-condition' condition=expression)* ('fielding' writeThreadCount=NON_ZERO_DIGIT)*;
 
 // this is for creating POJO WRT definition
-attribute:(startProcess);
+//attribute:(startProcess);
 
 copyData:
 	('copydata' 'as' name=STRING 'from' source=STRING 'to' to=STRING  'using'

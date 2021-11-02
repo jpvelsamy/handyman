@@ -5,7 +5,7 @@ import in.handyman.raven.lambda.access.repo.HandymanRepoR2Impl;
 import in.handyman.raven.lambda.doa.Action;
 import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.Pipeline;
-import in.handyman.raven.lambda.doa.PipelineExecutionAudit;
+import in.handyman.raven.lambda.doa.LambdaExecutionAudit;
 import in.handyman.raven.lambda.doa.Statement;
 import lombok.extern.log4j.Log4j2;
 
@@ -26,7 +26,7 @@ public class AuditAccess {
         REPO.insertStatement(audit);
     }
 
-    public static void insert(final PipelineExecutionAudit audit) {
+    public static void insert(final LambdaExecutionAudit audit) {
         REPO.insert(audit);
     }
 

@@ -8,6 +8,7 @@ import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ConfigAccess;
 import in.handyman.raven.lambda.action.IActionContext;
 import in.handyman.raven.lambda.action.IActionExecution;
+import in.handyman.raven.lambda.doa.AbstractAudit;
 import in.handyman.raven.lambda.doa.Action;
 import in.handyman.raven.lambda.doa.ExecutionGroup;
 import in.handyman.raven.lambda.doa.ExecutionStatus;
@@ -124,43 +125,48 @@ public class LambdaEngine {
                     .pipelineId(pipeline.getPipelineId())
                     .build();
             action.setContext(context);
+            action.setPipelineId(pipeline.getPipelineId());
             toAction(action, pipeline);
-            HandymanActorSystemAccess.insert(action);
-            action.updateExecutionStatusId(ExecutionStatus.STAGED.getId());
-            HandymanActorSystemAccess.update(action);
-            try {
-                final IActionExecution execution = load(actionContext, action);
-                execute(execution, action);
-//                return action;
-            } catch (Exception e) {
-                log.error("Failed " + action, e);
-                final SubstituteLogger logger = getLogger(action);
-                logger.error("Exception", e);
-                throw new HandymanException("Failed to convert", e);
-            } finally {
-                HandymanActorSystemAccess.update(action);
-                final StringBuilder stringBuilder = new StringBuilder();
-                action.getEventQueue().forEach(event -> {
-                    //TODO format this
-                    stringBuilder.append(String.format("Level {%s} Marker {%s} ThreadName {%s} Time {%s} Message {%s}", event.getLevel(),
-                            event.getMarker(), event.getThreadName(),
-                            Instant.ofEpochMilli(event.getTimeStamp()),
-                            MessageFormatter.arrayFormat(event.getMessage(), event.getArgumentArray()).getMessage()));
-                    if (event.getThrowable() != null) {
-                        var sw = new StringWriter();
-                        var pw = new PrintWriter(sw);
-                        event.getThrowable().printStackTrace(pw);
-                        var sStackTrace = sw.toString();
-                        stringBuilder.append("\n");
-                        stringBuilder.append(sStackTrace);
-                    }
-                    stringBuilder.append("\n");
-                });
-                action.setLog(stringBuilder.toString());
-                log.info(stringBuilder);
-                HandymanActorSystemAccess.update(action);
-            }
+            doAction(action, actionContext);
         });
+    }
+
+    public static void doAction(final Action action, final RavenParser.ActionContext actionContext) {
+        HandymanActorSystemAccess.insert(action);
+        action.updateExecutionStatusId(ExecutionStatus.STAGED.getId());
+        HandymanActorSystemAccess.update(action);
+        try {
+            final IActionExecution execution = load(actionContext, action);
+            execute(execution, action);
+//                return action;
+        } catch (Exception e) {
+            log.error("Failed " + action, e);
+            final SubstituteLogger logger = getLogger(action);
+            logger.error("Exception", e);
+            throw new HandymanException("Failed to convert", e);
+        } finally {
+            HandymanActorSystemAccess.update(action);
+            final StringBuilder stringBuilder = new StringBuilder();
+            action.getEventQueue().forEach(event -> {
+                //TODO format this
+                stringBuilder.append(String.format("Level {%s} Marker {%s} ThreadName {%s} Time {%s} Message {%s}", event.getLevel(),
+                        event.getMarker(), event.getThreadName(),
+                        Instant.ofEpochMilli(event.getTimeStamp()),
+                        MessageFormatter.arrayFormat(event.getMessage(), event.getArgumentArray()).getMessage()));
+                if (event.getThrowable() != null) {
+                    var sw = new StringWriter();
+                    var pw = new PrintWriter(sw);
+                    event.getThrowable().printStackTrace(pw);
+                    var sStackTrace = sw.toString();
+                    stringBuilder.append("\n");
+                    stringBuilder.append(sStackTrace);
+                }
+                stringBuilder.append("\n");
+            });
+            action.setLog(stringBuilder.toString());
+            log.info(stringBuilder);
+            HandymanActorSystemAccess.update(action);
+        }
     }
 
     private static HashMap<String, String> getEContext(final String lambdaName) {
@@ -189,14 +195,13 @@ public class LambdaEngine {
                 .build();
     }
 
-    private static void toAction(final Action action, final Pipeline pipeline) {
-        action.setPipelineId(pipeline.getPipelineId());
-        action.setPipelineName(pipeline.getPipelineName());
+    public static void toAction(final Action action, final AbstractAudit abstractAudit) {
+        action.setPipelineName(abstractAudit.getPipelineName());
         action.setLambdaName(action.getLambdaName());
-        action.setParentActionId(pipeline.getParentActionId());
-        action.setParentActionName(pipeline.getParentActionName());
-        action.setParentPipelineId(pipeline.getParentPipelineId());
-        action.setParentPipelineName(pipeline.getParentPipelineName());
+        action.setParentActionId(abstractAudit.getParentActionId());
+        action.setParentActionName(abstractAudit.getParentActionName());
+        action.setParentPipelineId(abstractAudit.getParentPipelineId());
+        action.setParentPipelineName(abstractAudit.getParentPipelineName());
     }
 
     private static IActionExecution load(final RavenParser.ActionContext actionContext, final Action action) {

@@ -10,7 +10,7 @@ import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.ConfigEntity;
 import in.handyman.raven.lambda.doa.ConfigType;
 import in.handyman.raven.lambda.doa.Pipeline;
-import in.handyman.raven.lambda.doa.PipelineExecutionAudit;
+import in.handyman.raven.lambda.doa.LambdaExecutionAudit;
 import in.handyman.raven.lambda.doa.ResourceConnection;
 import in.handyman.raven.lambda.doa.Statement;
 
@@ -110,7 +110,7 @@ public class HandymanRepoESImpl extends AbstractAccess implements HandymanRepo {
     }
 
     @Override
-    public void insert(final PipelineExecutionAudit audit) {
+    public void insert(final LambdaExecutionAudit audit) {
 
     }
 

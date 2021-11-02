@@ -43,7 +43,7 @@ public class Pipeline extends AbstractAudit {
 
     public void updateExecutionStatusId(final Integer executionStatusId) {
         this.setExecutionStatusId(executionStatusId);
-        AuditAccess.insert(PipelineExecutionAudit.builder().pipelineId(this.pipelineId).executionStatusId(executionStatusId).build());
+        AuditAccess.insert(LambdaExecutionAudit.builder().pipelineId(this.pipelineId).executionStatusId(executionStatusId).build());
     }
 
 

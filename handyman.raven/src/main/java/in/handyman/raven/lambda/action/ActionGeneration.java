@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 
 public class ActionGeneration {
 
-    private static final String CONTEXT = "RavenParserContext";
+    private static final String CONTEXT = "Context";
     private static final String MAIN_JAVA = "src/main/java/";
     private static final String ACTION_IMPL = "Action";
 
@@ -45,10 +45,10 @@ public class ActionGeneration {
                 .map(Method::getReturnType).map(Class::getSimpleName)
                 .filter(s -> s.contains(CONTEXT))
                 .collect(Collectors.toSet());
-        final Set<String> attributes = Arrays.stream(RavenParser.AttributeContext.class.getDeclaredMethods())
-                .map(Method::getReturnType).map(Class::getSimpleName)
-                .filter(s -> s.contains(CONTEXT))
-                .collect(Collectors.toSet());
+//        final Set<String> attributes = Arrays.stream(RavenParser.AttributeContext.class.getDeclaredMethods())
+//                .map(Method::getReturnType).map(Class::getSimpleName)
+//                .filter(s -> s.contains(CONTEXT))
+//                .collect(Collectors.toSet());
         final List<JavaFile> javaFiles = new ArrayList<>();
         classes.forEach(context -> {
             final String contextFullName = context.getSimpleName();
