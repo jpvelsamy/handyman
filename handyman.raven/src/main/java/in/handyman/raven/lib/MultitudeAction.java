@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
         actionName = MultitudeAction.MULTITUDE
 )
 public class MultitudeAction implements IActionExecution {
+
     protected static final String MULTITUDE = "Multitude";
     private final Action action;
     private final Logger log;

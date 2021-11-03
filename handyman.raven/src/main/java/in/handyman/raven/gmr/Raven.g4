@@ -1,7 +1,4 @@
 grammar Raven;
-@header {
-package in.handyman.raven.compiler;
-}
 
 import JSON;
 
