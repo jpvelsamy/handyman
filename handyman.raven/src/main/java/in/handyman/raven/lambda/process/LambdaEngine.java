@@ -41,9 +41,8 @@ public class LambdaEngine {
     /**
      * Execution starts from here
      *
-     * @param lContext
      */
-    public static void start(final LContext lContext) {
+    public static Pipeline start(final LContext lContext) {
         final String hostName;
         try {
             hostName = InetAddress.getLocalHost().getHostAddress();
@@ -98,6 +97,7 @@ public class LambdaEngine {
             HandymanActorSystemAccess.update(pipeline);
             throw new HandymanException("Failed", e);
         }
+        return pipeline;
     }
 
     private static RavenParserContext newInstance(final String processLoadType, final String lambdaName, final Pipeline pipeline) {

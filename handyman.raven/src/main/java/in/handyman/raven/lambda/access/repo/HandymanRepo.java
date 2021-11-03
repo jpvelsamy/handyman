@@ -2,7 +2,7 @@ package in.handyman.raven.lambda.access.repo;
 
 import in.handyman.raven.lambda.doa.Action;
 import in.handyman.raven.lambda.doa.ActionExecutionAudit;
-import in.handyman.raven.lambda.doa.ConfigEntity;
+import in.handyman.raven.lambda.doa.ConfigStore;
 import in.handyman.raven.lambda.doa.ConfigType;
 import in.handyman.raven.lambda.doa.LambdaExecutionAudit;
 import in.handyman.raven.lambda.doa.Pipeline;
@@ -27,7 +27,7 @@ public interface HandymanRepo {
 
     Set<String> getPackageAction();
 
-    List<ConfigEntity> findConfigEntities(final ConfigType configType, final String configName);
+    List<ConfigStore> findConfigEntities(final ConfigType configType, final String configName);
 
     void insertPipeline(final Pipeline audit);
 

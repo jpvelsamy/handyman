@@ -2,7 +2,7 @@ package in.handyman.raven.lambda.access;
 
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.repo.ElasticsearchAccessApi;
-import in.handyman.raven.lambda.doa.ConfigEntity;
+import in.handyman.raven.lambda.doa.ConfigStore;
 import in.handyman.raven.lambda.doa.ResourceConnection;
 import org.junit.jupiter.api.Test;
 
@@ -26,8 +26,8 @@ class ElasticsearchAccessApiTest {
                         .userName("")
                         .build());
             }
-            if (ElasticsearchAccessApi.isExists(ElasticsearchAccessApi.toIndexName(ConfigEntity.class))) {
-                ElasticsearchAccessApi.saveIndex(UUID.randomUUID().toString(), ConfigEntity.builder()
+            if (ElasticsearchAccessApi.isExists(ElasticsearchAccessApi.toIndexName(ConfigStore.class))) {
+                ElasticsearchAccessApi.saveIndex(UUID.randomUUID().toString(), ConfigStore.builder()
                         .active(false)
                         .name("")
                         .configTypeId(0)

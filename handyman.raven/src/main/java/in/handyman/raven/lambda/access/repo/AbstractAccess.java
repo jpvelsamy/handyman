@@ -1,6 +1,6 @@
 package in.handyman.raven.lambda.access.repo;
 
-import in.handyman.raven.lambda.doa.ConfigEntity;
+import in.handyman.raven.lambda.doa.ConfigStore;
 
 import java.util.List;
 import java.util.Map;
@@ -19,12 +19,12 @@ public abstract class AbstractAccess {
     }
 
 
-    protected Map<String, String> toMap(final List<ConfigEntity> configEntities) {
+    protected Map<String, String> toMap(final List<ConfigStore> configEntities) {
         return configEntities.stream()
                 .collect(Collectors
                         .toMap((configEntity -> Optional.ofNullable(configEntity.getVariable())
                                         .orElse(null)),
-                                ConfigEntity::getValue,
+                                ConfigStore::getValue,
                                 (p, q) -> p));
     }
 

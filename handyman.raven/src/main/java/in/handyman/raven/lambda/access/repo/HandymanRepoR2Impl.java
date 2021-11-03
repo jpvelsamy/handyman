@@ -3,7 +3,7 @@ package in.handyman.raven.lambda.access.repo;
 import com.typesafe.config.ConfigFactory;
 import in.handyman.raven.lambda.doa.Action;
 import in.handyman.raven.lambda.doa.ActionExecutionAudit;
-import in.handyman.raven.lambda.doa.ConfigEntity;
+import in.handyman.raven.lambda.doa.ConfigStore;
 import in.handyman.raven.lambda.doa.ConfigType;
 import in.handyman.raven.lambda.doa.LambdaExecutionAudit;
 import in.handyman.raven.lambda.doa.Pipeline;
@@ -66,9 +66,9 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     }
 
     @Override
-    public List<ConfigEntity> findConfigEntities(final ConfigType configType, final String configName) {
+    public List<ConfigStore> findConfigEntities(final ConfigType configType, final String configName) {
         return r2dbcEntityTemplate
-                .select(ConfigEntity.class)
+                .select(ConfigStore.class)
                 .matching(Query.query(where(NAME)
                         .is(configName).and(where(CONFIG_TYPE_ID)
                                 .is(configType.getId()))))
@@ -77,8 +77,8 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public Map<String, String> getCommonConfig() {
-        final List<ConfigEntity> configEntities = r2dbcEntityTemplate
-                .select(ConfigEntity.class)
+        final List<ConfigStore> configEntities = r2dbcEntityTemplate
+                .select(ConfigStore.class)
                 .matching(Query.query(where(CONFIG_TYPE_ID)
                         .is(ConfigType.COMMON.getId())))
                 .all().toStream().collect(Collectors.toList());
@@ -96,22 +96,22 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     @Override
     public String findValueCommonConfig(final String configName, final String variable) {
         return r2dbcEntityTemplate
-                .select(ConfigEntity.class)
+                .select(ConfigStore.class)
                 .matching(Query.query(where(CONFIG_TYPE_ID)
                         .is(ConfigType.COMMON.getId())
                         .and(where(NAME).is(SYS_PACKAGE))))
-                .one().blockOptional().map(ConfigEntity::getValue).orElse(null);
+                .one().blockOptional().map(ConfigStore::getValue).orElse(null);
     }
 
     @Override
     public Set<String> getPackageAction() {
-        final List<ConfigEntity> configEntities = r2dbcEntityTemplate
-                .select(ConfigEntity.class)
+        final List<ConfigStore> configEntities = r2dbcEntityTemplate
+                .select(ConfigStore.class)
                 .matching(Query.query(where(CONFIG_TYPE_ID)
                         .is(ConfigType.COMMON.getId())
                         .and(where(NAME).is(SYS_PACKAGE))))
                 .all().toStream().collect(Collectors.toList());
-        return configEntities.stream().map(ConfigEntity::getValue).collect(Collectors.toSet());
+        return configEntities.stream().map(ConfigStore::getValue).collect(Collectors.toSet());
     }
 
     @Override

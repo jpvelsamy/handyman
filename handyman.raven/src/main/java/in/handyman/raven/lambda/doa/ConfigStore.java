@@ -20,7 +20,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Table
-public class ConfigEntity extends Auditable {
+public class ConfigStore extends Auditable {
 
     @Id
     private Long id;

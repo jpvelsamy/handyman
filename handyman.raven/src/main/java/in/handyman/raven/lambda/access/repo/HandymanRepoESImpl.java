@@ -7,7 +7,7 @@ import com.typesafe.config.ConfigFactory;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.Action;
 import in.handyman.raven.lambda.doa.ActionExecutionAudit;
-import in.handyman.raven.lambda.doa.ConfigEntity;
+import in.handyman.raven.lambda.doa.ConfigStore;
 import in.handyman.raven.lambda.doa.ConfigType;
 import in.handyman.raven.lambda.doa.LambdaExecutionAudit;
 import in.handyman.raven.lambda.doa.Pipeline;
@@ -26,7 +26,7 @@ public class HandymanRepoESImpl extends AbstractAccess implements HandymanRepo {
     private final Config config;
 
     public HandymanRepoESImpl() {
-        ElasticsearchAccessApi.createIndices(Set.of(ResourceConnection.class, ConfigEntity.class, Pipeline.class,
+        ElasticsearchAccessApi.createIndices(Set.of(ResourceConnection.class, ConfigStore.class, Pipeline.class,
                 Action.class, Statement.class));
         config = ConfigFactory.parseResources("handyman-raven-configstore.props");
     }
@@ -44,7 +44,7 @@ public class HandymanRepoESImpl extends AbstractAccess implements HandymanRepo {
     }
 
     @Override
-    public List<ConfigEntity> findConfigEntities(final ConfigType configType, final String configName) {
+    public List<ConfigStore> findConfigEntities(final ConfigType configType, final String configName) {
         final String format = String.format(config.getString("config.config_select_stmt_by_name"), configType.getId(), configName);
         final ArrayNode fetch = ElasticsearchAccessApi.fetch(format);
         return ElasticsearchAccessApi.MAPPER.convertValue(fetch, new TypeReference<>() {
@@ -56,7 +56,7 @@ public class HandymanRepoESImpl extends AbstractAccess implements HandymanRepo {
         return toMap(findConfigEntities(ConfigType.COMMON));
     }
 
-    private List<ConfigEntity> findConfigEntities(final ConfigType configType) {
+    private List<ConfigStore> findConfigEntities(final ConfigType configType) {
         final String format = String.format(config.getString("config.config_select_stmt"), configType.getId());
         final ArrayNode fetch = ElasticsearchAccessApi.fetch(format);
         return ElasticsearchAccessApi.MAPPER.convertValue(fetch, new TypeReference<>() {
@@ -78,20 +78,20 @@ public class HandymanRepoESImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public String findValueCommonConfig(final String configName, final String variable) {
-        return findConfigEntities(ConfigType.COMMON, configName, variable).map(ConfigEntity::getValue).orElse(null);
+        return findConfigEntities(ConfigType.COMMON, configName, variable).map(ConfigStore::getValue).orElse(null);
     }
 
-    private Optional<ConfigEntity> findConfigEntities(final ConfigType configType, final String configName, final String variable) {
+    private Optional<ConfigStore> findConfigEntities(final ConfigType configType, final String configName, final String variable) {
         final String format = String.format(config.getString("config.config_select_stmt_by_var"), configType.getId(), configName, variable);
         final ArrayNode fetch = ElasticsearchAccessApi.fetch(format);
-        final List<ConfigEntity> configEntity = ElasticsearchAccessApi.MAPPER.convertValue(fetch, new TypeReference<>() {
+        final List<ConfigStore> configStore = ElasticsearchAccessApi.MAPPER.convertValue(fetch, new TypeReference<>() {
         });
-        return configEntity.stream().findFirst();
+        return configStore.stream().findFirst();
     }
 
     @Override
     public Set<String> getPackageAction() {
-        return findConfigEntities(ConfigType.COMMON, SYS_PACKAGE).stream().map(ConfigEntity::getValue).collect(Collectors.toSet());
+        return findConfigEntities(ConfigType.COMMON, SYS_PACKAGE).stream().map(ConfigStore::getValue).collect(Collectors.toSet());
     }
 
     @Override
