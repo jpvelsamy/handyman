@@ -96,6 +96,8 @@ public class CommandProxy {
                                                     .name(getString(token.name, context))
                                                     .target(getString(token.target, context))
                                                     .build();
+                                        } else if (o instanceof RavenParser.ActionContext) {
+                                            return o;
                                         }
                                         throw new HandymanException("RavenParserContext mapping failed for List");
                                     }).collect(Collectors.toList());

@@ -1,5 +1,6 @@
 package in.handyman.raven.lib.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import in.handyman.raven.compiler.RavenParser;
 import in.handyman.raven.lambda.action.ActionContext;
 import in.handyman.raven.lambda.action.IActionContext;
@@ -23,6 +24,7 @@ public class Multitude implements IActionContext {
 
     private String on;
 
+    @JsonIgnore
     private List<RavenParser.ActionContext> actions;
 
     private Boolean condition = true;

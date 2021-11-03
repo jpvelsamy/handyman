@@ -2,6 +2,8 @@ process "cub.test"
 {
 	try {
 
+	 multitude as "test audit entry with multitude" on "PARALLEL" using {
+
             restapi as "test audit entry with none"  source "${cub_eval}" using url "https://vada-chennai.free.beeceptor.com"
               method "POST" with body type {"NONE"}
               {}
@@ -19,7 +21,7 @@ process "cub.test"
              { part as "attribute2" with "select 'src/main/resources/init.sql'" type as "FILE" }
              }
 
-
+     } fielding 2
 
 	}
 	

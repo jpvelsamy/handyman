@@ -46,7 +46,7 @@ action:
 	|multitude);
 
 multitude:
-    'multitude' 'as' name=STRING 'on' on= STRING 'using'
+    'multitude' 'as' name=STRING ('on' on= STRING)* 'using'
     '{'
 		(actions+=action)*
     '}' ('on-condition' condition=expression)* ('fielding' writeThreadCount=NON_ZERO_DIGIT)*;

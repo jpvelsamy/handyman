@@ -40,7 +40,6 @@ public class LambdaEngine {
 
     /**
      * Execution starts from here
-     *
      */
     public static Pipeline start(final LContext lContext) {
         final String hostName;
@@ -67,9 +66,10 @@ public class LambdaEngine {
             HandymanActorSystemAccess.insert(pipeline);
             pipeline.updateExecutionStatusId(ExecutionStatus.STAGED.getId());
 
-            final RavenParserContext ravenParserContext = lContext.getParentPipelineId() != null ? newInstance(lContext.getProcessLoadType(),
-                    lContext.getLambdaName(), pipeline)
-                    : newInstance(lContext.getRelativePath(), lContext.getLambdaName(), lContext.getInheritedContext(), pipeline);
+            final RavenParserContext ravenParserContext = lContext.getParentPipelineId() != null
+                    ? newInstance(lContext.getRelativePath(), lContext.getLambdaName(), lContext.getInheritedContext(), pipeline)
+                    : newInstance(lContext.getProcessLoadType(),
+                    lContext.getLambdaName(), pipeline);
             final Map<String, String> context = ravenParserContext.getContext();
             context.put("parent-pipeline-id", String.valueOf(lContext.getParentPipelineId()));
             context.put("pipeline-id", String.valueOf(pipeline.getPipelineId()));
