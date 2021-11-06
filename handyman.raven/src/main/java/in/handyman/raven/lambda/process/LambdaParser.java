@@ -14,8 +14,8 @@ import java.util.Map;
 public class LambdaParser {
 
     protected static RavenParser.ProcessContext doParse(final String processFile, final Map<String, String> context) {
-        final String tokenMappedProcessFile = bindToken(processFile, context);
-        final CharStream input = CharStreams.fromString(tokenMappedProcessFile);
+//        final String tokenMappedProcessFile = bindToken(processFile, context); to skip context mapping while compiling
+        final CharStream input = CharStreams.fromString(processFile);
         // create lexer
         final RavenLexer lexer = new RavenLexer(input);
         // create token stream

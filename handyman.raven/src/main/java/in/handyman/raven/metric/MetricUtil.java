@@ -1,6 +1,5 @@
 package in.handyman.raven.metric;
 
-import in.handyman.raven.lambda.access.repo.DBAccess;
 import in.handyman.raven.lambda.doa.Action;
 import in.handyman.raven.lambda.doa.ExecutionStatus;
 import io.github.mweirauch.micrometer.jvm.extras.ProcessMemoryMetrics;
@@ -8,7 +7,6 @@ import io.github.mweirauch.micrometer.jvm.extras.ProcessThreadMetrics;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.DistributionSummary;
 import io.micrometer.core.instrument.LongTaskTimer;
-import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics;
 import io.micrometer.core.instrument.binder.jvm.DiskSpaceMetrics;
@@ -28,11 +26,8 @@ import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
 import java.time.Duration;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-
-import static java.util.stream.Collectors.joining;
 
 @Log4j2
 public class MetricUtil {
@@ -109,49 +104,49 @@ public class MetricUtil {
 
     private static void persist() {
 
-        var conn = DBAccess.getConnection();
-        conn.createStatement(String.format(cQuery, "`micrometer-metrics`")).execute();
-        final String iFormattedQuery = String.format(iQuery, "`micrometer-metrics`");
-        final List<Meter> meters = registry.getMeters();
-        for (var meter : meters) {
-            var stmt = conn.createStatement(iFormattedQuery);
-            final Payload payload = new Payload();
-            meter.use(gauge -> payload.setValue(gauge.value()),
-                    counter -> payload.setCount(counter.count()),
-                    timer -> {
-                        payload.setCount((double) timer.count());
-                        payload.setSum(timer.totalTime(getBaseTimeUnit()));
-                        payload.setMean(timer.mean(getBaseTimeUnit()));
-                        payload.setMax(timer.max(getBaseTimeUnit()));
-                    }, distributionSummary -> {
-                        payload.setCount((double) distributionSummary.count());
-                        payload.setSum(distributionSummary.totalAmount());
-                        payload.setMean(distributionSummary.mean());
-                        payload.setMax(distributionSummary.max());
-                    }, longTaskTimer -> {
-                        payload.setMean(longTaskTimer.mean(getBaseTimeUnit()));
-                        payload.setMax(longTaskTimer.max(getBaseTimeUnit()));
-                        payload.setActive((double) longTaskTimer.activeTasks());
-                        payload.setDuration(longTaskTimer.duration(getBaseTimeUnit()));
-                    }, timeGauge -> payload.setValue(timeGauge.value(getBaseTimeUnit())),
-                    functionCounter -> payload.setCount(functionCounter.count()), functionTimer -> {
-                        payload.setSum(functionTimer.totalTime(getBaseTimeUnit()));
-                        payload.setMean(functionTimer.mean(getBaseTimeUnit()));
-                        payload.setCount(functionTimer.count());
-                    }, log::debug);
-            final String tags = meter.getId().getTags().stream().map(t -> String.format("{\"%s\":\"%s\"}", t.getKey(), t.getValue()))
-                    .collect(joining(",", "[", "]"));
-            stmt.bind(1, meter.getId().getName());
-            stmt.bind(2, payload.getCount());
-            stmt.bind(3, payload.getValue());
-            stmt.bind(4, payload.getSum());
-            stmt.bind(5, payload.getMean());
-            stmt.bind(6, payload.getDuration());
-            stmt.bind(7, payload.getMax());
-            stmt.bind(8, payload.getActive());
-            stmt.bind(9, tags);
-            stmt.execute();
-        }
+//        var conn = DBAccess.getConnection();
+//        conn.createStatement(String.format(cQuery, "`micrometer-metrics`")).execute();
+//        final String iFormattedQuery = String.format(iQuery, "`micrometer-metrics`");
+//        final List<Meter> meters = registry.getMeters();
+//        for (var meter : meters) {
+//            var stmt = conn.createStatement(iFormattedQuery);
+//            final Payload payload = new Payload();
+//            meter.use(gauge -> payload.setValue(gauge.value()),
+//                    counter -> payload.setCount(counter.count()),
+//                    timer -> {
+//                        payload.setCount((double) timer.count());
+//                        payload.setSum(timer.totalTime(getBaseTimeUnit()));
+//                        payload.setMean(timer.mean(getBaseTimeUnit()));
+//                        payload.setMax(timer.max(getBaseTimeUnit()));
+//                    }, distributionSummary -> {
+//                        payload.setCount((double) distributionSummary.count());
+//                        payload.setSum(distributionSummary.totalAmount());
+//                        payload.setMean(distributionSummary.mean());
+//                        payload.setMax(distributionSummary.max());
+//                    }, longTaskTimer -> {
+//                        payload.setMean(longTaskTimer.mean(getBaseTimeUnit()));
+//                        payload.setMax(longTaskTimer.max(getBaseTimeUnit()));
+//                        payload.setActive((double) longTaskTimer.activeTasks());
+//                        payload.setDuration(longTaskTimer.duration(getBaseTimeUnit()));
+//                    }, timeGauge -> payload.setValue(timeGauge.value(getBaseTimeUnit())),
+//                    functionCounter -> payload.setCount(functionCounter.count()), functionTimer -> {
+//                        payload.setSum(functionTimer.totalTime(getBaseTimeUnit()));
+//                        payload.setMean(functionTimer.mean(getBaseTimeUnit()));
+//                        payload.setCount(functionTimer.count());
+//                    }, log::debug);
+//            final String tags = meter.getId().getTags().stream().map(t -> String.format("{\"%s\":\"%s\"}", t.getKey(), t.getValue()))
+//                    .collect(joining(",", "[", "]"));
+//            stmt.bind(1, meter.getId().getName());
+//            stmt.bind(2, payload.getCount());
+//            stmt.bind(3, payload.getValue());
+//            stmt.bind(4, payload.getSum());
+//            stmt.bind(5, payload.getMean());
+//            stmt.bind(6, payload.getDuration());
+//            stmt.bind(7, payload.getMax());
+//            stmt.bind(8, payload.getActive());
+//            stmt.bind(9, tags);
+//            stmt.execute();
+//        }
 
     }
 

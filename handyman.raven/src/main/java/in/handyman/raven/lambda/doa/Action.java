@@ -13,10 +13,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.slf4j.event.SubstituteLoggingEvent;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.relational.core.mapping.Table;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.ArrayDeque;
 import java.util.Optional;
 
@@ -28,7 +29,7 @@ import java.util.Optional;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Table
+@Entity
 public class Action extends AbstractAudit {
 
     @JsonIgnore

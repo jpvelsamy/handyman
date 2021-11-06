@@ -10,8 +10,8 @@ import in.handyman.raven.exception.HandymanException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.data.annotation.Transient;
 
+import javax.persistence.Transient;
 import java.util.Map;
 import java.util.Optional;
 
