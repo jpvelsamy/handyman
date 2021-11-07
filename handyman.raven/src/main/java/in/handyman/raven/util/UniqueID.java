@@ -24,8 +24,8 @@ class SequenceGenerator {
     private static final int NODE_ID_BITS = 10;
     private static final int SEQUENCE_BITS = 12;
 
-    private static final int maxNodeId = (int) (Math.pow(2, NODE_ID_BITS) - 1);
-    private static final int maxSequence = (int) (Math.pow(2, SEQUENCE_BITS) - 1);
+    private static final int MAX_NODE_ID = (int) (Math.pow(2, NODE_ID_BITS) - 1);
+    private static final int MAX_SEQUENCE = (int) (Math.pow(2, SEQUENCE_BITS) - 1);
 
     private static final long CUSTOM_EPOCH = 1420070400000L;
 
@@ -57,7 +57,7 @@ class SequenceGenerator {
         } catch (Exception ex) {
             nodeId = (new SecureRandom().nextInt());
         }
-        return nodeId & maxNodeId;
+        return nodeId & MAX_NODE_ID;
     }
 
     public synchronized long nextId() {
@@ -68,7 +68,7 @@ class SequenceGenerator {
         }
 
         if (currentTimestamp == lastTimestamp) {
-            sequence = (sequence + 1) & maxSequence;
+            sequence = (sequence + 1) & MAX_SEQUENCE;
             if (sequence == 0) {
                 // Sequence Exhausted, wait till next millisecond.
                 currentTimestamp = waitNextMillis(currentTimestamp);

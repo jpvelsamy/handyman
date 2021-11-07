@@ -68,8 +68,7 @@ public class LambdaEngine {
 
             final RavenParserContext ravenParserContext = lContext.getParentPipelineId() != null
                     ? newInstance(lContext.getRelativePath(), lContext.getLambdaName(), lContext.getInheritedContext(), pipeline)
-                    : newInstance(lContext.getProcessLoadType(),
-                    lContext.getLambdaName(), pipeline);
+                    : newInstance(lContext.getProcessLoadType(), pipeline);
             final Map<String, String> context = ravenParserContext.getContext();
             context.put("parent-pipeline-id", String.valueOf(lContext.getParentPipelineId()));
             context.put("pipeline-id", String.valueOf(pipeline.getPipelineId()));
@@ -100,17 +99,18 @@ public class LambdaEngine {
         return pipeline;
     }
 
-    private static RavenParserContext newInstance(final String processLoadType, final String lambdaName, final Pipeline pipeline) {
-        final Map<String, String> context = getEContext(lambdaName);
-        var processFile = getProcessFile(processLoadType, lambdaName, context, null);
-        pipeline.setFileContent(processFile);
-        return getRavenParserContext(processFile, lambdaName, context);
-    }
-
     private static RavenParserContext newInstance(final String relativePath, final String lambdaName, final Map<String, String> inheritedContext, final Pipeline pipeline) {
         final Map<String, String> context = getEContext(lambdaName);
         context.putAll(inheritedContext);
         final String processFile = getProcessFile(HRequestResolver.LoadType.FILE.name(), lambdaName, context, relativePath);
+        pipeline.setFileContent(processFile);
+        return getRavenParserContext(processFile, lambdaName, context);
+    }
+
+    private static RavenParserContext newInstance(final String processLoadType, final Pipeline pipeline) {
+        final Map<String, String> context = getEContext(pipeline.getPipelineName());
+        final String lambdaName = pipeline.getPipelineName();
+        var processFile = getProcessFile(processLoadType, lambdaName, context, null);
         pipeline.setFileContent(processFile);
         return getRavenParserContext(processFile, lambdaName, context);
     }
@@ -184,7 +184,7 @@ public class LambdaEngine {
             final StringBuilder stringBuilder = new StringBuilder();
             action.getEventQueue().forEach(event -> {
                 //TODO format this
-                stringBuilder.append(String.format("Level {%s} Marker {%s} ThreadName {%s} Time {%s} Message {%s}", event.getLevel(),
+                stringBuilder.append(String.format("Level %s Marker %s ThreadName %s Time %s Message %s", event.getLevel(),
                         event.getMarker(), event.getThreadName(),
                         Instant.ofEpochMilli(event.getTimeStamp()),
                         MessageFormatter.arrayFormat(event.getMessage(), event.getArgumentArray()).getMessage()));

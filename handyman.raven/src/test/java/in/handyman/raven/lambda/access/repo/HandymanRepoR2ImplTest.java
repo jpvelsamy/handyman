@@ -4,14 +4,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class HandymanRepoR2ImplTest {
 
     @Test
     void getAllConfig() {
-        var info=new HandymanRepoR2Impl();
+        var info = new HandymanRepoR2Impl();
         final Map<String, String> restApiActionTest = info.getAllConfig("RestApiActionTest");
-        assert restApiActionTest !=null && !restApiActionTest.isEmpty();
+        assert restApiActionTest != null && !restApiActionTest.isEmpty();
     }
 }

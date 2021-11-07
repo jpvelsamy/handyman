@@ -15,7 +15,7 @@ public class ResourceAccess {
             return createHP(resource.getUrl(), resource.getDriverClassName(),
                     resource.getUserName(), resource.getPassword());
         } catch (ClassNotFoundException e) {
-            log.warn("{} => {}",resourceName,resource);
+            log.warn("{} => {}", resourceName, resource);
             throw new HandymanException("Resource " + resourceName + " failed to connect", e);
         }
     }

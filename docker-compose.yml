@@ -167,3 +167,12 @@ services:
       interval: 30s
       timeout: 10s
       retries: 50
+
+  maria_db:
+    image: "mariadb"
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: handyman_vm
+      MYSQL_ROOT_PASSWORD: password
