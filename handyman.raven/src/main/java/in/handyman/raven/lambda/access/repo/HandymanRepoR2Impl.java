@@ -56,7 +56,7 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public ResourceConnection getResourceConfig(final String name) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT name, created_by, created_date, last_modified_by, last_modified_date, active, config_type, driver_class_name, password, url, user_name FROM resource_connection where name = ? ")
+        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM resource_connection where name = ? ")
                 .bind(0, name)
                 .mapToBean(ResourceConnection.class)
                 .findOne().orElse(null));
@@ -64,7 +64,7 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public String findValueCommonConfig(final String configName, final String variable) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT id, active, config_type_id, name, value, variable, created_by, created_date, last_modified_by, last_modified_date FROM config_store where variable = ? and name = ?")
+        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where variable = ? and name = ?")
                 .bind(0, variable)
                 .bind(1, configName)
                 .mapToBean(ConfigStore.class)
@@ -72,7 +72,7 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     }
 
     public List<ConfigStore> findConfigEntities(final ConfigType configType) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT id, active, config_type_id, name, value, variable, created_by, created_date, last_modified_by, last_modified_date FROM config_store where config_type_id = ?")
+        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where config_type_id = ?")
                 .bind(0, configType.getId())
                 .mapToBean(ConfigStore.class)
                 .list());
@@ -85,7 +85,7 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public List<ConfigStore> findConfigEntities(final ConfigType configType, final String configName) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT id, active, config_type_id, name, value, variable, created_by, created_date, last_modified_by, last_modified_date FROM config_store where config_type_id = ? and name = ?")
+        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where config_type_id = ? and name = ?")
                 .bind(0, configType.getId())
                 .bind(1, configName)
                 .mapToBean(ConfigStore.class)
@@ -94,7 +94,7 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public Optional<ConfigStore> findConfigEntities(final ConfigType configType, final String configName, final String variable) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT id, active, config_type_id, name, value, variable, created_by, created_date, last_modified_by, last_modified_date FROM config_store where config_type_id = ? and name = ? and variable=?")
+        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where config_type_id = ? and name = ? and variable=?")
                 .bind(0, configType.getId())
                 .bind(1, configName)
                 .bind(2, variable)
@@ -179,22 +179,37 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     public void update(final Action audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
         jdbi.useHandle(handle -> handle.createUpdate("UPDATE `action` SET last_modified_by =:lastModifiedBy, last_modified_date =:lastModifiedDate, context_node =:contextNode, execution_status_id =:executionStatusId, input_node =:inputNode, log =:log WHERE action_id = :actionId ;")
-                .bind(0, audit.getActionId())
                 .bindBean(audit).execute());
     }
 
     @Override
     public Optional<Pipeline> findPipeline(final Long pipelineId) {
-        return Optional.empty();
+        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM pipeline where pipeline_id = ?")
+                .bind(0, pipelineId)
+                .mapToBean(Pipeline.class)
+                .findOne());
     }
 
     @Override
     public List<Action> findActions(final Long pipelineId) {
-        return null;
+        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM action where pipeline_id = ?;\n")
+                .bind(0, pipelineId)
+                .mapToBean(Action.class)
+                .list());
     }
 
     @Override
     public List<Pipeline> findPipelines(final Long parentActionId) {
-        return null;
+        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM pipeline where parent_action_id = ?")
+                .bind(0, parentActionId)
+                .mapToBean(Pipeline.class)
+                .list());
+    }
+
+    @Override
+    public List<Pipeline> findAllPipelines() {
+        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM pipeline")
+                .mapToBean(Pipeline.class)
+                .list());
     }
 }

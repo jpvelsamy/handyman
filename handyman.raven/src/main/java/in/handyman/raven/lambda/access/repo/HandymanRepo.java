@@ -56,4 +56,5 @@ public interface HandymanRepo {
 
     List<Pipeline> findPipelines(final Long parentActionId);
 
+    List<Pipeline> findAllPipelines();
 }
