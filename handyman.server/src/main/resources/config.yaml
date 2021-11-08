@@ -1,0 +1,19 @@
+server:
+  applicationContextPath: /handyman
+  applicationConnectors:
+    - type: http
+      port: 8099
+logging:
+  level: INFO
+  loggers:
+    "io.dropwizard": INFO
+    "in.handyman.server":
+      level: DEBUG
+      additive: false
+      appenders:
+        - type: file
+          currentLogFilename: log/handyman-vm.log
+          archivedLogFilenamePattern: log/handyman-vm-%d.log.gz
+          archivedFileCount: 5
+  appenders:
+    - type: console
