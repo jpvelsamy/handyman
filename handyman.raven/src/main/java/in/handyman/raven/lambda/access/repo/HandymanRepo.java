@@ -50,4 +50,10 @@ public interface HandymanRepo {
 
     void update(final Action audit);
 
+    Optional<Pipeline> findPipeline(final Long pipelineId);
+
+    List<Action> findActions(final Long pipelineId);
+
+    List<Pipeline> findPipelines(final Long parentActionId);
+
 }

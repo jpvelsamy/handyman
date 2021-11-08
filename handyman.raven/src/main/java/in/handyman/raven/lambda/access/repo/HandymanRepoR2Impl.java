@@ -182,4 +182,19 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
                 .bind(0, audit.getActionId())
                 .bindBean(audit).execute());
     }
+
+    @Override
+    public Optional<Pipeline> findPipeline(final Long pipelineId) {
+        return Optional.empty();
+    }
+
+    @Override
+    public List<Action> findActions(final Long pipelineId) {
+        return null;
+    }
+
+    @Override
+    public List<Pipeline> findPipelines(final Long parentActionId) {
+        return null;
+    }
 }
