@@ -56,14 +56,12 @@ public class LambdaEngine {
                 .threadName(Thread.currentThread().getName())
                 .build();
         try {
-            pipeline.setPipelineName(lContext.getPipelineName());
             pipeline.setPipelineLoadType(lContext.getProcessLoadType());
             pipeline.setLambdaName(lContext.getLambdaName());
             pipeline.setParentPipelineId(lContext.getParentPipelineId());
             pipeline.setParentPipelineName(lContext.getParentPipelineName());
             pipeline.setParentActionId(lContext.getParentActionId());
             pipeline.setParentActionName(lContext.getParentActionName());
-            HandymanActorSystemAccess.insert(pipeline);
             pipeline.updateExecutionStatusId(ExecutionStatus.STAGED.getId());
 
             final RavenParserContext ravenParserContext = lContext.getParentPipelineId() != null
@@ -74,8 +72,9 @@ public class LambdaEngine {
             context.put("pipeline-id", String.valueOf(pipeline.getPipelineId()));
             context.put("process-id", String.valueOf(pipeline.getPipelineId()));
 
+            pipeline.setPipelineName(ravenParserContext.getProcessName());
             pipeline.setContext(context);
-            HandymanActorSystemAccess.update(pipeline);
+            HandymanActorSystemAccess.insert(pipeline);
             pipeline.updateExecutionStatusId(ExecutionStatus.STARTED.getId());
             try {
                 run(pipeline, ravenParserContext.getTryContext(), context, ExecutionGroup.TRY);
@@ -146,10 +145,12 @@ public class LambdaEngine {
         return processFile;
     }
 
-    private static RavenParserContext getRavenParserContext(final String processFile, final String lambdaName, final Map<String, String> context) {
+    private static RavenParserContext getRavenParserContext(final String processFile, final String lambdaName,
+                                                            final Map<String, String> context) {
         log.debug("Handyman Engine start for {}", lambdaName);
         final RavenParser.ProcessContext ravenParser = LambdaParser.doParse(processFile, context);
         return RavenParserContext.builder()
+                .processName(String.valueOf(ravenParser.name))
                 .tryContext(ravenParser.tryBlock.actions)
                 .catchContext(ravenParser.catchBlock.actions)
                 .finallyContext(ravenParser.finallyBlock.actions)
@@ -257,6 +258,7 @@ public class LambdaEngine {
         final IActionContext actionContext = (IActionContext) ProcessExecutor.ACTION_CONTEXT_MAP.get(actionName).getConstructor().newInstance();
         logger.debug("actionContext Execution class {} instance created", actionName);
         CommandProxy.setTarget(actionContext, child, action.getContext());
+        action.setActionName(actionContext.getName());
         logger.debug("actionContext Execution class {} actionContext mapped", actionName);
         action.setInput(MAPPER.convertValue(actionContext, JsonNode.class));
         HandymanActorSystemAccess.update(action);

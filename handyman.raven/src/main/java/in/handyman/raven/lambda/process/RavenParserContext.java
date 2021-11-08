@@ -16,6 +16,8 @@ import java.util.Map;
 @Builder
 public class RavenParserContext {
 
+    private String processName;
+
     private List<RavenParser.ActionContext> tryContext;
     private List<RavenParser.ActionContext> catchContext;
     private List<RavenParser.ActionContext> finallyContext;
