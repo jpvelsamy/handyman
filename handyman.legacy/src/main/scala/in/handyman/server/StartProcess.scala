@@ -15,21 +15,7 @@ class StartProcess extends ServerResource with LazyLogging {
     val inboundValue = getRequest.getAttributes.get("instance");
     val alias = getRequest().getAttributes().get("alias");
     val instanceName: String = inboundValue.asInstanceOf[String] + "#" + alias.asInstanceOf[String]
-    logger.info("Starting the process=" + instanceName)
-    val runtimeContext = ProcessAST.loadProcessAST(instanceName, "{}")
-
-    try {
-
-      val processResponse = ProcessExecutor.execute(runMode, runtimeContext)
-      jsonSerializer.writeValueAsString(processResponse)
-    } catch {
-      case ex: Throwable => {
-        handleError(ex)
-        jsonSerializer.writeValueAsString(ex)
-      }
-    } finally {
-      handleFinally()
-    }
+    doProcess(instanceName);
   }
 
   /*@Get("application/json")
@@ -81,6 +67,24 @@ class StartProcess extends ServerResource with LazyLogging {
 
     "{\"start_status\": \"SUCCESS\"}"
   }*/
+
+  def doProcess(instanceName: _root_.scala.Predef.String): String = {
+    logger.info("Starting the process=" + instanceName)
+    val runtimeContext = ProcessAST.loadProcessAST(instanceName, "{}")
+
+    try {
+
+      val processResponse = ProcessExecutor.execute(runMode, runtimeContext)
+      jsonSerializer.writeValueAsString(processResponse)
+    } catch {
+      case ex: Throwable => {
+        handleError(ex)
+        jsonSerializer.writeValueAsString(ex)
+      }
+    } finally {
+      handleFinally()
+    }
+  }
 
   def handleError(ex: Throwable) = {
     ex.printStackTrace()
