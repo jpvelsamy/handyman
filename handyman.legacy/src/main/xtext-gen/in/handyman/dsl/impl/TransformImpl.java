@@ -32,194 +32,191 @@ import org.eclipse.emf.ecore.util.EDataTypeEList;
  *
  * @generated
  */
-public class TransformImpl extends ActionImpl implements Transform
-{
-  /**
-   * The default value of the '{@link #getOn() <em>On</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getOn()
-   * @generated
-   * @ordered
-   */
-  protected static final String ON_EDEFAULT = null;
+public class TransformImpl extends ActionImpl implements Transform {
+    /**
+     * The default value of the '{@link #getOn() <em>On</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getOn()
+     */
+    protected static final String ON_EDEFAULT = null;
 
-  /**
-   * The cached value of the '{@link #getOn() <em>On</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getOn()
-   * @generated
-   * @ordered
-   */
-  protected String on = ON_EDEFAULT;
+    /**
+     * The cached value of the '{@link #getOn() <em>On</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getOn()
+     */
+    protected String on = ON_EDEFAULT;
 
-  /**
-   * The cached value of the '{@link #getValue() <em>Value</em>}' attribute list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getValue()
-   * @generated
-   * @ordered
-   */
-  protected EList<String> value;
+    /**
+     * The cached value of the '{@link #getValue() <em>Value</em>}' attribute list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getValue()
+     */
+    protected EList<String> value;
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  protected TransformImpl()
-  {
-    super();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  protected EClass eStaticClass()
-  {
-    return DslPackage.Literals.TRANSFORM;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getOn()
-  {
-    return on;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setOn(String newOn)
-  {
-    String oldOn = on;
-    on = newOn;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.TRANSFORM__ON, oldOn, on));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EList<String> getValue()
-  {
-    if (value == null)
-    {
-      value = new EDataTypeEList<String>(String.class, this, DslPackage.TRANSFORM__VALUE);
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    protected TransformImpl() {
+        super();
     }
-    return value;
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public Object eGet(int featureID, boolean resolve, boolean coreType)
-  {
-    switch (featureID)
-    {
-      case DslPackage.TRANSFORM__ON:
-        return getOn();
-      case DslPackage.TRANSFORM__VALUE:
-        return getValue();
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return DslPackage.Literals.TRANSFORM;
     }
-    return super.eGet(featureID, resolve, coreType);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @SuppressWarnings("unchecked")
-  @Override
-  public void eSet(int featureID, Object newValue)
-  {
-    switch (featureID)
-    {
-      case DslPackage.TRANSFORM__ON:
-        setOn((String)newValue);
-        return;
-      case DslPackage.TRANSFORM__VALUE:
-        getValue().clear();
-        getValue().addAll((Collection<? extends String>)newValue);
-        return;
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public Object eGet(int featureID, boolean resolve, boolean coreType) {
+        switch (featureID) {
+            case DslPackage.TRANSFORM__ON:
+                return getOn();
+            case DslPackage.TRANSFORM__VALUE:
+                return getValue();
+        }
+        return super.eGet(featureID, resolve, coreType);
     }
-    super.eSet(featureID, newValue);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void eUnset(int featureID)
-  {
-    switch (featureID)
-    {
-      case DslPackage.TRANSFORM__ON:
-        setOn(ON_EDEFAULT);
-        return;
-      case DslPackage.TRANSFORM__VALUE:
-        getValue().clear();
-        return;
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getOn() {
+        return on;
     }
-    super.eUnset(featureID);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean eIsSet(int featureID)
-  {
-    switch (featureID)
-    {
-      case DslPackage.TRANSFORM__ON:
-        return ON_EDEFAULT == null ? on != null : !ON_EDEFAULT.equals(on);
-      case DslPackage.TRANSFORM__VALUE:
-        return value != null && !value.isEmpty();
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setOn(String newOn) {
+        String oldOn = on;
+        on = newOn;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.TRANSFORM__ON, oldOn, on));
     }
-    return super.eIsSet(featureID);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String toString()
-  {
-    if (eIsProxy()) return super.toString();
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public EList<String> getValue() {
+        if (value == null) {
+            value = new EDataTypeEList<String>(String.class, this, DslPackage.TRANSFORM__VALUE);
+        }
+        return value;
+    }
 
-    StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (on: ");
-    result.append(on);
-    result.append(", value: ");
-    result.append(value);
-    result.append(')');
-    return result.toString();
-  }
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public void eSet(int featureID, Object newValue) {
+        switch (featureID) {
+            case DslPackage.TRANSFORM__ON:
+                setOn((String) newValue);
+                return;
+            case DslPackage.TRANSFORM__VALUE:
+                getValue().clear();
+                getValue().addAll((Collection<? extends String>) newValue);
+                return;
+        }
+        super.eSet(featureID, newValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void eUnset(int featureID) {
+        switch (featureID) {
+            case DslPackage.TRANSFORM__ON:
+                setOn(ON_EDEFAULT);
+                return;
+            case DslPackage.TRANSFORM__VALUE:
+                getValue().clear();
+                return;
+        }
+        super.eUnset(featureID);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public boolean eIsSet(int featureID) {
+        switch (featureID) {
+            case DslPackage.TRANSFORM__ON:
+                return ON_EDEFAULT == null ? on != null : !ON_EDEFAULT.equals(on);
+            case DslPackage.TRANSFORM__VALUE:
+                return value != null && !value.isEmpty();
+        }
+        return super.eIsSet(featureID);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String toString() {
+        if (eIsProxy()) return super.toString();
+
+        StringBuilder result = new StringBuilder(super.toString());
+        result.append(" (on: ");
+        result.append(on);
+        result.append(", value: ");
+        result.append(value);
+        result.append(')');
+        return result.toString();
+    }
 
 } //TransformImpl

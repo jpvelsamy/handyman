@@ -18,54 +18,57 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link in.handyman.dsl.RestPart#getPartData <em>Part Data</em>}</li>
  * </ul>
  *
- * @see in.handyman.dsl.DslPackage#getRestPart()
  * @model
  * @generated
+ * @see in.handyman.dsl.DslPackage#getRestPart()
  */
-public interface RestPart extends EObject
-{
-  /**
-   * Returns the value of the '<em><b>Part Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Part Name</em>' attribute.
-   * @see #setPartName(String)
-   * @see in.handyman.dsl.DslPackage#getRestPart_PartName()
-   * @model
-   * @generated
-   */
-  String getPartName();
+public interface RestPart extends EObject {
+    /**
+     * Returns the value of the '<em><b>Part Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Part Name</em>' attribute.
+     * @model
+     * @generated
+     * @see #setPartName(String)
+     * @see in.handyman.dsl.DslPackage#getRestPart_PartName()
+     */
+    String getPartName();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.RestPart#getPartName <em>Part Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Part Name</em>' attribute.
-   * @see #getPartName()
-   * @generated
-   */
-  void setPartName(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.RestPart#getPartName <em>Part Name</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Part Name</em>' attribute.
+     * @generated
+     * @see #getPartName()
+     */
+    void setPartName(String value);
 
-  /**
-   * Returns the value of the '<em><b>Part Data</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Part Data</em>' attribute.
-   * @see #setPartData(String)
-   * @see in.handyman.dsl.DslPackage#getRestPart_PartData()
-   * @model
-   * @generated
-   */
-  String getPartData();
+    /**
+     * Returns the value of the '<em><b>Part Data</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Part Data</em>' attribute.
+     * @model
+     * @generated
+     * @see #setPartData(String)
+     * @see in.handyman.dsl.DslPackage#getRestPart_PartData()
+     */
+    String getPartData();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.RestPart#getPartData <em>Part Data</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Part Data</em>' attribute.
-   * @see #getPartData()
-   * @generated
-   */
-  void setPartData(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.RestPart#getPartData <em>Part Data</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Part Data</em>' attribute.
+     * @generated
+     * @see #getPartData()
+     */
+    void setPartData(String value);
 
 } // RestPart

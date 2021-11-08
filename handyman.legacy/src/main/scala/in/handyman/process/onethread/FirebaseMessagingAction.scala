@@ -18,7 +18,7 @@ class FirebaseMessagingAction extends in.handyman.command.Action with LazyLoggin
   val auditMarker = "FIREBASE-MESSAGING";
   val aMarker = MarkerFactory.getMarker(auditMarker);
 
-  def execute(context: Context, action: Action, actionId:Integer): Context = {
+  def execute(context: Context, action: Action, actionId: Integer): Context = {
     val fbrnAsIs = action.asInstanceOf[in.handyman.dsl.FirebaseReactiveNotification]
     val fbrn: in.handyman.dsl.FirebaseReactiveNotification = CommandProxy.createProxy(fbrnAsIs, classOf[in.handyman.dsl.FirebaseReactiveNotification], context)
     val className = fbrn.getClassFqn
@@ -29,8 +29,7 @@ class FirebaseMessagingAction extends in.handyman.command.Action with LazyLoggin
     val dbSrc = fbrn.getDbSrc
     val name = fbrn.getName
 
-    
-    
+
     try {
       //Bso here means business specific object
       val fbrnBso = clazz.newInstance()

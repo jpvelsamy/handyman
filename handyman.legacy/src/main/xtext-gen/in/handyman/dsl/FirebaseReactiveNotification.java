@@ -20,120 +20,129 @@ package in.handyman.dsl;
  *   <li>{@link in.handyman.dsl.FirebaseReactiveNotification#getDbSrc <em>Db Src</em>}</li>
  * </ul>
  *
- * @see in.handyman.dsl.DslPackage#getFirebaseReactiveNotification()
  * @model
  * @generated
+ * @see in.handyman.dsl.DslPackage#getFirebaseReactiveNotification()
  */
-public interface FirebaseReactiveNotification extends Action
-{
-  /**
-   * Returns the value of the '<em><b>Url</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Url</em>' attribute.
-   * @see #setUrl(String)
-   * @see in.handyman.dsl.DslPackage#getFirebaseReactiveNotification_Url()
-   * @model
-   * @generated
-   */
-  String getUrl();
+public interface FirebaseReactiveNotification extends Action {
+    /**
+     * Returns the value of the '<em><b>Url</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Url</em>' attribute.
+     * @model
+     * @generated
+     * @see #setUrl(String)
+     * @see in.handyman.dsl.DslPackage#getFirebaseReactiveNotification_Url()
+     */
+    String getUrl();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.FirebaseReactiveNotification#getUrl <em>Url</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Url</em>' attribute.
-   * @see #getUrl()
-   * @generated
-   */
-  void setUrl(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.FirebaseReactiveNotification#getUrl <em>Url</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Url</em>' attribute.
+     * @generated
+     * @see #getUrl()
+     */
+    void setUrl(String value);
 
-  /**
-   * Returns the value of the '<em><b>Fbjson</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Fbjson</em>' attribute.
-   * @see #setFbjson(String)
-   * @see in.handyman.dsl.DslPackage#getFirebaseReactiveNotification_Fbjson()
-   * @model
-   * @generated
-   */
-  String getFbjson();
+    /**
+     * Returns the value of the '<em><b>Fbjson</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Fbjson</em>' attribute.
+     * @model
+     * @generated
+     * @see #setFbjson(String)
+     * @see in.handyman.dsl.DslPackage#getFirebaseReactiveNotification_Fbjson()
+     */
+    String getFbjson();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.FirebaseReactiveNotification#getFbjson <em>Fbjson</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Fbjson</em>' attribute.
-   * @see #getFbjson()
-   * @generated
-   */
-  void setFbjson(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.FirebaseReactiveNotification#getFbjson <em>Fbjson</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Fbjson</em>' attribute.
+     * @generated
+     * @see #getFbjson()
+     */
+    void setFbjson(String value);
 
-  /**
-   * Returns the value of the '<em><b>Group Path</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Group Path</em>' attribute.
-   * @see #setGroupPath(String)
-   * @see in.handyman.dsl.DslPackage#getFirebaseReactiveNotification_GroupPath()
-   * @model
-   * @generated
-   */
-  String getGroupPath();
+    /**
+     * Returns the value of the '<em><b>Group Path</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Group Path</em>' attribute.
+     * @model
+     * @generated
+     * @see #setGroupPath(String)
+     * @see in.handyman.dsl.DslPackage#getFirebaseReactiveNotification_GroupPath()
+     */
+    String getGroupPath();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.FirebaseReactiveNotification#getGroupPath <em>Group Path</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Group Path</em>' attribute.
-   * @see #getGroupPath()
-   * @generated
-   */
-  void setGroupPath(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.FirebaseReactiveNotification#getGroupPath <em>Group Path</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Group Path</em>' attribute.
+     * @generated
+     * @see #getGroupPath()
+     */
+    void setGroupPath(String value);
 
-  /**
-   * Returns the value of the '<em><b>Class Fqn</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Class Fqn</em>' attribute.
-   * @see #setClassFqn(String)
-   * @see in.handyman.dsl.DslPackage#getFirebaseReactiveNotification_ClassFqn()
-   * @model
-   * @generated
-   */
-  String getClassFqn();
+    /**
+     * Returns the value of the '<em><b>Class Fqn</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Class Fqn</em>' attribute.
+     * @model
+     * @generated
+     * @see #setClassFqn(String)
+     * @see in.handyman.dsl.DslPackage#getFirebaseReactiveNotification_ClassFqn()
+     */
+    String getClassFqn();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.FirebaseReactiveNotification#getClassFqn <em>Class Fqn</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Class Fqn</em>' attribute.
-   * @see #getClassFqn()
-   * @generated
-   */
-  void setClassFqn(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.FirebaseReactiveNotification#getClassFqn <em>Class Fqn</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Class Fqn</em>' attribute.
+     * @generated
+     * @see #getClassFqn()
+     */
+    void setClassFqn(String value);
 
-  /**
-   * Returns the value of the '<em><b>Db Src</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Db Src</em>' attribute.
-   * @see #setDbSrc(String)
-   * @see in.handyman.dsl.DslPackage#getFirebaseReactiveNotification_DbSrc()
-   * @model
-   * @generated
-   */
-  String getDbSrc();
+    /**
+     * Returns the value of the '<em><b>Db Src</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Db Src</em>' attribute.
+     * @model
+     * @generated
+     * @see #setDbSrc(String)
+     * @see in.handyman.dsl.DslPackage#getFirebaseReactiveNotification_DbSrc()
+     */
+    String getDbSrc();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.FirebaseReactiveNotification#getDbSrc <em>Db Src</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Db Src</em>' attribute.
-   * @see #getDbSrc()
-   * @generated
-   */
-  void setDbSrc(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.FirebaseReactiveNotification#getDbSrc <em>Db Src</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Db Src</em>' attribute.
+     * @generated
+     * @see #getDbSrc()
+     */
+    void setDbSrc(String value);
 
 } // FirebaseReactiveNotification

@@ -17,9 +17,9 @@ import org.apache.commons.lang3.math.NumberUtils
 
 class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonPill: Row,
                          copyData: in.handyman.dsl.Copydata,
-                         id:       String, rowQueue: BlockingQueue[Row],
+                         id: String, rowQueue: BlockingQueue[Row],
                          countDownLatch: CountDownLatch,
-                         isTempTable:    Boolean) extends Callable[Void] with LazyLogging {
+                         isTempTable: Boolean) extends Callable[Void] with LazyLogging {
 
   val writeBuffer: HashSet[String] = new HashSet[String]
   val target = {
@@ -97,7 +97,7 @@ class CopyDataJdbcWriter(configMap: Map[String, String], insert: Insert, poisonP
 
       val columnType = column.columnTypeName
       columnType.toLowerCase match {
-        case Constants.STRING_DATATYPE | "java.lang.string"=> dataFrameBuilder.append(Constants.STRING_ENCLOSER).
+        case Constants.STRING_DATATYPE | "java.lang.string" => dataFrameBuilder.append(Constants.STRING_ENCLOSER).
           append(column.value).append(Constants.STRING_ENCLOSER)
         case "datetime" => dataFrameBuilder.append(Constants.STRING_ENCLOSER).
           append(column.value).append(Constants.STRING_ENCLOSER)

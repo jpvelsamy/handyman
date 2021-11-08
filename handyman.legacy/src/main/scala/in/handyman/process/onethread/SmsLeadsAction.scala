@@ -22,12 +22,12 @@ class SmsLeadsAction extends in.handyman.command.Action with LazyLogging {
   val aMarker = MarkerFactory.getMarker(auditMarker);
   val client = HttpAsyncClients.createDefault()
   client.start();
-  
+
   def execute(context: Context, action: in.handyman.dsl.Action, actionId: Integer): Context = {
     val smsAsIs: in.handyman.dsl.SmsLeadSms = action.asInstanceOf[in.handyman.dsl.SmsLeadSms]
     val sms: in.handyman.dsl.SmsLeadSms = CommandProxy.createProxy(smsAsIs, classOf[in.handyman.dsl.SmsLeadSms], context)
-    
-    
+
+
     val name = sms.getName
     val sender = sms.getSender
     val url = sms.getUrl
@@ -61,7 +61,7 @@ class SmsLeadsAction extends in.handyman.command.Action with LazyLogging {
           else {
             if (targetMobileNumber.equals(targetAltNumber)) {
               removePlusNineOne(targetMobileNumber)
-            } else if (targetAltNumber.trim().isEmpty()){
+            } else if (targetAltNumber.trim().isEmpty()) {
               removePlusNineOne(targetMobileNumber)
             }
             else {
@@ -81,7 +81,7 @@ class SmsLeadsAction extends in.handyman.command.Action with LazyLogging {
           request.addHeader("Accept-Language", "en-IN,en-GB;q=0.9,en-US;q=0.8,en;q=0.7")
           request.addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
           val response = client.execute(request, null)
-          
+
           sentSMSCount.incrementAndGet()
           logger.info(aMarker, "Sent sms using url {} with responsecode {}", urlString, response)
 

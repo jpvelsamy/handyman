@@ -17,7 +17,7 @@ class FirebaseDbUpdateAction extends in.handyman.command.Action with LazyLogging
   val auditMarker = "FIREBASE-UPDATE";
   val aMarker = MarkerFactory.getMarker(auditMarker);
 
-  def execute(context: Context, action: Action, actionId:Integer): Context = {
+  def execute(context: Context, action: Action, actionId: Integer): Context = {
     val fbDuAsIs = action.asInstanceOf[in.handyman.dsl.FirebaseDatabasePut]
     val fbDu: in.handyman.dsl.FirebaseDatabasePut = CommandProxy.createProxy(fbDuAsIs, classOf[in.handyman.dsl.FirebaseDatabasePut], context)
     val className = fbDu.getClassFqn
@@ -27,13 +27,13 @@ class FirebaseDbUpdateAction extends in.handyman.command.Action with LazyLogging
     val dataSrc = fbDu.getDbSrc
     val sql = fbDu.getValue
     val name = fbDu.getName
-    
+
     val clazz = this.getClass.getClassLoader.loadClass(className)
 
     try {
       //Bso here means business specific object
       val fbrnBso = clazz.newInstance()
-      
+
       logger.info(aMarker, "Starting the firebase database update custom code execution with param class = {}, authkey = {}, url = {}, group = {}, dbSrc = {}", className, jsonPath, databaseFQNUrl, groupPath, dataSrc)
       val method = clazz.getDeclaredMethod("execute", classOf[Integer], classOf[String], classOf[String], classOf[String], classOf[String], classOf[String], classOf[Context], classOf[HashMap[String, String]])
       method.invoke(fbrnBso, actionId, jsonPath, groupPath, databaseFQNUrl, dataSrc, sql, context, detailMap).asInstanceOf[Context]

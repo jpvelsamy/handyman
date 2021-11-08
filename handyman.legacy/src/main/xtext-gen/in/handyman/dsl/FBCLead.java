@@ -21,142 +21,153 @@ package in.handyman.dsl;
  *   <li>{@link in.handyman.dsl.FBCLead#getValue <em>Value</em>}</li>
  * </ul>
  *
- * @see in.handyman.dsl.DslPackage#getFBCLead()
  * @model
  * @generated
+ * @see in.handyman.dsl.DslPackage#getFBCLead()
  */
-public interface FBCLead extends Action
-{
-  /**
-   * Returns the value of the '<em><b>Access Token</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Access Token</em>' attribute.
-   * @see #setAccessToken(String)
-   * @see in.handyman.dsl.DslPackage#getFBCLead_AccessToken()
-   * @model
-   * @generated
-   */
-  String getAccessToken();
+public interface FBCLead extends Action {
+    /**
+     * Returns the value of the '<em><b>Access Token</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Access Token</em>' attribute.
+     * @model
+     * @generated
+     * @see #setAccessToken(String)
+     * @see in.handyman.dsl.DslPackage#getFBCLead_AccessToken()
+     */
+    String getAccessToken();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.FBCLead#getAccessToken <em>Access Token</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Access Token</em>' attribute.
-   * @see #getAccessToken()
-   * @generated
-   */
-  void setAccessToken(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.FBCLead#getAccessToken <em>Access Token</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Access Token</em>' attribute.
+     * @generated
+     * @see #getAccessToken()
+     */
+    void setAccessToken(String value);
 
-  /**
-   * Returns the value of the '<em><b>App Secret</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>App Secret</em>' attribute.
-   * @see #setAppSecret(String)
-   * @see in.handyman.dsl.DslPackage#getFBCLead_AppSecret()
-   * @model
-   * @generated
-   */
-  String getAppSecret();
+    /**
+     * Returns the value of the '<em><b>App Secret</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>App Secret</em>' attribute.
+     * @model
+     * @generated
+     * @see #setAppSecret(String)
+     * @see in.handyman.dsl.DslPackage#getFBCLead_AppSecret()
+     */
+    String getAppSecret();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.FBCLead#getAppSecret <em>App Secret</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>App Secret</em>' attribute.
-   * @see #getAppSecret()
-   * @generated
-   */
-  void setAppSecret(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.FBCLead#getAppSecret <em>App Secret</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>App Secret</em>' attribute.
+     * @generated
+     * @see #getAppSecret()
+     */
+    void setAppSecret(String value);
 
-  /**
-   * Returns the value of the '<em><b>Account Id</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Account Id</em>' attribute.
-   * @see #setAccountId(String)
-   * @see in.handyman.dsl.DslPackage#getFBCLead_AccountId()
-   * @model
-   * @generated
-   */
-  String getAccountId();
+    /**
+     * Returns the value of the '<em><b>Account Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Account Id</em>' attribute.
+     * @model
+     * @generated
+     * @see #setAccountId(String)
+     * @see in.handyman.dsl.DslPackage#getFBCLead_AccountId()
+     */
+    String getAccountId();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.FBCLead#getAccountId <em>Account Id</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Account Id</em>' attribute.
-   * @see #getAccountId()
-   * @generated
-   */
-  void setAccountId(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.FBCLead#getAccountId <em>Account Id</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Account Id</em>' attribute.
+     * @generated
+     * @see #getAccountId()
+     */
+    void setAccountId(String value);
 
-  /**
-   * Returns the value of the '<em><b>Campaign Id</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Campaign Id</em>' attribute.
-   * @see #setCampaignId(String)
-   * @see in.handyman.dsl.DslPackage#getFBCLead_CampaignId()
-   * @model
-   * @generated
-   */
-  String getCampaignId();
+    /**
+     * Returns the value of the '<em><b>Campaign Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Campaign Id</em>' attribute.
+     * @model
+     * @generated
+     * @see #setCampaignId(String)
+     * @see in.handyman.dsl.DslPackage#getFBCLead_CampaignId()
+     */
+    String getCampaignId();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.FBCLead#getCampaignId <em>Campaign Id</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Campaign Id</em>' attribute.
-   * @see #getCampaignId()
-   * @generated
-   */
-  void setCampaignId(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.FBCLead#getCampaignId <em>Campaign Id</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Campaign Id</em>' attribute.
+     * @generated
+     * @see #getCampaignId()
+     */
+    void setCampaignId(String value);
 
-  /**
-   * Returns the value of the '<em><b>Target</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Target</em>' attribute.
-   * @see #setTarget(String)
-   * @see in.handyman.dsl.DslPackage#getFBCLead_Target()
-   * @model
-   * @generated
-   */
-  String getTarget();
+    /**
+     * Returns the value of the '<em><b>Target</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Target</em>' attribute.
+     * @model
+     * @generated
+     * @see #setTarget(String)
+     * @see in.handyman.dsl.DslPackage#getFBCLead_Target()
+     */
+    String getTarget();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.FBCLead#getTarget <em>Target</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Target</em>' attribute.
-   * @see #getTarget()
-   * @generated
-   */
-  void setTarget(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.FBCLead#getTarget <em>Target</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Target</em>' attribute.
+     * @generated
+     * @see #getTarget()
+     */
+    void setTarget(String value);
 
-  /**
-   * Returns the value of the '<em><b>Value</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Value</em>' attribute.
-   * @see #setValue(String)
-   * @see in.handyman.dsl.DslPackage#getFBCLead_Value()
-   * @model
-   * @generated
-   */
-  String getValue();
+    /**
+     * Returns the value of the '<em><b>Value</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Value</em>' attribute.
+     * @model
+     * @generated
+     * @see #setValue(String)
+     * @see in.handyman.dsl.DslPackage#getFBCLead_Value()
+     */
+    String getValue();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.FBCLead#getValue <em>Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Value</em>' attribute.
-   * @see #getValue()
-   * @generated
-   */
-  void setValue(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.FBCLead#getValue <em>Value</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Value</em>' attribute.
+     * @generated
+     * @see #getValue()
+     */
+    void setValue(String value);
 
 } // FBCLead

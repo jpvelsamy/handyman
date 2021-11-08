@@ -36,208 +36,204 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *
  * @generated
  */
-public class DoglegImpl extends ActionImpl implements Dogleg
-{
-  /**
-   * The default value of the '{@link #getInheritContext() <em>Inherit Context</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getInheritContext()
-   * @generated
-   * @ordered
-   */
-  protected static final String INHERIT_CONTEXT_EDEFAULT = null;
+public class DoglegImpl extends ActionImpl implements Dogleg {
+    /**
+     * The default value of the '{@link #getInheritContext() <em>Inherit Context</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getInheritContext()
+     */
+    protected static final String INHERIT_CONTEXT_EDEFAULT = null;
 
-  /**
-   * The cached value of the '{@link #getInheritContext() <em>Inherit Context</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getInheritContext()
-   * @generated
-   * @ordered
-   */
-  protected String inheritContext = INHERIT_CONTEXT_EDEFAULT;
+    /**
+     * The cached value of the '{@link #getInheritContext() <em>Inherit Context</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getInheritContext()
+     */
+    protected String inheritContext = INHERIT_CONTEXT_EDEFAULT;
 
-  /**
-   * The cached value of the '{@link #getProcessList() <em>Process List</em>}' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getProcessList()
-   * @generated
-   * @ordered
-   */
-  protected EList<StartProcess> processList;
+    /**
+     * The cached value of the '{@link #getProcessList() <em>Process List</em>}' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getProcessList()
+     */
+    protected EList<StartProcess> processList;
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  protected DoglegImpl()
-  {
-    super();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  protected EClass eStaticClass()
-  {
-    return DslPackage.Literals.DOGLEG;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getInheritContext()
-  {
-    return inheritContext;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setInheritContext(String newInheritContext)
-  {
-    String oldInheritContext = inheritContext;
-    inheritContext = newInheritContext;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.DOGLEG__INHERIT_CONTEXT, oldInheritContext, inheritContext));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EList<StartProcess> getProcessList()
-  {
-    if (processList == null)
-    {
-      processList = new EObjectContainmentEList<StartProcess>(StartProcess.class, this, DslPackage.DOGLEG__PROCESS_LIST);
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    protected DoglegImpl() {
+        super();
     }
-    return processList;
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-  {
-    switch (featureID)
-    {
-      case DslPackage.DOGLEG__PROCESS_LIST:
-        return ((InternalEList<?>)getProcessList()).basicRemove(otherEnd, msgs);
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return DslPackage.Literals.DOGLEG;
     }
-    return super.eInverseRemove(otherEnd, featureID, msgs);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public Object eGet(int featureID, boolean resolve, boolean coreType)
-  {
-    switch (featureID)
-    {
-      case DslPackage.DOGLEG__INHERIT_CONTEXT:
-        return getInheritContext();
-      case DslPackage.DOGLEG__PROCESS_LIST:
-        return getProcessList();
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+        switch (featureID) {
+            case DslPackage.DOGLEG__PROCESS_LIST:
+                return ((InternalEList<?>) getProcessList()).basicRemove(otherEnd, msgs);
+        }
+        return super.eInverseRemove(otherEnd, featureID, msgs);
     }
-    return super.eGet(featureID, resolve, coreType);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @SuppressWarnings("unchecked")
-  @Override
-  public void eSet(int featureID, Object newValue)
-  {
-    switch (featureID)
-    {
-      case DslPackage.DOGLEG__INHERIT_CONTEXT:
-        setInheritContext((String)newValue);
-        return;
-      case DslPackage.DOGLEG__PROCESS_LIST:
-        getProcessList().clear();
-        getProcessList().addAll((Collection<? extends StartProcess>)newValue);
-        return;
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public EList<StartProcess> getProcessList() {
+        if (processList == null) {
+            processList = new EObjectContainmentEList<StartProcess>(StartProcess.class, this, DslPackage.DOGLEG__PROCESS_LIST);
+        }
+        return processList;
     }
-    super.eSet(featureID, newValue);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void eUnset(int featureID)
-  {
-    switch (featureID)
-    {
-      case DslPackage.DOGLEG__INHERIT_CONTEXT:
-        setInheritContext(INHERIT_CONTEXT_EDEFAULT);
-        return;
-      case DslPackage.DOGLEG__PROCESS_LIST:
-        getProcessList().clear();
-        return;
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public Object eGet(int featureID, boolean resolve, boolean coreType) {
+        switch (featureID) {
+            case DslPackage.DOGLEG__INHERIT_CONTEXT:
+                return getInheritContext();
+            case DslPackage.DOGLEG__PROCESS_LIST:
+                return getProcessList();
+        }
+        return super.eGet(featureID, resolve, coreType);
     }
-    super.eUnset(featureID);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean eIsSet(int featureID)
-  {
-    switch (featureID)
-    {
-      case DslPackage.DOGLEG__INHERIT_CONTEXT:
-        return INHERIT_CONTEXT_EDEFAULT == null ? inheritContext != null : !INHERIT_CONTEXT_EDEFAULT.equals(inheritContext);
-      case DslPackage.DOGLEG__PROCESS_LIST:
-        return processList != null && !processList.isEmpty();
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getInheritContext() {
+        return inheritContext;
     }
-    return super.eIsSet(featureID);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String toString()
-  {
-    if (eIsProxy()) return super.toString();
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setInheritContext(String newInheritContext) {
+        String oldInheritContext = inheritContext;
+        inheritContext = newInheritContext;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.DOGLEG__INHERIT_CONTEXT, oldInheritContext, inheritContext));
+    }
 
-    StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (inheritContext: ");
-    result.append(inheritContext);
-    result.append(')');
-    return result.toString();
-  }
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public void eSet(int featureID, Object newValue) {
+        switch (featureID) {
+            case DslPackage.DOGLEG__INHERIT_CONTEXT:
+                setInheritContext((String) newValue);
+                return;
+            case DslPackage.DOGLEG__PROCESS_LIST:
+                getProcessList().clear();
+                getProcessList().addAll((Collection<? extends StartProcess>) newValue);
+                return;
+        }
+        super.eSet(featureID, newValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void eUnset(int featureID) {
+        switch (featureID) {
+            case DslPackage.DOGLEG__INHERIT_CONTEXT:
+                setInheritContext(INHERIT_CONTEXT_EDEFAULT);
+                return;
+            case DslPackage.DOGLEG__PROCESS_LIST:
+                getProcessList().clear();
+                return;
+        }
+        super.eUnset(featureID);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public boolean eIsSet(int featureID) {
+        switch (featureID) {
+            case DslPackage.DOGLEG__INHERIT_CONTEXT:
+                return INHERIT_CONTEXT_EDEFAULT == null ? inheritContext != null : !INHERIT_CONTEXT_EDEFAULT.equals(inheritContext);
+            case DslPackage.DOGLEG__PROCESS_LIST:
+                return processList != null && !processList.isEmpty();
+        }
+        return super.eIsSet(featureID);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String toString() {
+        if (eIsProxy()) return super.toString();
+
+        StringBuilder result = new StringBuilder(super.toString());
+        result.append(" (inheritContext: ");
+        result.append(inheritContext);
+        result.append(')');
+        return result.toString();
+    }
 
 } //DoglegImpl

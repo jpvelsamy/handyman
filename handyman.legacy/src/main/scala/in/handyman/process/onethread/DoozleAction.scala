@@ -13,8 +13,8 @@ import in.handyman.util.ParameterisationEngine
 
 class DoozleAction extends in.handyman.command.Action with LazyLogging {
   val detailMap = new java.util.HashMap[String, String]
-  
-  def execute(context: in.handyman.command.Context, action: in.handyman.dsl.Action, actionId:Integer): in.handyman.command.Context = {
+
+  def execute(context: in.handyman.command.Context, action: in.handyman.dsl.Action, actionId: Integer): in.handyman.command.Context = {
     val doozleAsIs: in.handyman.dsl.Doozle = action.asInstanceOf[in.handyman.dsl.Doozle]
     val doozle: in.handyman.dsl.Doozle = CommandProxy.createProxy(doozleAsIs, classOf[in.handyman.dsl.Doozle], context)
 
@@ -44,9 +44,15 @@ class DoozleAction extends in.handyman.command.Action with LazyLogging {
       detailMap.put("dbSrc", dbSrc)
       detailMap.put("ddlSql", ddlSql)
       detailMap.put("storagePath", storagePath)
-      
+
     }
     context
+  }
+
+  def storeJson(incomingJson: String, storagePath: String, name: String, id: String) = {
+    val finalPath = storagePath + "/" + name + ".json"
+    Files.write(Paths.get(finalPath), incomingJson.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE)
+    logger.info("File stored for doozle id#{}, path#{}", id, finalPath)
   }
 
   def executeIf(context: in.handyman.command.Context, action: in.handyman.dsl.Action): Boolean = {
@@ -59,21 +65,15 @@ class DoozleAction extends in.handyman.command.Action with LazyLogging {
       detailMap.putIfAbsent("condition-output", output.toString())
       output
     } finally {
-       if(expression!=null)
-      detailMap.putIfAbsent("condition", "LHS=" + expression.getLhs + ", Operator=" + expression.getOperator + ", RHS=" + expression.getRhs)
+      if (expression != null)
+        detailMap.putIfAbsent("condition", "LHS=" + expression.getLhs + ", Operator=" + expression.getOperator + ", RHS=" + expression.getRhs)
 
     }
-  }
-
-  def storeJson(incomingJson: String, storagePath: String, name: String, id: String) = {
-    val finalPath = storagePath + "/" + name + ".json"
-    Files.write(Paths.get(finalPath), incomingJson.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE)
-    logger.info("File stored for doozle id#{}, path#{}", id, finalPath)
   }
 
   def generateAudit(): java.util.Map[String, String] = {
     detailMap
   }
-  
-  
+
+
 }

@@ -20,98 +20,105 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link in.handyman.dsl.Process#getFinally <em>Finally</em>}</li>
  * </ul>
  *
- * @see in.handyman.dsl.DslPackage#getProcess()
  * @model
  * @generated
+ * @see in.handyman.dsl.DslPackage#getProcess()
  */
-public interface Process extends EObject
-{
-  /**
-   * Returns the value of the '<em><b>Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Name</em>' attribute.
-   * @see #setName(String)
-   * @see in.handyman.dsl.DslPackage#getProcess_Name()
-   * @model
-   * @generated
-   */
-  String getName();
+public interface Process extends EObject {
+    /**
+     * Returns the value of the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Name</em>' attribute.
+     * @model
+     * @generated
+     * @see #setName(String)
+     * @see in.handyman.dsl.DslPackage#getProcess_Name()
+     */
+    String getName();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Process#getName <em>Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Name</em>' attribute.
-   * @see #getName()
-   * @generated
-   */
-  void setName(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Process#getName <em>Name</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Name</em>' attribute.
+     * @generated
+     * @see #getName()
+     */
+    void setName(String value);
 
-  /**
-   * Returns the value of the '<em><b>Try</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Try</em>' containment reference.
-   * @see #setTry(Try)
-   * @see in.handyman.dsl.DslPackage#getProcess_Try()
-   * @model containment="true"
-   * @generated
-   */
-  Try getTry();
+    /**
+     * Returns the value of the '<em><b>Try</b></em>' containment reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Try</em>' containment reference.
+     * @model containment="true"
+     * @generated
+     * @see #setTry(Try)
+     * @see in.handyman.dsl.DslPackage#getProcess_Try()
+     */
+    Try getTry();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Process#getTry <em>Try</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Try</em>' containment reference.
-   * @see #getTry()
-   * @generated
-   */
-  void setTry(Try value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Process#getTry <em>Try</em>}' containment reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Try</em>' containment reference.
+     * @generated
+     * @see #getTry()
+     */
+    void setTry(Try value);
 
-  /**
-   * Returns the value of the '<em><b>Catch</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Catch</em>' containment reference.
-   * @see #setCatch(Catch)
-   * @see in.handyman.dsl.DslPackage#getProcess_Catch()
-   * @model containment="true"
-   * @generated
-   */
-  Catch getCatch();
+    /**
+     * Returns the value of the '<em><b>Catch</b></em>' containment reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Catch</em>' containment reference.
+     * @model containment="true"
+     * @generated
+     * @see #setCatch(Catch)
+     * @see in.handyman.dsl.DslPackage#getProcess_Catch()
+     */
+    Catch getCatch();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Process#getCatch <em>Catch</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Catch</em>' containment reference.
-   * @see #getCatch()
-   * @generated
-   */
-  void setCatch(Catch value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Process#getCatch <em>Catch</em>}' containment reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Catch</em>' containment reference.
+     * @generated
+     * @see #getCatch()
+     */
+    void setCatch(Catch value);
 
-  /**
-   * Returns the value of the '<em><b>Finally</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Finally</em>' containment reference.
-   * @see #setFinally(Finally)
-   * @see in.handyman.dsl.DslPackage#getProcess_Finally()
-   * @model containment="true"
-   * @generated
-   */
-  Finally getFinally();
+    /**
+     * Returns the value of the '<em><b>Finally</b></em>' containment reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Finally</em>' containment reference.
+     * @model containment="true"
+     * @generated
+     * @see #setFinally(Finally)
+     * @see in.handyman.dsl.DslPackage#getProcess_Finally()
+     */
+    Finally getFinally();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Process#getFinally <em>Finally</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Finally</em>' containment reference.
-   * @see #getFinally()
-   * @generated
-   */
-  void setFinally(Finally value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Process#getFinally <em>Finally</em>}' containment reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Finally</em>' containment reference.
+     * @generated
+     * @see #getFinally()
+     */
+    void setFinally(Finally value);
 
 } // Process

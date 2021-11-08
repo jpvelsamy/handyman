@@ -16,32 +16,33 @@ package in.handyman.dsl;
  *   <li>{@link in.handyman.dsl.Dropfile#getTarget <em>Target</em>}</li>
  * </ul>
  *
- * @see in.handyman.dsl.DslPackage#getDropfile()
  * @model
  * @generated
+ * @see in.handyman.dsl.DslPackage#getDropfile()
  */
-public interface Dropfile extends Action
-{
-  /**
-   * Returns the value of the '<em><b>Target</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Target</em>' attribute.
-   * @see #setTarget(String)
-   * @see in.handyman.dsl.DslPackage#getDropfile_Target()
-   * @model
-   * @generated
-   */
-  String getTarget();
+public interface Dropfile extends Action {
+    /**
+     * Returns the value of the '<em><b>Target</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Target</em>' attribute.
+     * @model
+     * @generated
+     * @see #setTarget(String)
+     * @see in.handyman.dsl.DslPackage#getDropfile_Target()
+     */
+    String getTarget();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Dropfile#getTarget <em>Target</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Target</em>' attribute.
-   * @see #getTarget()
-   * @generated
-   */
-  void setTarget(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Dropfile#getTarget <em>Target</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Target</em>' attribute.
+     * @generated
+     * @see #getTarget()
+     */
+    void setTarget(String value);
 
 } // Dropfile

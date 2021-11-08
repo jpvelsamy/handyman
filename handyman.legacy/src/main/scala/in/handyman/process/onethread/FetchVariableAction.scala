@@ -27,21 +27,21 @@ class FetchVariableAction extends in.handyman.command.Action with LazyLogging {
     val stmt = conn.createStatement
     try {
       sqlList.foreach(sqlItem => {
-          logger.info(aMarker, "Execution query sql#{} on db=#{}", sqlItem.trim(), source)
-          val rs = stmt.executeQuery(sqlItem.trim)
-          val columnCount = rs.getMetaData.getColumnCount
+        logger.info(aMarker, "Execution query sql#{} on db=#{}", sqlItem.trim(), source)
+        val rs = stmt.executeQuery(sqlItem.trim)
+        val columnCount = rs.getMetaData.getColumnCount
 
-          while (rs.next()) {
+        while (rs.next()) {
 
-            for (i <- 1 until columnCount + 1) {
-              val key = rs.getMetaData.getColumnLabel(i)
-              val value = rs.getString(i)
-              logger.info(aMarker, "Adding value {} for key {} from query sql#{} on db=#{}", value, name + "." + key, sqlItem, source)
-              context.addValue(name + "." + key, value)
-            }
-          }       
-          detailMap.put("source", source)
-          detailMap.put("sql", sqlItem)
+          for (i <- 1 until columnCount + 1) {
+            val key = rs.getMetaData.getColumnLabel(i)
+            val value = rs.getString(i)
+            logger.info(aMarker, "Adding value {} for key {} from query sql#{} on db=#{}", value, name + "." + key, sqlItem, source)
+            context.addValue(name + "." + key, value)
+          }
+        }
+        detailMap.put("source", source)
+        detailMap.put("sql", sqlItem)
       })
     } finally {
 

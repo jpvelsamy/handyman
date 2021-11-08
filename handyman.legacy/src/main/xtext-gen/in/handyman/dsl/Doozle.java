@@ -18,76 +18,81 @@ package in.handyman.dsl;
  *   <li>{@link in.handyman.dsl.Doozle#getValue <em>Value</em>}</li>
  * </ul>
  *
- * @see in.handyman.dsl.DslPackage#getDoozle()
  * @model
  * @generated
+ * @see in.handyman.dsl.DslPackage#getDoozle()
  */
-public interface Doozle extends Action
-{
-  /**
-   * Returns the value of the '<em><b>Target</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Target</em>' attribute.
-   * @see #setTarget(String)
-   * @see in.handyman.dsl.DslPackage#getDoozle_Target()
-   * @model
-   * @generated
-   */
-  String getTarget();
+public interface Doozle extends Action {
+    /**
+     * Returns the value of the '<em><b>Target</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Target</em>' attribute.
+     * @model
+     * @generated
+     * @see #setTarget(String)
+     * @see in.handyman.dsl.DslPackage#getDoozle_Target()
+     */
+    String getTarget();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Doozle#getTarget <em>Target</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Target</em>' attribute.
-   * @see #getTarget()
-   * @generated
-   */
-  void setTarget(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Doozle#getTarget <em>Target</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Target</em>' attribute.
+     * @generated
+     * @see #getTarget()
+     */
+    void setTarget(String value);
 
-  /**
-   * Returns the value of the '<em><b>On</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>On</em>' attribute.
-   * @see #setOn(String)
-   * @see in.handyman.dsl.DslPackage#getDoozle_On()
-   * @model
-   * @generated
-   */
-  String getOn();
+    /**
+     * Returns the value of the '<em><b>On</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>On</em>' attribute.
+     * @model
+     * @generated
+     * @see #setOn(String)
+     * @see in.handyman.dsl.DslPackage#getDoozle_On()
+     */
+    String getOn();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Doozle#getOn <em>On</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>On</em>' attribute.
-   * @see #getOn()
-   * @generated
-   */
-  void setOn(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Doozle#getOn <em>On</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>On</em>' attribute.
+     * @generated
+     * @see #getOn()
+     */
+    void setOn(String value);
 
-  /**
-   * Returns the value of the '<em><b>Value</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Value</em>' attribute.
-   * @see #setValue(String)
-   * @see in.handyman.dsl.DslPackage#getDoozle_Value()
-   * @model
-   * @generated
-   */
-  String getValue();
+    /**
+     * Returns the value of the '<em><b>Value</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Value</em>' attribute.
+     * @model
+     * @generated
+     * @see #setValue(String)
+     * @see in.handyman.dsl.DslPackage#getDoozle_Value()
+     */
+    String getValue();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Doozle#getValue <em>Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Value</em>' attribute.
-   * @see #getValue()
-   * @generated
-   */
-  void setValue(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Doozle#getValue <em>Value</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Value</em>' attribute.
+     * @generated
+     * @see #getValue()
+     */
+    void setValue(String value);
 
 } // Doozle

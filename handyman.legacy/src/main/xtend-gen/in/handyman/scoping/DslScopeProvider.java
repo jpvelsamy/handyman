@@ -5,7 +5,7 @@ package in.handyman.scoping;
 
 /**
  * This class contains custom scoping description.
- * 
+ * <p>
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#scoping
  * on how and when to use it.
  */

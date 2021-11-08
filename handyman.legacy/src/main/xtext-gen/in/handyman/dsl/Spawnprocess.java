@@ -17,54 +17,57 @@ package in.handyman.dsl;
  *   <li>{@link in.handyman.dsl.Spawnprocess#getSource <em>Source</em>}</li>
  * </ul>
  *
- * @see in.handyman.dsl.DslPackage#getSpawnprocess()
  * @model
  * @generated
+ * @see in.handyman.dsl.DslPackage#getSpawnprocess()
  */
-public interface Spawnprocess extends Action
-{
-  /**
-   * Returns the value of the '<em><b>Target</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Target</em>' attribute.
-   * @see #setTarget(String)
-   * @see in.handyman.dsl.DslPackage#getSpawnprocess_Target()
-   * @model
-   * @generated
-   */
-  String getTarget();
+public interface Spawnprocess extends Action {
+    /**
+     * Returns the value of the '<em><b>Target</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Target</em>' attribute.
+     * @model
+     * @generated
+     * @see #setTarget(String)
+     * @see in.handyman.dsl.DslPackage#getSpawnprocess_Target()
+     */
+    String getTarget();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Spawnprocess#getTarget <em>Target</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Target</em>' attribute.
-   * @see #getTarget()
-   * @generated
-   */
-  void setTarget(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Spawnprocess#getTarget <em>Target</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Target</em>' attribute.
+     * @generated
+     * @see #getTarget()
+     */
+    void setTarget(String value);
 
-  /**
-   * Returns the value of the '<em><b>Source</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Source</em>' attribute.
-   * @see #setSource(String)
-   * @see in.handyman.dsl.DslPackage#getSpawnprocess_Source()
-   * @model
-   * @generated
-   */
-  String getSource();
+    /**
+     * Returns the value of the '<em><b>Source</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Source</em>' attribute.
+     * @model
+     * @generated
+     * @see #setSource(String)
+     * @see in.handyman.dsl.DslPackage#getSpawnprocess_Source()
+     */
+    String getSource();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Spawnprocess#getSource <em>Source</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Source</em>' attribute.
-   * @see #getSource()
-   * @generated
-   */
-  void setSource(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Spawnprocess#getSource <em>Source</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Source</em>' attribute.
+     * @generated
+     * @see #getSource()
+     */
+    void setSource(String value);
 
 } // Spawnprocess

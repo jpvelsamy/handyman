@@ -17,7 +17,7 @@ class TransformAction extends in.handyman.command.Action with LazyLogging {
   val auditMarker = "TRANSFORM";
   val aMarker = MarkerFactory.getMarker(auditMarker);
 
-  def execute(context: Context, action: Action, actionId:Integer): Context = {
+  def execute(context: Context, action: Action, actionId: Integer): Context = {
     val transformAsIs = action.asInstanceOf[in.handyman.dsl.Transform]
     val transform: in.handyman.dsl.Transform = CommandProxy.createProxy(transformAsIs, classOf[in.handyman.dsl.Transform], context)
 
@@ -25,7 +25,7 @@ class TransformAction extends in.handyman.command.Action with LazyLogging {
     val name = transform.getName
     val id = context.getValue("process-id")
     val sqlList = transform.getValue
-    
+
     logger.info(s"Transform action input variables id:$id,name: $name, source-database:$dbSrc ")
     logger.info(s"Sql input post parameter ingestion \n $sqlList")
     detailMap.put("dbSrc", dbSrc)
@@ -43,7 +43,7 @@ class TransformAction extends in.handyman.command.Action with LazyLogging {
           if (!sql.trim.isEmpty()) {
             val sqlToExecute = sql.trim
             logger.info(s"Transform with id:$id, executing script $sqlToExecute")
-            val statementId = AuditService.insertStatementAudit(actionId, "transform->"+name, context.getValue("process-name"))
+            val statementId = AuditService.insertStatementAudit(actionId, "transform->" + name, context.getValue("process-name"))
             try {
               val rowCount = stmt.executeUpdate(sql.trim)
               val warnings = ExceptionUtil.completeSQLWarning(stmt.getWarnings)
@@ -54,19 +54,19 @@ class TransformAction extends in.handyman.command.Action with LazyLogging {
               logger.info(aMarker, "Transform id# {}, executed script {} rows returned {}", statementId.toString(), sql.trim(), rowCount.toString())
               stmt.clearWarnings();
             } catch {
-              
-              case ex:SQLSyntaxErrorException=>{
+
+              case ex: SQLSyntaxErrorException => {
                 logger.error(aMarker, "Stopping execution, General Error executing sql for {} with for campaign {}", sql, ex)
                 detailMap.put(sql.trim + ".exception", ExceptionUtil.completeStackTraceex(ex))
                 throw ex
               }
-              
+
               case ex: SQLException => {
                 logger.error(aMarker, "Continuing to execute, even though SQL Error executing sql for {} ", sql, ex)
                 detailMap.put(sql.trim + ".exception", ExceptionUtil.completeStackTraceex(ex))
-                
+
               }
-              
+
               case ex: Throwable => {
                 logger.error(aMarker, "Stopping execution, General Error iexecuting sql for {} with for campaign {}", sql, ex)
                 detailMap.put(sql.trim + ".exception", ExceptionUtil.completeStackTraceex(ex))

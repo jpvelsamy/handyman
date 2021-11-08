@@ -19,98 +19,105 @@ package in.handyman.dsl;
  *   <li>{@link in.handyman.dsl.ClickSendSms#getValue <em>Value</em>}</li>
  * </ul>
  *
- * @see in.handyman.dsl.DslPackage#getClickSendSms()
  * @model
  * @generated
+ * @see in.handyman.dsl.DslPackage#getClickSendSms()
  */
-public interface ClickSendSms extends Action
-{
-  /**
-   * Returns the value of the '<em><b>Userid</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Userid</em>' attribute.
-   * @see #setUserid(String)
-   * @see in.handyman.dsl.DslPackage#getClickSendSms_Userid()
-   * @model
-   * @generated
-   */
-  String getUserid();
+public interface ClickSendSms extends Action {
+    /**
+     * Returns the value of the '<em><b>Userid</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Userid</em>' attribute.
+     * @model
+     * @generated
+     * @see #setUserid(String)
+     * @see in.handyman.dsl.DslPackage#getClickSendSms_Userid()
+     */
+    String getUserid();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.ClickSendSms#getUserid <em>Userid</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Userid</em>' attribute.
-   * @see #getUserid()
-   * @generated
-   */
-  void setUserid(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.ClickSendSms#getUserid <em>Userid</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Userid</em>' attribute.
+     * @generated
+     * @see #getUserid()
+     */
+    void setUserid(String value);
 
-  /**
-   * Returns the value of the '<em><b>Security Key</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Security Key</em>' attribute.
-   * @see #setSecurityKey(String)
-   * @see in.handyman.dsl.DslPackage#getClickSendSms_SecurityKey()
-   * @model
-   * @generated
-   */
-  String getSecurityKey();
+    /**
+     * Returns the value of the '<em><b>Security Key</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Security Key</em>' attribute.
+     * @model
+     * @generated
+     * @see #setSecurityKey(String)
+     * @see in.handyman.dsl.DslPackage#getClickSendSms_SecurityKey()
+     */
+    String getSecurityKey();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.ClickSendSms#getSecurityKey <em>Security Key</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Security Key</em>' attribute.
-   * @see #getSecurityKey()
-   * @generated
-   */
-  void setSecurityKey(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.ClickSendSms#getSecurityKey <em>Security Key</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Security Key</em>' attribute.
+     * @generated
+     * @see #getSecurityKey()
+     */
+    void setSecurityKey(String value);
 
-  /**
-   * Returns the value of the '<em><b>Target</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Target</em>' attribute.
-   * @see #setTarget(String)
-   * @see in.handyman.dsl.DslPackage#getClickSendSms_Target()
-   * @model
-   * @generated
-   */
-  String getTarget();
+    /**
+     * Returns the value of the '<em><b>Target</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Target</em>' attribute.
+     * @model
+     * @generated
+     * @see #setTarget(String)
+     * @see in.handyman.dsl.DslPackage#getClickSendSms_Target()
+     */
+    String getTarget();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.ClickSendSms#getTarget <em>Target</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Target</em>' attribute.
-   * @see #getTarget()
-   * @generated
-   */
-  void setTarget(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.ClickSendSms#getTarget <em>Target</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Target</em>' attribute.
+     * @generated
+     * @see #getTarget()
+     */
+    void setTarget(String value);
 
-  /**
-   * Returns the value of the '<em><b>Value</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Value</em>' attribute.
-   * @see #setValue(String)
-   * @see in.handyman.dsl.DslPackage#getClickSendSms_Value()
-   * @model
-   * @generated
-   */
-  String getValue();
+    /**
+     * Returns the value of the '<em><b>Value</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Value</em>' attribute.
+     * @model
+     * @generated
+     * @see #setValue(String)
+     * @see in.handyman.dsl.DslPackage#getClickSendSms_Value()
+     */
+    String getValue();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.ClickSendSms#getValue <em>Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Value</em>' attribute.
-   * @see #getValue()
-   * @generated
-   */
-  void setValue(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.ClickSendSms#getValue <em>Value</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Value</em>' attribute.
+     * @generated
+     * @see #getValue()
+     */
+    void setValue(String value);
 
 } // ClickSendSms

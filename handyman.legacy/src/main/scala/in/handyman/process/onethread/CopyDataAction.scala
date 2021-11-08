@@ -34,8 +34,8 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
   val rowQueueMap: LinkedHashMap[Int, BlockingQueue[Row]] = new LinkedHashMap[Int, BlockingQueue[Row]];
   val executor: ExecutorService = Executors.newCachedThreadPool;
   val detailMap = new java.util.HashMap[String, String]
-  var rowsProcessed: AtomicInteger = new AtomicInteger(0)
   val rand: Random = new Random()
+  var rowsProcessed: AtomicInteger = new AtomicInteger(0)
 
   def execute(context: in.handyman.command.Context, action: in.handyman.dsl.Action, actionId: Integer): in.handyman.command.Context = {
 
@@ -239,22 +239,21 @@ class CopyDataAction extends in.handyman.command.Action with LazyLogging {
     column
   }
 
-  def executeIf(context: in.handyman.command.Context, action: in.handyman.dsl.Action): Boolean =
-    {
-      val copyDataAsIs: in.handyman.dsl.Copydata = action.asInstanceOf[in.handyman.dsl.Copydata]
-      val copyData: in.handyman.dsl.Copydata = CommandProxy.createProxy(copyDataAsIs, classOf[in.handyman.dsl.Copydata], context)
+  def executeIf(context: in.handyman.command.Context, action: in.handyman.dsl.Action): Boolean = {
+    val copyDataAsIs: in.handyman.dsl.Copydata = action.asInstanceOf[in.handyman.dsl.Copydata]
+    val copyData: in.handyman.dsl.Copydata = CommandProxy.createProxy(copyDataAsIs, classOf[in.handyman.dsl.Copydata], context)
 
-      val expression = copyData.getCondition
-      try {
-        val output = ParameterisationEngine.doYieldtoTrue(expression)
-        detailMap.putIfAbsent("condition-output", output.toString())
-        output
-      } finally {
-        if (expression != null)
-          detailMap.putIfAbsent("condition", "LHS=" + expression.getLhs + ", Operator=" + expression.getOperator + ", RHS=" + expression.getRhs)
-      }
-
+    val expression = copyData.getCondition
+    try {
+      val output = ParameterisationEngine.doYieldtoTrue(expression)
+      detailMap.putIfAbsent("condition-output", output.toString())
+      output
+    } finally {
+      if (expression != null)
+        detailMap.putIfAbsent("condition", "LHS=" + expression.getLhs + ", Operator=" + expression.getOperator + ", RHS=" + expression.getRhs)
     }
+
+  }
 
   def generateAudit(): java.util.Map[String, String] = {
     detailMap

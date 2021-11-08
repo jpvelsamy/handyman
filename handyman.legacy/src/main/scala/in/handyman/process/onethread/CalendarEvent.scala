@@ -19,13 +19,12 @@ class CalendarEvent extends Serializable {
 
   @BeanProperty
   var contactDetails: ArrayList[String] = new java.util.ArrayList[String]()
-  
+
   @BeanProperty
-  var startDate:Date=new Date(System.currentTimeMillis())
-  
+  var startDate: Date = new Date(System.currentTimeMillis())
+
   @BeanProperty
-  var endDate:String="NA"
-  
-  
+  var endDate: String = "NA"
+
 
 }

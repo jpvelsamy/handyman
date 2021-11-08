@@ -18,76 +18,81 @@ package in.handyman.dsl;
  *   <li>{@link in.handyman.dsl.SlackPUT#getValue <em>Value</em>}</li>
  * </ul>
  *
- * @see in.handyman.dsl.DslPackage#getSlackPUT()
  * @model
  * @generated
+ * @see in.handyman.dsl.DslPackage#getSlackPUT()
  */
-public interface SlackPUT extends Action
-{
-  /**
-   * Returns the value of the '<em><b>Team</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Team</em>' attribute.
-   * @see #setTeam(String)
-   * @see in.handyman.dsl.DslPackage#getSlackPUT_Team()
-   * @model
-   * @generated
-   */
-  String getTeam();
+public interface SlackPUT extends Action {
+    /**
+     * Returns the value of the '<em><b>Team</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Team</em>' attribute.
+     * @model
+     * @generated
+     * @see #setTeam(String)
+     * @see in.handyman.dsl.DslPackage#getSlackPUT_Team()
+     */
+    String getTeam();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.SlackPUT#getTeam <em>Team</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Team</em>' attribute.
-   * @see #getTeam()
-   * @generated
-   */
-  void setTeam(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.SlackPUT#getTeam <em>Team</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Team</em>' attribute.
+     * @generated
+     * @see #getTeam()
+     */
+    void setTeam(String value);
 
-  /**
-   * Returns the value of the '<em><b>Channel</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Channel</em>' attribute.
-   * @see #setChannel(String)
-   * @see in.handyman.dsl.DslPackage#getSlackPUT_Channel()
-   * @model
-   * @generated
-   */
-  String getChannel();
+    /**
+     * Returns the value of the '<em><b>Channel</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Channel</em>' attribute.
+     * @model
+     * @generated
+     * @see #setChannel(String)
+     * @see in.handyman.dsl.DslPackage#getSlackPUT_Channel()
+     */
+    String getChannel();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.SlackPUT#getChannel <em>Channel</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Channel</em>' attribute.
-   * @see #getChannel()
-   * @generated
-   */
-  void setChannel(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.SlackPUT#getChannel <em>Channel</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Channel</em>' attribute.
+     * @generated
+     * @see #getChannel()
+     */
+    void setChannel(String value);
 
-  /**
-   * Returns the value of the '<em><b>Value</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Value</em>' attribute.
-   * @see #setValue(String)
-   * @see in.handyman.dsl.DslPackage#getSlackPUT_Value()
-   * @model
-   * @generated
-   */
-  String getValue();
+    /**
+     * Returns the value of the '<em><b>Value</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Value</em>' attribute.
+     * @model
+     * @generated
+     * @see #setValue(String)
+     * @see in.handyman.dsl.DslPackage#getSlackPUT_Value()
+     */
+    String getValue();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.SlackPUT#getValue <em>Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Value</em>' attribute.
-   * @see #getValue()
-   * @generated
-   */
-  void setValue(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.SlackPUT#getValue <em>Value</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Value</em>' attribute.
+     * @generated
+     * @see #getValue()
+     */
+    void setValue(String value);
 
 } // SlackPUT

@@ -1,6 +1,7 @@
 # Handyman Legacy
 
 ## To Clean, Compile and build, run the below maven commands
+
 1. Inside handyman.legacy
    > mvn clean compile install package -Dmaven.test.skip=true
 2. Inside handyman.legacy
@@ -13,6 +14,7 @@
 # Handyman Raven
 
 ## To Clean, Compile and build, run the below maven commands
+
 1. Inside handyman.raven
    > mvn clean antlr4:antlr4 test -Dtest=ActionGenerationTest#generate compile install
 

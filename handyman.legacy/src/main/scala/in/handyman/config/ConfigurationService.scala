@@ -94,6 +94,13 @@ object ConfigurationService extends LazyLogging {
     valueList
   }
 
+  def getAllConfig(instanceName: String): scala.collection.immutable.Map[String, String] = {
+    val conn = DriverManager.getConnection(url, user, password)
+    val processName = findProcessName(instanceName)
+    val valueList = getAllBatchConfigValue(conn) ++ getAllProcessConfigValue(conn, processName) ++ getAllInstanceConfigValue(conn, instanceName)
+    valueList
+  }
+
   private def getAllBatchConfigValue(conn: Connection): scala.collection.immutable.HashMap[String, String] = {
     val stmt = conn.createStatement()
     var configInfo = scala.collection.immutable.HashMap[String, String]()
@@ -110,13 +117,6 @@ object ConfigurationService extends LazyLogging {
       stmt.closeOnCompletion()
     }
     configInfo
-  }
-
-  def getAllConfig(instanceName: String): scala.collection.immutable.Map[String, String] = {
-    val conn = DriverManager.getConnection(url, user, password)
-    val processName = findProcessName(instanceName)
-    val valueList = getAllBatchConfigValue(conn) ++ getAllProcessConfigValue(conn, processName) ++ getAllInstanceConfigValue(conn, instanceName)
-    valueList
   }
 
   private def getAllProcessConfigValue(conn: Connection, processFqn: String): scala.collection.immutable.HashMap[String, String] = {

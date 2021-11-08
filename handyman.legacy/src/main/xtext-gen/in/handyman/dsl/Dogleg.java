@@ -18,44 +18,46 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link in.handyman.dsl.Dogleg#getProcessList <em>Process List</em>}</li>
  * </ul>
  *
- * @see in.handyman.dsl.DslPackage#getDogleg()
  * @model
  * @generated
+ * @see in.handyman.dsl.DslPackage#getDogleg()
  */
-public interface Dogleg extends Action
-{
-  /**
-   * Returns the value of the '<em><b>Inherit Context</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Inherit Context</em>' attribute.
-   * @see #setInheritContext(String)
-   * @see in.handyman.dsl.DslPackage#getDogleg_InheritContext()
-   * @model
-   * @generated
-   */
-  String getInheritContext();
+public interface Dogleg extends Action {
+    /**
+     * Returns the value of the '<em><b>Inherit Context</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Inherit Context</em>' attribute.
+     * @model
+     * @generated
+     * @see #setInheritContext(String)
+     * @see in.handyman.dsl.DslPackage#getDogleg_InheritContext()
+     */
+    String getInheritContext();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Dogleg#getInheritContext <em>Inherit Context</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Inherit Context</em>' attribute.
-   * @see #getInheritContext()
-   * @generated
-   */
-  void setInheritContext(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Dogleg#getInheritContext <em>Inherit Context</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Inherit Context</em>' attribute.
+     * @generated
+     * @see #getInheritContext()
+     */
+    void setInheritContext(String value);
 
-  /**
-   * Returns the value of the '<em><b>Process List</b></em>' containment reference list.
-   * The list contents are of type {@link in.handyman.dsl.StartProcess}.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Process List</em>' containment reference list.
-   * @see in.handyman.dsl.DslPackage#getDogleg_ProcessList()
-   * @model containment="true"
-   * @generated
-   */
-  EList<StartProcess> getProcessList();
+    /**
+     * Returns the value of the '<em><b>Process List</b></em>' containment reference list.
+     * The list contents are of type {@link in.handyman.dsl.StartProcess}.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Process List</em>' containment reference list.
+     * @model containment="true"
+     * @generated
+     * @see in.handyman.dsl.DslPackage#getDogleg_ProcessList()
+     */
+    EList<StartProcess> getProcessList();
 
 } // Dogleg

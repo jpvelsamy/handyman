@@ -19,76 +19,81 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link in.handyman.dsl.Expression#getRhs <em>Rhs</em>}</li>
  * </ul>
  *
- * @see in.handyman.dsl.DslPackage#getExpression()
  * @model
  * @generated
+ * @see in.handyman.dsl.DslPackage#getExpression()
  */
-public interface Expression extends EObject
-{
-  /**
-   * Returns the value of the '<em><b>Lhs</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Lhs</em>' attribute.
-   * @see #setLhs(String)
-   * @see in.handyman.dsl.DslPackage#getExpression_Lhs()
-   * @model
-   * @generated
-   */
-  String getLhs();
+public interface Expression extends EObject {
+    /**
+     * Returns the value of the '<em><b>Lhs</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Lhs</em>' attribute.
+     * @model
+     * @generated
+     * @see #setLhs(String)
+     * @see in.handyman.dsl.DslPackage#getExpression_Lhs()
+     */
+    String getLhs();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Expression#getLhs <em>Lhs</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Lhs</em>' attribute.
-   * @see #getLhs()
-   * @generated
-   */
-  void setLhs(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Expression#getLhs <em>Lhs</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Lhs</em>' attribute.
+     * @generated
+     * @see #getLhs()
+     */
+    void setLhs(String value);
 
-  /**
-   * Returns the value of the '<em><b>Operator</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Operator</em>' attribute.
-   * @see #setOperator(String)
-   * @see in.handyman.dsl.DslPackage#getExpression_Operator()
-   * @model
-   * @generated
-   */
-  String getOperator();
+    /**
+     * Returns the value of the '<em><b>Operator</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Operator</em>' attribute.
+     * @model
+     * @generated
+     * @see #setOperator(String)
+     * @see in.handyman.dsl.DslPackage#getExpression_Operator()
+     */
+    String getOperator();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Expression#getOperator <em>Operator</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Operator</em>' attribute.
-   * @see #getOperator()
-   * @generated
-   */
-  void setOperator(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Expression#getOperator <em>Operator</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Operator</em>' attribute.
+     * @generated
+     * @see #getOperator()
+     */
+    void setOperator(String value);
 
-  /**
-   * Returns the value of the '<em><b>Rhs</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Rhs</em>' attribute.
-   * @see #setRhs(String)
-   * @see in.handyman.dsl.DslPackage#getExpression_Rhs()
-   * @model
-   * @generated
-   */
-  String getRhs();
+    /**
+     * Returns the value of the '<em><b>Rhs</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Rhs</em>' attribute.
+     * @model
+     * @generated
+     * @see #setRhs(String)
+     * @see in.handyman.dsl.DslPackage#getExpression_Rhs()
+     */
+    String getRhs();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Expression#getRhs <em>Rhs</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Rhs</em>' attribute.
-   * @see #getRhs()
-   * @generated
-   */
-  void setRhs(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Expression#getRhs <em>Rhs</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Rhs</em>' attribute.
+     * @generated
+     * @see #getRhs()
+     */
+    void setRhs(String value);
 
 } // Expression

@@ -30,440 +30,436 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *
  * @generated
  */
-public class TrelloGETImpl extends ActionImpl implements TrelloGET
-{
-  /**
-   * The default value of the '{@link #getAuthtoken() <em>Authtoken</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getAuthtoken()
-   * @generated
-   * @ordered
-   */
-  protected static final String AUTHTOKEN_EDEFAULT = null;
+public class TrelloGETImpl extends ActionImpl implements TrelloGET {
+    /**
+     * The default value of the '{@link #getAuthtoken() <em>Authtoken</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getAuthtoken()
+     */
+    protected static final String AUTHTOKEN_EDEFAULT = null;
+    /**
+     * The default value of the '{@link #getKey() <em>Key</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getKey()
+     */
+    protected static final String KEY_EDEFAULT = null;
+    /**
+     * The default value of the '{@link #getUseraccount() <em>Useraccount</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getUseraccount()
+     */
+    protected static final String USERACCOUNT_EDEFAULT = null;
+    /**
+     * The default value of the '{@link #getBoard() <em>Board</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getBoard()
+     */
+    protected static final String BOARD_EDEFAULT = null;
+    /**
+     * The default value of the '{@link #getTarget() <em>Target</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getTarget()
+     */
+    protected static final String TARGET_EDEFAULT = null;
+    /**
+     * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getValue()
+     */
+    protected static final String VALUE_EDEFAULT = null;
+    /**
+     * The cached value of the '{@link #getAuthtoken() <em>Authtoken</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getAuthtoken()
+     */
+    protected String authtoken = AUTHTOKEN_EDEFAULT;
+    /**
+     * The cached value of the '{@link #getKey() <em>Key</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getKey()
+     */
+    protected String key = KEY_EDEFAULT;
+    /**
+     * The cached value of the '{@link #getUseraccount() <em>Useraccount</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getUseraccount()
+     */
+    protected String useraccount = USERACCOUNT_EDEFAULT;
+    /**
+     * The cached value of the '{@link #getBoard() <em>Board</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getBoard()
+     */
+    protected String board = BOARD_EDEFAULT;
+    /**
+     * The cached value of the '{@link #getTarget() <em>Target</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getTarget()
+     */
+    protected String target = TARGET_EDEFAULT;
+    /**
+     * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getValue()
+     */
+    protected String value = VALUE_EDEFAULT;
 
-  /**
-   * The cached value of the '{@link #getAuthtoken() <em>Authtoken</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getAuthtoken()
-   * @generated
-   * @ordered
-   */
-  protected String authtoken = AUTHTOKEN_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getKey() <em>Key</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getKey()
-   * @generated
-   * @ordered
-   */
-  protected static final String KEY_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getKey() <em>Key</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getKey()
-   * @generated
-   * @ordered
-   */
-  protected String key = KEY_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getUseraccount() <em>Useraccount</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getUseraccount()
-   * @generated
-   * @ordered
-   */
-  protected static final String USERACCOUNT_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getUseraccount() <em>Useraccount</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getUseraccount()
-   * @generated
-   * @ordered
-   */
-  protected String useraccount = USERACCOUNT_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getBoard() <em>Board</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getBoard()
-   * @generated
-   * @ordered
-   */
-  protected static final String BOARD_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getBoard() <em>Board</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getBoard()
-   * @generated
-   * @ordered
-   */
-  protected String board = BOARD_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getTarget() <em>Target</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTarget()
-   * @generated
-   * @ordered
-   */
-  protected static final String TARGET_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getTarget() <em>Target</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTarget()
-   * @generated
-   * @ordered
-   */
-  protected String target = TARGET_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getValue()
-   * @generated
-   * @ordered
-   */
-  protected static final String VALUE_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getValue()
-   * @generated
-   * @ordered
-   */
-  protected String value = VALUE_EDEFAULT;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  protected TrelloGETImpl()
-  {
-    super();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  protected EClass eStaticClass()
-  {
-    return DslPackage.Literals.TRELLO_GET;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getAuthtoken()
-  {
-    return authtoken;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setAuthtoken(String newAuthtoken)
-  {
-    String oldAuthtoken = authtoken;
-    authtoken = newAuthtoken;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.TRELLO_GET__AUTHTOKEN, oldAuthtoken, authtoken));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getKey()
-  {
-    return key;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setKey(String newKey)
-  {
-    String oldKey = key;
-    key = newKey;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.TRELLO_GET__KEY, oldKey, key));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getUseraccount()
-  {
-    return useraccount;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setUseraccount(String newUseraccount)
-  {
-    String oldUseraccount = useraccount;
-    useraccount = newUseraccount;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.TRELLO_GET__USERACCOUNT, oldUseraccount, useraccount));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getBoard()
-  {
-    return board;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setBoard(String newBoard)
-  {
-    String oldBoard = board;
-    board = newBoard;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.TRELLO_GET__BOARD, oldBoard, board));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getTarget()
-  {
-    return target;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setTarget(String newTarget)
-  {
-    String oldTarget = target;
-    target = newTarget;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.TRELLO_GET__TARGET, oldTarget, target));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getValue()
-  {
-    return value;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setValue(String newValue)
-  {
-    String oldValue = value;
-    value = newValue;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.TRELLO_GET__VALUE, oldValue, value));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public Object eGet(int featureID, boolean resolve, boolean coreType)
-  {
-    switch (featureID)
-    {
-      case DslPackage.TRELLO_GET__AUTHTOKEN:
-        return getAuthtoken();
-      case DslPackage.TRELLO_GET__KEY:
-        return getKey();
-      case DslPackage.TRELLO_GET__USERACCOUNT:
-        return getUseraccount();
-      case DslPackage.TRELLO_GET__BOARD:
-        return getBoard();
-      case DslPackage.TRELLO_GET__TARGET:
-        return getTarget();
-      case DslPackage.TRELLO_GET__VALUE:
-        return getValue();
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    protected TrelloGETImpl() {
+        super();
     }
-    return super.eGet(featureID, resolve, coreType);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void eSet(int featureID, Object newValue)
-  {
-    switch (featureID)
-    {
-      case DslPackage.TRELLO_GET__AUTHTOKEN:
-        setAuthtoken((String)newValue);
-        return;
-      case DslPackage.TRELLO_GET__KEY:
-        setKey((String)newValue);
-        return;
-      case DslPackage.TRELLO_GET__USERACCOUNT:
-        setUseraccount((String)newValue);
-        return;
-      case DslPackage.TRELLO_GET__BOARD:
-        setBoard((String)newValue);
-        return;
-      case DslPackage.TRELLO_GET__TARGET:
-        setTarget((String)newValue);
-        return;
-      case DslPackage.TRELLO_GET__VALUE:
-        setValue((String)newValue);
-        return;
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return DslPackage.Literals.TRELLO_GET;
     }
-    super.eSet(featureID, newValue);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void eUnset(int featureID)
-  {
-    switch (featureID)
-    {
-      case DslPackage.TRELLO_GET__AUTHTOKEN:
-        setAuthtoken(AUTHTOKEN_EDEFAULT);
-        return;
-      case DslPackage.TRELLO_GET__KEY:
-        setKey(KEY_EDEFAULT);
-        return;
-      case DslPackage.TRELLO_GET__USERACCOUNT:
-        setUseraccount(USERACCOUNT_EDEFAULT);
-        return;
-      case DslPackage.TRELLO_GET__BOARD:
-        setBoard(BOARD_EDEFAULT);
-        return;
-      case DslPackage.TRELLO_GET__TARGET:
-        setTarget(TARGET_EDEFAULT);
-        return;
-      case DslPackage.TRELLO_GET__VALUE:
-        setValue(VALUE_EDEFAULT);
-        return;
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public Object eGet(int featureID, boolean resolve, boolean coreType) {
+        switch (featureID) {
+            case DslPackage.TRELLO_GET__AUTHTOKEN:
+                return getAuthtoken();
+            case DslPackage.TRELLO_GET__KEY:
+                return getKey();
+            case DslPackage.TRELLO_GET__USERACCOUNT:
+                return getUseraccount();
+            case DslPackage.TRELLO_GET__BOARD:
+                return getBoard();
+            case DslPackage.TRELLO_GET__TARGET:
+                return getTarget();
+            case DslPackage.TRELLO_GET__VALUE:
+                return getValue();
+        }
+        return super.eGet(featureID, resolve, coreType);
     }
-    super.eUnset(featureID);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean eIsSet(int featureID)
-  {
-    switch (featureID)
-    {
-      case DslPackage.TRELLO_GET__AUTHTOKEN:
-        return AUTHTOKEN_EDEFAULT == null ? authtoken != null : !AUTHTOKEN_EDEFAULT.equals(authtoken);
-      case DslPackage.TRELLO_GET__KEY:
-        return KEY_EDEFAULT == null ? key != null : !KEY_EDEFAULT.equals(key);
-      case DslPackage.TRELLO_GET__USERACCOUNT:
-        return USERACCOUNT_EDEFAULT == null ? useraccount != null : !USERACCOUNT_EDEFAULT.equals(useraccount);
-      case DslPackage.TRELLO_GET__BOARD:
-        return BOARD_EDEFAULT == null ? board != null : !BOARD_EDEFAULT.equals(board);
-      case DslPackage.TRELLO_GET__TARGET:
-        return TARGET_EDEFAULT == null ? target != null : !TARGET_EDEFAULT.equals(target);
-      case DslPackage.TRELLO_GET__VALUE:
-        return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getAuthtoken() {
+        return authtoken;
     }
-    return super.eIsSet(featureID);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String toString()
-  {
-    if (eIsProxy()) return super.toString();
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setAuthtoken(String newAuthtoken) {
+        String oldAuthtoken = authtoken;
+        authtoken = newAuthtoken;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.TRELLO_GET__AUTHTOKEN, oldAuthtoken, authtoken));
+    }
 
-    StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (authtoken: ");
-    result.append(authtoken);
-    result.append(", key: ");
-    result.append(key);
-    result.append(", useraccount: ");
-    result.append(useraccount);
-    result.append(", board: ");
-    result.append(board);
-    result.append(", target: ");
-    result.append(target);
-    result.append(", value: ");
-    result.append(value);
-    result.append(')');
-    return result.toString();
-  }
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getKey() {
+        return key;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setKey(String newKey) {
+        String oldKey = key;
+        key = newKey;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.TRELLO_GET__KEY, oldKey, key));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getUseraccount() {
+        return useraccount;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setUseraccount(String newUseraccount) {
+        String oldUseraccount = useraccount;
+        useraccount = newUseraccount;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.TRELLO_GET__USERACCOUNT, oldUseraccount, useraccount));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getBoard() {
+        return board;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setBoard(String newBoard) {
+        String oldBoard = board;
+        board = newBoard;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.TRELLO_GET__BOARD, oldBoard, board));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getTarget() {
+        return target;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setTarget(String newTarget) {
+        String oldTarget = target;
+        target = newTarget;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.TRELLO_GET__TARGET, oldTarget, target));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getValue() {
+        return value;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setValue(String newValue) {
+        String oldValue = value;
+        value = newValue;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.TRELLO_GET__VALUE, oldValue, value));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void eSet(int featureID, Object newValue) {
+        switch (featureID) {
+            case DslPackage.TRELLO_GET__AUTHTOKEN:
+                setAuthtoken((String) newValue);
+                return;
+            case DslPackage.TRELLO_GET__KEY:
+                setKey((String) newValue);
+                return;
+            case DslPackage.TRELLO_GET__USERACCOUNT:
+                setUseraccount((String) newValue);
+                return;
+            case DslPackage.TRELLO_GET__BOARD:
+                setBoard((String) newValue);
+                return;
+            case DslPackage.TRELLO_GET__TARGET:
+                setTarget((String) newValue);
+                return;
+            case DslPackage.TRELLO_GET__VALUE:
+                setValue((String) newValue);
+                return;
+        }
+        super.eSet(featureID, newValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void eUnset(int featureID) {
+        switch (featureID) {
+            case DslPackage.TRELLO_GET__AUTHTOKEN:
+                setAuthtoken(AUTHTOKEN_EDEFAULT);
+                return;
+            case DslPackage.TRELLO_GET__KEY:
+                setKey(KEY_EDEFAULT);
+                return;
+            case DslPackage.TRELLO_GET__USERACCOUNT:
+                setUseraccount(USERACCOUNT_EDEFAULT);
+                return;
+            case DslPackage.TRELLO_GET__BOARD:
+                setBoard(BOARD_EDEFAULT);
+                return;
+            case DslPackage.TRELLO_GET__TARGET:
+                setTarget(TARGET_EDEFAULT);
+                return;
+            case DslPackage.TRELLO_GET__VALUE:
+                setValue(VALUE_EDEFAULT);
+                return;
+        }
+        super.eUnset(featureID);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public boolean eIsSet(int featureID) {
+        switch (featureID) {
+            case DslPackage.TRELLO_GET__AUTHTOKEN:
+                return AUTHTOKEN_EDEFAULT == null ? authtoken != null : !AUTHTOKEN_EDEFAULT.equals(authtoken);
+            case DslPackage.TRELLO_GET__KEY:
+                return KEY_EDEFAULT == null ? key != null : !KEY_EDEFAULT.equals(key);
+            case DslPackage.TRELLO_GET__USERACCOUNT:
+                return USERACCOUNT_EDEFAULT == null ? useraccount != null : !USERACCOUNT_EDEFAULT.equals(useraccount);
+            case DslPackage.TRELLO_GET__BOARD:
+                return BOARD_EDEFAULT == null ? board != null : !BOARD_EDEFAULT.equals(board);
+            case DslPackage.TRELLO_GET__TARGET:
+                return TARGET_EDEFAULT == null ? target != null : !TARGET_EDEFAULT.equals(target);
+            case DslPackage.TRELLO_GET__VALUE:
+                return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
+        }
+        return super.eIsSet(featureID);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String toString() {
+        if (eIsProxy()) return super.toString();
+
+        StringBuilder result = new StringBuilder(super.toString());
+        result.append(" (authtoken: ");
+        result.append(authtoken);
+        result.append(", key: ");
+        result.append(key);
+        result.append(", useraccount: ");
+        result.append(useraccount);
+        result.append(", board: ");
+        result.append(board);
+        result.append(", target: ");
+        result.append(target);
+        result.append(", value: ");
+        result.append(value);
+        result.append(')');
+        return result.toString();
+    }
 
 } //TrelloGETImpl

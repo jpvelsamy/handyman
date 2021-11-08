@@ -20,44 +20,46 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link in.handyman.dsl.Try#getAction <em>Action</em>}</li>
  * </ul>
  *
- * @see in.handyman.dsl.DslPackage#getTry()
  * @model
  * @generated
+ * @see in.handyman.dsl.DslPackage#getTry()
  */
-public interface Try extends EObject
-{
-  /**
-   * Returns the value of the '<em><b>Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Name</em>' attribute.
-   * @see #setName(String)
-   * @see in.handyman.dsl.DslPackage#getTry_Name()
-   * @model
-   * @generated
-   */
-  String getName();
+public interface Try extends EObject {
+    /**
+     * Returns the value of the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Name</em>' attribute.
+     * @model
+     * @generated
+     * @see #setName(String)
+     * @see in.handyman.dsl.DslPackage#getTry_Name()
+     */
+    String getName();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Try#getName <em>Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Name</em>' attribute.
-   * @see #getName()
-   * @generated
-   */
-  void setName(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Try#getName <em>Name</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Name</em>' attribute.
+     * @generated
+     * @see #getName()
+     */
+    void setName(String value);
 
-  /**
-   * Returns the value of the '<em><b>Action</b></em>' containment reference list.
-   * The list contents are of type {@link in.handyman.dsl.Action}.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Action</em>' containment reference list.
-   * @see in.handyman.dsl.DslPackage#getTry_Action()
-   * @model containment="true"
-   * @generated
-   */
-  EList<Action> getAction();
+    /**
+     * Returns the value of the '<em><b>Action</b></em>' containment reference list.
+     * The list contents are of type {@link in.handyman.dsl.Action}.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Action</em>' containment reference list.
+     * @model containment="true"
+     * @generated
+     * @see in.handyman.dsl.DslPackage#getTry_Action()
+     */
+    EList<Action> getAction();
 
 } // Try

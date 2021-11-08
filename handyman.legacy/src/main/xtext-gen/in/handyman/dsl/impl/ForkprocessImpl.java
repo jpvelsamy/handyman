@@ -29,383 +29,379 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *
  * @generated
  */
-public class ForkprocessImpl extends ActionImpl implements Forkprocess
-{
-  /**
-   * The default value of the '{@link #getTarget() <em>Target</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTarget()
-   * @generated
-   * @ordered
-   */
-  protected static final String TARGET_EDEFAULT = null;
+public class ForkprocessImpl extends ActionImpl implements Forkprocess {
+    /**
+     * The default value of the '{@link #getTarget() <em>Target</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getTarget()
+     */
+    protected static final String TARGET_EDEFAULT = null;
+    /**
+     * The default value of the '{@link #getSource() <em>Source</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getSource()
+     */
+    protected static final String SOURCE_EDEFAULT = null;
+    /**
+     * The default value of the '{@link #getDatasource() <em>Datasource</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getDatasource()
+     */
+    protected static final String DATASOURCE_EDEFAULT = null;
+    /**
+     * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getValue()
+     */
+    protected static final String VALUE_EDEFAULT = null;
+    /**
+     * The default value of the '{@link #getForkBatchSize() <em>Fork Batch Size</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getForkBatchSize()
+     */
+    protected static final String FORK_BATCH_SIZE_EDEFAULT = null;
+    /**
+     * The cached value of the '{@link #getTarget() <em>Target</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getTarget()
+     */
+    protected String target = TARGET_EDEFAULT;
+    /**
+     * The cached value of the '{@link #getSource() <em>Source</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getSource()
+     */
+    protected String source = SOURCE_EDEFAULT;
+    /**
+     * The cached value of the '{@link #getDatasource() <em>Datasource</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getDatasource()
+     */
+    protected String datasource = DATASOURCE_EDEFAULT;
+    /**
+     * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getValue()
+     */
+    protected String value = VALUE_EDEFAULT;
+    /**
+     * The cached value of the '{@link #getForkBatchSize() <em>Fork Batch Size</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getForkBatchSize()
+     */
+    protected String forkBatchSize = FORK_BATCH_SIZE_EDEFAULT;
 
-  /**
-   * The cached value of the '{@link #getTarget() <em>Target</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTarget()
-   * @generated
-   * @ordered
-   */
-  protected String target = TARGET_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getSource() <em>Source</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSource()
-   * @generated
-   * @ordered
-   */
-  protected static final String SOURCE_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getSource() <em>Source</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSource()
-   * @generated
-   * @ordered
-   */
-  protected String source = SOURCE_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getDatasource() <em>Datasource</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDatasource()
-   * @generated
-   * @ordered
-   */
-  protected static final String DATASOURCE_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getDatasource() <em>Datasource</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDatasource()
-   * @generated
-   * @ordered
-   */
-  protected String datasource = DATASOURCE_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getValue()
-   * @generated
-   * @ordered
-   */
-  protected static final String VALUE_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getValue()
-   * @generated
-   * @ordered
-   */
-  protected String value = VALUE_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getForkBatchSize() <em>Fork Batch Size</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getForkBatchSize()
-   * @generated
-   * @ordered
-   */
-  protected static final String FORK_BATCH_SIZE_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getForkBatchSize() <em>Fork Batch Size</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getForkBatchSize()
-   * @generated
-   * @ordered
-   */
-  protected String forkBatchSize = FORK_BATCH_SIZE_EDEFAULT;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  protected ForkprocessImpl()
-  {
-    super();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  protected EClass eStaticClass()
-  {
-    return DslPackage.Literals.FORKPROCESS;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getTarget()
-  {
-    return target;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setTarget(String newTarget)
-  {
-    String oldTarget = target;
-    target = newTarget;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.FORKPROCESS__TARGET, oldTarget, target));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getSource()
-  {
-    return source;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setSource(String newSource)
-  {
-    String oldSource = source;
-    source = newSource;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.FORKPROCESS__SOURCE, oldSource, source));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getDatasource()
-  {
-    return datasource;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setDatasource(String newDatasource)
-  {
-    String oldDatasource = datasource;
-    datasource = newDatasource;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.FORKPROCESS__DATASOURCE, oldDatasource, datasource));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getValue()
-  {
-    return value;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setValue(String newValue)
-  {
-    String oldValue = value;
-    value = newValue;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.FORKPROCESS__VALUE, oldValue, value));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getForkBatchSize()
-  {
-    return forkBatchSize;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setForkBatchSize(String newForkBatchSize)
-  {
-    String oldForkBatchSize = forkBatchSize;
-    forkBatchSize = newForkBatchSize;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.FORKPROCESS__FORK_BATCH_SIZE, oldForkBatchSize, forkBatchSize));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public Object eGet(int featureID, boolean resolve, boolean coreType)
-  {
-    switch (featureID)
-    {
-      case DslPackage.FORKPROCESS__TARGET:
-        return getTarget();
-      case DslPackage.FORKPROCESS__SOURCE:
-        return getSource();
-      case DslPackage.FORKPROCESS__DATASOURCE:
-        return getDatasource();
-      case DslPackage.FORKPROCESS__VALUE:
-        return getValue();
-      case DslPackage.FORKPROCESS__FORK_BATCH_SIZE:
-        return getForkBatchSize();
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    protected ForkprocessImpl() {
+        super();
     }
-    return super.eGet(featureID, resolve, coreType);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void eSet(int featureID, Object newValue)
-  {
-    switch (featureID)
-    {
-      case DslPackage.FORKPROCESS__TARGET:
-        setTarget((String)newValue);
-        return;
-      case DslPackage.FORKPROCESS__SOURCE:
-        setSource((String)newValue);
-        return;
-      case DslPackage.FORKPROCESS__DATASOURCE:
-        setDatasource((String)newValue);
-        return;
-      case DslPackage.FORKPROCESS__VALUE:
-        setValue((String)newValue);
-        return;
-      case DslPackage.FORKPROCESS__FORK_BATCH_SIZE:
-        setForkBatchSize((String)newValue);
-        return;
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return DslPackage.Literals.FORKPROCESS;
     }
-    super.eSet(featureID, newValue);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void eUnset(int featureID)
-  {
-    switch (featureID)
-    {
-      case DslPackage.FORKPROCESS__TARGET:
-        setTarget(TARGET_EDEFAULT);
-        return;
-      case DslPackage.FORKPROCESS__SOURCE:
-        setSource(SOURCE_EDEFAULT);
-        return;
-      case DslPackage.FORKPROCESS__DATASOURCE:
-        setDatasource(DATASOURCE_EDEFAULT);
-        return;
-      case DslPackage.FORKPROCESS__VALUE:
-        setValue(VALUE_EDEFAULT);
-        return;
-      case DslPackage.FORKPROCESS__FORK_BATCH_SIZE:
-        setForkBatchSize(FORK_BATCH_SIZE_EDEFAULT);
-        return;
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public Object eGet(int featureID, boolean resolve, boolean coreType) {
+        switch (featureID) {
+            case DslPackage.FORKPROCESS__TARGET:
+                return getTarget();
+            case DslPackage.FORKPROCESS__SOURCE:
+                return getSource();
+            case DslPackage.FORKPROCESS__DATASOURCE:
+                return getDatasource();
+            case DslPackage.FORKPROCESS__VALUE:
+                return getValue();
+            case DslPackage.FORKPROCESS__FORK_BATCH_SIZE:
+                return getForkBatchSize();
+        }
+        return super.eGet(featureID, resolve, coreType);
     }
-    super.eUnset(featureID);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean eIsSet(int featureID)
-  {
-    switch (featureID)
-    {
-      case DslPackage.FORKPROCESS__TARGET:
-        return TARGET_EDEFAULT == null ? target != null : !TARGET_EDEFAULT.equals(target);
-      case DslPackage.FORKPROCESS__SOURCE:
-        return SOURCE_EDEFAULT == null ? source != null : !SOURCE_EDEFAULT.equals(source);
-      case DslPackage.FORKPROCESS__DATASOURCE:
-        return DATASOURCE_EDEFAULT == null ? datasource != null : !DATASOURCE_EDEFAULT.equals(datasource);
-      case DslPackage.FORKPROCESS__VALUE:
-        return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
-      case DslPackage.FORKPROCESS__FORK_BATCH_SIZE:
-        return FORK_BATCH_SIZE_EDEFAULT == null ? forkBatchSize != null : !FORK_BATCH_SIZE_EDEFAULT.equals(forkBatchSize);
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getTarget() {
+        return target;
     }
-    return super.eIsSet(featureID);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String toString()
-  {
-    if (eIsProxy()) return super.toString();
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setTarget(String newTarget) {
+        String oldTarget = target;
+        target = newTarget;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.FORKPROCESS__TARGET, oldTarget, target));
+    }
 
-    StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (target: ");
-    result.append(target);
-    result.append(", source: ");
-    result.append(source);
-    result.append(", datasource: ");
-    result.append(datasource);
-    result.append(", value: ");
-    result.append(value);
-    result.append(", forkBatchSize: ");
-    result.append(forkBatchSize);
-    result.append(')');
-    return result.toString();
-  }
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getSource() {
+        return source;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setSource(String newSource) {
+        String oldSource = source;
+        source = newSource;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.FORKPROCESS__SOURCE, oldSource, source));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getDatasource() {
+        return datasource;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setDatasource(String newDatasource) {
+        String oldDatasource = datasource;
+        datasource = newDatasource;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.FORKPROCESS__DATASOURCE, oldDatasource, datasource));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getValue() {
+        return value;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setValue(String newValue) {
+        String oldValue = value;
+        value = newValue;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.FORKPROCESS__VALUE, oldValue, value));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getForkBatchSize() {
+        return forkBatchSize;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setForkBatchSize(String newForkBatchSize) {
+        String oldForkBatchSize = forkBatchSize;
+        forkBatchSize = newForkBatchSize;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.FORKPROCESS__FORK_BATCH_SIZE, oldForkBatchSize, forkBatchSize));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void eSet(int featureID, Object newValue) {
+        switch (featureID) {
+            case DslPackage.FORKPROCESS__TARGET:
+                setTarget((String) newValue);
+                return;
+            case DslPackage.FORKPROCESS__SOURCE:
+                setSource((String) newValue);
+                return;
+            case DslPackage.FORKPROCESS__DATASOURCE:
+                setDatasource((String) newValue);
+                return;
+            case DslPackage.FORKPROCESS__VALUE:
+                setValue((String) newValue);
+                return;
+            case DslPackage.FORKPROCESS__FORK_BATCH_SIZE:
+                setForkBatchSize((String) newValue);
+                return;
+        }
+        super.eSet(featureID, newValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void eUnset(int featureID) {
+        switch (featureID) {
+            case DslPackage.FORKPROCESS__TARGET:
+                setTarget(TARGET_EDEFAULT);
+                return;
+            case DslPackage.FORKPROCESS__SOURCE:
+                setSource(SOURCE_EDEFAULT);
+                return;
+            case DslPackage.FORKPROCESS__DATASOURCE:
+                setDatasource(DATASOURCE_EDEFAULT);
+                return;
+            case DslPackage.FORKPROCESS__VALUE:
+                setValue(VALUE_EDEFAULT);
+                return;
+            case DslPackage.FORKPROCESS__FORK_BATCH_SIZE:
+                setForkBatchSize(FORK_BATCH_SIZE_EDEFAULT);
+                return;
+        }
+        super.eUnset(featureID);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public boolean eIsSet(int featureID) {
+        switch (featureID) {
+            case DslPackage.FORKPROCESS__TARGET:
+                return TARGET_EDEFAULT == null ? target != null : !TARGET_EDEFAULT.equals(target);
+            case DslPackage.FORKPROCESS__SOURCE:
+                return SOURCE_EDEFAULT == null ? source != null : !SOURCE_EDEFAULT.equals(source);
+            case DslPackage.FORKPROCESS__DATASOURCE:
+                return DATASOURCE_EDEFAULT == null ? datasource != null : !DATASOURCE_EDEFAULT.equals(datasource);
+            case DslPackage.FORKPROCESS__VALUE:
+                return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
+            case DslPackage.FORKPROCESS__FORK_BATCH_SIZE:
+                return FORK_BATCH_SIZE_EDEFAULT == null ? forkBatchSize != null : !FORK_BATCH_SIZE_EDEFAULT.equals(forkBatchSize);
+        }
+        return super.eIsSet(featureID);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String toString() {
+        if (eIsProxy()) return super.toString();
+
+        StringBuilder result = new StringBuilder(super.toString());
+        result.append(" (target: ");
+        result.append(target);
+        result.append(", source: ");
+        result.append(source);
+        result.append(", datasource: ");
+        result.append(datasource);
+        result.append(", value: ");
+        result.append(value);
+        result.append(", forkBatchSize: ");
+        result.append(forkBatchSize);
+        result.append(')');
+        return result.toString();
+    }
 
 } //ForkprocessImpl

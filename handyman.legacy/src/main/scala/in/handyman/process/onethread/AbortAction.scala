@@ -12,7 +12,7 @@ class AbortAction extends in.handyman.command.Action with LazyLogging {
   val auditMarker = "ABORT";
   val aMarker = MarkerFactory.getMarker(auditMarker);
 
-  def execute(context: Context, action: in.handyman.dsl.Action, actionId:Integer): Context = {
+  def execute(context: Context, action: in.handyman.dsl.Action, actionId: Integer): Context = {
     val abortAsIs: in.handyman.dsl.Abort = action.asInstanceOf[in.handyman.dsl.Abort]
     val abort: in.handyman.dsl.Abort = CommandProxy.createProxy(abortAsIs, classOf[in.handyman.dsl.Abort], context)
     val message = abort.getValue.trim
@@ -31,14 +31,14 @@ class AbortAction extends in.handyman.command.Action with LazyLogging {
   def executeIf(context: Context, action: in.handyman.dsl.Action): Boolean = {
     val abortAsIs: in.handyman.dsl.Abort = action.asInstanceOf[in.handyman.dsl.Abort]
     val abort: in.handyman.dsl.Abort = CommandProxy.createProxy(abortAsIs, classOf[in.handyman.dsl.Abort], context)
-    
+
     val name = abort.getName
     val id = context.getValue("process-id")
-    
+
     val expression = abort.getCondition
     try {
       val output = ParameterisationEngine.doYieldtoTrue(expression)
-      logger.info(aMarker, "Completed evaluation to execute id#{}, name#{}, dbSrc#{}, expression#{}", id, name,  expression)
+      logger.info(aMarker, "Completed evaluation to execute id#{}, name#{}, dbSrc#{}, expression#{}", id, name, expression)
       detailMap.putIfAbsent("condition-output", output.toString())
       output
     } finally {

@@ -16,27 +16,27 @@ import org.eclipse.xtext.resource.IResourceServiceProvider;
 @SuppressWarnings("all")
 public class DslStandaloneSetupGenerated implements ISetup {
 
-	@Override
-	public Injector createInjectorAndDoEMFRegistration() {
-		TerminalsStandaloneSetup.doSetup();
+    @Override
+    public Injector createInjectorAndDoEMFRegistration() {
+        TerminalsStandaloneSetup.doSetup();
 
-		Injector injector = createInjector();
-		register(injector);
-		return injector;
-	}
-	
-	public Injector createInjector() {
-		return Guice.createInjector(new DslRuntimeModule());
-	}
-	
-	public void register(Injector injector) {
-		if (!EPackage.Registry.INSTANCE.containsKey("http://www.handyman.in/Dsl")) {
-			EPackage.Registry.INSTANCE.put("http://www.handyman.in/Dsl", DslPackage.eINSTANCE);
-		}
-		IResourceFactory resourceFactory = injector.getInstance(IResourceFactory.class);
-		IResourceServiceProvider serviceProvider = injector.getInstance(IResourceServiceProvider.class);
-		
-		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("spw", resourceFactory);
-		IResourceServiceProvider.Registry.INSTANCE.getExtensionToFactoryMap().put("spw", serviceProvider);
-	}
+        Injector injector = createInjector();
+        register(injector);
+        return injector;
+    }
+
+    public Injector createInjector() {
+        return Guice.createInjector(new DslRuntimeModule());
+    }
+
+    public void register(Injector injector) {
+        if (!EPackage.Registry.INSTANCE.containsKey("http://www.handyman.in/Dsl")) {
+            EPackage.Registry.INSTANCE.put("http://www.handyman.in/Dsl", DslPackage.eINSTANCE);
+        }
+        IResourceFactory resourceFactory = injector.getInstance(IResourceFactory.class);
+        IResourceServiceProvider serviceProvider = injector.getInstance(IResourceServiceProvider.class);
+
+        Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("spw", resourceFactory);
+        IResourceServiceProvider.Registry.INSTANCE.getExtensionToFactoryMap().put("spw", serviceProvider);
+    }
 }

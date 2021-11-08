@@ -20,120 +20,129 @@ package in.handyman.dsl;
  *   <li>{@link in.handyman.dsl.SendMail#getDryrunMail <em>Dryrun Mail</em>}</li>
  * </ul>
  *
- * @see in.handyman.dsl.DslPackage#getSendMail()
  * @model
  * @generated
+ * @see in.handyman.dsl.DslPackage#getSendMail()
  */
-public interface SendMail extends Action
-{
-  /**
-   * Returns the value of the '<em><b>Private Key</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Private Key</em>' attribute.
-   * @see #setPrivateKey(String)
-   * @see in.handyman.dsl.DslPackage#getSendMail_PrivateKey()
-   * @model
-   * @generated
-   */
-  String getPrivateKey();
+public interface SendMail extends Action {
+    /**
+     * Returns the value of the '<em><b>Private Key</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Private Key</em>' attribute.
+     * @model
+     * @generated
+     * @see #setPrivateKey(String)
+     * @see in.handyman.dsl.DslPackage#getSendMail_PrivateKey()
+     */
+    String getPrivateKey();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.SendMail#getPrivateKey <em>Private Key</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Private Key</em>' attribute.
-   * @see #getPrivateKey()
-   * @generated
-   */
-  void setPrivateKey(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.SendMail#getPrivateKey <em>Private Key</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Private Key</em>' attribute.
+     * @generated
+     * @see #getPrivateKey()
+     */
+    void setPrivateKey(String value);
 
-  /**
-   * Returns the value of the '<em><b>Impersonated User</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Impersonated User</em>' attribute.
-   * @see #setImpersonatedUser(String)
-   * @see in.handyman.dsl.DslPackage#getSendMail_ImpersonatedUser()
-   * @model
-   * @generated
-   */
-  String getImpersonatedUser();
+    /**
+     * Returns the value of the '<em><b>Impersonated User</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Impersonated User</em>' attribute.
+     * @model
+     * @generated
+     * @see #setImpersonatedUser(String)
+     * @see in.handyman.dsl.DslPackage#getSendMail_ImpersonatedUser()
+     */
+    String getImpersonatedUser();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.SendMail#getImpersonatedUser <em>Impersonated User</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Impersonated User</em>' attribute.
-   * @see #getImpersonatedUser()
-   * @generated
-   */
-  void setImpersonatedUser(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.SendMail#getImpersonatedUser <em>Impersonated User</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Impersonated User</em>' attribute.
+     * @generated
+     * @see #getImpersonatedUser()
+     */
+    void setImpersonatedUser(String value);
 
-  /**
-   * Returns the value of the '<em><b>Db Src</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Db Src</em>' attribute.
-   * @see #setDbSrc(String)
-   * @see in.handyman.dsl.DslPackage#getSendMail_DbSrc()
-   * @model
-   * @generated
-   */
-  String getDbSrc();
+    /**
+     * Returns the value of the '<em><b>Db Src</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Db Src</em>' attribute.
+     * @model
+     * @generated
+     * @see #setDbSrc(String)
+     * @see in.handyman.dsl.DslPackage#getSendMail_DbSrc()
+     */
+    String getDbSrc();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.SendMail#getDbSrc <em>Db Src</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Db Src</em>' attribute.
-   * @see #getDbSrc()
-   * @generated
-   */
-  void setDbSrc(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.SendMail#getDbSrc <em>Db Src</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Db Src</em>' attribute.
+     * @generated
+     * @see #getDbSrc()
+     */
+    void setDbSrc(String value);
 
-  /**
-   * Returns the value of the '<em><b>Value</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Value</em>' attribute.
-   * @see #setValue(String)
-   * @see in.handyman.dsl.DslPackage#getSendMail_Value()
-   * @model
-   * @generated
-   */
-  String getValue();
+    /**
+     * Returns the value of the '<em><b>Value</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Value</em>' attribute.
+     * @model
+     * @generated
+     * @see #setValue(String)
+     * @see in.handyman.dsl.DslPackage#getSendMail_Value()
+     */
+    String getValue();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.SendMail#getValue <em>Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Value</em>' attribute.
-   * @see #getValue()
-   * @generated
-   */
-  void setValue(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.SendMail#getValue <em>Value</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Value</em>' attribute.
+     * @generated
+     * @see #getValue()
+     */
+    void setValue(String value);
 
-  /**
-   * Returns the value of the '<em><b>Dryrun Mail</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Dryrun Mail</em>' attribute.
-   * @see #setDryrunMail(String)
-   * @see in.handyman.dsl.DslPackage#getSendMail_DryrunMail()
-   * @model
-   * @generated
-   */
-  String getDryrunMail();
+    /**
+     * Returns the value of the '<em><b>Dryrun Mail</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Dryrun Mail</em>' attribute.
+     * @model
+     * @generated
+     * @see #setDryrunMail(String)
+     * @see in.handyman.dsl.DslPackage#getSendMail_DryrunMail()
+     */
+    String getDryrunMail();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.SendMail#getDryrunMail <em>Dryrun Mail</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Dryrun Mail</em>' attribute.
-   * @see #getDryrunMail()
-   * @generated
-   */
-  void setDryrunMail(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.SendMail#getDryrunMail <em>Dryrun Mail</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Dryrun Mail</em>' attribute.
+     * @generated
+     * @see #getDryrunMail()
+     */
+    void setDryrunMail(String value);
 
 } // SendMail

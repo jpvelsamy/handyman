@@ -11,30 +11,30 @@ import org.eclipse.xtext.parser.antlr.XtextTokenStream;
 
 public class DslParser extends AbstractAntlrParser {
 
-	@Inject
-	private DslGrammarAccess grammarAccess;
+    @Inject
+    private DslGrammarAccess grammarAccess;
 
-	@Override
-	protected void setInitialHiddenTokens(XtextTokenStream tokenStream) {
-		tokenStream.setInitialHiddenTokens("RULE_WS", "RULE_ML_COMMENT", "RULE_SL_COMMENT");
-	}
-	
+    @Override
+    protected void setInitialHiddenTokens(XtextTokenStream tokenStream) {
+        tokenStream.setInitialHiddenTokens("RULE_WS", "RULE_ML_COMMENT", "RULE_SL_COMMENT");
+    }
 
-	@Override
-	protected InternalDslParser createParser(XtextTokenStream stream) {
-		return new InternalDslParser(stream, getGrammarAccess());
-	}
 
-	@Override 
-	protected String getDefaultRuleName() {
-		return "Process";
-	}
+    @Override
+    protected InternalDslParser createParser(XtextTokenStream stream) {
+        return new InternalDslParser(stream, getGrammarAccess());
+    }
 
-	public DslGrammarAccess getGrammarAccess() {
-		return this.grammarAccess;
-	}
+    public DslGrammarAccess getGrammarAccess() {
+        return this.grammarAccess;
+    }
 
-	public void setGrammarAccess(DslGrammarAccess grammarAccess) {
-		this.grammarAccess = grammarAccess;
-	}
+    public void setGrammarAccess(DslGrammarAccess grammarAccess) {
+        this.grammarAccess = grammarAccess;
+    }
+
+    @Override
+    protected String getDefaultRuleName() {
+        return "Process";
+    }
 }

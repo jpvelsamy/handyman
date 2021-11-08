@@ -8,7 +8,7 @@ package in.handyman;
  */
 @SuppressWarnings("all")
 public class DslStandaloneSetup extends DslStandaloneSetupGenerated {
-  public static void doSetup() {
-    new DslStandaloneSetup().createInjectorAndDoEMFRegistration();
-  }
+    public static void doSetup() {
+        new DslStandaloneSetup().createInjectorAndDoEMFRegistration();
+    }
 }

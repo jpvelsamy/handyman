@@ -50,8 +50,24 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     }
 
     @Override
+    public List<ConfigStore> findConfigEntities(final ConfigType configType, final String configName) {
+        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where config_type_id = ? and name = ?")
+                .bind(0, configType.getId())
+                .bind(1, configName)
+                .mapToBean(ConfigStore.class)
+                .list());
+    }
+
+    @Override
     public Map<String, String> getCommonConfig() {
         return toMap(findConfigEntities(ConfigType.COMMON));
+    }
+
+    public List<ConfigStore> findConfigEntities(final ConfigType configType) {
+        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where config_type_id = ?")
+                .bind(0, configType.getId())
+                .mapToBean(ConfigStore.class)
+                .list());
     }
 
     @Override
@@ -71,25 +87,9 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
                 .findOne().map(ConfigStore::getValue).orElse(null));
     }
 
-    public List<ConfigStore> findConfigEntities(final ConfigType configType) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where config_type_id = ?")
-                .bind(0, configType.getId())
-                .mapToBean(ConfigStore.class)
-                .list());
-    }
-
     @Override
     public Set<String> getPackageAction() {
         return findConfigEntities(ConfigType.COMMON, SYS_PACKAGE).stream().map(ConfigStore::getValue).collect(Collectors.toUnmodifiableSet());
-    }
-
-    @Override
-    public List<ConfigStore> findConfigEntities(final ConfigType configType, final String configName) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where config_type_id = ? and name = ?")
-                .bind(0, configType.getId())
-                .bind(1, configName)
-                .mapToBean(ConfigStore.class)
-                .list());
     }
 
     @Override

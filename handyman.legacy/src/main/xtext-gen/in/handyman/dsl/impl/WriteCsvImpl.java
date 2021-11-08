@@ -28,326 +28,322 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *
  * @generated
  */
-public class WriteCsvImpl extends ActionImpl implements WriteCsv
-{
-  /**
-   * The default value of the '{@link #getSource() <em>Source</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSource()
-   * @generated
-   * @ordered
-   */
-  protected static final String SOURCE_EDEFAULT = null;
+public class WriteCsvImpl extends ActionImpl implements WriteCsv {
+    /**
+     * The default value of the '{@link #getSource() <em>Source</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getSource()
+     */
+    protected static final String SOURCE_EDEFAULT = null;
+    /**
+     * The default value of the '{@link #getTo() <em>To</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getTo()
+     */
+    protected static final String TO_EDEFAULT = null;
+    /**
+     * The default value of the '{@link #getDelim() <em>Delim</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getDelim()
+     */
+    protected static final String DELIM_EDEFAULT = null;
+    /**
+     * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getValue()
+     */
+    protected static final String VALUE_EDEFAULT = null;
+    /**
+     * The cached value of the '{@link #getSource() <em>Source</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getSource()
+     */
+    protected String source = SOURCE_EDEFAULT;
+    /**
+     * The cached value of the '{@link #getTo() <em>To</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getTo()
+     */
+    protected String to = TO_EDEFAULT;
+    /**
+     * The cached value of the '{@link #getDelim() <em>Delim</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getDelim()
+     */
+    protected String delim = DELIM_EDEFAULT;
+    /**
+     * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getValue()
+     */
+    protected String value = VALUE_EDEFAULT;
 
-  /**
-   * The cached value of the '{@link #getSource() <em>Source</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSource()
-   * @generated
-   * @ordered
-   */
-  protected String source = SOURCE_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getTo() <em>To</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTo()
-   * @generated
-   * @ordered
-   */
-  protected static final String TO_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getTo() <em>To</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTo()
-   * @generated
-   * @ordered
-   */
-  protected String to = TO_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getDelim() <em>Delim</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDelim()
-   * @generated
-   * @ordered
-   */
-  protected static final String DELIM_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getDelim() <em>Delim</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getDelim()
-   * @generated
-   * @ordered
-   */
-  protected String delim = DELIM_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getValue()
-   * @generated
-   * @ordered
-   */
-  protected static final String VALUE_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getValue()
-   * @generated
-   * @ordered
-   */
-  protected String value = VALUE_EDEFAULT;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  protected WriteCsvImpl()
-  {
-    super();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  protected EClass eStaticClass()
-  {
-    return DslPackage.Literals.WRITE_CSV;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getSource()
-  {
-    return source;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setSource(String newSource)
-  {
-    String oldSource = source;
-    source = newSource;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.WRITE_CSV__SOURCE, oldSource, source));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getTo()
-  {
-    return to;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setTo(String newTo)
-  {
-    String oldTo = to;
-    to = newTo;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.WRITE_CSV__TO, oldTo, to));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getDelim()
-  {
-    return delim;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setDelim(String newDelim)
-  {
-    String oldDelim = delim;
-    delim = newDelim;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.WRITE_CSV__DELIM, oldDelim, delim));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getValue()
-  {
-    return value;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setValue(String newValue)
-  {
-    String oldValue = value;
-    value = newValue;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.WRITE_CSV__VALUE, oldValue, value));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public Object eGet(int featureID, boolean resolve, boolean coreType)
-  {
-    switch (featureID)
-    {
-      case DslPackage.WRITE_CSV__SOURCE:
-        return getSource();
-      case DslPackage.WRITE_CSV__TO:
-        return getTo();
-      case DslPackage.WRITE_CSV__DELIM:
-        return getDelim();
-      case DslPackage.WRITE_CSV__VALUE:
-        return getValue();
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    protected WriteCsvImpl() {
+        super();
     }
-    return super.eGet(featureID, resolve, coreType);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void eSet(int featureID, Object newValue)
-  {
-    switch (featureID)
-    {
-      case DslPackage.WRITE_CSV__SOURCE:
-        setSource((String)newValue);
-        return;
-      case DslPackage.WRITE_CSV__TO:
-        setTo((String)newValue);
-        return;
-      case DslPackage.WRITE_CSV__DELIM:
-        setDelim((String)newValue);
-        return;
-      case DslPackage.WRITE_CSV__VALUE:
-        setValue((String)newValue);
-        return;
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return DslPackage.Literals.WRITE_CSV;
     }
-    super.eSet(featureID, newValue);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void eUnset(int featureID)
-  {
-    switch (featureID)
-    {
-      case DslPackage.WRITE_CSV__SOURCE:
-        setSource(SOURCE_EDEFAULT);
-        return;
-      case DslPackage.WRITE_CSV__TO:
-        setTo(TO_EDEFAULT);
-        return;
-      case DslPackage.WRITE_CSV__DELIM:
-        setDelim(DELIM_EDEFAULT);
-        return;
-      case DslPackage.WRITE_CSV__VALUE:
-        setValue(VALUE_EDEFAULT);
-        return;
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public Object eGet(int featureID, boolean resolve, boolean coreType) {
+        switch (featureID) {
+            case DslPackage.WRITE_CSV__SOURCE:
+                return getSource();
+            case DslPackage.WRITE_CSV__TO:
+                return getTo();
+            case DslPackage.WRITE_CSV__DELIM:
+                return getDelim();
+            case DslPackage.WRITE_CSV__VALUE:
+                return getValue();
+        }
+        return super.eGet(featureID, resolve, coreType);
     }
-    super.eUnset(featureID);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean eIsSet(int featureID)
-  {
-    switch (featureID)
-    {
-      case DslPackage.WRITE_CSV__SOURCE:
-        return SOURCE_EDEFAULT == null ? source != null : !SOURCE_EDEFAULT.equals(source);
-      case DslPackage.WRITE_CSV__TO:
-        return TO_EDEFAULT == null ? to != null : !TO_EDEFAULT.equals(to);
-      case DslPackage.WRITE_CSV__DELIM:
-        return DELIM_EDEFAULT == null ? delim != null : !DELIM_EDEFAULT.equals(delim);
-      case DslPackage.WRITE_CSV__VALUE:
-        return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getSource() {
+        return source;
     }
-    return super.eIsSet(featureID);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String toString()
-  {
-    if (eIsProxy()) return super.toString();
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setSource(String newSource) {
+        String oldSource = source;
+        source = newSource;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.WRITE_CSV__SOURCE, oldSource, source));
+    }
 
-    StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (source: ");
-    result.append(source);
-    result.append(", to: ");
-    result.append(to);
-    result.append(", delim: ");
-    result.append(delim);
-    result.append(", value: ");
-    result.append(value);
-    result.append(')');
-    return result.toString();
-  }
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getTo() {
+        return to;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setTo(String newTo) {
+        String oldTo = to;
+        to = newTo;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.WRITE_CSV__TO, oldTo, to));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getDelim() {
+        return delim;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setDelim(String newDelim) {
+        String oldDelim = delim;
+        delim = newDelim;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.WRITE_CSV__DELIM, oldDelim, delim));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getValue() {
+        return value;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setValue(String newValue) {
+        String oldValue = value;
+        value = newValue;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.WRITE_CSV__VALUE, oldValue, value));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void eSet(int featureID, Object newValue) {
+        switch (featureID) {
+            case DslPackage.WRITE_CSV__SOURCE:
+                setSource((String) newValue);
+                return;
+            case DslPackage.WRITE_CSV__TO:
+                setTo((String) newValue);
+                return;
+            case DslPackage.WRITE_CSV__DELIM:
+                setDelim((String) newValue);
+                return;
+            case DslPackage.WRITE_CSV__VALUE:
+                setValue((String) newValue);
+                return;
+        }
+        super.eSet(featureID, newValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void eUnset(int featureID) {
+        switch (featureID) {
+            case DslPackage.WRITE_CSV__SOURCE:
+                setSource(SOURCE_EDEFAULT);
+                return;
+            case DslPackage.WRITE_CSV__TO:
+                setTo(TO_EDEFAULT);
+                return;
+            case DslPackage.WRITE_CSV__DELIM:
+                setDelim(DELIM_EDEFAULT);
+                return;
+            case DslPackage.WRITE_CSV__VALUE:
+                setValue(VALUE_EDEFAULT);
+                return;
+        }
+        super.eUnset(featureID);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public boolean eIsSet(int featureID) {
+        switch (featureID) {
+            case DslPackage.WRITE_CSV__SOURCE:
+                return SOURCE_EDEFAULT == null ? source != null : !SOURCE_EDEFAULT.equals(source);
+            case DslPackage.WRITE_CSV__TO:
+                return TO_EDEFAULT == null ? to != null : !TO_EDEFAULT.equals(to);
+            case DslPackage.WRITE_CSV__DELIM:
+                return DELIM_EDEFAULT == null ? delim != null : !DELIM_EDEFAULT.equals(delim);
+            case DslPackage.WRITE_CSV__VALUE:
+                return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
+        }
+        return super.eIsSet(featureID);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String toString() {
+        if (eIsProxy()) return super.toString();
+
+        StringBuilder result = new StringBuilder(super.toString());
+        result.append(" (source: ");
+        result.append(source);
+        result.append(", to: ");
+        result.append(to);
+        result.append(", delim: ");
+        result.append(delim);
+        result.append(", value: ");
+        result.append(value);
+        result.append(')');
+        return result.toString();
+    }
 
 } //WriteCsvImpl

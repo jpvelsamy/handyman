@@ -18,76 +18,81 @@ package in.handyman.dsl;
  *   <li>{@link in.handyman.dsl.Updatedaudit#getValue <em>Value</em>}</li>
  * </ul>
  *
- * @see in.handyman.dsl.DslPackage#getUpdatedaudit()
  * @model
  * @generated
+ * @see in.handyman.dsl.DslPackage#getUpdatedaudit()
  */
-public interface Updatedaudit extends Action
-{
-  /**
-   * Returns the value of the '<em><b>Logsink</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Logsink</em>' attribute.
-   * @see #setLogsink(String)
-   * @see in.handyman.dsl.DslPackage#getUpdatedaudit_Logsink()
-   * @model
-   * @generated
-   */
-  String getLogsink();
+public interface Updatedaudit extends Action {
+    /**
+     * Returns the value of the '<em><b>Logsink</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Logsink</em>' attribute.
+     * @model
+     * @generated
+     * @see #setLogsink(String)
+     * @see in.handyman.dsl.DslPackage#getUpdatedaudit_Logsink()
+     */
+    String getLogsink();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Updatedaudit#getLogsink <em>Logsink</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Logsink</em>' attribute.
-   * @see #getLogsink()
-   * @generated
-   */
-  void setLogsink(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Updatedaudit#getLogsink <em>Logsink</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Logsink</em>' attribute.
+     * @generated
+     * @see #getLogsink()
+     */
+    void setLogsink(String value);
 
-  /**
-   * Returns the value of the '<em><b>Datasource</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Datasource</em>' attribute.
-   * @see #setDatasource(String)
-   * @see in.handyman.dsl.DslPackage#getUpdatedaudit_Datasource()
-   * @model
-   * @generated
-   */
-  String getDatasource();
+    /**
+     * Returns the value of the '<em><b>Datasource</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Datasource</em>' attribute.
+     * @model
+     * @generated
+     * @see #setDatasource(String)
+     * @see in.handyman.dsl.DslPackage#getUpdatedaudit_Datasource()
+     */
+    String getDatasource();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Updatedaudit#getDatasource <em>Datasource</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Datasource</em>' attribute.
-   * @see #getDatasource()
-   * @generated
-   */
-  void setDatasource(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Updatedaudit#getDatasource <em>Datasource</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Datasource</em>' attribute.
+     * @generated
+     * @see #getDatasource()
+     */
+    void setDatasource(String value);
 
-  /**
-   * Returns the value of the '<em><b>Value</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Value</em>' attribute.
-   * @see #setValue(String)
-   * @see in.handyman.dsl.DslPackage#getUpdatedaudit_Value()
-   * @model
-   * @generated
-   */
-  String getValue();
+    /**
+     * Returns the value of the '<em><b>Value</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Value</em>' attribute.
+     * @model
+     * @generated
+     * @see #setValue(String)
+     * @see in.handyman.dsl.DslPackage#getUpdatedaudit_Value()
+     */
+    String getValue();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Updatedaudit#getValue <em>Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Value</em>' attribute.
-   * @see #getValue()
-   * @generated
-   */
-  void setValue(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Updatedaudit#getValue <em>Value</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Value</em>' attribute.
+     * @generated
+     * @see #getValue()
+     */
+    void setValue(String value);
 
 } // Updatedaudit

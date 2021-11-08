@@ -18,54 +18,57 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link in.handyman.dsl.Action#getCondition <em>Condition</em>}</li>
  * </ul>
  *
- * @see in.handyman.dsl.DslPackage#getAction()
  * @model
  * @generated
+ * @see in.handyman.dsl.DslPackage#getAction()
  */
-public interface Action extends EObject
-{
-  /**
-   * Returns the value of the '<em><b>Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Name</em>' attribute.
-   * @see #setName(String)
-   * @see in.handyman.dsl.DslPackage#getAction_Name()
-   * @model
-   * @generated
-   */
-  String getName();
+public interface Action extends EObject {
+    /**
+     * Returns the value of the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Name</em>' attribute.
+     * @model
+     * @generated
+     * @see #setName(String)
+     * @see in.handyman.dsl.DslPackage#getAction_Name()
+     */
+    String getName();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Action#getName <em>Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Name</em>' attribute.
-   * @see #getName()
-   * @generated
-   */
-  void setName(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Action#getName <em>Name</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Name</em>' attribute.
+     * @generated
+     * @see #getName()
+     */
+    void setName(String value);
 
-  /**
-   * Returns the value of the '<em><b>Condition</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Condition</em>' containment reference.
-   * @see #setCondition(Expression)
-   * @see in.handyman.dsl.DslPackage#getAction_Condition()
-   * @model containment="true"
-   * @generated
-   */
-  Expression getCondition();
+    /**
+     * Returns the value of the '<em><b>Condition</b></em>' containment reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Condition</em>' containment reference.
+     * @model containment="true"
+     * @generated
+     * @see #setCondition(Expression)
+     * @see in.handyman.dsl.DslPackage#getAction_Condition()
+     */
+    Expression getCondition();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Action#getCondition <em>Condition</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Condition</em>' containment reference.
-   * @see #getCondition()
-   * @generated
-   */
-  void setCondition(Expression value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Action#getCondition <em>Condition</em>}' containment reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Condition</em>' containment reference.
+     * @generated
+     * @see #getCondition()
+     */
+    void setCondition(Expression value);
 
 } // Action

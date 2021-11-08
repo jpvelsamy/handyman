@@ -26,212 +26,208 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *
  * @generated
  */
-public class SpawnprocessImpl extends ActionImpl implements Spawnprocess
-{
-  /**
-   * The default value of the '{@link #getTarget() <em>Target</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTarget()
-   * @generated
-   * @ordered
-   */
-  protected static final String TARGET_EDEFAULT = null;
+public class SpawnprocessImpl extends ActionImpl implements Spawnprocess {
+    /**
+     * The default value of the '{@link #getTarget() <em>Target</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getTarget()
+     */
+    protected static final String TARGET_EDEFAULT = null;
+    /**
+     * The default value of the '{@link #getSource() <em>Source</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getSource()
+     */
+    protected static final String SOURCE_EDEFAULT = null;
+    /**
+     * The cached value of the '{@link #getTarget() <em>Target</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getTarget()
+     */
+    protected String target = TARGET_EDEFAULT;
+    /**
+     * The cached value of the '{@link #getSource() <em>Source</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getSource()
+     */
+    protected String source = SOURCE_EDEFAULT;
 
-  /**
-   * The cached value of the '{@link #getTarget() <em>Target</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTarget()
-   * @generated
-   * @ordered
-   */
-  protected String target = TARGET_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getSource() <em>Source</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSource()
-   * @generated
-   * @ordered
-   */
-  protected static final String SOURCE_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getSource() <em>Source</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSource()
-   * @generated
-   * @ordered
-   */
-  protected String source = SOURCE_EDEFAULT;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  protected SpawnprocessImpl()
-  {
-    super();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  protected EClass eStaticClass()
-  {
-    return DslPackage.Literals.SPAWNPROCESS;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getTarget()
-  {
-    return target;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setTarget(String newTarget)
-  {
-    String oldTarget = target;
-    target = newTarget;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.SPAWNPROCESS__TARGET, oldTarget, target));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getSource()
-  {
-    return source;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setSource(String newSource)
-  {
-    String oldSource = source;
-    source = newSource;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.SPAWNPROCESS__SOURCE, oldSource, source));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public Object eGet(int featureID, boolean resolve, boolean coreType)
-  {
-    switch (featureID)
-    {
-      case DslPackage.SPAWNPROCESS__TARGET:
-        return getTarget();
-      case DslPackage.SPAWNPROCESS__SOURCE:
-        return getSource();
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    protected SpawnprocessImpl() {
+        super();
     }
-    return super.eGet(featureID, resolve, coreType);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void eSet(int featureID, Object newValue)
-  {
-    switch (featureID)
-    {
-      case DslPackage.SPAWNPROCESS__TARGET:
-        setTarget((String)newValue);
-        return;
-      case DslPackage.SPAWNPROCESS__SOURCE:
-        setSource((String)newValue);
-        return;
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return DslPackage.Literals.SPAWNPROCESS;
     }
-    super.eSet(featureID, newValue);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void eUnset(int featureID)
-  {
-    switch (featureID)
-    {
-      case DslPackage.SPAWNPROCESS__TARGET:
-        setTarget(TARGET_EDEFAULT);
-        return;
-      case DslPackage.SPAWNPROCESS__SOURCE:
-        setSource(SOURCE_EDEFAULT);
-        return;
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public Object eGet(int featureID, boolean resolve, boolean coreType) {
+        switch (featureID) {
+            case DslPackage.SPAWNPROCESS__TARGET:
+                return getTarget();
+            case DslPackage.SPAWNPROCESS__SOURCE:
+                return getSource();
+        }
+        return super.eGet(featureID, resolve, coreType);
     }
-    super.eUnset(featureID);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean eIsSet(int featureID)
-  {
-    switch (featureID)
-    {
-      case DslPackage.SPAWNPROCESS__TARGET:
-        return TARGET_EDEFAULT == null ? target != null : !TARGET_EDEFAULT.equals(target);
-      case DslPackage.SPAWNPROCESS__SOURCE:
-        return SOURCE_EDEFAULT == null ? source != null : !SOURCE_EDEFAULT.equals(source);
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getTarget() {
+        return target;
     }
-    return super.eIsSet(featureID);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String toString()
-  {
-    if (eIsProxy()) return super.toString();
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setTarget(String newTarget) {
+        String oldTarget = target;
+        target = newTarget;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.SPAWNPROCESS__TARGET, oldTarget, target));
+    }
 
-    StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (target: ");
-    result.append(target);
-    result.append(", source: ");
-    result.append(source);
-    result.append(')');
-    return result.toString();
-  }
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getSource() {
+        return source;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setSource(String newSource) {
+        String oldSource = source;
+        source = newSource;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.SPAWNPROCESS__SOURCE, oldSource, source));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void eSet(int featureID, Object newValue) {
+        switch (featureID) {
+            case DslPackage.SPAWNPROCESS__TARGET:
+                setTarget((String) newValue);
+                return;
+            case DslPackage.SPAWNPROCESS__SOURCE:
+                setSource((String) newValue);
+                return;
+        }
+        super.eSet(featureID, newValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void eUnset(int featureID) {
+        switch (featureID) {
+            case DslPackage.SPAWNPROCESS__TARGET:
+                setTarget(TARGET_EDEFAULT);
+                return;
+            case DslPackage.SPAWNPROCESS__SOURCE:
+                setSource(SOURCE_EDEFAULT);
+                return;
+        }
+        super.eUnset(featureID);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public boolean eIsSet(int featureID) {
+        switch (featureID) {
+            case DslPackage.SPAWNPROCESS__TARGET:
+                return TARGET_EDEFAULT == null ? target != null : !TARGET_EDEFAULT.equals(target);
+            case DslPackage.SPAWNPROCESS__SOURCE:
+                return SOURCE_EDEFAULT == null ? source != null : !SOURCE_EDEFAULT.equals(source);
+        }
+        return super.eIsSet(featureID);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String toString() {
+        if (eIsProxy()) return super.toString();
+
+        StringBuilder result = new StringBuilder(super.toString());
+        result.append(" (target: ");
+        result.append(target);
+        result.append(", source: ");
+        result.append(source);
+        result.append(')');
+        return result.toString();
+    }
 
 } //SpawnprocessImpl

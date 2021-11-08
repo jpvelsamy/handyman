@@ -1,7 +1,5 @@
 package in.handyman.raven.lambda.access.repo;
 
-import lombok.extern.log4j.Log4j2;
-
 //public class HandymanRepoR2ImplEM extends AbstractAccess implements HandymanRepo {
 //
 //    protected static final String CONFIG_URL = "config.r2.url";

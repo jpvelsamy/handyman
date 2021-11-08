@@ -19,98 +19,105 @@ package in.handyman.dsl;
  *   <li>{@link in.handyman.dsl.WriteCsv#getValue <em>Value</em>}</li>
  * </ul>
  *
- * @see in.handyman.dsl.DslPackage#getWriteCsv()
  * @model
  * @generated
+ * @see in.handyman.dsl.DslPackage#getWriteCsv()
  */
-public interface WriteCsv extends Action
-{
-  /**
-   * Returns the value of the '<em><b>Source</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Source</em>' attribute.
-   * @see #setSource(String)
-   * @see in.handyman.dsl.DslPackage#getWriteCsv_Source()
-   * @model
-   * @generated
-   */
-  String getSource();
+public interface WriteCsv extends Action {
+    /**
+     * Returns the value of the '<em><b>Source</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Source</em>' attribute.
+     * @model
+     * @generated
+     * @see #setSource(String)
+     * @see in.handyman.dsl.DslPackage#getWriteCsv_Source()
+     */
+    String getSource();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.WriteCsv#getSource <em>Source</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Source</em>' attribute.
-   * @see #getSource()
-   * @generated
-   */
-  void setSource(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.WriteCsv#getSource <em>Source</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Source</em>' attribute.
+     * @generated
+     * @see #getSource()
+     */
+    void setSource(String value);
 
-  /**
-   * Returns the value of the '<em><b>To</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>To</em>' attribute.
-   * @see #setTo(String)
-   * @see in.handyman.dsl.DslPackage#getWriteCsv_To()
-   * @model
-   * @generated
-   */
-  String getTo();
+    /**
+     * Returns the value of the '<em><b>To</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>To</em>' attribute.
+     * @model
+     * @generated
+     * @see #setTo(String)
+     * @see in.handyman.dsl.DslPackage#getWriteCsv_To()
+     */
+    String getTo();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.WriteCsv#getTo <em>To</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>To</em>' attribute.
-   * @see #getTo()
-   * @generated
-   */
-  void setTo(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.WriteCsv#getTo <em>To</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>To</em>' attribute.
+     * @generated
+     * @see #getTo()
+     */
+    void setTo(String value);
 
-  /**
-   * Returns the value of the '<em><b>Delim</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Delim</em>' attribute.
-   * @see #setDelim(String)
-   * @see in.handyman.dsl.DslPackage#getWriteCsv_Delim()
-   * @model
-   * @generated
-   */
-  String getDelim();
+    /**
+     * Returns the value of the '<em><b>Delim</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Delim</em>' attribute.
+     * @model
+     * @generated
+     * @see #setDelim(String)
+     * @see in.handyman.dsl.DslPackage#getWriteCsv_Delim()
+     */
+    String getDelim();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.WriteCsv#getDelim <em>Delim</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Delim</em>' attribute.
-   * @see #getDelim()
-   * @generated
-   */
-  void setDelim(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.WriteCsv#getDelim <em>Delim</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Delim</em>' attribute.
+     * @generated
+     * @see #getDelim()
+     */
+    void setDelim(String value);
 
-  /**
-   * Returns the value of the '<em><b>Value</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Value</em>' attribute.
-   * @see #setValue(String)
-   * @see in.handyman.dsl.DslPackage#getWriteCsv_Value()
-   * @model
-   * @generated
-   */
-  String getValue();
+    /**
+     * Returns the value of the '<em><b>Value</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Value</em>' attribute.
+     * @model
+     * @generated
+     * @see #setValue(String)
+     * @see in.handyman.dsl.DslPackage#getWriteCsv_Value()
+     */
+    String getValue();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.WriteCsv#getValue <em>Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Value</em>' attribute.
-   * @see #getValue()
-   * @generated
-   */
-  void setValue(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.WriteCsv#getValue <em>Value</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Value</em>' attribute.
+     * @generated
+     * @see #getValue()
+     */
+    void setValue(String value);
 
 } // WriteCsv

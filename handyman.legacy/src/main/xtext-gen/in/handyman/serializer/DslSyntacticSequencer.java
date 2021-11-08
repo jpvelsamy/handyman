@@ -5,7 +5,9 @@ package in.handyman.serializer;
 
 import com.google.inject.Inject;
 import in.handyman.services.DslGrammarAccess;
+
 import java.util.List;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.IGrammarAccess;
 import org.eclipse.xtext.RuleCall;
@@ -17,27 +19,27 @@ import org.eclipse.xtext.serializer.sequencer.AbstractSyntacticSequencer;
 @SuppressWarnings("all")
 public class DslSyntacticSequencer extends AbstractSyntacticSequencer {
 
-	protected DslGrammarAccess grammarAccess;
-	
-	@Inject
-	protected void init(IGrammarAccess access) {
-		grammarAccess = (DslGrammarAccess) access;
-	}
-	
-	@Override
-	protected String getUnassignedRuleCallToken(EObject semanticObject, RuleCall ruleCall, INode node) {
-		return "";
-	}
-	
-	
-	@Override
-	protected void emitUnassignedTokens(EObject semanticObject, ISynTransition transition, INode fromNode, INode toNode) {
-		if (transition.getAmbiguousSyntaxes().isEmpty()) return;
-		List<INode> transitionNodes = collectNodes(fromNode, toNode);
-		for (AbstractElementAlias syntax : transition.getAmbiguousSyntaxes()) {
-			List<INode> syntaxNodes = getNodesFor(transitionNodes, syntax);
-			acceptNodes(getLastNavigableState(), syntaxNodes);
-		}
-	}
+    protected DslGrammarAccess grammarAccess;
+
+    @Inject
+    protected void init(IGrammarAccess access) {
+        grammarAccess = (DslGrammarAccess) access;
+    }
+
+    @Override
+    protected String getUnassignedRuleCallToken(EObject semanticObject, RuleCall ruleCall, INode node) {
+        return "";
+    }
+
+
+    @Override
+    protected void emitUnassignedTokens(EObject semanticObject, ISynTransition transition, INode fromNode, INode toNode) {
+        if (transition.getAmbiguousSyntaxes().isEmpty()) return;
+        List<INode> transitionNodes = collectNodes(fromNode, toNode);
+        for (AbstractElementAlias syntax : transition.getAmbiguousSyntaxes()) {
+            List<INode> syntaxNodes = getNodesFor(transitionNodes, syntax);
+            acceptNodes(getLastNavigableState(), syntaxNodes);
+        }
+    }
 
 }

@@ -21,6 +21,7 @@ import java.sql.ResultSet
 
 class CallProcessAction extends in.handyman.command.Action with LazyLogging {
   val detailMap = new java.util.HashMap[String, String]
+
   def execute(context: in.handyman.command.Context, action: in.handyman.dsl.Action, actionId: Integer): in.handyman.command.Context = {
 
     val callProcessAsIs: in.handyman.dsl.Callprocess = action.asInstanceOf[in.handyman.dsl.Callprocess]
@@ -93,6 +94,15 @@ class CallProcessAction extends in.handyman.command.Action with LazyLogging {
     context
   }
 
+  def handleError(ex: Throwable) = {
+    logger.info("Error section of call process", ex)
+    throw ex
+  }
+
+  def handleFinally() = {
+    logger.info("Finally section of call process")
+  }
+
   def executeIf(context: in.handyman.command.Context, action: in.handyman.dsl.Action): Boolean = {
     val callProcessAsIs: in.handyman.dsl.Callprocess = action.asInstanceOf[in.handyman.dsl.Callprocess]
     val callProcess: in.handyman.dsl.Callprocess = CommandProxy.createProxy(callProcessAsIs, classOf[in.handyman.dsl.Callprocess], context)
@@ -112,15 +122,6 @@ class CallProcessAction extends in.handyman.command.Action with LazyLogging {
 
   def generateAudit(): java.util.Map[String, String] = {
     detailMap
-  }
-
-  def handleError(ex: Throwable) = {
-    logger.info("Error section of call process", ex)
-    throw ex
-  }
-
-  def handleFinally() = {
-    logger.info("Finally section of call process")
   }
 
 }

@@ -20,120 +20,129 @@ package in.handyman.dsl;
  *   <li>{@link in.handyman.dsl.Forkprocess#getForkBatchSize <em>Fork Batch Size</em>}</li>
  * </ul>
  *
- * @see in.handyman.dsl.DslPackage#getForkprocess()
  * @model
  * @generated
+ * @see in.handyman.dsl.DslPackage#getForkprocess()
  */
-public interface Forkprocess extends Action
-{
-  /**
-   * Returns the value of the '<em><b>Target</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Target</em>' attribute.
-   * @see #setTarget(String)
-   * @see in.handyman.dsl.DslPackage#getForkprocess_Target()
-   * @model
-   * @generated
-   */
-  String getTarget();
+public interface Forkprocess extends Action {
+    /**
+     * Returns the value of the '<em><b>Target</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Target</em>' attribute.
+     * @model
+     * @generated
+     * @see #setTarget(String)
+     * @see in.handyman.dsl.DslPackage#getForkprocess_Target()
+     */
+    String getTarget();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Forkprocess#getTarget <em>Target</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Target</em>' attribute.
-   * @see #getTarget()
-   * @generated
-   */
-  void setTarget(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Forkprocess#getTarget <em>Target</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Target</em>' attribute.
+     * @generated
+     * @see #getTarget()
+     */
+    void setTarget(String value);
 
-  /**
-   * Returns the value of the '<em><b>Source</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Source</em>' attribute.
-   * @see #setSource(String)
-   * @see in.handyman.dsl.DslPackage#getForkprocess_Source()
-   * @model
-   * @generated
-   */
-  String getSource();
+    /**
+     * Returns the value of the '<em><b>Source</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Source</em>' attribute.
+     * @model
+     * @generated
+     * @see #setSource(String)
+     * @see in.handyman.dsl.DslPackage#getForkprocess_Source()
+     */
+    String getSource();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Forkprocess#getSource <em>Source</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Source</em>' attribute.
-   * @see #getSource()
-   * @generated
-   */
-  void setSource(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Forkprocess#getSource <em>Source</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Source</em>' attribute.
+     * @generated
+     * @see #getSource()
+     */
+    void setSource(String value);
 
-  /**
-   * Returns the value of the '<em><b>Datasource</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Datasource</em>' attribute.
-   * @see #setDatasource(String)
-   * @see in.handyman.dsl.DslPackage#getForkprocess_Datasource()
-   * @model
-   * @generated
-   */
-  String getDatasource();
+    /**
+     * Returns the value of the '<em><b>Datasource</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Datasource</em>' attribute.
+     * @model
+     * @generated
+     * @see #setDatasource(String)
+     * @see in.handyman.dsl.DslPackage#getForkprocess_Datasource()
+     */
+    String getDatasource();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Forkprocess#getDatasource <em>Datasource</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Datasource</em>' attribute.
-   * @see #getDatasource()
-   * @generated
-   */
-  void setDatasource(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Forkprocess#getDatasource <em>Datasource</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Datasource</em>' attribute.
+     * @generated
+     * @see #getDatasource()
+     */
+    void setDatasource(String value);
 
-  /**
-   * Returns the value of the '<em><b>Value</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Value</em>' attribute.
-   * @see #setValue(String)
-   * @see in.handyman.dsl.DslPackage#getForkprocess_Value()
-   * @model
-   * @generated
-   */
-  String getValue();
+    /**
+     * Returns the value of the '<em><b>Value</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Value</em>' attribute.
+     * @model
+     * @generated
+     * @see #setValue(String)
+     * @see in.handyman.dsl.DslPackage#getForkprocess_Value()
+     */
+    String getValue();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Forkprocess#getValue <em>Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Value</em>' attribute.
-   * @see #getValue()
-   * @generated
-   */
-  void setValue(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Forkprocess#getValue <em>Value</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Value</em>' attribute.
+     * @generated
+     * @see #getValue()
+     */
+    void setValue(String value);
 
-  /**
-   * Returns the value of the '<em><b>Fork Batch Size</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Fork Batch Size</em>' attribute.
-   * @see #setForkBatchSize(String)
-   * @see in.handyman.dsl.DslPackage#getForkprocess_ForkBatchSize()
-   * @model
-   * @generated
-   */
-  String getForkBatchSize();
+    /**
+     * Returns the value of the '<em><b>Fork Batch Size</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Fork Batch Size</em>' attribute.
+     * @model
+     * @generated
+     * @see #setForkBatchSize(String)
+     * @see in.handyman.dsl.DslPackage#getForkprocess_ForkBatchSize()
+     */
+    String getForkBatchSize();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.Forkprocess#getForkBatchSize <em>Fork Batch Size</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Fork Batch Size</em>' attribute.
-   * @see #getForkBatchSize()
-   * @generated
-   */
-  void setForkBatchSize(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.Forkprocess#getForkBatchSize <em>Fork Batch Size</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Fork Batch Size</em>' attribute.
+     * @generated
+     * @see #getForkBatchSize()
+     */
+    void setForkBatchSize(String value);
 
 } // Forkprocess

@@ -21,142 +21,153 @@ package in.handyman.dsl;
  *   <li>{@link in.handyman.dsl.TrelloPUT#getValue <em>Value</em>}</li>
  * </ul>
  *
- * @see in.handyman.dsl.DslPackage#getTrelloPUT()
  * @model
  * @generated
+ * @see in.handyman.dsl.DslPackage#getTrelloPUT()
  */
-public interface TrelloPUT extends Action
-{
-  /**
-   * Returns the value of the '<em><b>Authtoken</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Authtoken</em>' attribute.
-   * @see #setAuthtoken(String)
-   * @see in.handyman.dsl.DslPackage#getTrelloPUT_Authtoken()
-   * @model
-   * @generated
-   */
-  String getAuthtoken();
+public interface TrelloPUT extends Action {
+    /**
+     * Returns the value of the '<em><b>Authtoken</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Authtoken</em>' attribute.
+     * @model
+     * @generated
+     * @see #setAuthtoken(String)
+     * @see in.handyman.dsl.DslPackage#getTrelloPUT_Authtoken()
+     */
+    String getAuthtoken();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.TrelloPUT#getAuthtoken <em>Authtoken</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Authtoken</em>' attribute.
-   * @see #getAuthtoken()
-   * @generated
-   */
-  void setAuthtoken(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.TrelloPUT#getAuthtoken <em>Authtoken</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Authtoken</em>' attribute.
+     * @generated
+     * @see #getAuthtoken()
+     */
+    void setAuthtoken(String value);
 
-  /**
-   * Returns the value of the '<em><b>Key</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Key</em>' attribute.
-   * @see #setKey(String)
-   * @see in.handyman.dsl.DslPackage#getTrelloPUT_Key()
-   * @model
-   * @generated
-   */
-  String getKey();
+    /**
+     * Returns the value of the '<em><b>Key</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Key</em>' attribute.
+     * @model
+     * @generated
+     * @see #setKey(String)
+     * @see in.handyman.dsl.DslPackage#getTrelloPUT_Key()
+     */
+    String getKey();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.TrelloPUT#getKey <em>Key</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Key</em>' attribute.
-   * @see #getKey()
-   * @generated
-   */
-  void setKey(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.TrelloPUT#getKey <em>Key</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Key</em>' attribute.
+     * @generated
+     * @see #getKey()
+     */
+    void setKey(String value);
 
-  /**
-   * Returns the value of the '<em><b>Useraccount</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Useraccount</em>' attribute.
-   * @see #setUseraccount(String)
-   * @see in.handyman.dsl.DslPackage#getTrelloPUT_Useraccount()
-   * @model
-   * @generated
-   */
-  String getUseraccount();
+    /**
+     * Returns the value of the '<em><b>Useraccount</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Useraccount</em>' attribute.
+     * @model
+     * @generated
+     * @see #setUseraccount(String)
+     * @see in.handyman.dsl.DslPackage#getTrelloPUT_Useraccount()
+     */
+    String getUseraccount();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.TrelloPUT#getUseraccount <em>Useraccount</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Useraccount</em>' attribute.
-   * @see #getUseraccount()
-   * @generated
-   */
-  void setUseraccount(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.TrelloPUT#getUseraccount <em>Useraccount</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Useraccount</em>' attribute.
+     * @generated
+     * @see #getUseraccount()
+     */
+    void setUseraccount(String value);
 
-  /**
-   * Returns the value of the '<em><b>List</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>List</em>' attribute.
-   * @see #setList(String)
-   * @see in.handyman.dsl.DslPackage#getTrelloPUT_List()
-   * @model
-   * @generated
-   */
-  String getList();
+    /**
+     * Returns the value of the '<em><b>List</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>List</em>' attribute.
+     * @model
+     * @generated
+     * @see #setList(String)
+     * @see in.handyman.dsl.DslPackage#getTrelloPUT_List()
+     */
+    String getList();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.TrelloPUT#getList <em>List</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>List</em>' attribute.
-   * @see #getList()
-   * @generated
-   */
-  void setList(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.TrelloPUT#getList <em>List</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>List</em>' attribute.
+     * @generated
+     * @see #getList()
+     */
+    void setList(String value);
 
-  /**
-   * Returns the value of the '<em><b>Source</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Source</em>' attribute.
-   * @see #setSource(String)
-   * @see in.handyman.dsl.DslPackage#getTrelloPUT_Source()
-   * @model
-   * @generated
-   */
-  String getSource();
+    /**
+     * Returns the value of the '<em><b>Source</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Source</em>' attribute.
+     * @model
+     * @generated
+     * @see #setSource(String)
+     * @see in.handyman.dsl.DslPackage#getTrelloPUT_Source()
+     */
+    String getSource();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.TrelloPUT#getSource <em>Source</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Source</em>' attribute.
-   * @see #getSource()
-   * @generated
-   */
-  void setSource(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.TrelloPUT#getSource <em>Source</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Source</em>' attribute.
+     * @generated
+     * @see #getSource()
+     */
+    void setSource(String value);
 
-  /**
-   * Returns the value of the '<em><b>Value</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Value</em>' attribute.
-   * @see #setValue(String)
-   * @see in.handyman.dsl.DslPackage#getTrelloPUT_Value()
-   * @model
-   * @generated
-   */
-  String getValue();
+    /**
+     * Returns the value of the '<em><b>Value</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Value</em>' attribute.
+     * @model
+     * @generated
+     * @see #setValue(String)
+     * @see in.handyman.dsl.DslPackage#getTrelloPUT_Value()
+     */
+    String getValue();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.TrelloPUT#getValue <em>Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Value</em>' attribute.
-   * @see #getValue()
-   * @generated
-   */
-  void setValue(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.TrelloPUT#getValue <em>Value</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Value</em>' attribute.
+     * @generated
+     * @see #getValue()
+     */
+    void setValue(String value);
 
 } // TrelloPUT

@@ -22,164 +22,177 @@ package in.handyman.dsl;
  *   <li>{@link in.handyman.dsl.GooglecontactSelectAll#getValue <em>Value</em>}</li>
  * </ul>
  *
- * @see in.handyman.dsl.DslPackage#getGooglecontactSelectAll()
  * @model
  * @generated
+ * @see in.handyman.dsl.DslPackage#getGooglecontactSelectAll()
  */
-public interface GooglecontactSelectAll extends Action
-{
-  /**
-   * Returns the value of the '<em><b>Account</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Account</em>' attribute.
-   * @see #setAccount(String)
-   * @see in.handyman.dsl.DslPackage#getGooglecontactSelectAll_Account()
-   * @model
-   * @generated
-   */
-  String getAccount();
+public interface GooglecontactSelectAll extends Action {
+    /**
+     * Returns the value of the '<em><b>Account</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Account</em>' attribute.
+     * @model
+     * @generated
+     * @see #setAccount(String)
+     * @see in.handyman.dsl.DslPackage#getGooglecontactSelectAll_Account()
+     */
+    String getAccount();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.GooglecontactSelectAll#getAccount <em>Account</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Account</em>' attribute.
-   * @see #getAccount()
-   * @generated
-   */
-  void setAccount(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.GooglecontactSelectAll#getAccount <em>Account</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Account</em>' attribute.
+     * @generated
+     * @see #getAccount()
+     */
+    void setAccount(String value);
 
-  /**
-   * Returns the value of the '<em><b>Private Key</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Private Key</em>' attribute.
-   * @see #setPrivateKey(String)
-   * @see in.handyman.dsl.DslPackage#getGooglecontactSelectAll_PrivateKey()
-   * @model
-   * @generated
-   */
-  String getPrivateKey();
+    /**
+     * Returns the value of the '<em><b>Private Key</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Private Key</em>' attribute.
+     * @model
+     * @generated
+     * @see #setPrivateKey(String)
+     * @see in.handyman.dsl.DslPackage#getGooglecontactSelectAll_PrivateKey()
+     */
+    String getPrivateKey();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.GooglecontactSelectAll#getPrivateKey <em>Private Key</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Private Key</em>' attribute.
-   * @see #getPrivateKey()
-   * @generated
-   */
-  void setPrivateKey(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.GooglecontactSelectAll#getPrivateKey <em>Private Key</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Private Key</em>' attribute.
+     * @generated
+     * @see #getPrivateKey()
+     */
+    void setPrivateKey(String value);
 
-  /**
-   * Returns the value of the '<em><b>Ptwelve File</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Ptwelve File</em>' attribute.
-   * @see #setPtwelveFile(String)
-   * @see in.handyman.dsl.DslPackage#getGooglecontactSelectAll_PtwelveFile()
-   * @model
-   * @generated
-   */
-  String getPtwelveFile();
+    /**
+     * Returns the value of the '<em><b>Ptwelve File</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Ptwelve File</em>' attribute.
+     * @model
+     * @generated
+     * @see #setPtwelveFile(String)
+     * @see in.handyman.dsl.DslPackage#getGooglecontactSelectAll_PtwelveFile()
+     */
+    String getPtwelveFile();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.GooglecontactSelectAll#getPtwelveFile <em>Ptwelve File</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Ptwelve File</em>' attribute.
-   * @see #getPtwelveFile()
-   * @generated
-   */
-  void setPtwelveFile(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.GooglecontactSelectAll#getPtwelveFile <em>Ptwelve File</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Ptwelve File</em>' attribute.
+     * @generated
+     * @see #getPtwelveFile()
+     */
+    void setPtwelveFile(String value);
 
-  /**
-   * Returns the value of the '<em><b>Project</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Project</em>' attribute.
-   * @see #setProject(String)
-   * @see in.handyman.dsl.DslPackage#getGooglecontactSelectAll_Project()
-   * @model
-   * @generated
-   */
-  String getProject();
+    /**
+     * Returns the value of the '<em><b>Project</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Project</em>' attribute.
+     * @model
+     * @generated
+     * @see #setProject(String)
+     * @see in.handyman.dsl.DslPackage#getGooglecontactSelectAll_Project()
+     */
+    String getProject();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.GooglecontactSelectAll#getProject <em>Project</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Project</em>' attribute.
-   * @see #getProject()
-   * @generated
-   */
-  void setProject(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.GooglecontactSelectAll#getProject <em>Project</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Project</em>' attribute.
+     * @generated
+     * @see #getProject()
+     */
+    void setProject(String value);
 
-  /**
-   * Returns the value of the '<em><b>Impersonated User</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Impersonated User</em>' attribute.
-   * @see #setImpersonatedUser(String)
-   * @see in.handyman.dsl.DslPackage#getGooglecontactSelectAll_ImpersonatedUser()
-   * @model
-   * @generated
-   */
-  String getImpersonatedUser();
+    /**
+     * Returns the value of the '<em><b>Impersonated User</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Impersonated User</em>' attribute.
+     * @model
+     * @generated
+     * @see #setImpersonatedUser(String)
+     * @see in.handyman.dsl.DslPackage#getGooglecontactSelectAll_ImpersonatedUser()
+     */
+    String getImpersonatedUser();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.GooglecontactSelectAll#getImpersonatedUser <em>Impersonated User</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Impersonated User</em>' attribute.
-   * @see #getImpersonatedUser()
-   * @generated
-   */
-  void setImpersonatedUser(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.GooglecontactSelectAll#getImpersonatedUser <em>Impersonated User</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Impersonated User</em>' attribute.
+     * @generated
+     * @see #getImpersonatedUser()
+     */
+    void setImpersonatedUser(String value);
 
-  /**
-   * Returns the value of the '<em><b>Db Src</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Db Src</em>' attribute.
-   * @see #setDbSrc(String)
-   * @see in.handyman.dsl.DslPackage#getGooglecontactSelectAll_DbSrc()
-   * @model
-   * @generated
-   */
-  String getDbSrc();
+    /**
+     * Returns the value of the '<em><b>Db Src</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Db Src</em>' attribute.
+     * @model
+     * @generated
+     * @see #setDbSrc(String)
+     * @see in.handyman.dsl.DslPackage#getGooglecontactSelectAll_DbSrc()
+     */
+    String getDbSrc();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.GooglecontactSelectAll#getDbSrc <em>Db Src</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Db Src</em>' attribute.
-   * @see #getDbSrc()
-   * @generated
-   */
-  void setDbSrc(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.GooglecontactSelectAll#getDbSrc <em>Db Src</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Db Src</em>' attribute.
+     * @generated
+     * @see #getDbSrc()
+     */
+    void setDbSrc(String value);
 
-  /**
-   * Returns the value of the '<em><b>Value</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Value</em>' attribute.
-   * @see #setValue(String)
-   * @see in.handyman.dsl.DslPackage#getGooglecontactSelectAll_Value()
-   * @model
-   * @generated
-   */
-  String getValue();
+    /**
+     * Returns the value of the '<em><b>Value</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @return the value of the '<em>Value</em>' attribute.
+     * @model
+     * @generated
+     * @see #setValue(String)
+     * @see in.handyman.dsl.DslPackage#getGooglecontactSelectAll_Value()
+     */
+    String getValue();
 
-  /**
-   * Sets the value of the '{@link in.handyman.dsl.GooglecontactSelectAll#getValue <em>Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Value</em>' attribute.
-   * @see #getValue()
-   * @generated
-   */
-  void setValue(String value);
+    /**
+     * Sets the value of the '{@link in.handyman.dsl.GooglecontactSelectAll#getValue <em>Value</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @param value the new value of the '<em>Value</em>' attribute.
+     * @generated
+     * @see #getValue()
+     */
+    void setValue(String value);
 
 } // GooglecontactSelectAll

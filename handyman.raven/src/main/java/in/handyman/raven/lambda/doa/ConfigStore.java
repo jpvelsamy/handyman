@@ -24,7 +24,7 @@ public class ConfigStore extends Auditable {
     private String name;
     private String variable;
 
-//    @ColumnName("config_type_id")
+    //    @ColumnName("config_type_id")
     private Integer configTypeId;
 
     private String value;

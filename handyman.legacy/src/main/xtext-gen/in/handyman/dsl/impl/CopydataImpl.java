@@ -30,440 +30,436 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *
  * @generated
  */
-public class CopydataImpl extends ActionImpl implements Copydata
-{
-  /**
-   * The default value of the '{@link #getSource() <em>Source</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSource()
-   * @generated
-   * @ordered
-   */
-  protected static final String SOURCE_EDEFAULT = null;
+public class CopydataImpl extends ActionImpl implements Copydata {
+    /**
+     * The default value of the '{@link #getSource() <em>Source</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getSource()
+     */
+    protected static final String SOURCE_EDEFAULT = null;
+    /**
+     * The default value of the '{@link #getTo() <em>To</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getTo()
+     */
+    protected static final String TO_EDEFAULT = null;
+    /**
+     * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getValue()
+     */
+    protected static final String VALUE_EDEFAULT = null;
+    /**
+     * The default value of the '{@link #getWriteThreadCount() <em>Write Thread Count</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getWriteThreadCount()
+     */
+    protected static final String WRITE_THREAD_COUNT_EDEFAULT = null;
+    /**
+     * The default value of the '{@link #getFetchBatchSize() <em>Fetch Batch Size</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getFetchBatchSize()
+     */
+    protected static final String FETCH_BATCH_SIZE_EDEFAULT = null;
+    /**
+     * The default value of the '{@link #getWriteBatchSize() <em>Write Batch Size</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getWriteBatchSize()
+     */
+    protected static final String WRITE_BATCH_SIZE_EDEFAULT = null;
+    /**
+     * The cached value of the '{@link #getSource() <em>Source</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getSource()
+     */
+    protected String source = SOURCE_EDEFAULT;
+    /**
+     * The cached value of the '{@link #getTo() <em>To</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getTo()
+     */
+    protected String to = TO_EDEFAULT;
+    /**
+     * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getValue()
+     */
+    protected String value = VALUE_EDEFAULT;
+    /**
+     * The cached value of the '{@link #getWriteThreadCount() <em>Write Thread Count</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getWriteThreadCount()
+     */
+    protected String writeThreadCount = WRITE_THREAD_COUNT_EDEFAULT;
+    /**
+     * The cached value of the '{@link #getFetchBatchSize() <em>Fetch Batch Size</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getFetchBatchSize()
+     */
+    protected String fetchBatchSize = FETCH_BATCH_SIZE_EDEFAULT;
+    /**
+     * The cached value of the '{@link #getWriteBatchSize() <em>Write Batch Size</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getWriteBatchSize()
+     */
+    protected String writeBatchSize = WRITE_BATCH_SIZE_EDEFAULT;
 
-  /**
-   * The cached value of the '{@link #getSource() <em>Source</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getSource()
-   * @generated
-   * @ordered
-   */
-  protected String source = SOURCE_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getTo() <em>To</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTo()
-   * @generated
-   * @ordered
-   */
-  protected static final String TO_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getTo() <em>To</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTo()
-   * @generated
-   * @ordered
-   */
-  protected String to = TO_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getValue()
-   * @generated
-   * @ordered
-   */
-  protected static final String VALUE_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getValue()
-   * @generated
-   * @ordered
-   */
-  protected String value = VALUE_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getWriteThreadCount() <em>Write Thread Count</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getWriteThreadCount()
-   * @generated
-   * @ordered
-   */
-  protected static final String WRITE_THREAD_COUNT_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getWriteThreadCount() <em>Write Thread Count</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getWriteThreadCount()
-   * @generated
-   * @ordered
-   */
-  protected String writeThreadCount = WRITE_THREAD_COUNT_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getFetchBatchSize() <em>Fetch Batch Size</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getFetchBatchSize()
-   * @generated
-   * @ordered
-   */
-  protected static final String FETCH_BATCH_SIZE_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getFetchBatchSize() <em>Fetch Batch Size</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getFetchBatchSize()
-   * @generated
-   * @ordered
-   */
-  protected String fetchBatchSize = FETCH_BATCH_SIZE_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getWriteBatchSize() <em>Write Batch Size</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getWriteBatchSize()
-   * @generated
-   * @ordered
-   */
-  protected static final String WRITE_BATCH_SIZE_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getWriteBatchSize() <em>Write Batch Size</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getWriteBatchSize()
-   * @generated
-   * @ordered
-   */
-  protected String writeBatchSize = WRITE_BATCH_SIZE_EDEFAULT;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  protected CopydataImpl()
-  {
-    super();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  protected EClass eStaticClass()
-  {
-    return DslPackage.Literals.COPYDATA;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getSource()
-  {
-    return source;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setSource(String newSource)
-  {
-    String oldSource = source;
-    source = newSource;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.COPYDATA__SOURCE, oldSource, source));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getTo()
-  {
-    return to;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setTo(String newTo)
-  {
-    String oldTo = to;
-    to = newTo;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.COPYDATA__TO, oldTo, to));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getValue()
-  {
-    return value;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setValue(String newValue)
-  {
-    String oldValue = value;
-    value = newValue;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.COPYDATA__VALUE, oldValue, value));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getWriteThreadCount()
-  {
-    return writeThreadCount;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setWriteThreadCount(String newWriteThreadCount)
-  {
-    String oldWriteThreadCount = writeThreadCount;
-    writeThreadCount = newWriteThreadCount;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.COPYDATA__WRITE_THREAD_COUNT, oldWriteThreadCount, writeThreadCount));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getFetchBatchSize()
-  {
-    return fetchBatchSize;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setFetchBatchSize(String newFetchBatchSize)
-  {
-    String oldFetchBatchSize = fetchBatchSize;
-    fetchBatchSize = newFetchBatchSize;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.COPYDATA__FETCH_BATCH_SIZE, oldFetchBatchSize, fetchBatchSize));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getWriteBatchSize()
-  {
-    return writeBatchSize;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setWriteBatchSize(String newWriteBatchSize)
-  {
-    String oldWriteBatchSize = writeBatchSize;
-    writeBatchSize = newWriteBatchSize;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.COPYDATA__WRITE_BATCH_SIZE, oldWriteBatchSize, writeBatchSize));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public Object eGet(int featureID, boolean resolve, boolean coreType)
-  {
-    switch (featureID)
-    {
-      case DslPackage.COPYDATA__SOURCE:
-        return getSource();
-      case DslPackage.COPYDATA__TO:
-        return getTo();
-      case DslPackage.COPYDATA__VALUE:
-        return getValue();
-      case DslPackage.COPYDATA__WRITE_THREAD_COUNT:
-        return getWriteThreadCount();
-      case DslPackage.COPYDATA__FETCH_BATCH_SIZE:
-        return getFetchBatchSize();
-      case DslPackage.COPYDATA__WRITE_BATCH_SIZE:
-        return getWriteBatchSize();
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    protected CopydataImpl() {
+        super();
     }
-    return super.eGet(featureID, resolve, coreType);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void eSet(int featureID, Object newValue)
-  {
-    switch (featureID)
-    {
-      case DslPackage.COPYDATA__SOURCE:
-        setSource((String)newValue);
-        return;
-      case DslPackage.COPYDATA__TO:
-        setTo((String)newValue);
-        return;
-      case DslPackage.COPYDATA__VALUE:
-        setValue((String)newValue);
-        return;
-      case DslPackage.COPYDATA__WRITE_THREAD_COUNT:
-        setWriteThreadCount((String)newValue);
-        return;
-      case DslPackage.COPYDATA__FETCH_BATCH_SIZE:
-        setFetchBatchSize((String)newValue);
-        return;
-      case DslPackage.COPYDATA__WRITE_BATCH_SIZE:
-        setWriteBatchSize((String)newValue);
-        return;
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return DslPackage.Literals.COPYDATA;
     }
-    super.eSet(featureID, newValue);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void eUnset(int featureID)
-  {
-    switch (featureID)
-    {
-      case DslPackage.COPYDATA__SOURCE:
-        setSource(SOURCE_EDEFAULT);
-        return;
-      case DslPackage.COPYDATA__TO:
-        setTo(TO_EDEFAULT);
-        return;
-      case DslPackage.COPYDATA__VALUE:
-        setValue(VALUE_EDEFAULT);
-        return;
-      case DslPackage.COPYDATA__WRITE_THREAD_COUNT:
-        setWriteThreadCount(WRITE_THREAD_COUNT_EDEFAULT);
-        return;
-      case DslPackage.COPYDATA__FETCH_BATCH_SIZE:
-        setFetchBatchSize(FETCH_BATCH_SIZE_EDEFAULT);
-        return;
-      case DslPackage.COPYDATA__WRITE_BATCH_SIZE:
-        setWriteBatchSize(WRITE_BATCH_SIZE_EDEFAULT);
-        return;
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public Object eGet(int featureID, boolean resolve, boolean coreType) {
+        switch (featureID) {
+            case DslPackage.COPYDATA__SOURCE:
+                return getSource();
+            case DslPackage.COPYDATA__TO:
+                return getTo();
+            case DslPackage.COPYDATA__VALUE:
+                return getValue();
+            case DslPackage.COPYDATA__WRITE_THREAD_COUNT:
+                return getWriteThreadCount();
+            case DslPackage.COPYDATA__FETCH_BATCH_SIZE:
+                return getFetchBatchSize();
+            case DslPackage.COPYDATA__WRITE_BATCH_SIZE:
+                return getWriteBatchSize();
+        }
+        return super.eGet(featureID, resolve, coreType);
     }
-    super.eUnset(featureID);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean eIsSet(int featureID)
-  {
-    switch (featureID)
-    {
-      case DslPackage.COPYDATA__SOURCE:
-        return SOURCE_EDEFAULT == null ? source != null : !SOURCE_EDEFAULT.equals(source);
-      case DslPackage.COPYDATA__TO:
-        return TO_EDEFAULT == null ? to != null : !TO_EDEFAULT.equals(to);
-      case DslPackage.COPYDATA__VALUE:
-        return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
-      case DslPackage.COPYDATA__WRITE_THREAD_COUNT:
-        return WRITE_THREAD_COUNT_EDEFAULT == null ? writeThreadCount != null : !WRITE_THREAD_COUNT_EDEFAULT.equals(writeThreadCount);
-      case DslPackage.COPYDATA__FETCH_BATCH_SIZE:
-        return FETCH_BATCH_SIZE_EDEFAULT == null ? fetchBatchSize != null : !FETCH_BATCH_SIZE_EDEFAULT.equals(fetchBatchSize);
-      case DslPackage.COPYDATA__WRITE_BATCH_SIZE:
-        return WRITE_BATCH_SIZE_EDEFAULT == null ? writeBatchSize != null : !WRITE_BATCH_SIZE_EDEFAULT.equals(writeBatchSize);
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getSource() {
+        return source;
     }
-    return super.eIsSet(featureID);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String toString()
-  {
-    if (eIsProxy()) return super.toString();
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setSource(String newSource) {
+        String oldSource = source;
+        source = newSource;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.COPYDATA__SOURCE, oldSource, source));
+    }
 
-    StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (source: ");
-    result.append(source);
-    result.append(", to: ");
-    result.append(to);
-    result.append(", value: ");
-    result.append(value);
-    result.append(", writeThreadCount: ");
-    result.append(writeThreadCount);
-    result.append(", fetchBatchSize: ");
-    result.append(fetchBatchSize);
-    result.append(", writeBatchSize: ");
-    result.append(writeBatchSize);
-    result.append(')');
-    return result.toString();
-  }
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getTo() {
+        return to;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setTo(String newTo) {
+        String oldTo = to;
+        to = newTo;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.COPYDATA__TO, oldTo, to));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getValue() {
+        return value;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setValue(String newValue) {
+        String oldValue = value;
+        value = newValue;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.COPYDATA__VALUE, oldValue, value));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getWriteThreadCount() {
+        return writeThreadCount;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setWriteThreadCount(String newWriteThreadCount) {
+        String oldWriteThreadCount = writeThreadCount;
+        writeThreadCount = newWriteThreadCount;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.COPYDATA__WRITE_THREAD_COUNT, oldWriteThreadCount, writeThreadCount));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getFetchBatchSize() {
+        return fetchBatchSize;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setFetchBatchSize(String newFetchBatchSize) {
+        String oldFetchBatchSize = fetchBatchSize;
+        fetchBatchSize = newFetchBatchSize;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.COPYDATA__FETCH_BATCH_SIZE, oldFetchBatchSize, fetchBatchSize));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getWriteBatchSize() {
+        return writeBatchSize;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setWriteBatchSize(String newWriteBatchSize) {
+        String oldWriteBatchSize = writeBatchSize;
+        writeBatchSize = newWriteBatchSize;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.COPYDATA__WRITE_BATCH_SIZE, oldWriteBatchSize, writeBatchSize));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void eSet(int featureID, Object newValue) {
+        switch (featureID) {
+            case DslPackage.COPYDATA__SOURCE:
+                setSource((String) newValue);
+                return;
+            case DslPackage.COPYDATA__TO:
+                setTo((String) newValue);
+                return;
+            case DslPackage.COPYDATA__VALUE:
+                setValue((String) newValue);
+                return;
+            case DslPackage.COPYDATA__WRITE_THREAD_COUNT:
+                setWriteThreadCount((String) newValue);
+                return;
+            case DslPackage.COPYDATA__FETCH_BATCH_SIZE:
+                setFetchBatchSize((String) newValue);
+                return;
+            case DslPackage.COPYDATA__WRITE_BATCH_SIZE:
+                setWriteBatchSize((String) newValue);
+                return;
+        }
+        super.eSet(featureID, newValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void eUnset(int featureID) {
+        switch (featureID) {
+            case DslPackage.COPYDATA__SOURCE:
+                setSource(SOURCE_EDEFAULT);
+                return;
+            case DslPackage.COPYDATA__TO:
+                setTo(TO_EDEFAULT);
+                return;
+            case DslPackage.COPYDATA__VALUE:
+                setValue(VALUE_EDEFAULT);
+                return;
+            case DslPackage.COPYDATA__WRITE_THREAD_COUNT:
+                setWriteThreadCount(WRITE_THREAD_COUNT_EDEFAULT);
+                return;
+            case DslPackage.COPYDATA__FETCH_BATCH_SIZE:
+                setFetchBatchSize(FETCH_BATCH_SIZE_EDEFAULT);
+                return;
+            case DslPackage.COPYDATA__WRITE_BATCH_SIZE:
+                setWriteBatchSize(WRITE_BATCH_SIZE_EDEFAULT);
+                return;
+        }
+        super.eUnset(featureID);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public boolean eIsSet(int featureID) {
+        switch (featureID) {
+            case DslPackage.COPYDATA__SOURCE:
+                return SOURCE_EDEFAULT == null ? source != null : !SOURCE_EDEFAULT.equals(source);
+            case DslPackage.COPYDATA__TO:
+                return TO_EDEFAULT == null ? to != null : !TO_EDEFAULT.equals(to);
+            case DslPackage.COPYDATA__VALUE:
+                return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
+            case DslPackage.COPYDATA__WRITE_THREAD_COUNT:
+                return WRITE_THREAD_COUNT_EDEFAULT == null ? writeThreadCount != null : !WRITE_THREAD_COUNT_EDEFAULT.equals(writeThreadCount);
+            case DslPackage.COPYDATA__FETCH_BATCH_SIZE:
+                return FETCH_BATCH_SIZE_EDEFAULT == null ? fetchBatchSize != null : !FETCH_BATCH_SIZE_EDEFAULT.equals(fetchBatchSize);
+            case DslPackage.COPYDATA__WRITE_BATCH_SIZE:
+                return WRITE_BATCH_SIZE_EDEFAULT == null ? writeBatchSize != null : !WRITE_BATCH_SIZE_EDEFAULT.equals(writeBatchSize);
+        }
+        return super.eIsSet(featureID);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String toString() {
+        if (eIsProxy()) return super.toString();
+
+        StringBuilder result = new StringBuilder(super.toString());
+        result.append(" (source: ");
+        result.append(source);
+        result.append(", to: ");
+        result.append(to);
+        result.append(", value: ");
+        result.append(value);
+        result.append(", writeThreadCount: ");
+        result.append(writeThreadCount);
+        result.append(", fetchBatchSize: ");
+        result.append(fetchBatchSize);
+        result.append(", writeBatchSize: ");
+        result.append(writeBatchSize);
+        result.append(')');
+        return result.toString();
+    }
 
 } //CopydataImpl

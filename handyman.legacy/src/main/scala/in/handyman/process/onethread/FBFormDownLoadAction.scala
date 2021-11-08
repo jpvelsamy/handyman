@@ -94,127 +94,126 @@ class FBFormDownloadAction extends in.handyman.command.Action with LazyLogging {
     val statementId = AuditService.insertStatementAudit(actionId, "fbform->" + name, context.getValue("process-name"))
     logger.info(fbMarker, "Form id list as is {} with account id {} and with db {}", formIdList, accountId, dbTarget)
     formIdList.foreach {
-      formId =>
-        {
-          //LeadgenForm(219664825595022)
-          val form = LeadgenForm.fetchById(formId, fbContext)
-          //Need to know how to use the lamba and keep my life simple
-          //val leadList = ad.getLeads.requestAllFields().execute();
-          //.setParam(\"filtering\", \"[{\\"field\\":\\"time_created\\",\\"operator\\":\\"GREATER_THAN\\",\\"value\\":1546549613}]\")
-          val leadList = form.getLeads.requestAllFields().execute();
-          if (!leadList.isEmpty()) {
+      formId => {
+        //LeadgenForm(219664825595022)
+        val form = LeadgenForm.fetchById(formId, fbContext)
+        //Need to know how to use the lamba and keep my life simple
+        //val leadList = ad.getLeads.requestAllFields().execute();
+        //.setParam(\"filtering\", \"[{\\"field\\":\\"time_created\\",\\"operator\\":\\"GREATER_THAN\\",\\"value\\":1546549613}]\")
+        val leadList = form.getLeads.requestAllFields().execute();
+        if (!leadList.isEmpty()) {
 
-            val leadListIter = leadList.withAutoPaginationIterator(true).iterator()
-            logger.info(fbMarker, "Iterating through campaign {} for account {}", formId, accountId)
+          val leadListIter = leadList.withAutoPaginationIterator(true).iterator()
+          logger.info(fbMarker, "Iterating through campaign {} for account {}", formId, accountId)
 
-            val leadCounter: AtomicInteger = new AtomicInteger;
-            while (leadListIter.hasNext()) {
+          val leadCounter: AtomicInteger = new AtomicInteger;
+          while (leadListIter.hasNext()) {
 
-              val lead = leadListIter.next
-              val createdAt = lead.getFieldCreatedTime
+            val lead = leadListIter.next
+            val createdAt = lead.getFieldCreatedTime
 
-              incomingLeadCount.incrementAndGet()
-              val leadSourceMeta = "ad_id=" + lead.getFieldAdId + ",<br/> ad_name=" + lead.getFieldAdName + "<br/>, adset_id=" + lead.getFieldAdsetId +
-                "<br/>, adset_name=" + lead.getFieldAdsetName + "<br/>, campaign_id=" + lead.getFieldCampaignId + "<br/>,form_id=" +
-                lead.getFieldFormId + "<br/>,id=" + lead.getFieldId + "<br/>, dailybudget=" + 0
-              //ad.getFieldAdset.getFieldDailyBudget - will try later
+            incomingLeadCount.incrementAndGet()
+            val leadSourceMeta = "ad_id=" + lead.getFieldAdId + ",<br/> ad_name=" + lead.getFieldAdName + "<br/>, adset_id=" + lead.getFieldAdsetId +
+              "<br/>, adset_name=" + lead.getFieldAdsetName + "<br/>, campaign_id=" + lead.getFieldCampaignId + "<br/>,form_id=" +
+              lead.getFieldFormId + "<br/>,id=" + lead.getFieldId + "<br/>, dailybudget=" + 0
+            //ad.getFieldAdset.getFieldDailyBudget - will try later
 
-              val userGenData = lead.getFieldFieldData
+            val userGenData = lead.getFieldFieldData
 
-              val intentMeta = new StringBuilder
-              val myLead: Lead = new Lead
-              if (!userGenData.isEmpty) {
-                val usergeniter = userGenData.listIterator
+            val intentMeta = new StringBuilder
+            val myLead: Lead = new Lead
+            if (!userGenData.isEmpty) {
+              val usergeniter = userGenData.listIterator
 
-                while (usergeniter.hasNext()) {
-                  val userData = usergeniter.next()
-                  val name = userData.getFieldName.trim
-                  val value = userData.getFieldValues.toArray().mkString(",")
-                  if (name.equals("email")) {
-                    myLead.setEmail(value)
-                  } else if (name.equals("full_name")) {
-                    val leadName = {
-                      if (nameCleanup.equalsIgnoreCase("true"))
-                        cleanTextContent(value)
-                      else
-                        value
-                    }
-
-                    val existingVal = myLead.getFullName
-                    if (existingVal != null)
-                      myLead.setFullName(existingVal + "/" + value)
+              while (usergeniter.hasNext()) {
+                val userData = usergeniter.next()
+                val name = userData.getFieldName.trim
+                val value = userData.getFieldValues.toArray().mkString(",")
+                if (name.equals("email")) {
+                  myLead.setEmail(value)
+                } else if (name.equals("full_name")) {
+                  val leadName = {
+                    if (nameCleanup.equalsIgnoreCase("true"))
+                      cleanTextContent(value)
                     else
-                      myLead.setFullName(leadName)
-                  } else if (name.toLowerCase().contains("name")) {
-                    val leadName = {
-                      if (nameCleanup.equalsIgnoreCase("true"))
-                        cleanTextContent(value)
-                      else
-                        value
-                    }
-                    val existingVal = myLead.getFullName
-                    if (existingVal != null)
-                      myLead.setFullName(existingVal + "/" + value)
-                    else
-                      myLead.setFullName(leadName)
-                  } else if (name.equals("city")) {
-                    myLead.setCity(value)
-                  } else if (name.equals("company_name")) {
-                    myLead.setCompany(value)
-                  } else if (name.equals("phone_number")) {
-                    val prunedValue = {
-                      if (value.length > 10)
-                        value.substring(value.length - 10, value.length)
-                      else
-                        value
-                    }
-                    myLead.setMobile(prunedValue)
-                  } else if (name.equals("job_title")) {
-                    myLead.setProfession(value)
-                  } else {
-                    intentMeta.append(name).append("=").append(value).append("\n")
+                      value
                   }
-                  usergeniter.remove
-                }
-              }
-              stmt.setString(EMAIL, myLead.getEmail)
-              stmt.setString(NAME, myLead.getFullName)
-              stmt.setString(TARGETED_CITY, myLead.getCity)
-              stmt.setString(LOCALITY, myLead.getCity)
-              stmt.setString(COMPANY, myLead.getCompany)
-              stmt.setString(MOBILE, myLead.getMobile)
-              stmt.setString(ALT_MOBILE, myLead.getMobile)
-              stmt.setString(PROFESSION, myLead.getProfession)
-              stmt.setString(INTENT_METADATA, intentMeta.toString)
-              stmt.setString(LEADSOURCE_METADATA, leadSourceMeta)
-              stmt.setString(LEADSOURCE_CAMPAIGN, lead.getFieldCampaignName)
-              stmt.setInt(BUDGET, 0)
-              stmt.setInt(COA_APROX, 0)
-              stmt.setString(LEADSOURCE_CHANNEL, "FB")
-              stmt.setString(LEADGEN_DATE, createdAt)
-              val processid = context.getValue("process-id")
-              stmt.setInt(BATCH_ID, Integer.parseInt(processid))
-              try {
-                logger.info(fbMarker, "Adding lead with name {} , phone {}, email {}, location {}", myLead.fullName, myLead.mobile, myLead.email, myLead.city)
-                stmt.executeUpdate
-                tgtConn.commit
-                insertedLeadCount.incrementAndGet()
-              } catch {
 
-                case ex: SQLException => {
-                  logger.error("Error inserting name {} , phone {}, email {}, location {} with campaign {} and conter {}", myLead.fullName, myLead.mobile, myLead.email, myLead.city, formId, leadCounter.incrementAndGet.toString, ex)
-                  detailMap.put("exception", ExceptionUtil.completeStackTraceex(ex))
+                  val existingVal = myLead.getFullName
+                  if (existingVal != null)
+                    myLead.setFullName(existingVal + "/" + value)
+                  else
+                    myLead.setFullName(leadName)
+                } else if (name.toLowerCase().contains("name")) {
+                  val leadName = {
+                    if (nameCleanup.equalsIgnoreCase("true"))
+                      cleanTextContent(value)
+                    else
+                      value
+                  }
+                  val existingVal = myLead.getFullName
+                  if (existingVal != null)
+                    myLead.setFullName(existingVal + "/" + value)
+                  else
+                    myLead.setFullName(leadName)
+                } else if (name.equals("city")) {
+                  myLead.setCity(value)
+                } else if (name.equals("company_name")) {
+                  myLead.setCompany(value)
+                } else if (name.equals("phone_number")) {
+                  val prunedValue = {
+                    if (value.length > 10)
+                      value.substring(value.length - 10, value.length)
+                    else
+                      value
+                  }
+                  myLead.setMobile(prunedValue)
+                } else if (name.equals("job_title")) {
+                  myLead.setProfession(value)
+                } else {
+                  intentMeta.append(name).append("=").append(value).append("\n")
                 }
-                case ex: Throwable => {
-                  logger.error("Error inserting name {} , phone {}, email {}, location {} with campaign {} and conter {}", myLead.fullName, myLead.mobile, myLead.email, myLead.city, formId, leadCounter.incrementAndGet.toString, ex)
-                  detailMap.put("exception", ExceptionUtil.completeStackTraceex(ex))
-                }
+                usergeniter.remove
               }
-              detailMap.put(formId, leadCounter.intValue().toString)
-            } //leadList.iterator().hasNext()
-          } //!leadList.isEmpty()
+            }
+            stmt.setString(EMAIL, myLead.getEmail)
+            stmt.setString(NAME, myLead.getFullName)
+            stmt.setString(TARGETED_CITY, myLead.getCity)
+            stmt.setString(LOCALITY, myLead.getCity)
+            stmt.setString(COMPANY, myLead.getCompany)
+            stmt.setString(MOBILE, myLead.getMobile)
+            stmt.setString(ALT_MOBILE, myLead.getMobile)
+            stmt.setString(PROFESSION, myLead.getProfession)
+            stmt.setString(INTENT_METADATA, intentMeta.toString)
+            stmt.setString(LEADSOURCE_METADATA, leadSourceMeta)
+            stmt.setString(LEADSOURCE_CAMPAIGN, lead.getFieldCampaignName)
+            stmt.setInt(BUDGET, 0)
+            stmt.setInt(COA_APROX, 0)
+            stmt.setString(LEADSOURCE_CHANNEL, "FB")
+            stmt.setString(LEADGEN_DATE, createdAt)
+            val processid = context.getValue("process-id")
+            stmt.setInt(BATCH_ID, Integer.parseInt(processid))
+            try {
+              logger.info(fbMarker, "Adding lead with name {} , phone {}, email {}, location {}", myLead.fullName, myLead.mobile, myLead.email, myLead.city)
+              stmt.executeUpdate
+              tgtConn.commit
+              insertedLeadCount.incrementAndGet()
+            } catch {
 
-        } //form closure
+              case ex: SQLException => {
+                logger.error("Error inserting name {} , phone {}, email {}, location {} with campaign {} and conter {}", myLead.fullName, myLead.mobile, myLead.email, myLead.city, formId, leadCounter.incrementAndGet.toString, ex)
+                detailMap.put("exception", ExceptionUtil.completeStackTraceex(ex))
+              }
+              case ex: Throwable => {
+                logger.error("Error inserting name {} , phone {}, email {}, location {} with campaign {} and conter {}", myLead.fullName, myLead.mobile, myLead.email, myLead.city, formId, leadCounter.incrementAndGet.toString, ex)
+                detailMap.put("exception", ExceptionUtil.completeStackTraceex(ex))
+              }
+            }
+            detailMap.put(formId, leadCounter.intValue().toString)
+          } //leadList.iterator().hasNext()
+        } //!leadList.isEmpty()
+
+      } //form closure
     } //form iteration
 
     try {}
@@ -234,6 +233,18 @@ class FBFormDownloadAction extends in.handyman.command.Action with LazyLogging {
     context
   }
 
+  //https://howtodoinjava.com/regex/java-clean-ascii-text-non-printable-chars/
+  def cleanTextContent(text: String): String = {
+    var output = text;
+    // strips off all non-ASCII characters
+    output = output.replaceAll("[^\\x00-\\x7F]", "");
+    // erases all the ASCII control characters
+    output = output.replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", "");
+    // removes non-printable characters from Unicode
+    output = output.replaceAll("\\p{C}", "");
+    return output.trim();
+  }
+
   def executeIf(context: in.handyman.command.Context, action: in.handyman.dsl.Action): Boolean = {
     val fbAsIs: in.handyman.dsl.FBFormDownload = action.asInstanceOf[in.handyman.dsl.FBFormDownload]
     val fb: in.handyman.dsl.FBFormDownload = CommandProxy.createProxy(fbAsIs, classOf[in.handyman.dsl.FBFormDownload], context)
@@ -248,19 +259,6 @@ class FBFormDownloadAction extends in.handyman.command.Action with LazyLogging {
 
     }
   }
-
-  //https://howtodoinjava.com/regex/java-clean-ascii-text-non-printable-chars/
-  def cleanTextContent(text: String): String =
-    {
-      var output = text;
-      // strips off all non-ASCII characters
-      output = output.replaceAll("[^\\x00-\\x7F]", "");
-      // erases all the ASCII control characters
-      output = output.replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", "");
-      // removes non-printable characters from Unicode
-      output = output.replaceAll("\\p{C}", "");
-      return output.trim();
-    }
 
   //email	full_name	phone_number	city	company_name	job_title
   def generateAudit(): java.util.Map[String, String] = {

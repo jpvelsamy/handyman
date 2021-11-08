@@ -5,7 +5,7 @@ package in.handyman.validation;
 
 /**
  * This class contains custom validation rules.
- * 
+ * <p>
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#validation
  */
 @SuppressWarnings("all")

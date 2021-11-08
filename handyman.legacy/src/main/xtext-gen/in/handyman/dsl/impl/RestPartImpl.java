@@ -27,212 +27,208 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  *
  * @generated
  */
-public class RestPartImpl extends MinimalEObjectImpl.Container implements RestPart
-{
-  /**
-   * The default value of the '{@link #getPartName() <em>Part Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getPartName()
-   * @generated
-   * @ordered
-   */
-  protected static final String PART_NAME_EDEFAULT = null;
+public class RestPartImpl extends MinimalEObjectImpl.Container implements RestPart {
+    /**
+     * The default value of the '{@link #getPartName() <em>Part Name</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getPartName()
+     */
+    protected static final String PART_NAME_EDEFAULT = null;
+    /**
+     * The default value of the '{@link #getPartData() <em>Part Data</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getPartData()
+     */
+    protected static final String PART_DATA_EDEFAULT = null;
+    /**
+     * The cached value of the '{@link #getPartName() <em>Part Name</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getPartName()
+     */
+    protected String partName = PART_NAME_EDEFAULT;
+    /**
+     * The cached value of the '{@link #getPartData() <em>Part Data</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     * @ordered
+     * @see #getPartData()
+     */
+    protected String partData = PART_DATA_EDEFAULT;
 
-  /**
-   * The cached value of the '{@link #getPartName() <em>Part Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getPartName()
-   * @generated
-   * @ordered
-   */
-  protected String partName = PART_NAME_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getPartData() <em>Part Data</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getPartData()
-   * @generated
-   * @ordered
-   */
-  protected static final String PART_DATA_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getPartData() <em>Part Data</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getPartData()
-   * @generated
-   * @ordered
-   */
-  protected String partData = PART_DATA_EDEFAULT;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  protected RestPartImpl()
-  {
-    super();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  protected EClass eStaticClass()
-  {
-    return DslPackage.Literals.REST_PART;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getPartName()
-  {
-    return partName;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setPartName(String newPartName)
-  {
-    String oldPartName = partName;
-    partName = newPartName;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.REST_PART__PART_NAME, oldPartName, partName));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String getPartData()
-  {
-    return partData;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setPartData(String newPartData)
-  {
-    String oldPartData = partData;
-    partData = newPartData;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.REST_PART__PART_DATA, oldPartData, partData));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public Object eGet(int featureID, boolean resolve, boolean coreType)
-  {
-    switch (featureID)
-    {
-      case DslPackage.REST_PART__PART_NAME:
-        return getPartName();
-      case DslPackage.REST_PART__PART_DATA:
-        return getPartData();
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    protected RestPartImpl() {
+        super();
     }
-    return super.eGet(featureID, resolve, coreType);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void eSet(int featureID, Object newValue)
-  {
-    switch (featureID)
-    {
-      case DslPackage.REST_PART__PART_NAME:
-        setPartName((String)newValue);
-        return;
-      case DslPackage.REST_PART__PART_DATA:
-        setPartData((String)newValue);
-        return;
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return DslPackage.Literals.REST_PART;
     }
-    super.eSet(featureID, newValue);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void eUnset(int featureID)
-  {
-    switch (featureID)
-    {
-      case DslPackage.REST_PART__PART_NAME:
-        setPartName(PART_NAME_EDEFAULT);
-        return;
-      case DslPackage.REST_PART__PART_DATA:
-        setPartData(PART_DATA_EDEFAULT);
-        return;
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public Object eGet(int featureID, boolean resolve, boolean coreType) {
+        switch (featureID) {
+            case DslPackage.REST_PART__PART_NAME:
+                return getPartName();
+            case DslPackage.REST_PART__PART_DATA:
+                return getPartData();
+        }
+        return super.eGet(featureID, resolve, coreType);
     }
-    super.eUnset(featureID);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public boolean eIsSet(int featureID)
-  {
-    switch (featureID)
-    {
-      case DslPackage.REST_PART__PART_NAME:
-        return PART_NAME_EDEFAULT == null ? partName != null : !PART_NAME_EDEFAULT.equals(partName);
-      case DslPackage.REST_PART__PART_DATA:
-        return PART_DATA_EDEFAULT == null ? partData != null : !PART_DATA_EDEFAULT.equals(partData);
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getPartName() {
+        return partName;
     }
-    return super.eIsSet(featureID);
-  }
 
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String toString()
-  {
-    if (eIsProxy()) return super.toString();
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setPartName(String newPartName) {
+        String oldPartName = partName;
+        partName = newPartName;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.REST_PART__PART_NAME, oldPartName, partName));
+    }
 
-    StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (partName: ");
-    result.append(partName);
-    result.append(", partData: ");
-    result.append(partData);
-    result.append(')');
-    return result.toString();
-  }
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getPartData() {
+        return partData;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setPartData(String newPartData) {
+        String oldPartData = partData;
+        partData = newPartData;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, DslPackage.REST_PART__PART_DATA, oldPartData, partData));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void eSet(int featureID, Object newValue) {
+        switch (featureID) {
+            case DslPackage.REST_PART__PART_NAME:
+                setPartName((String) newValue);
+                return;
+            case DslPackage.REST_PART__PART_DATA:
+                setPartData((String) newValue);
+                return;
+        }
+        super.eSet(featureID, newValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void eUnset(int featureID) {
+        switch (featureID) {
+            case DslPackage.REST_PART__PART_NAME:
+                setPartName(PART_NAME_EDEFAULT);
+                return;
+            case DslPackage.REST_PART__PART_DATA:
+                setPartData(PART_DATA_EDEFAULT);
+                return;
+        }
+        super.eUnset(featureID);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public boolean eIsSet(int featureID) {
+        switch (featureID) {
+            case DslPackage.REST_PART__PART_NAME:
+                return PART_NAME_EDEFAULT == null ? partName != null : !PART_NAME_EDEFAULT.equals(partName);
+            case DslPackage.REST_PART__PART_DATA:
+                return PART_DATA_EDEFAULT == null ? partData != null : !PART_DATA_EDEFAULT.equals(partData);
+        }
+        return super.eIsSet(featureID);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String toString() {
+        if (eIsProxy()) return super.toString();
+
+        StringBuilder result = new StringBuilder(super.toString());
+        result.append(" (partName: ");
+        result.append(partName);
+        result.append(", partData: ");
+        result.append(partData);
+        result.append(')');
+        return result.toString();
+    }
 
 } //RestPartImpl
