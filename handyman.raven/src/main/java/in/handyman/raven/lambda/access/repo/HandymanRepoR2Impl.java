@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -55,7 +56,7 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public ResourceConnection getResourceConfig(final String name) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT name, created_by, created_date, last_modified_by, last_modified_date, active, config_type, driver_class_name, password, url, user_name FROM resource_connection")
+        return jdbi.withHandle(handle -> handle.createQuery("SELECT name, created_by, created_date, last_modified_by, last_modified_date, active, config_type, driver_class_name, password, url, user_name FROM resource_connection where name = ? ")
                 .bind(0, name)
                 .mapToBean(ResourceConnection.class)
                 .findOne().orElse(null));
@@ -89,6 +90,16 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
                 .bind(1, configName)
                 .mapToBean(ConfigStore.class)
                 .list());
+    }
+
+    @Override
+    public Optional<ConfigStore> findConfigEntities(final ConfigType configType, final String configName, final String variable) {
+        return jdbi.withHandle(handle -> handle.createQuery("SELECT id, active, config_type_id, name, value, variable, created_by, created_date, last_modified_by, last_modified_date FROM config_store where config_type_id = ? and name = ? and variable=?")
+                .bind(0, configType.getId())
+                .bind(1, configName)
+                .bind(2, variable)
+                .mapToBean(ConfigStore.class)
+                .findOne());
     }
 
     @Override

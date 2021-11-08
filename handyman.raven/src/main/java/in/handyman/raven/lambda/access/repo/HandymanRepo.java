@@ -11,6 +11,7 @@ import in.handyman.raven.lambda.doa.Statement;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public interface HandymanRepo {
@@ -28,6 +29,9 @@ public interface HandymanRepo {
     Set<String> getPackageAction();
 
     List<ConfigStore> findConfigEntities(final ConfigType configType, final String configName);
+
+    Optional<ConfigStore> findConfigEntities(final ConfigType configType, final String configName, final String variable);
+
 
     void insertPipeline(final Pipeline audit);
 
