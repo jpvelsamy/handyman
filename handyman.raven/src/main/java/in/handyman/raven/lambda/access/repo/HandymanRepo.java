@@ -32,6 +32,9 @@ public interface HandymanRepo {
 
     Optional<ConfigStore> findConfigEntities(final ConfigType configType, final String configName, final String variable);
 
+    void update(final ConfigType configType, final String configName, final String variable);
+
+    void insert(final ConfigType configType, final String configName, final String variable);
 
     void insertPipeline(final Pipeline audit);
 

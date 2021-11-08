@@ -103,6 +103,16 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     }
 
     @Override
+    public void update(final ConfigType configType, final String configName, final String variable) {
+
+    }
+
+    @Override
+    public void insert(final ConfigType configType, final String configName, final String variable) {
+
+    }
+
+    @Override
     public void insertPipeline(final Pipeline audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
         jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO pipeline (pipeline_id, created_by, created_date, last_modified_by, last_modified_date,pipeline_name," +

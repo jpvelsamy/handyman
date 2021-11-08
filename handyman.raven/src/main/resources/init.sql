@@ -1,4 +1,4 @@
--- handyman_vm.`action` definition
+-- `action` definition
 
 CREATE TABLE `action`
 (
@@ -25,7 +25,7 @@ CREATE TABLE `action`
   DEFAULT CHARSET = utf8mb4;
 
 
--- handyman_vm.action_execution_audit definition
+-- action_execution_audit definition
 
 CREATE TABLE `action_execution_audit`
 (
@@ -42,7 +42,7 @@ CREATE TABLE `action_execution_audit`
   DEFAULT CHARSET = utf8mb4;
 
 
--- handyman_vm.config_store definition
+-- config_store definition
 
 CREATE TABLE `config_store`
 (
@@ -56,13 +56,12 @@ CREATE TABLE `config_store`
     `created_date`       datetime     DEFAULT NULL,
     `last_modified_by`   bigint(20)   DEFAULT NULL,
     `last_modified_date` datetime     DEFAULT NULL,
-    `configTypeId`       int(11)      DEFAULT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
 
--- handyman_vm.lambda_execution_audit definition
+-- lambda_execution_audit definition
 
 CREATE TABLE `lambda_execution_audit`
 (
@@ -78,7 +77,7 @@ CREATE TABLE `lambda_execution_audit`
   DEFAULT CHARSET = utf8mb4;
 
 
--- handyman_vm.pipeline definition
+-- pipeline definition
 
 CREATE TABLE `pipeline`
 (
@@ -107,7 +106,7 @@ CREATE TABLE `pipeline`
   DEFAULT CHARSET = utf8mb4;
 
 
--- handyman_vm.resource_connection definition
+-- resource_connection definition
 
 CREATE TABLE `resource_connection`
 (
@@ -127,28 +126,32 @@ CREATE TABLE `resource_connection`
   DEFAULT CHARSET = utf8mb4;
 
 
--- handyman_vm.`statement` definition
+-- `statement` definition
 
 CREATE TABLE `statement`
 (
     `statement_id`       bigint(20) NOT NULL,
-    `created_by`         bigint(20)   DEFAULT NULL,
-    `created_date`       datetime     DEFAULT NULL,
-    `last_modified_by`   bigint(20)   DEFAULT NULL,
-    `last_modified_date` datetime     DEFAULT NULL,
-    `action_id`          bigint(20)   DEFAULT NULL,
-    `rows_processed`     int(11)      DEFAULT NULL,
-    `rows_read`          int(11)      DEFAULT NULL,
-    `rows_written`       int(11)      DEFAULT NULL,
-    `statement_content`  varchar(255) DEFAULT NULL,
-    `time_taken`         double       DEFAULT NULL,
+    `created_by`         bigint(20) DEFAULT NULL,
+    `created_date`       datetime   DEFAULT NULL,
+    `last_modified_by`   bigint(20) DEFAULT NULL,
+    `last_modified_date` datetime   DEFAULT NULL,
+    `action_id`          bigint(20) DEFAULT NULL,
+    `rows_processed`     int(11)    DEFAULT NULL,
+    `rows_read`          int(11)    DEFAULT NULL,
+    `rows_written`       int(11)    DEFAULT NULL,
+    `statement_content`  text       DEFAULT NULL,
+    `time_taken`         double     DEFAULT NULL,
     PRIMARY KEY (`statement_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
 
-INSERT INTO handyman_vm.config_store (id, active, config_type_id, name, value, variable) VALUES(1, 1, 1, 'SYS_PACKAGE', 'in.handyman.raven.lib', 'DEFAULT');
-INSERT INTO handyman_vm.config_store (id, active, config_type_id, name, value, variable) VALUES(3, 1, 4, 'RestApiActionTest', 'process "cub.test"
+INSERT INTO config_store (id, active, config_type_id, name, value, variable, created_by, created_date, last_modified_by,
+                          last_modified_date)
+VALUES (1, 1, 1, 'SYS_PACKAGE', 'in.handyman.raven.lib', 'DEFAULT', NULL, NULL, NULL, NULL);
+INSERT INTO config_store (id, active, config_type_id, name, value, variable, created_by, created_date, last_modified_by,
+                          last_modified_date)
+VALUES (3, 1, 4, 'RestApiActionTest', 'process "cub.test"
 {
 	try {
 
@@ -183,5 +186,11 @@ INSERT INTO handyman_vm.config_store (id, active, config_type_id, name, value, v
 
 	}
 }
-', 'processContent');
+', 'processContent', NULL, NULL, NULL, NULL);
 
+
+
+INSERT INTO resource_connection (name, created_by, created_date, last_modified_by, last_modified_date, active,
+                                 config_type, driver_class_name, password, url, user_name)
+VALUES ('${cub_eval}', -1, '2021-11-02 00:00:00.000', -1, '2021-11-02 00:00:00.000', 1, '""', 'org.mariadb.jdbc.Driver',
+        'password', 'jdbc:mysql://localhost:3306/handyman_vm', 'root');
