@@ -11,50 +11,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
+@Getter
+@Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Entity
-@Table(name = "lambda_execution_audit")
 public class LambdaExecutionAudit extends Auditable {
 
     @Builder.Default
-    @Id
     private Long id = UniqueID.getId();
-    @Column(name = "pipeline_id")
     private Long pipelineId;
-    @Column(name = "execution_status_id")
     private Integer executionStatusId;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Long getPipelineId() {
-        return pipelineId;
-    }
-
-    public void setPipelineId(final Long pipelineId) {
-        this.pipelineId = pipelineId;
-    }
-
-    public Integer getExecutionStatusId() {
-        return executionStatusId;
-    }
-
-    public void setExecutionStatusId(final Integer executionStatusId) {
-        this.executionStatusId = executionStatusId;
-    }
 }

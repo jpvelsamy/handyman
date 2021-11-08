@@ -11,7 +11,7 @@ class RestApiActionTest {
     void execute() {
         LambdaEngine.start(LContext.builder()
                 .pipelineName(this.getClass().getSimpleName())
-                .processLoadType(HRequestResolver.LoadType.FILE.name())
+                .processLoadType(HRequestResolver.LoadType.DB.name())
                 .build());
     }
 }

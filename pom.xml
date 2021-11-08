@@ -16,5 +16,6 @@
     <modules>
         <module>handyman.legacy</module>
         <module>handyman.raven</module>
+        <module>handyman.server</module>
     </modules>
 </project>
