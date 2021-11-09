@@ -10,6 +10,10 @@
     <artifactId>handyman.legacy</artifactId>
     <packaging>jar</packaging>
     <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <java.version>11</java.version>
+        <scala.version>2.13.6</scala.version>
         <scala.logging.version>3.9.4</scala.logging.version>
         <scala.xml.version>2.0.1</scala.xml.version>
         <restlet.core.version>2.4.0</restlet.core.version>
@@ -18,12 +22,14 @@
         <commons.text.version>1.9</commons.text.version>
         <commons.httpclient.version>4.5.13</commons.httpclient.version>
         <commons.asynchttpclient.version>4.1.4</commons.asynchttpclient.version>
-        <facebook.sdk.version>12.0.0</facebook.sdk.version>
+        <facebook.sdk.version>12.0.1</facebook.sdk.version>
         <squareup.http.version>4.9.2</squareup.http.version>
         <google.people.version>v1-rev20210903-1.32.1</google.people.version>
         <google.cal.version>v3-rev20210804-1.32.1</google.cal.version>
         <logback.classic.version>1.2.6</logback.classic.version>
-        <presto-parser.version>0.263.1</presto-parser.version>
+        <presto-parser.version>0.264</presto-parser.version>
+        <xtextVersion>2.25.0</xtextVersion>
+        <slf4j.version>1.7.32</slf4j.version>
     </properties>
     <repositories>
         <repository>
@@ -307,7 +313,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore></ignore>
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -383,6 +389,52 @@
         </profile>
     </profiles>
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.typesafe/config -->
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>config</artifactId>
+            <version>1.4.1</version>
+        </dependency>
+        <!-- DB -->
+        <!-- https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>2.7.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>5.0.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.jdbi/jdbi3-core -->
+        <dependency>
+            <groupId>org.jdbi</groupId>
+            <artifactId>jdbi3-core</artifactId>
+            <version>3.23.0</version>
+        </dependency>
+        <!-- DB -->
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.14.1</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
         <dependency>
             <groupId>com.facebook.presto</groupId>
             <artifactId>presto-parser</artifactId>
@@ -408,15 +460,10 @@
         <dependency>
             <groupId>net.sf.flatpack</groupId>
             <artifactId>flatpack-parent</artifactId>
-            <version>4.0.14</version>
+            <version>4.0.16</version>
             <type>pom</type>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.typesafe/config -->
-        <dependency>
-            <groupId>com.typesafe</groupId>
-            <artifactId>config</artifactId>
-            <version>${typesafe.config.version}</version>
-        </dependency>
+
 
         <dependency>
             <groupId>org.eclipse.xtext</groupId>

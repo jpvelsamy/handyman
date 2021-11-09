@@ -1,5 +1,6 @@
 #
-# Quartz seems to work best with the driver mm.mysql-2.0.7-bin.jar
+# Quartz seems to work best
+with the driver mm.mysql-2.0.7-bin.jar
 #
 # PLEASE consider using mysql with innodb tables to avoid locking issues
 #
