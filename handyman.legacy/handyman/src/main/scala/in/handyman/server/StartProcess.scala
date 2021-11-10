@@ -1,39 +1,23 @@
 package in.handyman.server
 
-import org.restlet.resource.ServerResource
-import org.restlet.resource.Get
-import com.typesafe.scalalogging.LazyLogging
-import org.restlet.resource.Post
-import org.restlet.ext.jackson.JacksonRepresentation;
-import org.restlet.representation.Representation;
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.typesafe.scalalogging.LazyLogging
+import org.restlet.representation.Representation
+import org.restlet.resource.{Post, ServerResource}
 
 class StartProcess extends ServerResource with LazyLogging {
   val runMode = "in.handyman.process.onethread"
   val jsonSerializer = new ObjectMapper
+
   //
   @Post("json")
   def doPost(entity: Representation): String = {
     val inboundValue = getRequest.getAttributes.get("instance");
     val alias = getRequest().getAttributes().get("alias");
     val instanceName: String = inboundValue.asInstanceOf[String] + "#" + alias.asInstanceOf[String]
-    logger.info("Starting the process=" + instanceName)
-    val runtimeContext = ProcessAST.loadProcessAST(instanceName, "{}")
-
-    try {
-
-      val processResponse = ProcessExecutor.execute(runMode, runtimeContext)
-      jsonSerializer.writeValueAsString(processResponse)
-    } catch {
-      case ex: Throwable => {
-        handleError(ex)
-        jsonSerializer.writeValueAsString(ex)
-      }
-    } finally {
-      handleFinally()
-    }
+    start(instanceName)
   }
-  
+
   /*@Get("application/json")
   def represent(): String = {
     val inboundValue = getRequest.getAttributes.get("instance");
@@ -83,6 +67,24 @@ class StartProcess extends ServerResource with LazyLogging {
 
     "{\"start_status\": \"SUCCESS\"}"
   }*/
+
+  def start(instanceName: String): String = {
+    logger.info("Starting the process=" + instanceName)
+    val runtimeContext = ProcessAST.loadProcessAST(instanceName, "{}")
+
+    try {
+
+      val processResponse = ProcessExecutor.execute(runMode, runtimeContext)
+      jsonSerializer.writeValueAsString(processResponse)
+    } catch {
+      case ex: Throwable => {
+        handleError(ex)
+        jsonSerializer.writeValueAsString(ex)
+      }
+    } finally {
+      handleFinally()
+    }
+  }
 
   def handleError(ex: Throwable) = {
     ex.printStackTrace()
