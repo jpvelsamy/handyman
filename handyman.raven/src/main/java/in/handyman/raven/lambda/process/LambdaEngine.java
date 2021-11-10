@@ -14,6 +14,7 @@ import in.handyman.raven.lambda.doa.ExecutionGroup;
 import in.handyman.raven.lambda.doa.ExecutionStatus;
 import in.handyman.raven.lambda.doa.Pipeline;
 import lombok.extern.log4j.Log4j2;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.slf4j.Logger;
 import org.slf4j.helpers.MessageFormatter;
@@ -29,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 @Log4j2
 public class LambdaEngine {
@@ -57,7 +59,7 @@ public class LambdaEngine {
                 .build();
         try {
             pipeline.setPipelineLoadType(lContext.getProcessLoadType());
-            pipeline.setLambdaName(lContext.getLambdaName());
+            pipeline.setPipelineName(lContext.getPipelineName());
             pipeline.setParentPipelineId(lContext.getParentPipelineId());
             pipeline.setParentPipelineName(lContext.getParentPipelineName());
             pipeline.setParentActionId(lContext.getParentActionId());
@@ -65,7 +67,7 @@ public class LambdaEngine {
             pipeline.updateExecutionStatusId(ExecutionStatus.STAGED.getId());
 
             final RavenParserContext ravenParserContext = lContext.getParentPipelineId() != null
-                    ? newInstance(lContext.getRelativePath(), lContext.getLambdaName(), lContext.getInheritedContext(), pipeline)
+                    ? newInstance(lContext.getRelativePath(), lContext.getPipelineName(), lContext.getInheritedContext(), pipeline)
                     : newInstance(lContext.getProcessLoadType(), pipeline);
             final Map<String, String> context = ravenParserContext.getContext();
             context.put("parent-pipeline-id", String.valueOf(lContext.getParentPipelineId()));
@@ -135,7 +137,8 @@ public class LambdaEngine {
     }
 
     private static String getProcessFile(final String processLoadType, final String lambdaName, final Map<String, String> context, final String relativePath) {
-        final String processFile = relativePath != null ? HRequestResolver.readFile(relativePath, "") : HRequestResolver.doResolve(lambdaName, processLoadType, context);
+        final String processFile = relativePath != null ? HRequestResolver.readFile(relativePath, "") :
+                HRequestResolver.doResolve(lambdaName, processLoadType, context);
         if (Objects.isNull(processFile)) {
             throw new HandymanException("Content configuration for process " + lambdaName + " is missing, check spw_process_config or spw_instance_config");
         }
@@ -150,7 +153,7 @@ public class LambdaEngine {
         log.debug("Handyman Engine start for {}", lambdaName);
         final RavenParser.ProcessContext ravenParser = LambdaParser.doParse(processFile, context);
         return RavenParserContext.builder()
-                .processName(String.valueOf(ravenParser.name))
+                .processName(Optional.ofNullable(ravenParser.name).map(Token::getText).orElse(null) )
                 .tryContext(ravenParser.tryBlock.actions)
                 .catchContext(ravenParser.catchBlock.actions)
                 .finallyContext(ravenParser.finallyBlock.actions)
@@ -186,7 +189,7 @@ public class LambdaEngine {
             action.getEventQueue().forEach(event -> {
                 //TODO format this
                 stringBuilder.append(String.format("Level %s Marker %s ThreadName %s Time %s Message %s", event.getLevel(),
-                        event.getMarker(), event.getThreadName(),
+                        event.getMarkers(), event.getThreadName(),
                         Instant.ofEpochMilli(event.getTimeStamp()),
                         MessageFormatter.arrayFormat(event.getMessage(), event.getArgumentArray()).getMessage()));
                 if (event.getThrowable() != null) {

@@ -13,7 +13,7 @@ import in.handyman.raven.lib.model.StartProcess;
 import lombok.extern.log4j.Log4j2;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.commons.text.StringSubstitutor;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -182,7 +182,7 @@ public class CommandProxy {
     }
 
     private static String getString(final Map<String, String> context, final String text) {
-        var paramEngine = new StrSubstitutor(context);
+        var paramEngine = new StringSubstitutor(context);
         return paramEngine.replace(text.trim());
     }
 }

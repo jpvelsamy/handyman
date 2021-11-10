@@ -2,6 +2,7 @@ package in.handyman.server.schedular;
 
 import in.handyman.raven.lambda.process.LContext;
 import in.handyman.raven.lambda.process.LambdaEngine;
+import in.handyman.server.StartProcess;
 import lombok.extern.log4j.Log4j2;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
@@ -22,7 +23,7 @@ public class InstanceJob implements Job {
     }
 
     @Override
-    public void execute(final JobExecutionContext jobExecutionContext) throws JobExecutionException {
+    public void execute(final JobExecutionContext jobExecutionContext) {
 
         final JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
         final String name = jobDataMap
@@ -38,7 +39,7 @@ public class InstanceJob implements Job {
                             .getString(LOAD_TYPE))
                     .build());
         } else if (handymanVM == HandymanVM.LEGACY) {
-//            new StartProcess().doProcess(name);
+            new StartProcess().doProcess(name);
         }
 
 

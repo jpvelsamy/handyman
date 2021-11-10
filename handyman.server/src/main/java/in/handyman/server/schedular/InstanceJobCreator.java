@@ -5,6 +5,7 @@ import in.handyman.raven.lambda.access.repo.HandymanRepo;
 import in.handyman.raven.lambda.access.repo.HandymanRepoR2Impl;
 import in.handyman.raven.lambda.doa.ConfigStore;
 import in.handyman.raven.lambda.doa.ConfigType;
+import in.handyman.server.legacy.HLegacyRepo;
 import lombok.extern.log4j.Log4j2;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.Job;
@@ -13,6 +14,7 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.SimpleScheduleBuilder;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
@@ -24,6 +26,7 @@ public class InstanceJobCreator implements Job {
 
     private static final QuartzRepo REPO = new QuartzRepo();
     private static final HandymanRepo HANDYMAN_REPO = new HandymanRepoR2Impl();
+    private static final HLegacyRepo LEGACY_REPO = new HLegacyRepo();
     private static final String INSTANCE_JOB_CREATOR = "InstanceJobCreator";
 
     public static Scheduler init() throws SchedulerException {
@@ -40,7 +43,9 @@ public class InstanceJobCreator implements Job {
 
             var trigger = TriggerBuilder.newTrigger()
                     .withIdentity(INSTANCE_JOB_CREATOR)
-                    .withSchedule(CronScheduleBuilder.cronSchedule("0 0/20 * 1/1 * ? *")).build();
+//                    .withSchedule(CronScheduleBuilder.cronSchedule("0 0/20 * 1/1 * ? *"))
+                    .withSchedule(SimpleScheduleBuilder.repeatMinutelyForever(20))
+                    .build();
             scheduler.scheduleJob(jobDetail, trigger);
 
         }
@@ -91,33 +96,71 @@ public class InstanceJobCreator implements Job {
         log.info("Initiated InstanceJobCreator {}", jobExecutionContext);
         final Set<String> awaitingTriggers = REPO.findAwaitingTriggers();
         //RavenVM
+        doRavenVM(jobExecutionContext, awaitingTriggers);
+        //Legacy
+        doLegacy(jobExecutionContext, awaitingTriggers);
+    }
+
+    private void doLegacy(final JobExecutionContext jobExecutionContext, final Set<String> awaitingTriggers) {
+        LEGACY_REPO.findInstanceConfigsByVariable(InstanceJob.CRON).stream()
+                .filter(instanceConfig -> !awaitingTriggers.contains(genUnique(InstanceJob.HandymanVM.LEGACY, instanceConfig.getInstance())))
+                .forEach(instanceConfig -> {
+                    final String processName = instanceConfig.getInstance();
+                    final InstanceJob.HandymanVM legacy = InstanceJob.HandymanVM.LEGACY;
+                    final String name = genUnique(legacy, processName);
+                    final String expression = instanceConfig.getValue();
+
+                    var data = new JobDataMap();
+                    data.put(InstanceJob.NAME, processName);
+                    data.put(InstanceJob.VM, legacy.name());
+
+                    addJob(jobExecutionContext, name, expression, data);
+                });
+
+    }
+
+    private void doRavenVM(final JobExecutionContext jobExecutionContext, final Set<String> awaitingTriggers) {
         HANDYMAN_REPO.findConfigEntitiesByVariable(ConfigType.PIPELINE, InstanceJob.CRON)
                 .stream()
-                .filter(configStore -> !awaitingTriggers.contains(configStore.getName()))
+                .filter(configStore -> !awaitingTriggers.contains(genUnique(InstanceJob.HandymanVM.RAVEN_VM, configStore.getName())))
                 .forEach(configStore -> {
-                    final String configStoreName = configStore.getName();
-                    var triggerNew = TriggerBuilder.newTrigger()
-                            .withIdentity(configStoreName)
-                            .withSchedule(CronScheduleBuilder.cronSchedule(configStore.getValue())).build();
-                    var jobBuilder = JobBuilder.newJob(InstanceJob.class);
+                    final String processName = configStore.getName();
+                    final InstanceJob.HandymanVM ravenVm = InstanceJob.HandymanVM.RAVEN_VM;
+                    final String name = genUnique(ravenVm, processName);
+                    final String expression = configStore.getValue();
+
+
                     var data = new JobDataMap();
-                    data.put(InstanceJob.NAME, configStoreName);
-                    data.put(InstanceJob.VM, InstanceJob.HandymanVM.RAVEN_VM.name());
+                    data.put(InstanceJob.NAME, processName);
+                    data.put(InstanceJob.VM, ravenVm.name());
                     data.put(InstanceJob.LOAD_TYPE, HANDYMAN_REPO.findConfigEntities(ConfigType.PIPELINE,
-                            configStoreName, InstanceJob.LOAD_TYPE_VARIABLE).map(ConfigStore::getValue).orElse(null));
+                            processName, InstanceJob.LOAD_TYPE_VARIABLE).map(ConfigStore::getValue).orElse(null));
 
-                    var jobDetail = jobBuilder
-                            .usingJobData(data)
-                            .withIdentity(configStoreName)
-                            .build();
-                    try {
-
-                        jobExecutionContext.getScheduler().scheduleJob(jobDetail, triggerNew);
-                        log.info("added {}", jobDetail);
-
-                    } catch (SchedulerException e) {
-                        throw new HandymanException("scheduler Failed", e);
-                    }
+                    addJob(jobExecutionContext, name, expression, data);
                 });
+    }
+
+    private void addJob(final JobExecutionContext jobExecutionContext, final String name, final String expression, final JobDataMap data) {
+        var triggerNew = TriggerBuilder.newTrigger()
+                .withIdentity(name)
+                .withSchedule(CronScheduleBuilder.cronSchedule(expression)).build();
+        var jobBuilder = JobBuilder.newJob(InstanceJob.class);
+        var jobDetail = jobBuilder
+                .usingJobData(data)
+                .withIdentity(name)
+                .build();
+        try {
+
+            jobExecutionContext.getScheduler().scheduleJob(jobDetail, triggerNew);
+            log.info("added {}", jobDetail);
+
+        } catch (SchedulerException e) {
+            throw new HandymanException("scheduler Failed", e);
+        }
+    }
+
+
+    protected static String genUnique(final InstanceJob.HandymanVM handymanVM, final String name) {
+        return String.format("%S#%S", handymanVM.name(), name);
     }
 }

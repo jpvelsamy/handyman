@@ -4,7 +4,7 @@
 
 1. Inside handyman.legacy
    > mvn clean compile install package -Dmaven.test.skip=true
-2. Inside handyman.legacy
+2. Inside handyman.legacy/handyman
    > mvn clean compile install scala:compile install package -Dmaven.test.skip=true
 
 ## Jar
