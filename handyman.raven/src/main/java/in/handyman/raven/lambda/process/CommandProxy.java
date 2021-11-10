@@ -125,7 +125,7 @@ public class CommandProxy {
         }
     }
 
-    private static String getString(final Token o, final Map<String, String> context) {
+    protected static String getString(final Token o, final Map<String, String> context) {
         if (Objects.nonNull(o)) {
             final String text;
             if (o.getType() == RavenLexer.STRING) {

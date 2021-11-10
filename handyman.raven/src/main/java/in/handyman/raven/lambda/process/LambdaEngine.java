@@ -14,7 +14,6 @@ import in.handyman.raven.lambda.doa.ExecutionGroup;
 import in.handyman.raven.lambda.doa.ExecutionStatus;
 import in.handyman.raven.lambda.doa.Pipeline;
 import lombok.extern.log4j.Log4j2;
-import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.slf4j.Logger;
 import org.slf4j.helpers.MessageFormatter;
@@ -26,11 +25,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 @Log4j2
 public class LambdaEngine {
@@ -59,6 +58,7 @@ public class LambdaEngine {
                 .build();
         try {
             pipeline.setPipelineLoadType(lContext.getProcessLoadType());
+            pipeline.setLambdaName(lContext.getLambdaName());
             pipeline.setPipelineName(lContext.getPipelineName());
             pipeline.setParentPipelineId(lContext.getParentPipelineId());
             pipeline.setParentPipelineName(lContext.getParentPipelineName());
@@ -67,14 +67,14 @@ public class LambdaEngine {
             pipeline.updateExecutionStatusId(ExecutionStatus.STAGED.getId());
 
             final RavenParserContext ravenParserContext = lContext.getParentPipelineId() != null
-                    ? newInstance(lContext.getRelativePath(), lContext.getPipelineName(), lContext.getInheritedContext(), pipeline)
-                    : newInstance(lContext.getProcessLoadType(), pipeline);
+                    ? newInstance(lContext.getInheritedContext(), pipeline)
+                    : newInstance(pipeline);
             final Map<String, String> context = ravenParserContext.getContext();
             context.put("parent-pipeline-id", String.valueOf(lContext.getParentPipelineId()));
             context.put("pipeline-id", String.valueOf(pipeline.getPipelineId()));
             context.put("process-id", String.valueOf(pipeline.getPipelineId()));
 
-            pipeline.setPipelineName(ravenParserContext.getProcessName());
+            pipeline.setProcessName(ravenParserContext.getProcessName());
             pipeline.setContext(context);
             HandymanActorSystemAccess.insert(pipeline);
             pipeline.updateExecutionStatusId(ExecutionStatus.STARTED.getId());
@@ -100,7 +100,9 @@ public class LambdaEngine {
         return pipeline;
     }
 
-    private static RavenParserContext newInstance(final String relativePath, final String lambdaName, final Map<String, String> inheritedContext, final Pipeline pipeline) {
+    private static RavenParserContext newInstance(final Map<String, String> inheritedContext, final Pipeline pipeline) {
+        final String lambdaName = pipeline.getLambdaName();
+        final String relativePath = pipeline.getRelativePath();
         final Map<String, String> context = getEContext(lambdaName);
         context.putAll(inheritedContext);
         final String processFile = getProcessFile(HRequestResolver.LoadType.FILE.name(), lambdaName, context, relativePath);
@@ -108,7 +110,8 @@ public class LambdaEngine {
         return getRavenParserContext(processFile, lambdaName, context);
     }
 
-    private static RavenParserContext newInstance(final String processLoadType, final Pipeline pipeline) {
+    private static RavenParserContext newInstance(final Pipeline pipeline) {
+        final String processLoadType = pipeline.getPipelineLoadType();
         final Map<String, String> context = getEContext(pipeline.getPipelineName());
         final String lambdaName = pipeline.getPipelineName();
         var processFile = getProcessFile(processLoadType, lambdaName, context, null);
@@ -153,7 +156,7 @@ public class LambdaEngine {
         log.debug("Handyman Engine start for {}", lambdaName);
         final RavenParser.ProcessContext ravenParser = LambdaParser.doParse(processFile, context);
         return RavenParserContext.builder()
-                .processName(Optional.ofNullable(ravenParser.name).map(Token::getText).orElse(null) )
+                .processName(CommandProxy.getString(ravenParser.name, Collections.emptyMap()))
                 .tryContext(ravenParser.tryBlock.actions)
                 .catchContext(ravenParser.catchBlock.actions)
                 .finallyContext(ravenParser.finallyBlock.actions)
