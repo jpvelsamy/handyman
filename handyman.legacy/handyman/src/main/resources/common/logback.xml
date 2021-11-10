@@ -8,9 +8,9 @@
     </encoder>
   </appender>
 	<appender name="RollingFile-Appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-	    <file>${LOG_PATH}/handyman.log</file>
+	    <file>handyman.log</file>
 	    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-	        <fileNamePattern>${LOG_ARCHIVE}/handyman.%d{yyyy-MM-dd}.log</fileNamePattern>
+	        <fileNamePattern>handyman.%d{yyyy-MM-dd}.log</fileNamePattern>
 	        <maxHistory>30</maxHistory>
 	        <totalSizeCap>100MB</totalSizeCap>
 	    </rollingPolicy>

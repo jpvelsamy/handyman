@@ -1,3 +1,9 @@
+DROP DATABASE if exists `handyman_vm`;
+
+CREATE DATABASE `handyman_vm` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+
+use handyman_vm;
+
 -- `action` definition
 
 CREATE TABLE `action`

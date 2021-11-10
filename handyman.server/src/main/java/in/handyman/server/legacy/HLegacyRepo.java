@@ -3,8 +3,6 @@ package in.handyman.server.legacy;
 import org.jdbi.v3.core.Jdbi;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class HLegacyRepo {
 
