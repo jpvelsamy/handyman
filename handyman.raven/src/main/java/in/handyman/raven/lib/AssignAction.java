@@ -59,6 +59,7 @@ public class AssignAction implements IActionExecution {
                         var columnCount = rs.getMetaData().getColumnCount();
                         while (rs.next()) {
                             final Map<String, String> context = action.getContext();
+                            log.info("Value {} has been set to the key {}",context.get(assign.getName()),assign.getName());
                             CommonQueryUtil.addKeyConfig(context, log,
                                     rs, columnCount, assign.getName());
                         }

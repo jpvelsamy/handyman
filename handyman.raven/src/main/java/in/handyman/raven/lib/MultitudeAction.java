@@ -48,6 +48,7 @@ public class MultitudeAction implements IActionExecution {
                     final boolean isParallel = Optional.ofNullable(multitude.getOn()).filter(s -> Objects.equals("PARALLEL", s)).isPresent();
                     final int threadCount = Optional.ofNullable(multitude.getWriteThreadCount()).map(Integer::parseInt).orElse(0);
                     var countDown = new CountDownLatch(actionContexts.size());
+                    log.info("Multitude has been initialized in a {} mode with threadcount of {} and countdown of {}",isParallel,threadCount,countDown);
                     final Set<ActionCallable> collect = actionContexts.stream().map(actionContext -> {
                         var vAction = Action.builder()
                                 .pipelineId(action.getPipelineId())
@@ -60,12 +61,14 @@ public class MultitudeAction implements IActionExecution {
                     }).collect(Collectors.toSet());
 
                     if (isParallel) {
-
+                        log.info("Execution has been started in a Parallel with thread count of {}",threadCount);
                         var executor = threadCount != 0 ? Executors.newWorkStealingPool(threadCount) : Executors.newWorkStealingPool();
                         collect.forEach(executor::submit);
-
+                        log.info("Completed Execution of multitude");
                     } else {
+                        log.info("Execution started in a sequential manner");
                         collect.forEach(ActionCallable::run);
+                        log.info("Completed execution of multitude");
                     }
 
                     try {
