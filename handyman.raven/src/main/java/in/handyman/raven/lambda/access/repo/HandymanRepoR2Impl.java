@@ -9,7 +9,7 @@ import in.handyman.raven.lambda.doa.LambdaExecutionAudit;
 import in.handyman.raven.lambda.doa.Pipeline;
 import in.handyman.raven.lambda.doa.ResourceConnection;
 import in.handyman.raven.lambda.doa.Statement;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
 
 import java.time.LocalDateTime;
@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Log4j2
+@Slf4j
 public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
 
     protected static final String CONFIG_URL = "config.r2.url";
@@ -59,15 +59,6 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     }
 
     @Override
-    public List<ConfigStore> findConfigEntitiesByVariable(final ConfigType configType, final String variable) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where config_type_id = ? and variable = ? and active=true ")
-                .bind(0, configType.getId())
-                .bind(1, variable)
-                .mapToBean(ConfigStore.class)
-                .list());
-    }
-
-    @Override
     public Map<String, String> getCommonConfig() {
         return toMap(findConfigEntities(ConfigType.COMMON));
     }
@@ -75,6 +66,15 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     public List<ConfigStore> findConfigEntities(final ConfigType configType) {
         return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where config_type_id = ? and active=true ")
                 .bind(0, configType.getId())
+                .mapToBean(ConfigStore.class)
+                .list());
+    }
+
+    @Override
+    public List<ConfigStore> findConfigEntitiesByVariable(final ConfigType configType, final String variable) {
+        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where config_type_id = ? and variable = ? and active=true ")
+                .bind(0, configType.getId())
+                .bind(1, variable)
                 .mapToBean(ConfigStore.class)
                 .list());
     }

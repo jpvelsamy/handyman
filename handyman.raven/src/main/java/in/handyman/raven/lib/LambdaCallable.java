@@ -3,11 +3,11 @@ package in.handyman.raven.lib;
 import in.handyman.raven.lambda.process.LContext;
 import in.handyman.raven.lambda.process.LambdaEngine;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CountDownLatch;
 
-@Log4j2
+@Slf4j
 @RequiredArgsConstructor
 public class LambdaCallable implements Runnable {
 

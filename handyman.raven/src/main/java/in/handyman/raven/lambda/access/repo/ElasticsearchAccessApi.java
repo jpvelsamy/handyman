@@ -9,7 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.base.CaseFormat;
 import com.typesafe.config.ConfigFactory;
 import in.handyman.raven.exception.HandymanException;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 
-@Log4j2
+@Slf4j
 public class ElasticsearchAccessApi {
 
     public static final ObjectMapper MAPPER = new ObjectMapper();
@@ -158,7 +158,6 @@ public class ElasticsearchAccessApi {
                 try {
                     xContentBuilder.field(s, s2);
                 } catch (IOException e) {
-                    log.error(attributes);
                     throw new HandymanException("Index update failed by " + s, e);
                 }
             });

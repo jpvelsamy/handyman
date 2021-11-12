@@ -3,12 +3,12 @@ package in.handyman.raven.lambda.access;
 import in.handyman.raven.lambda.access.repo.HandymanRepo;
 import in.handyman.raven.lambda.access.repo.HandymanRepoR2Impl;
 import in.handyman.raven.lambda.doa.ResourceConnection;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 import java.util.Set;
 
-@Log4j2
+@Slf4j
 public class ConfigAccess {
 
     private static final HandymanRepo REPO = new HandymanRepoR2Impl();

@@ -8,12 +8,19 @@
     <artifactId>handyman.raven</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
+    <repositories>
+        <repository>
+            <id>confluent</id>
+            <url>https://packages.confluent.io/maven/</url>
+        </repository>
+    </repositories>
+
     <properties>
-        <antlr4.version>4.9.2</antlr4.version>
+        <antlr4.version>4.9.3</antlr4.version>
         <akka.version>2.6.15</akka.version>
         <micrometer.version>1.7.5</micrometer.version>
         <google.people.version>v1-rev20210903-1.32.1</google.people.version>
-        <google.cal.version>v3-rev20210804-1.32.1</google.cal.version>
+        <google.cal.version>v3-rev20211026-1.32.1</google.cal.version>
         <junit.version>5.8.1</junit.version>
         <jackson.version>2.13.0</jackson.version>
         <elastic.version>7.15.1</elastic.version>
@@ -22,6 +29,7 @@
         <java.version>11</java.version>
         <scala.version>2.13.6</scala.version>
         <slf4j.version>1.7.32</slf4j.version>
+        <kafka.version>3.0.0</kafka.version>
     </properties>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/com.typesafe/config -->
@@ -155,22 +163,22 @@
         </dependency>
         <!-- LAMBDA's -->
         <!--KAFKA-->
-        <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka -->
+        <!-- https://mvnrepository.com/artifact/io.confluent/kafka-avro-serializer -->
         <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka_2.13</artifactId>
-            <version>3.0.0</version>
+            <groupId>io.confluent</groupId>
+            <artifactId>kafka-avro-serializer</artifactId>
+            <version>6.2.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
-            <version>3.0.0</version>
+            <version>${kafka.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-streams -->
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-streams</artifactId>
-            <version>3.0.0</version>
+            <version>${kafka.version}</version>
         </dependency>
         <!--/KAFKA-->
         <dependency>
@@ -189,10 +197,21 @@
             <artifactId>mssql-jdbc</artifactId>
             <version>9.4.0.jre16</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.32</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.2.6</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.6</version>
         </dependency>
     </dependencies>
 

@@ -6,7 +6,7 @@ import in.handyman.raven.lambda.action.ActionContext;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionContext;
 import in.handyman.raven.lambda.action.IActionExecution;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
 
 import java.util.Map;
@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Log4j2
+@Slf4j
 public class ProcessExecutor {
 
     public static final Map<String, ? extends Class<?>> ACTION_CONTEXT_MAP;

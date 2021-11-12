@@ -22,14 +22,14 @@ import io.micrometer.core.instrument.binder.system.UptimeMetrics;
 import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 import lombok.ToString;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-@Log4j2
+@Slf4j
 public class MetricUtil {
 
     private static final PrometheusMeterRegistry registry;

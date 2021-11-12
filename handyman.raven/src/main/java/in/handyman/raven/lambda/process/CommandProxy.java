@@ -10,7 +10,7 @@ import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.action.IActionContext;
 import in.handyman.raven.lib.model.RestPart;
 import in.handyman.raven.lib.model.StartProcess;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.text.StringSubstitutor;
@@ -28,7 +28,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
-@Log4j2
+@Slf4j
 public class CommandProxy {
 
     private static final ObjectMapper mapper = new ObjectMapper();

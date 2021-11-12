@@ -3,7 +3,7 @@ package in.handyman.raven.lambda.process;
 import in.handyman.raven.exception.HandymanException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.URL;
@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.Objects;
 
-@Log4j2
+@Slf4j
 public class HRequestResolver {
 
     private static final String BASE_PATH = "basepath";

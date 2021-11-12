@@ -4,11 +4,11 @@ import in.handyman.raven.compiler.RavenParser;
 import in.handyman.raven.lambda.doa.Action;
 import in.handyman.raven.lambda.process.LambdaEngine;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CountDownLatch;
 
-@Log4j2
+@Slf4j
 @RequiredArgsConstructor
 public class ActionCallable implements Runnable {
 

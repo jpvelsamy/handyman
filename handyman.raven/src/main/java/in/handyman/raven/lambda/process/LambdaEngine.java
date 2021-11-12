@@ -13,7 +13,7 @@ import in.handyman.raven.lambda.doa.Action;
 import in.handyman.raven.lambda.doa.ExecutionGroup;
 import in.handyman.raven.lambda.doa.ExecutionStatus;
 import in.handyman.raven.lambda.doa.Pipeline;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.slf4j.Logger;
 import org.slf4j.helpers.MessageFormatter;
@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-@Log4j2
+@Slf4j
 public class LambdaEngine {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
@@ -84,7 +84,7 @@ public class LambdaEngine {
             } catch (Exception e) {
                 run(pipeline, ravenParserContext.getCatchContext(), context, ExecutionGroup.CATCH);
                 pipeline.updateExecutionStatusId(ExecutionStatus.FAILED.getId());
-                log.error(e);
+                log.error("try section failed",e);
                 throw new HandymanException("Failed", e);
 
             } finally {
@@ -92,7 +92,7 @@ public class LambdaEngine {
                 HandymanActorSystemAccess.update(pipeline);
             }
         } catch (Exception e) {
-            log.error(e);
+            log.error("Process section failed",e);
             pipeline.updateExecutionStatusId(ExecutionStatus.FAILED.getId());
             HandymanActorSystemAccess.update(pipeline);
             throw new HandymanException("Failed", e);
@@ -206,7 +206,7 @@ public class LambdaEngine {
                 stringBuilder.append("\n");
             });
             action.setLog(stringBuilder.toString());
-            log.info(stringBuilder);
+            log.info(stringBuilder.toString());
             HandymanActorSystemAccess.update(action);
         }
     }

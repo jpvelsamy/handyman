@@ -3,14 +3,14 @@ package in.handyman.raven.lambda.process;
 import in.handyman.raven.compiler.RavenLexer;
 import in.handyman.raven.compiler.RavenParser;
 import in.handyman.raven.exception.HandymanException;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
 import java.util.Map;
 
-@Log4j2
+@Slf4j
 public class LambdaParser {
 
     protected static RavenParser.ProcessContext doParse(final String processFile, final Map<String, String> context) {

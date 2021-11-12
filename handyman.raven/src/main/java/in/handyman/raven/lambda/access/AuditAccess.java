@@ -7,9 +7,9 @@ import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.LambdaExecutionAudit;
 import in.handyman.raven.lambda.doa.Pipeline;
 import in.handyman.raven.lambda.doa.Statement;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
-@Log4j2
+@Slf4j
 public class AuditAccess {
 
     private static final HandymanRepo REPO = new HandymanRepoR2Impl();

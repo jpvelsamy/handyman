@@ -2,7 +2,7 @@ package in.handyman.raven.util;
 
 import com.zaxxer.hikari.HikariDataSource;
 import in.handyman.raven.exception.HandymanException;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 
 import java.sql.Connection;
@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-@Log4j2
+@Slf4j
 public class CommonQueryUtil {
 
     public static void addKeyConfig(final Map<String, String> configContext, final Logger logger,
