@@ -9,6 +9,8 @@ import io.dropwizard.configuration.ResourceConfigurationSourceProvider;
 import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.federecio.dropwizard.swagger.SwaggerBundle;
+import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import lombok.extern.log4j.Log4j2;
 import org.quartz.SchedulerException;
 
@@ -26,6 +28,14 @@ public class HandymanApplication extends Application<Configuration> {
         environment
                 .jersey()
                 .register(hRavenResource);
+        initScheduler(environment);
+        final ApplicationHealthCheck healthCheck = new ApplicationHealthCheck();
+        environment
+                .healthChecks()
+                .register("application", healthCheck);
+    }
+
+    private void initScheduler(final Environment environment) throws SchedulerException {
         var scheduler = InstanceJobCreator.init();
         environment.lifecycle().manage(new Managed() {
             @Override
@@ -38,17 +48,21 @@ public class HandymanApplication extends Application<Configuration> {
                 scheduler.shutdown();
             }
         });
-        final ApplicationHealthCheck healthCheck = new ApplicationHealthCheck();
-        environment
-                .healthChecks()
-                .register("application", healthCheck);
     }
-
 
 
     @Override
     public void initialize(final Bootstrap<Configuration> bootstrap) {
         bootstrap.setConfigurationSourceProvider(new ResourceConfigurationSourceProvider());
+        bootstrap.addBundle(new SwaggerBundle<>() {
+            @Override
+            protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(final Configuration swaggerConfiguration) {
+                final SwaggerBundleConfiguration swaggerBundleConfiguration = new SwaggerBundleConfiguration();
+                swaggerBundleConfiguration.setResourcePackage(this.getClass().getPackageName());
+                return swaggerBundleConfiguration;
+            }
+
+        });
         super.initialize(bootstrap);
     }
 }
