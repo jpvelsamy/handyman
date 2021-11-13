@@ -1,5 +1,6 @@
 package in.handyman.raven.lambda.access.repo;
 
+import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import in.handyman.raven.lambda.doa.Action;
 import in.handyman.raven.lambda.doa.ActionExecutionAudit;
@@ -26,14 +27,16 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     protected static final String CONFIG_URL = "config.r2.url";
     private static final String CONFIG_PASSWORD = "config.r2.password";
     private static final String CONFIG_USER = "config.r2.user";
+    private static final Config CONFIG = ConfigFactory.parseResources("handyman-raven-configstore.props");
+
     private final Jdbi jdbi;
 
     public HandymanRepoR2Impl() {
-        var config = ConfigFactory.parseResources("handyman-raven-configstore.props");
-        log.info("Initializing the config store from config file {}", config.origin().url());
-        final String username = config.getString(CONFIG_USER);
-        final String password = config.getString(CONFIG_PASSWORD);
-        final String url = config.getString(CONFIG_URL);
+
+        log.info("Initializing the config store from config file {}", CONFIG.origin().url());
+        final String username = CONFIG.getString(CONFIG_USER);
+        final String password = CONFIG.getString(CONFIG_PASSWORD);
+        final String url = CONFIG.getString(CONFIG_URL);
         jdbi = Jdbi.create(url, username, password);
     }
 

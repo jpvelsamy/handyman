@@ -4,20 +4,17 @@ import akka.actor.AbstractActor;
 import in.handyman.raven.lambda.access.repo.HandymanRepo;
 import in.handyman.raven.lambda.access.repo.HandymanRepoR2Impl;
 import in.handyman.raven.lambda.doa.Action;
-import in.handyman.raven.lambda.doa.ActionExecutionAudit;
-import in.handyman.raven.lambda.doa.LambdaExecutionAudit;
 import in.handyman.raven.lambda.doa.Pipeline;
-import in.handyman.raven.lambda.doa.Statement;
 
 public class AuditUpdateActor extends AbstractActor {
 
-    private final HandymanRepo handymanRepo = new HandymanRepoR2Impl();
+    private static final HandymanRepo REPO = new HandymanRepoR2Impl();
 
     @Override
     public Receive createReceive() {
         return receiveBuilder()
-                .match(Pipeline.class, handymanRepo::update)
-                .match(Action.class, handymanRepo::update)
+                .match(Pipeline.class, REPO::update)
+                .match(Action.class, REPO::update)
                 .build();
     }
 }

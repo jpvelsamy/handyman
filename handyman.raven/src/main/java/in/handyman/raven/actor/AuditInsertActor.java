@@ -11,16 +11,16 @@ import in.handyman.raven.lambda.doa.Statement;
 
 public class AuditInsertActor extends AbstractActor {
 
-    private final HandymanRepo handymanRepo = new HandymanRepoR2Impl();
+    private static final HandymanRepo REPO = new HandymanRepoR2Impl();
 
     @Override
     public Receive createReceive() {
         return receiveBuilder()
-                .match(Pipeline.class, handymanRepo::insertPipeline)
-                .match(Action.class, handymanRepo::insertAction)
-                .match(Statement.class, handymanRepo::insertStatement)
-                .match(LambdaExecutionAudit.class, handymanRepo::insert)
-                .match(ActionExecutionAudit.class, handymanRepo::insert)
+                .match(Pipeline.class, REPO::insertPipeline)
+                .match(Action.class, REPO::insertAction)
+                .match(Statement.class, REPO::insertStatement)
+                .match(LambdaExecutionAudit.class, REPO::insert)
+                .match(ActionExecutionAudit.class, REPO::insert)
                 .build();
     }
 }
