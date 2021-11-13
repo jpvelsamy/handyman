@@ -22,6 +22,4 @@ public class RavenParserContext {
     private List<RavenParser.ActionContext> catchContext;
     private List<RavenParser.ActionContext> finallyContext;
 
-    @Builder.Default
-    private Map<String, String> context = new HashMap<>();
 }

@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Setter
@@ -19,6 +20,7 @@ import lombok.ToString;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Slf4j
 public class Pipeline extends AbstractAudit {
 
     @Builder.Default
@@ -40,6 +42,7 @@ public class Pipeline extends AbstractAudit {
     public void updateExecutionStatusId(final Integer executionStatusId) {
         this.setExecutionStatusId(executionStatusId);
         HandymanActorSystemAccess.insert(LambdaExecutionAudit.builder().pipelineId(this.pipelineId).executionStatusId(executionStatusId).build());
+        log.info("Pipeline audit has been inserted with PipelineId {} as {}", this.pipelineId, ExecutionStatus.get(executionStatusId));
     }
 
 

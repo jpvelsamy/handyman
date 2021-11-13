@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import in.handyman.raven.actor.HandymanActorSystemAccess;
+import in.handyman.raven.lambda.process.LambdaEngine;
 import in.handyman.raven.util.UniqueID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -49,6 +50,7 @@ public class Action extends AbstractAudit {
         this.setExecutionStatusId(executionStatusId);
         HandymanActorSystemAccess.insert(ActionExecutionAudit.builder().actionId(actionId)
                 .pipelineId(this.pipelineId).executionStatusId(executionStatusId).build());
+        LambdaEngine.getLogger(this).info("Action audit has been inserted with ActionId {} as {}", this.actionId, ExecutionStatus.get(executionStatusId));
     }
 
 

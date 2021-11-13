@@ -7,10 +7,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import in.handyman.raven.exception.HandymanException;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -38,7 +40,8 @@ public abstract class AbstractAudit extends Auditable {
 
     private Integer executionStatusId;
 
-    private Map<String, String> context;
+    @Builder.Default
+    private Map<String, String> context = new HashMap<>();
 
 
     @JsonIgnore

@@ -51,37 +51,31 @@ public class LambdaEngine {
         } catch (UnknownHostException e) {
             throw new HandymanException("hostName not found ", e);
         }
-        log.info("Started building the pipeline context");
         final Pipeline pipeline = Pipeline.builder()
-                .relativePath(lContext.getRelativePath())
                 .hostName(hostName)
                 .modeOfExecution("RavenVM")
                 .threadName(Thread.currentThread().getName())
                 .build();
+        HandymanActorSystemAccess.insert(pipeline);
+        pipeline.updateExecutionStatusId(ExecutionStatus.STAGED.getId());
+        log.info("Started building the pipeline context");
         try {
-            pipeline.setPipelineLoadType(lContext.getProcessLoadType());
-            pipeline.setLambdaName(lContext.getLambdaName());
-            pipeline.setPipelineName(lContext.getPipelineName());
-            pipeline.setParentPipelineId(lContext.getParentPipelineId());
-            pipeline.setParentPipelineName(lContext.getParentPipelineName());
-            pipeline.setParentActionId(lContext.getParentActionId());
-            pipeline.setParentActionName(lContext.getParentActionName());
-            pipeline.updateExecutionStatusId(ExecutionStatus.STAGED.getId());
-            log.info("Initial Pipeline context has been build successfully");
-            final RavenParserContext ravenParserContext = lContext.getParentPipelineId() != null
-                    ? newInstance(lContext.getInheritedContext(), pipeline)
-                    : newInstance(pipeline);
-            final Map<String, String> context = ravenParserContext.getContext();
+            pipeline.updateExecutionStatusId(ExecutionStatus.STARTED.getId());
+            final Map<String, String> context = getEContext(lContext.getPipelineName());
             log.info("Raven Context has been initialized");
+            final String processFile = getProcessFile(lContext, context);
             context.put("parent-pipeline-id", String.valueOf(lContext.getParentPipelineId()));
             context.put("pipeline-id", String.valueOf(pipeline.getPipelineId()));
             context.put("process-id", String.valueOf(pipeline.getPipelineId()));
             context.putAll(lContext.getInheritedContext());
+            log.info("Raven context has been populated with inheritedContext");
+            final RavenParserContext ravenParserContext = getRavenParserContext(processFile, lContext.getLambdaName(), context);
+
+            toPipeline(lContext, pipeline);
             pipeline.setProcessName(ravenParserContext.getProcessName());
             pipeline.setContext(context);
-            HandymanActorSystemAccess.insert(pipeline);
-            pipeline.updateExecutionStatusId(ExecutionStatus.STARTED.getId());
-            log.info("Pipeline details has been inserted with Execution id as Started");
+
+            log.info("Initial Pipeline context has been build successfully");
             try {
                 log.info("Pipeline execution has been started");
                 run(pipeline, ravenParserContext.getTryContext(), context, ExecutionGroup.TRY);
@@ -109,26 +103,34 @@ public class LambdaEngine {
         return pipeline;
     }
 
-    private static RavenParserContext newInstance(final Map<String, String> inheritedContext, final Pipeline pipeline) {
-        final String lambdaName = pipeline.getLambdaName();
-        final String relativePath = pipeline.getRelativePath();
-        log.info("Started initializing raven context ");
-        final Map<String, String> context = getEContext(lambdaName);
-        context.putAll(inheritedContext);
-        log.info("Raven context has been populated with inheritedContext");
-        final String processFile = getProcessFile(HRequestResolver.LoadType.FILE.name(), lambdaName, context, relativePath);
-        pipeline.setFileContent(processFile);
-        return getRavenParserContext(processFile, lambdaName, context);
+    private static void toPipeline(final LContext lContext, final Pipeline pipeline) {
+        pipeline.setRelativePath(lContext.getRelativePath());
+        pipeline.setPipelineLoadType(lContext.getProcessLoadType());
+        pipeline.setLambdaName(lContext.getLambdaName());
+        pipeline.setPipelineName(lContext.getPipelineName());
+        pipeline.setParentPipelineId(lContext.getParentPipelineId());
+        pipeline.setParentPipelineName(lContext.getParentPipelineName());
+        pipeline.setParentActionId(lContext.getParentActionId());
+        pipeline.setParentActionName(lContext.getParentActionName());
+        pipeline.setRequestBody(lContext.getPayload());
     }
 
-    private static RavenParserContext newInstance(final Pipeline pipeline) {
-        final String processLoadType = pipeline.getPipelineLoadType();
-        final Map<String, String> context = getEContext(pipeline.getPipelineName());
-        final String lambdaName = pipeline.getPipelineName();
-        var processFile = getProcessFile(processLoadType, lambdaName, context, null);
-        pipeline.setFileContent(processFile);
-        return getRavenParserContext(processFile, lambdaName, context);
+    private static String getProcessFile(final LContext lContext, final Map<String, String> context) {
+        final String lambdaName = lContext.getLambdaName();
+        final String relativePath = lContext.getRelativePath();
+        log.info("Started initializing raven context ");
+        final String processLoadType = lContext.getProcessLoadType();
+        final String processFile;
+        if (lContext.getParentPipelineId() != null) {
+            processFile = getProcessFile(HRequestResolver.LoadType.FILE.name(), lambdaName, context, relativePath);
+        } else if (HRequestResolver.LoadType.valueOf(processLoadType) == HRequestResolver.LoadType.REST) {
+            processFile = lContext.getPayload();
+        } else {
+            processFile = getProcessFile(processLoadType, lambdaName, context, null);
+        }
+        return processFile;
     }
+
 
     private static void run(final Pipeline pipeline,
                             final List<RavenParser.ActionContext> contexts,
@@ -174,7 +176,6 @@ public class LambdaEngine {
                 .tryContext(ravenParser.tryBlock.actions)
                 .catchContext(ravenParser.catchBlock.actions)
                 .finallyContext(ravenParser.finallyBlock.actions)
-                .context(context)
                 .build();
     }
 
