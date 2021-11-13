@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 class RestApiActionTest {
 
-//    @Test
+    @Test
     void execute() {
         LambdaEngine.start(LContext.builder()
                 .pipelineName(this.getClass().getSimpleName())

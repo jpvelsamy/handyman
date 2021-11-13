@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import in.handyman.raven.actor.HandymanActorSystemAccess;
-import in.handyman.raven.lambda.access.AuditAccess;
 import in.handyman.raven.util.UniqueID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
