@@ -2,6 +2,7 @@ package in.handyman.raven.lambda.doa;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import in.handyman.raven.actor.HandymanActorSystemAccess;
 import in.handyman.raven.lambda.access.AuditAccess;
 import in.handyman.raven.util.UniqueID;
 import lombok.AllArgsConstructor;
@@ -39,7 +40,7 @@ public class Pipeline extends AbstractAudit {
 
     public void updateExecutionStatusId(final Integer executionStatusId) {
         this.setExecutionStatusId(executionStatusId);
-        AuditAccess.insert(LambdaExecutionAudit.builder().pipelineId(this.pipelineId).executionStatusId(executionStatusId).build());
+        HandymanActorSystemAccess.insert(LambdaExecutionAudit.builder().pipelineId(this.pipelineId).executionStatusId(executionStatusId).build());
     }
 
 

@@ -14,26 +14,6 @@ public class AuditAccess {
 
     private static final HandymanRepo REPO = new HandymanRepoR2Impl();
 
-    public static void insertPipeline(final Pipeline audit) {
-        REPO.insertPipeline(audit);
-    }
-
-    public static void insertAction(final Action audit) {
-        REPO.insertAction(audit);
-    }
-
-    public static void insertStatement(final Statement audit) {
-        REPO.insertStatement(audit);
-    }
-
-    public static void insert(final LambdaExecutionAudit audit) {
-        REPO.insert(audit);
-    }
-
-    public static void insert(final ActionExecutionAudit audit) {
-        REPO.insert(audit);
-    }
-
     public static void update(final Pipeline pipeline) {
         REPO.update(pipeline);
     }
