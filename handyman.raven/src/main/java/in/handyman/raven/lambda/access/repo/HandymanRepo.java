@@ -20,7 +20,7 @@ public interface HandymanRepo {
 
     Map<String, String> getAllConfig(final String pipelineName);
 
-     List<ConfigStore> getAllConfigStores(final String pipelineName);
+    List<ConfigStore> getAllConfigStores(final String pipelineName);
 
     Map<String, String> getCommonConfig();
 

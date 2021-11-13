@@ -43,10 +43,11 @@ public class LambdaEngine {
      * Execution starts from here
      */
     public static Pipeline start(final LContext lContext) {
+        log.info("LContext => " + lContext);
         final String hostName;
         try {
             hostName = InetAddress.getLocalHost().getHostAddress();
-            log.info("Execution Engine Starts in host {}",hostName);
+            log.info("Execution Engine Starts in host {}", hostName);
         } catch (UnknownHostException e) {
             throw new HandymanException("hostName not found ", e);
         }
@@ -75,7 +76,7 @@ public class LambdaEngine {
             context.put("parent-pipeline-id", String.valueOf(lContext.getParentPipelineId()));
             context.put("pipeline-id", String.valueOf(pipeline.getPipelineId()));
             context.put("process-id", String.valueOf(pipeline.getPipelineId()));
-
+            context.putAll(lContext.getInheritedContext());
             pipeline.setProcessName(ravenParserContext.getProcessName());
             pipeline.setContext(context);
             HandymanActorSystemAccess.insert(pipeline);
@@ -90,10 +91,9 @@ public class LambdaEngine {
                 log.info("Started Executing the catch block");
                 run(pipeline, ravenParserContext.getCatchContext(), context, ExecutionGroup.CATCH);
                 pipeline.updateExecutionStatusId(ExecutionStatus.FAILED.getId());
-                log.error("try section failed",e);
+                log.error("try section failed", e);
                 log.error("Completed Execution catch block");
                 throw new HandymanException("Failed", e);
-
             } finally {
                 log.info("Executing Finally Block");
                 run(pipeline, ravenParserContext.getFinallyContext(), context, ExecutionGroup.FINALLY);
@@ -101,7 +101,7 @@ public class LambdaEngine {
                 log.info("Completed execution finally block");
             }
         } catch (Exception e) {
-            log.error("Process section failed",e);
+            log.error("Process section failed", e);
             pipeline.updateExecutionStatusId(ExecutionStatus.FAILED.getId());
             HandymanActorSystemAccess.update(pipeline);
             throw new HandymanException("Failed", e);
@@ -142,14 +142,14 @@ public class LambdaEngine {
             action.setContext(context);
             action.setPipelineId(pipeline.getPipelineId());
             toAction(action, pipeline);
-            log.info("Action context has been set successfully for action name {}",action.getActionName());
+            log.info("Action context has been set successfully for action name {}", action.getActionName());
             log.info("Action execution has been started");
             doAction(action, actionContext);
         });
     }
 
     private static HashMap<String, String> getEContext(final String lambdaName) {
-        log.info("Configuration for the lambda {}",lambdaName);
+        log.info("Configuration for the lambda {}", lambdaName);
         return new HashMap<>(ConfigAccess.getAllConfig(lambdaName));
     }
 
@@ -191,7 +191,7 @@ public class LambdaEngine {
         HandymanActorSystemAccess.insert(action);
         action.updateExecutionStatusId(ExecutionStatus.STAGED.getId());
         HandymanActorSystemAccess.update(action);
-        log.info("Action {} has been STAGED",action.getActionName());
+        log.info("Action {} has been STAGED", action.getActionName());
         try {
             final IActionExecution execution = load(actionContext, action);
             execute(execution, action);

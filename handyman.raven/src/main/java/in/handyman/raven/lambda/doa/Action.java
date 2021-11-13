@@ -47,7 +47,7 @@ public class Action extends AbstractAudit {
 
     public void updateExecutionStatusId(final Integer executionStatusId) {
         this.setExecutionStatusId(executionStatusId);
-        HandymanActorSystemAccess   .insert(ActionExecutionAudit.builder().actionId(actionId)
+        HandymanActorSystemAccess.insert(ActionExecutionAudit.builder().actionId(actionId)
                 .pipelineId(this.pipelineId).executionStatusId(executionStatusId).build());
     }
 

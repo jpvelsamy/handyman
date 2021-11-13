@@ -54,22 +54,6 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     }
 
     @Override
-    public List<ConfigStore> getAllConfigStores(final String pipelineName) {
-        final String lambdaName = getLambdaName(pipelineName);
-        final List<ConfigStore> pipelineConfig = findConfigEntities(ConfigType.PIPELINE, pipelineName);
-        final List<ConfigStore> lambdaConfig = findConfigEntities(ConfigType.LAMBDA, lambdaName);
-        final List<ConfigStore> commonConfig = getCommonConfigEntities();
-        final List<ConfigStore> finalMap = new ArrayList<>(pipelineConfig);
-        finalMap.addAll(lambdaConfig);
-        finalMap.addAll(commonConfig);
-        return List.copyOf(finalMap);
-    }
-
-    private List<ConfigStore> getCommonConfigEntities() {
-        return findConfigEntities(ConfigType.COMMON);
-    }
-
-    @Override
     public List<ConfigStore> findConfigEntities(final ConfigType configType, final String configName) {
         return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where config_type_id = ? and name = ? and active=true ")
                 .bind(0, configType.getId())
@@ -84,11 +68,27 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
         return toMap(configEntities);
     }
 
+    private List<ConfigStore> getCommonConfigEntities() {
+        return findConfigEntities(ConfigType.COMMON);
+    }
+
     public List<ConfigStore> findConfigEntities(final ConfigType configType) {
         return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where config_type_id = ? and active=true ")
                 .bind(0, configType.getId())
                 .mapToBean(ConfigStore.class)
                 .list());
+    }
+
+    @Override
+    public List<ConfigStore> getAllConfigStores(final String pipelineName) {
+        final String lambdaName = getLambdaName(pipelineName);
+        final List<ConfigStore> pipelineConfig = findConfigEntities(ConfigType.PIPELINE, pipelineName);
+        final List<ConfigStore> lambdaConfig = findConfigEntities(ConfigType.LAMBDA, lambdaName);
+        final List<ConfigStore> commonConfig = getCommonConfigEntities();
+        final List<ConfigStore> finalMap = new ArrayList<>(pipelineConfig);
+        finalMap.addAll(lambdaConfig);
+        finalMap.addAll(commonConfig);
+        return List.copyOf(finalMap);
     }
 
     @Override
