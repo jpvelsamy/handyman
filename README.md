@@ -16,7 +16,7 @@
 ## To Clean, Compile and build, run the below maven commands
 
 1. Inside handyman.raven
-   > mvn clean antlr4:antlr4 test -Dtest=ActionGenerationTest#generate compile install
+   > mvn clean antlr4:antlr4 test -Dtest=ActionGenerationTest#generate compile install scala:compile install package
 
 ## Jar
 

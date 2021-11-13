@@ -17,4 +17,10 @@ public class HLegacyResource {
         return new StartProcess().start(instanceName);
     }
 
+
+    @POST
+    public String setExprex(@Valid final String instanceName) {
+        return new StartProcess().start(instanceName);
+    }
+
 }

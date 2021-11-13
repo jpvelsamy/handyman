@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -54,8 +55,11 @@ public class HRequestResolver {
         final String fullPath = (Objects.nonNull(basePath) && !basePath.isEmpty() ? (basePath + "/") : "") + fileRelativePath;
         log.info("Trying to find the process file {}", fullPath);
         final URL finalPathUrl = HRequestResolver.class.getClassLoader().getResource(fullPath);
+        final File finalPathInHost = new File(fullPath);
         if (finalPathUrl != null) {
             return finalPathUrl.getPath();
+        } else if (finalPathInHost.exists()) {
+            return finalPathInHost.getAbsolutePath();
         } else {
             throw new HandymanException("Process definition for " + fileRelativePath + " is absent");
         }

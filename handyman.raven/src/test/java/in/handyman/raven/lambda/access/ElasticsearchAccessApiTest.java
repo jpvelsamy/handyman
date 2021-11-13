@@ -12,7 +12,7 @@ import java.util.UUID;
 class ElasticsearchAccessApiTest {
 
 
-    @Test
+//    @Test
     void init() {
         try {
             if (ElasticsearchAccessApi.isExists(ElasticsearchAccessApi.toIndexName(ResourceConnection.class))) {
