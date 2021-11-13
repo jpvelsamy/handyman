@@ -68,7 +68,7 @@ public class HRequestResolver {
     @Getter
     @AllArgsConstructor
     public enum LoadType {
-        DB("processContent"), FILE("filepath");
+        DB("processContent"), FILE("filepath"), REST("");
         private final String variable;
     }
 

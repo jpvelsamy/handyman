@@ -43,7 +43,8 @@ action:
 	|loadCsv
 	|restApi
 	|transform
-	|multitude);
+	|multitude
+	|exportCsv);
 
 multitude:
     'multitude' 'as' name=STRING ('on' on= STRING)* 'using'
@@ -132,6 +133,12 @@ restApi:
 
 restPart:
 	'{ part' 'as' partName=STRING 'with' partData=STRING ('type as' type=STRING)* '}';
+
+
+exportCsv:
+    'exportCsv' 'as' name=STRING 'source' source=STRING 'execution_source' execution_source=STRING
+    ('on' on= STRING)* 'location' location=STRING 'tablename'
+    tablename=STRING ('on-condition' condition=expression)* ('fielding' writeThreadCount=NON_ZERO_DIGIT)* ;
 
 
 expression :'if' (lhs=STRING operator=Operator rhs=STRING);

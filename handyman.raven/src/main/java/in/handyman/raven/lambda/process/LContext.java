@@ -32,6 +32,8 @@ public class LContext {
     private Long parentActionId;
     private String parentActionName;
 
+    private String payload;
+
     public String getLambdaName() {
         return this.lambdaName != null ? this.lambdaName : ConfigAccess.getLambdaName(this.pipelineName);
     }
