@@ -40,6 +40,8 @@ public interface HandymanRepo {
 
     List<ConfigStore> findConfigStore(final ConfigType configType, final String configName, final String variable);
 
+    List<ConfigStore> findConfigEntities(final ConfigType configType);
+
     void save(final ConfigStore configStore);
 
     void save(final ResourceConnection resourceConnection);
