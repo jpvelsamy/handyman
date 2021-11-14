@@ -154,7 +154,7 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     @Override
     public void save(final ConfigStore configStore) {
         final List<ConfigStore> stores = findConfigStore(ConfigType.get(configStore.getConfigTypeId()),
-                configStore.getName(), configStore.getName());
+                configStore.getName(), configStore.getVariable());
         final int version = stores.size() + 1;
         stores.forEach(configStore1 -> {
             configStore1.setLastModifiedDate(LocalDateTime.now());
