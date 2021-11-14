@@ -27,4 +27,5 @@ public class ResourceConnection extends Auditable {
     private String password;
     private String url;
     private boolean active;
+    private Integer version;
 }

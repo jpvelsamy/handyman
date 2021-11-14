@@ -19,8 +19,8 @@ public class AuditInsertActor extends AbstractActor {
                 .match(Pipeline.class, REPO::insertPipeline)
                 .match(Action.class, REPO::insertAction)
                 .match(Statement.class, REPO::insertStatement)
-                .match(LambdaExecutionAudit.class, REPO::insert)
-                .match(ActionExecutionAudit.class, REPO::insert)
+                .match(LambdaExecutionAudit.class, REPO::save)
+                .match(ActionExecutionAudit.class, REPO::save)
                 .build();
     }
 }

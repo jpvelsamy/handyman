@@ -30,4 +30,6 @@ public class ConfigStore extends Auditable {
     private String value;
     private boolean active;
 
+    private Integer version;
+
 }

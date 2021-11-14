@@ -26,6 +26,8 @@ public interface HandymanRepo {
 
     ResourceConnection getResourceConfig(final String name);
 
+    List<ResourceConnection> getResourceConfigList(final String name);
+
     String findValueCommonConfig(final String configName, final String variable);
 
     Set<String> getPackageAction();
@@ -36,9 +38,11 @@ public interface HandymanRepo {
 
     Optional<ConfigStore> findConfigEntities(final ConfigType configType, final String configName, final String variable);
 
-    void update(final ConfigType configType, final String configName, final String variable);
+    List<ConfigStore> findConfigStore(final ConfigType configType, final String configName, final String variable);
 
-    void insert(final ConfigType configType, final String configName, final String variable);
+    void save(final ConfigStore configStore);
+
+    void save(final ResourceConnection resourceConnection);
 
     void insertPipeline(final Pipeline audit);
 
@@ -46,9 +50,9 @@ public interface HandymanRepo {
 
     void insertStatement(final Statement audit);
 
-    void insert(final LambdaExecutionAudit audit);
+    void save(final LambdaExecutionAudit audit);
 
-    void insert(final ActionExecutionAudit audit);
+    void save(final ActionExecutionAudit audit);
 
     void update(final Pipeline audit);
 

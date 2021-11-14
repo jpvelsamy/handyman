@@ -109,6 +109,14 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     }
 
     @Override
+    public List<ResourceConnection> getResourceConfigList(final String name) {
+        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM resource_connection where name = ? ")
+                .bind(0, name)
+                .mapToBean(ResourceConnection.class)
+                .list());
+    }
+
+    @Override
     public String findValueCommonConfig(final String configName, final String variable) {
         return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where variable = ? and name = ? and active=true ")
                 .bind(0, variable)
@@ -124,7 +132,7 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public Optional<ConfigStore> findConfigEntities(final ConfigType configType, final String configName, final String variable) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where config_type_id = ? and name = ? and variable=? and active=true ")
+        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where config_type_id = ? and name = ? and variable=? and active=true order by version desc limit 1")
                 .bind(0, configType.getId())
                 .bind(1, configName)
                 .bind(2, variable)
@@ -133,13 +141,50 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     }
 
     @Override
-    public void update(final ConfigType configType, final String configName, final String variable) {
+    public List<ConfigStore> findConfigStore(final ConfigType configType, final String configName, final String variable) {
+        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where config_type_id = ? and name = ? and variable=? ")
+                .bind(0, configType.getId())
+                .bind(1, configName)
+                .bind(2, variable)
+                .mapToBean(ConfigStore.class)
+                .list());
+    }
 
+
+    @Override
+    public void save(final ConfigStore configStore) {
+        final List<ConfigStore> stores = findConfigStore(ConfigType.get(configStore.getConfigTypeId()),
+                configStore.getName(), configStore.getName());
+        final int version = stores.size() + 1;
+        stores.forEach(configStore1 -> {
+            configStore1.setLastModifiedDate(LocalDateTime.now());
+            configStore1.setActive(false);
+            jdbi.useHandle(handle -> handle.createUpdate("UPDATE config_store SET active = :active WHERE id = :id;")
+                    .bindBean(configStore1).execute());
+        });
+        configStore.setLastModifiedDate(LocalDateTime.now());
+        configStore.setActive(true);
+        configStore.setVersion(version);
+        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO config_store (id, active, config_type_id, name, value, variable, created_by, created_date, last_modified_by, last_modified_date, version) VALUES(:id, :active, :configTypeId, :name, :value, :variable, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :version);")
+                .bindBean(configStore).execute());
     }
 
     @Override
-    public void insert(final ConfigType configType, final String configName, final String variable) {
-
+    public void save(final ResourceConnection resourceConnection) {
+        final List<ResourceConnection> list = getResourceConfigList(resourceConnection.getName());
+        final int version = list.size() + 1;
+        list.forEach(connection -> {
+            connection.setLastModifiedDate(LocalDateTime.now());
+            connection.setActive(false);
+            jdbi.useHandle(handle -> handle.createUpdate("UPDATE resource_connection SET active = :active WHERE name = :name;")
+                    .bindBean(connection).execute());
+        });
+        resourceConnection.setLastModifiedDate(LocalDateTime.now());
+        resourceConnection.setActive(true);
+        resourceConnection.setVersion(version);
+        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO resource_connection (name, created_by, created_date, last_modified_by, last_modified_date, active, config_type, driver_class_name, password, url, user_name, version) " +
+                        " VALUES( :name, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :active, :configType, :driverClassName, :password, :url, :userName, :version);")
+                .bindBean(resourceConnection).execute());
     }
 
     @Override
@@ -186,14 +231,14 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     }
 
     @Override
-    public void insert(final LambdaExecutionAudit audit) {
+    public void save(final LambdaExecutionAudit audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
         jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO lambda_execution_audit (id, created_by, created_date, last_modified_by, last_modified_date, execution_status_id, pipeline_id) VALUES(:id, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :executionStatusId, :pipelineId);")
                 .bindBean(audit).execute());
     }
 
     @Override
-    public void insert(final ActionExecutionAudit audit) {
+    public void save(final ActionExecutionAudit audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
         jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO action_execution_audit (id, created_by, created_date, last_modified_by, last_modified_date, action_id, execution_status_id, pipeline_id) VALUES(:id, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :actionId, :executionStatusId, :pipelineId);")
                 .bindBean(audit).execute());
