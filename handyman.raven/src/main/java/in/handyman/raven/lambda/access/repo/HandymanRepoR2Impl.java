@@ -150,7 +150,6 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
                 .list());
     }
 
-
     @Override
     public void save(final ConfigStore configStore) {
         final List<ConfigStore> stores = findConfigStore(ConfigType.get(configStore.getConfigTypeId()),
@@ -285,6 +284,14 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     @Override
     public List<Pipeline> findAllPipelines() {
         return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM pipeline")
+                .mapToBean(Pipeline.class)
+                .list());
+    }
+
+    @Override
+    public List<Pipeline> findAllPipelines(final String pipelineName) {
+        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM pipeline where pipeline_name =? ")
+                .bind(0, pipelineName)
                 .mapToBean(Pipeline.class)
                 .list());
     }
