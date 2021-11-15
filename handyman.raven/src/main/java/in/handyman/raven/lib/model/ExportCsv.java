@@ -4,6 +4,8 @@ import in.handyman.raven.lambda.action.ActionContext;
 import in.handyman.raven.lambda.action.IActionContext;
 import java.lang.Boolean;
 import java.lang.String;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -14,6 +16,8 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @ActionContext(
     actionName = "ExportCsv"
 )
@@ -22,13 +26,11 @@ public class ExportCsv implements IActionContext {
 
   private String source;
 
-  private String execution_source;
+  private String executionSource;
 
-  private String on;
+  private String stmt;
 
-  private String location;
-
-  private String tablename;
+  private String targetLocation;
 
   private Boolean condition = true;
 

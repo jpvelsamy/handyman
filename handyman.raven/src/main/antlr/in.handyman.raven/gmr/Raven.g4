@@ -143,9 +143,11 @@ restPart:
 
 
 exportCsv:
-    'exportCsv' 'as' name=STRING 'source' source=STRING 'execution_source' execution_source=STRING
-    ('on' on= STRING)* 'location' location=STRING 'tablename'
-    tablename=STRING ('on-condition' condition=expression)* ('fielding' writeThreadCount=NON_ZERO_DIGIT)* ;
+    'exportCsv' 'as' name=STRING 'source' source=STRING 'executionSource' executionSource=STRING
+    ('using' stmt= STRING)* 'targetLocation' targetLocation=STRING 'using'
+                                                                   	 '{'
+                                                                   	'}'
+     ('on-condition' condition=expression)* ('fielding' writeThreadCount=NON_ZERO_DIGIT)* ;
 
 importCsvToDB:
 	'importCsvToDB' 'as' name= STRING 'target' target=resource 'on' tableName=STRING 'using'
@@ -156,7 +158,6 @@ importCsvToDB:
 extractTAR:
 	'extractTAR' 'as' name= STRING 'from' source=STRING 'destination' destination=STRING 'using'
 	 '{'
-		value=STRING
 	'}' ('on-condition' condition=expression)*;
 
 createTAR:

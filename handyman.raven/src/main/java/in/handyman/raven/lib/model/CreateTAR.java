@@ -2,6 +2,8 @@ package in.handyman.raven.lib.model;
 
 import in.handyman.raven.lambda.action.ActionContext;
 import in.handyman.raven.lambda.action.IActionContext;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -12,6 +14,8 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @ActionContext(
     actionName = "CreateTAR"
 )
@@ -23,8 +27,6 @@ public class CreateTAR implements IActionContext {
   private String destination;
 
   private String extension;
-
-  private String value;
 
   private Boolean condition = true;
 }
