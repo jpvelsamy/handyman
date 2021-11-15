@@ -117,7 +117,7 @@ public class ActionGeneration {
                         .addStatement(String.format("this.%s = ($T) %s", variableName, variableName), actionAttributeClassName)
                         .addStatement("this.action = action")
                         .addStatement("this.log = log")
-                        .addStatement(String.format("this.aMarker = $T.getMarker(\" %s:\"+this.%s)", actionName, variableName), MarkerFactory.class)
+                        .addStatement(String.format("this.aMarker = $T.getMarker(\" %s:\"+this.%s.getName())", actionName, variableName), MarkerFactory.class)
                         .build())
                 .addMethod(MethodSpec
                         .methodBuilder("execute")

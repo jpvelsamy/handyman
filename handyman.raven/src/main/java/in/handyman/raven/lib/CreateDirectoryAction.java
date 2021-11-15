@@ -35,25 +35,25 @@ public class CreateDirectoryAction implements IActionExecution {
     this.createDirectory = (CreateDirectory) createDirectory;
     this.action = action;
     this.log = log;
-    this.aMarker = MarkerFactory.getMarker("CreateDirectory");
+    this.aMarker = MarkerFactory.getMarker("CreateDirectory:"+this.createDirectory.getName());
   }
 
   @Override
   public void execute() throws Exception {
-    //log.info("Directory creation operation has been started for listed files \n {}",createDirectory.getDirectoryPath());
-    for (String fileName : createDirectory.getDirectoryPath()) {
-      Path path = Paths.get(fileName);
+    log.info("Directory creation operation has been started for listed files {}",createDirectory.getDirectoryPath());
+    for (var fileName : createDirectory.getDirectoryPath()) {
+      var path = Paths.get(fileName);
       if(!Files.exists(path)) {
         Files.createDirectory(path);
-        //log.info("{} Directory Created",path);
+        log.info("{} Directory Created",path);
       } else {
-        //log.info("{} Directory already exists",path);
+        log.info("{} Directory already exists",path);
       }
     }
   }
 
   @Override
   public boolean executeIf() throws Exception {
-    return false;
+    return createDirectory.getCondition();
   }
 }
