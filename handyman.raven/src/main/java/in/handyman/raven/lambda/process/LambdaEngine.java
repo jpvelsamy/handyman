@@ -221,12 +221,17 @@ public class LambdaEngine {
             HandymanActorSystemAccess.update(action);
             final StringBuilder stringBuilder = new StringBuilder();
             log.info("Started collecting Lambda engine logs");
+            stringBuilder.append("\n");
             action.getEventQueue().forEach(event -> {
-                //TODO format this
-                stringBuilder.append(String.format("Level %s Marker %s ThreadName %s Time %s Message %s", event.getLevel(),
-                        event.getMarker(), event.getThreadName(),
-                        Instant.ofEpochMilli(event.getTimeStamp()),
-                        MessageFormatter.arrayFormat(event.getMessage(), event.getArgumentArray()).getMessage()));
+                append(stringBuilder, Instant.ofEpochMilli(event.getTimeStamp()));
+                stringBuilder.append(" ");
+                append(stringBuilder, event.getThreadName());
+                stringBuilder.append(" ");
+                append(stringBuilder, event.getLevel());
+                stringBuilder.append(" ");
+                append(stringBuilder, event.getMarker());
+                stringBuilder.append(" ");
+                append(stringBuilder, MessageFormatter.arrayFormat(event.getMessage(), event.getArgumentArray()).getMessage());
                 if (event.getThrowable() != null) {
                     var sw = new StringWriter();
                     var pw = new PrintWriter(sw);
@@ -241,6 +246,12 @@ public class LambdaEngine {
             action.setLog(stringBuilder.toString());
             log.info(stringBuilder.toString());
             HandymanActorSystemAccess.update(action);
+        }
+    }
+
+    private static void append(final StringBuilder stringBuilder, final Object value) {
+        if (value != null) {
+            stringBuilder.append(String.format("%s",  value));
         }
     }
 

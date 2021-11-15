@@ -45,35 +45,35 @@ public class TransformAction implements IActionExecution {
     @Override
     public void execute() {
         final String dbSrc = transform.getOn();
-        log.info("Transform action input variables id: {}, name: {}, source-database: {} ", action.getActionId(), transform.getName(), dbSrc);
-        log.info("Sql input post parameter ingestion \n {}", transform.getValue());
+        log.info(aMarker, "Transform action input variables id: {}, name: {}, source-database: {} ", action.getActionId(), transform.getName(), dbSrc);
+        log.info(aMarker, "Sql input post parameter ingestion \n {}", transform.getValue());
         final HikariDataSource hikariDataSource = ResourceAccess.rdbmsConn(dbSrc);
         try (final Connection connection = hikariDataSource.getConnection()) {
             connection.setAutoCommit(false);
             for (String givenQuery : transform.getValue()) {
                 var sqlList = CommonQueryUtil.getFormattedQuery(givenQuery);
                 for (var sqlToExecute : sqlList) {
-                    log.info("Transform with id:{}, executing script {}", action.getActionId(), givenQuery);
+                    log.info(aMarker, "Transform with id:{}, executing script {}", action.getActionId(), givenQuery);
                     final Long statementId = UniqueID.getId();
                     //TODO
                     try (final Statement stmt = connection.createStatement()) {
                         var rowCount = stmt.executeUpdate(sqlToExecute);
                         var warnings = ExceptionUtil.completeSQLWarning(stmt.getWarnings());
-                        log.info(sqlToExecute + ".count", rowCount);
-                        log.info(sqlToExecute + ".stmtCount", stmt.getUpdateCount());
-                        log.info(sqlToExecute + ".warnings", warnings);
-                        log.info(aMarker, "Transform id# {}, executed script {} rows returned {}", statementId, sqlToExecute, rowCount);
+                        log.info(aMarker, sqlToExecute + ".count", rowCount);
+                        log.info(aMarker, sqlToExecute + ".stmtCount", stmt.getUpdateCount());
+                        log.info(aMarker, sqlToExecute + ".warnings", warnings);
+                        log.info(aMarker,  "Transform id# {}, executed script {} rows returned {}", statementId, sqlToExecute, rowCount);
                         stmt.clearWarnings();
                     } catch (SQLSyntaxErrorException ex) {
                         log.error(aMarker, "Stopping execution, General Error executing sql for {} with for {}", sqlToExecute, ex);
-                        log.info(sqlToExecute + ".exception", ExceptionUtil.toString(ex));
+                        log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
                         throw new HandymanException("Process failed", ex);
                     } catch (SQLException ex) {
                         log.error(aMarker, "Continuing to execute, even though SQL Error executing sql for {} ", sqlToExecute, ex);
-                        log.info(sqlToExecute + ".exception", ExceptionUtil.toString(ex));
+                        log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
                     } catch (Throwable ex) {
                         log.error(aMarker, "Stopping execution, General Error executing sql for {} with for {}", sqlToExecute, ex);
-                        log.info(sqlToExecute + ".exception", ExceptionUtil.toString(ex));
+                        log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
                         throw new HandymanException("Process failed", ex);
                     }
                 }
@@ -83,7 +83,7 @@ public class TransformAction implements IActionExecution {
             }
         } catch (SQLException ex) {
             log.error(aMarker, "Stopping execution, Fetching connection failed", ex);
-            log.info("connection.exception {}", ExceptionUtil.toString(ex));
+            log.info(aMarker, "connection.exception {}", ExceptionUtil.toString(ex));
             throw new HandymanException("Process failed", ex);
         }
     }

@@ -41,14 +41,14 @@ public class MultitudeAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-        log.info(aMarker, "given {}", multitude);
+       log.info(aMarker, "given {}", multitude);
         Optional.ofNullable(multitude.getActions()).filter(x -> !x.isEmpty())
                 .ifPresent(actionContexts -> {
 
                     final boolean isParallel = Optional.ofNullable(multitude.getOn()).filter(s -> Objects.equals("PARALLEL", s)).isPresent();
                     final int threadCount = Optional.ofNullable(multitude.getWriteThreadCount()).map(Integer::parseInt).orElse(0);
                     var countDown = new CountDownLatch(actionContexts.size());
-                    log.info("Multitude has been initialized in a {} mode with threadcount of {} and countdown of {}", isParallel, threadCount, countDown);
+                   log.info(aMarker,"Multitude has been initialized in a {} mode with threadcount of {} and countdown of {}", isParallel, threadCount, countDown);
                     final Set<ActionCallable> collect = actionContexts.stream().map(actionContext -> {
                         var vAction = Action.builder()
                                 .pipelineId(action.getPipelineId())
@@ -61,14 +61,14 @@ public class MultitudeAction implements IActionExecution {
                     }).collect(Collectors.toSet());
 
                     if (isParallel) {
-                        log.info("Execution has been started in a Parallel with thread count of {}", threadCount);
+                       log.info(aMarker,"Execution has been started in a Parallel with thread count of {}", threadCount);
                         var executor = threadCount != 0 ? Executors.newWorkStealingPool(threadCount) : Executors.newWorkStealingPool();
                         collect.forEach(executor::submit);
-                        log.info("Completed Execution of multitude");
+                       log.info(aMarker,"Completed Execution of multitude");
                     } else {
-                        log.info("Execution started in a sequential manner");
+                       log.info(aMarker,"Execution started in a sequential manner");
                         collect.forEach(ActionCallable::run);
-                        log.info("Completed execution of multitude");
+                       log.info(aMarker,"Completed execution of multitude");
                     }
 
                     try {

@@ -45,8 +45,8 @@ public class AssignAction implements IActionExecution {
     @Override
     public void execute() throws Exception {
         final String dbSrc = assign.getSource();
-        log.info("Transform action input variables id: {}, name: {}, source-database: {} ", action.getActionId(), assign.getName(), dbSrc);
-        log.info("Sql input post parameter ingestion \n {}", assign.getValue());
+        log.info(aMarker, "Transform action input variables id: {}, name: {}, source-database: {} ", action.getActionId(), assign.getName(), dbSrc);
+        log.info(aMarker, "Sql input post parameter ingestion \n {}", assign.getValue());
         final HikariDataSource hikariDataSource = ResourceAccess.rdbmsConn(dbSrc);
         try (final Connection connection = hikariDataSource.getConnection()) {
             final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(assign.getValue());
@@ -59,26 +59,26 @@ public class AssignAction implements IActionExecution {
                         var columnCount = rs.getMetaData().getColumnCount();
                         while (rs.next()) {
                             final Map<String, String> context = action.getContext();
-                            log.info("Value {} has been set to the key {}", context.get(assign.getName()), assign.getName());
+                            log.info(aMarker, "Value {} has been set to the key {}", context.get(assign.getName()), assign.getName());
                             CommonQueryUtil.addKeyConfig(context, log,
                                     rs, columnCount, assign.getName());
                         }
                     }
                     var warnings = ExceptionUtil.completeSQLWarning(stmt.getWarnings());
-                    log.info(sqlToExecute + ".stmtCount", stmt.getUpdateCount());
-                    log.info(sqlToExecute + ".warnings", warnings);
+                    log.info(aMarker, sqlToExecute + ".stmtCount", stmt.getUpdateCount());
+                    log.info(aMarker, sqlToExecute + ".warnings", warnings);
                     log.info(aMarker, " id# {}, executed script {} rows returned {}", statementId, sqlToExecute, 0);
                     stmt.clearWarnings();
                 } catch (SQLSyntaxErrorException ex) {
                     log.error(aMarker, "Stopping execution, General Error executing sql for {} with for campaign {}", sqlToExecute, ex);
-                    log.info(sqlToExecute + ".exception", ExceptionUtil.toString(ex));
+                    log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
                     throw new HandymanException("Process failed", ex);
                 } catch (SQLException ex) {
                     log.error(aMarker, "Continuing to execute, even though SQL Error executing sql for {} ", sqlToExecute, ex);
-                    log.info(sqlToExecute + ".exception", ExceptionUtil.toString(ex));
+                    log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
                 } catch (Throwable ex) {
                     log.error(aMarker, "Stopping execution, General Error executing sql for {} with for campaign {}", sqlToExecute, ex);
-                    log.info(sqlToExecute + ".exception", ExceptionUtil.toString(ex));
+                    log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
                     throw new HandymanException("Process failed", ex);
                 }
             }
