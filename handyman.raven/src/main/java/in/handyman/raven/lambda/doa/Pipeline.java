@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Slf4j
-public class Pipeline extends AbstractAudit {
+public class Pipeline extends AbstractAudit implements IPipeline {
 
     @Builder.Default
     private Long pipelineId = UniqueID.getId();
@@ -45,5 +45,13 @@ public class Pipeline extends AbstractAudit {
         log.info("Pipeline audit has been inserted with PipelineId {} as {}", this.pipelineId, ExecutionStatus.get(executionStatusId));
     }
 
+    @Override
+    public String getCurrentTime() {
+        return IPipeline.super.getCurrentTime();
+    }
 
+    @Override
+    public String getCurrentDate() {
+        return IPipeline.super.getCurrentDate();
+    }
 }

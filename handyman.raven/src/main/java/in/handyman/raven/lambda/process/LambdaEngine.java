@@ -2,10 +2,13 @@ package in.handyman.raven.lambda.process;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import in.handyman.raven.actor.HandymanActorSystemAccess;
 import in.handyman.raven.compiler.RavenParser;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ConfigAccess;
+import in.handyman.raven.lambda.access.repo.HandymanRepo;
+import in.handyman.raven.lambda.access.repo.HandymanRepoR2Impl;
 import in.handyman.raven.lambda.action.IActionContext;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.AbstractAudit;
@@ -25,7 +28,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +37,11 @@ import java.util.Objects;
 public class LambdaEngine {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final HandymanRepo REPO = new HandymanRepoR2Impl();
+
+    static {
+        MAPPER.registerModule(new JavaTimeModule());
+    }
 
     private LambdaEngine() {
     }
@@ -68,6 +75,8 @@ public class LambdaEngine {
             context.put("pipeline-id", String.valueOf(pipeline.getPipelineId()));
             context.put("process-id", String.valueOf(pipeline.getPipelineId()));
             context.putAll(lContext.getInheritedContext());
+//            final Map<String, String> other = getOther(pipeline);
+//            context.putAll(other);
             log.info("Raven context has been populated with inheritedContext");
             final RavenParserContext ravenParserContext = getRavenParserContext(processFile, lContext.getLambdaName(), context);
 
@@ -78,8 +87,8 @@ public class LambdaEngine {
             log.info("Initial Pipeline context has been build successfully");
             try {
                 log.info("Pipeline execution has been started");
+                pipeline.updateExecutionStatusId(ExecutionStatus.RUNNING.getId());
                 run(pipeline, ravenParserContext.getTryContext(), context, ExecutionGroup.TRY);
-                pipeline.updateExecutionStatusId(ExecutionStatus.COMPLETED.getId());
                 log.info("Pipeline execution has been completed successfully");
             } catch (Exception e) {
                 log.info("Started Executing the catch block");
@@ -93,6 +102,12 @@ public class LambdaEngine {
                 run(pipeline, ravenParserContext.getFinallyContext(), context, ExecutionGroup.FINALLY);
                 HandymanActorSystemAccess.update(pipeline);
                 log.info("Completed execution finally block");
+                if (ExecutionStatus.get(pipeline.getExecutionStatusId()) == ExecutionStatus.RUNNING) {
+                    final List<Action> actions = REPO.findActions(pipeline.getPipelineId());
+                    final Integer executionStatusId = actions.stream().filter(action -> ExecutionStatus.get(pipeline.getExecutionStatusId()) != ExecutionStatus.COMPLETED)
+                            .findFirst().map(Action::getExecutionStatusId).orElse(ExecutionStatus.COMPLETED.getId());
+                    pipeline.updateExecutionStatusId(executionStatusId);
+                }
             }
         } catch (Exception e) {
             log.error("Process section failed", e);
@@ -172,7 +187,7 @@ public class LambdaEngine {
         log.debug("Handyman Engine start for {}", lambdaName);
         final RavenParser.ProcessContext ravenParser = LambdaParser.doParse(processFile, context);
         return RavenParserContext.builder()
-                .processName(CommandProxy.getString(ravenParser.name, Collections.emptyMap()))
+                .processName(CommandProxy.getString(ravenParser.name, context))
                 .tryContext(ravenParser.tryBlock.actions)
                 .catchContext(ravenParser.catchBlock.actions)
                 .finallyContext(ravenParser.finallyBlock.actions)
@@ -192,7 +207,6 @@ public class LambdaEngine {
         HandymanActorSystemAccess.insert(action);
         action.updateExecutionStatusId(ExecutionStatus.STAGED.getId());
         HandymanActorSystemAccess.update(action);
-        log.info("Action {} has been STAGED", action.getActionName());
         try {
             final IActionExecution execution = load(actionContext, action);
             execute(execution, action);
@@ -201,11 +215,12 @@ public class LambdaEngine {
             log.error("Failed " + action, e);
             final SubstituteLogger logger = getLogger(action);
             logger.error("Exception", e);
+            action.updateExecutionStatusId(ExecutionStatus.FAILED.getId());
             throw new HandymanException("Failed to convert", e);
         } finally {
             HandymanActorSystemAccess.update(action);
             final StringBuilder stringBuilder = new StringBuilder();
-            log.info("Started collecting Lambdaengine logs");
+            log.info("Started collecting Lambda engine logs");
             action.getEventQueue().forEach(event -> {
                 //TODO format this
                 stringBuilder.append(String.format("Level %s Marker %s ThreadName %s Time %s Message %s", event.getLevel(),
@@ -265,6 +280,7 @@ public class LambdaEngine {
         } catch (Exception e) {
             logger.trace("Error at Execution " + actionName, e);
             action.updateExecutionStatusId(ExecutionStatus.FAILED.getId());
+            throw new HandymanException("Execution failed for " + actionName, e);
         }
     }
 

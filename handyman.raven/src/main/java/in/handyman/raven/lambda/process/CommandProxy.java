@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 public class CommandProxy {
 
     private static final ObjectMapper mapper = new ObjectMapper();
-    private static final HandymanRepo HANDYMAN_REPO=new HandymanRepoR2Impl();
+    private static final HandymanRepo HANDYMAN_REPO = new HandymanRepoR2Impl();
 
     private CommandProxy() {
     }
@@ -74,7 +74,7 @@ public class CommandProxy {
                             final String text = o.getText();
                             final JsonNode node = mapper.readTree(getString(context, text));
                             setValue(target, fieldName, getter, node);
-                        }else if (field.getType() == RavenParser.ResourceContext.class) {
+                        } else if (field.getType() == RavenParser.ResourceContext.class) {
                             final RavenParser.ResourceContext o = (RavenParser.ResourceContext) fieldValue;
                             final String text = o.getText();
                             final ResourceConnection connection = HANDYMAN_REPO.getResourceConfig(getString(context, text));
@@ -192,6 +192,8 @@ public class CommandProxy {
 
     private static String getString(final Map<String, String> context, final String text) {
         var paramEngine = new StringSubstitutor(context);
-        return paramEngine.replace(text.trim());
+        final String replace = paramEngine.replace(text.trim());
+        log.debug("content {} given context {}", replace, context);
+        return replace;
     }
 }

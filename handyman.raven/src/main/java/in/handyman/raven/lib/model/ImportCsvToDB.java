@@ -34,5 +34,6 @@ public class ImportCsvToDB implements IActionContext {
 
     private List<String> value;
 
+    @Builder.Default
     private Boolean condition = true;
 }

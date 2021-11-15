@@ -65,14 +65,14 @@ public class TransformAction implements IActionExecution {
                         log.info(aMarker, "Transform id# {}, executed script {} rows returned {}", statementId, sqlToExecute, rowCount);
                         stmt.clearWarnings();
                     } catch (SQLSyntaxErrorException ex) {
-                        log.error(aMarker, "Stopping execution, General Error executing sql for {} with for campaign {}", sqlToExecute, ex);
+                        log.error(aMarker, "Stopping execution, General Error executing sql for {} with for {}", sqlToExecute, ex);
                         log.info(sqlToExecute + ".exception", ExceptionUtil.toString(ex));
                         throw new HandymanException("Process failed", ex);
                     } catch (SQLException ex) {
                         log.error(aMarker, "Continuing to execute, even though SQL Error executing sql for {} ", sqlToExecute, ex);
                         log.info(sqlToExecute + ".exception", ExceptionUtil.toString(ex));
                     } catch (Throwable ex) {
-                        log.error(aMarker, "Stopping execution, General Error executing sql for {} with for campaign {}", sqlToExecute, ex);
+                        log.error(aMarker, "Stopping execution, General Error executing sql for {} with for {}", sqlToExecute, ex);
                         log.info(sqlToExecute + ".exception", ExceptionUtil.toString(ex));
                         throw new HandymanException("Process failed", ex);
                     }

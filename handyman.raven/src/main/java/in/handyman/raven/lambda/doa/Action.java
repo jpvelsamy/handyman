@@ -26,7 +26,7 @@ import java.util.Optional;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Action extends AbstractAudit {
+public class Action extends AbstractAudit implements IAction{
 
     @JsonIgnore
     private final ArrayDeque<SubstituteLoggingEvent> eventQueue = new ArrayDeque<>();
@@ -54,4 +54,13 @@ public class Action extends AbstractAudit {
     }
 
 
+    @Override
+    public String getCurrentTime() {
+        return IAction.super.getCurrentTime();
+    }
+
+    @Override
+    public String getCurrentDate() {
+        return IAction.super.getCurrentDate();
+    }
 }

@@ -40,7 +40,6 @@ public abstract class AbstractAudit extends Auditable {
 
     private Integer executionStatusId;
 
-    @Builder.Default
     private Map<String, String> context = new HashMap<>();
 
 
