@@ -79,43 +79,55 @@ public class ImportCsvToDBAction implements IActionExecution {
 
     private void doImport(final Integer batchSize, final Jdbi jdbi, final String path) {
         final File file = new File(path);
-
         if (!file.exists()) {
             throw new HandymanException("File not exists " + path);
         }
         log.info(aMarker, "Found file " + path);
         try {
-            final List<Map<String, Object>> maps = readObjectsFromCsv(file);
-
-            final int size = maps.size();
-            log.info(aMarker, "extracted data from CSV file with size " + size);
-
-            if (size != 0) {
-                final Map<String, Object> map = maps.get(0);
-                final Set<String> objects = map.keySet();
-                final String columnNames = objects.stream().map(String::valueOf).collect(Collectors.joining(DELIMITER));
-                final String namedParams = objects.stream().map(String::valueOf).map(s -> ":" + s).collect(Collectors.joining(DELIMITER));
-
-
-                jdbi.useHandle(handle -> {
-
-                    final String format = String.format(" INSERT INTO %s  (%s) VALUES(%s);", importCsvToDB.getTableName(), columnNames, namedParams);
-                    var counter = new AtomicInteger();
-                    try (PreparedBatch batch = handle.prepareBatch(format)) {
-                        maps.forEach(map1 -> {
-                            batch.bindMap(map1).add();
-                            counter.incrementAndGet();
-                            if (counter.get() % batchSize == 0) {
-                                log.info(aMarker, "added batch size " + batch.execute().length);
-                            }
-                        });
-                        log.info(aMarker, "added batch size " + batch.execute().length);
+            if (file.isFile()) {
+                extracted(batchSize, jdbi, file);
+            } else if (file.isDirectory()) {
+                final Optional<File[]> files = Optional.ofNullable(file.listFiles());
+                if (files.isPresent()) {
+                    for (var childFile : files.get()) {
+                        doImport(batchSize, jdbi, childFile.getAbsolutePath());
                     }
-
-                });
+                }
             }
         } catch (Exception e) {
             throw new HandymanException("Exception for file " + path, e);
+        }
+    }
+
+    private void extracted(final Integer batchSize, final Jdbi jdbi, final File file) throws IOException {
+        final List<Map<String, Object>> maps = readObjectsFromCsv(file);
+
+        final int size = maps.size();
+        log.info(aMarker, "extracted data from CSV file with size " + size);
+
+        if (size != 0) {
+            final Map<String, Object> map = maps.get(0);
+            final Set<String> objects = map.keySet();
+            final String columnNames = objects.stream().map(String::valueOf).collect(Collectors.joining(DELIMITER));
+            final String namedParams = objects.stream().map(String::valueOf).map(s -> ":" + s).collect(Collectors.joining(DELIMITER));
+
+
+            jdbi.useHandle(handle -> {
+
+                final String format = String.format(" INSERT INTO %s  (%s) VALUES(%s);", importCsvToDB.getTableName(), columnNames, namedParams);
+                var counter = new AtomicInteger();
+                try (PreparedBatch batch = handle.prepareBatch(format)) {
+                    maps.forEach(map1 -> {
+                        batch.bindMap(map1).add();
+                        counter.incrementAndGet();
+                        if (counter.get() % batchSize == 0) {
+                            log.info(aMarker, "added batch size " + batch.execute().length);
+                        }
+                    });
+                    log.info(aMarker, "added batch size " + batch.execute().length);
+                }
+
+            });
         }
     }
 

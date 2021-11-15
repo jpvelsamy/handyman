@@ -157,14 +157,11 @@ importCsvToDB:
 
 extractTAR:
 	'extractTAR' 'as' name= STRING 'from' source=STRING 'destination' destination=STRING 'using'
-	 '{'
-	'}' ('on-condition' condition=expression)*;
+	 '{''}' ('on-condition' condition=expression)*;
 
 createTAR:
 	'createTAR' 'as' name= STRING 'from' source=STRING 'destination' destination=STRING 'extension' extension=STRING 'using'
-	 '{'
-		value=STRING
-	'}' ('on-condition' condition=expression)*;
+	 '{''}' ('on-condition' condition=expression)*;
 
 createDirectory:
 	'createDirectory' 'as' name= STRING 'using'

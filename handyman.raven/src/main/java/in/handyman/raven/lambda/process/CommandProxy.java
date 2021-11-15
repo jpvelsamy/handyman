@@ -76,7 +76,7 @@ public class CommandProxy {
                             setValue(target, fieldName, getter, node);
                         } else if (field.getType() == RavenParser.ResourceContext.class) {
                             final RavenParser.ResourceContext o = (RavenParser.ResourceContext) fieldValue;
-                            final String text = o.getText();
+                            final String text = o.getText().substring(1, o.getText().length() - 1);
                             final ResourceConnection connection = HANDYMAN_REPO.getResourceConfig(getString(context, text));
                             setValue(target, fieldName, getter, connection);
                         } else if (field.getType() == List.class) {
