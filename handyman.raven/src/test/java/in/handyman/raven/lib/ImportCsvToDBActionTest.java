@@ -1,0 +1,38 @@
+package in.handyman.raven.lib;
+
+import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.ResourceConnection;
+import in.handyman.raven.lib.model.ImportCsvToDB;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Collections;
+
+class ImportCsvToDBActionTest {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
+    @Test
+    void execute() throws Exception {
+
+        final ImportCsvToDBAction importCsvToDBAction = new ImportCsvToDBAction(Action.builder().build(),
+                logger, ImportCsvToDB.builder()
+                .condition(true)
+                .tableName("CCCU_DNA.dbo.MOCK_DATA")
+                .value(Collections.singletonList("/home/shankar.t@zucisystems.com/Downloads/MOCK_DATA.csv"))
+                .batchSize("99")
+                .writeThreadCount("3")
+                .target(ResourceConnection.builder()
+                        .url("jdbc:sqlserver://localhost:1433;databaseName=CCCU_DNA;")
+                        .userName("SA")
+                        .password("Marvel2018")
+                        .build())
+                .build());
+
+        importCsvToDBAction.execute();
+    }
+
+
+}

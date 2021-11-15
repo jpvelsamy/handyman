@@ -6,17 +6,30 @@ import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.ResourceConnection;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Objects;
+import java.util.Optional;
+
 @Slf4j
 public class ResourceAccess {
 
     public static HikariDataSource rdbmsConn(final String resourceName) {
         final ResourceConnection resource = ConfigAccess.getResourceConfig(resourceName);
+        if (Objects.isNull(resource)) {
+            log.warn("{} not found in Resource connections", resourceName);
+        }
+        return getHikariDataSource(resource);
+    }
+
+    public static HikariDataSource getHikariDataSource(final ResourceConnection resource) {
+        if (Objects.isNull(resource)) {
+            log.warn("not found in Resource connections");
+            throw new HandymanException("Resource not found");
+        }
         try {
             return createHP(resource.getUrl(), resource.getDriverClassName(),
                     resource.getUserName(), resource.getPassword());
         } catch (ClassNotFoundException e) {
-            log.warn("{} => {}", resourceName, resource);
-            throw new HandymanException("Resource " + resourceName + " failed to connect", e);
+            throw new HandymanException("Resource " + Optional.of(resource).map(ResourceConnection::getName).orElse("not found") + " failed to connect", e);
         }
     }
 

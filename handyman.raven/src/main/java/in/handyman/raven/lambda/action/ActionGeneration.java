@@ -12,8 +12,11 @@ import com.squareup.javapoet.TypeSpec;
 import in.handyman.raven.compiler.RavenParser;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.ResourceConnection;
 import in.handyman.raven.lib.model.RestPart;
 import in.handyman.raven.lib.model.StartProcess;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -114,7 +117,7 @@ public class ActionGeneration {
                         .addStatement(String.format("this.%s = ($T) %s", variableName, variableName), actionAttributeClassName)
                         .addStatement("this.action = action")
                         .addStatement("this.log = log")
-                        .addStatement(String.format("this.aMarker = $T.getMarker(\"%s\")", actionName), MarkerFactory.class)
+                        .addStatement(String.format("this.aMarker = $T.getMarker(\" %s:\"+this.%s)", actionName, variableName), MarkerFactory.class)
                         .build())
                 .addMethod(MethodSpec
                         .methodBuilder("execute")
@@ -128,7 +131,7 @@ public class ActionGeneration {
                         .addAnnotation(Override.class)
                         .addException(Exception.class)
                         .returns(boolean.class)
-                        .addStatement("return false")
+                        .addStatement(String.format("return %s.getCondition()", variableName))
                         .build())
                 .build();
         return JavaFile
@@ -151,6 +154,8 @@ public class ActionGeneration {
                 .addAnnotation(Data.class)
                 .addAnnotation(EqualsAndHashCode.class)
                 .addAnnotation(NoArgsConstructor.class)
+                .addAnnotation(AllArgsConstructor.class)
+                .addAnnotation(Builder.class)
                 .addModifiers(Modifier.PUBLIC);
         addFieldMember(contextClass, builder);
         return builder;
@@ -175,6 +180,8 @@ public class ActionGeneration {
                 builder.addField(FieldSpec.builder(Boolean.class, name, Modifier.PRIVATE).initializer("true").build());
             } else if (type == Token.class) {
                 builder.addField(String.class, name, Modifier.PRIVATE);
+            } else if (type == RavenParser.ResourceContext.class) {
+                builder.addField(ResourceConnection.class, name, Modifier.PRIVATE);
             } else if (type == List.class) {
                 final Type actualTypeArgument = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
                 if (actualTypeArgument == Token.class) {

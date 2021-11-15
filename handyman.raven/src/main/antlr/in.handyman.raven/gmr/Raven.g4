@@ -44,7 +44,14 @@ action:
 	|restApi
 	|transform
 	|multitude
-	|exportCsv);
+	|exportCsv
+	|createDirectory
+    |createFile
+    |deleteFileDirectory
+    |transferFileDirectory
+    |createTAR
+    |extractTAR
+    |importCsvToDB);
 
 multitude:
     'multitude' 'as' name=STRING ('on' on= STRING)* 'using'
@@ -140,9 +147,51 @@ exportCsv:
     ('on' on= STRING)* 'location' location=STRING 'tablename'
     tablename=STRING ('on-condition' condition=expression)* ('fielding' writeThreadCount=NON_ZERO_DIGIT)* ;
 
+importCsvToDB:
+	'importCsvToDB' 'as' name= STRING 'target' target=resource 'on' tableName=STRING 'using'
+	 '{'
+		value+=STRING
+	'}' ('on-condition' condition=expression)* ('fielding' writeThreadCount=NON_ZERO_DIGIT)* ('batch' batchSize=NON_ZERO_DIGIT)*;
+
+extractTAR:
+	'extractTAR' 'as' name= STRING 'from' source=STRING 'destination' destination=STRING 'using'
+	 '{'
+		value=STRING
+	'}' ('on-condition' condition=expression)*;
+
+createTAR:
+	'createTAR' 'as' name= STRING 'from' source=STRING 'destination' destination=STRING 'extension' extension=STRING 'using'
+	 '{'
+		value=STRING
+	'}' ('on-condition' condition=expression)*;
+
+createDirectory:
+	'createDirectory' 'as' name= STRING 'using'
+	 '{'
+		directoryPath+=STRING
+	'}' ('on-condition' condition=expression)*;
+
+createFile:
+	'createFile' 'as' name= STRING 'location' location=STRING 'fileName' fileName=STRING 'extension' extension=STRING 'using'
+	 '{'
+		value=STRING
+	'}' ('on-condition' condition=expression)*;
+
+deleteFileDirectory:
+	'deleteFileDirectory' 'as' name= STRING 'using'
+	 '{'
+		path+=STRING
+	'}' ('on-condition' condition=expression)*;
+
+transferFileDirectory:
+	'transferFileDirectory' 'as' name= STRING 'from' source=STRING 'to' to=STRING 'operation' operation=STRING 'using'
+	 '{'
+		value=STRING
+	'}' ('on-condition' condition=expression)*;
 
 expression :'if' (lhs=STRING operator=Operator rhs=STRING);
 
+resource : STRING;
 
 //rules
 

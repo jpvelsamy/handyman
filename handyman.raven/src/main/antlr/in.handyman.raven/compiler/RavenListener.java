@@ -210,6 +210,76 @@ public interface RavenListener extends ParseTreeListener {
 	 */
 	void exitExportCsv(RavenParser.ExportCsvContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link RavenParser#importCsvToDB}.
+	 * @param ctx the parse tree
+	 */
+	void enterImportCsvToDB(RavenParser.ImportCsvToDBContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#importCsvToDB}.
+	 * @param ctx the parse tree
+	 */
+	void exitImportCsvToDB(RavenParser.ImportCsvToDBContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#extractTAR}.
+	 * @param ctx the parse tree
+	 */
+	void enterExtractTAR(RavenParser.ExtractTARContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#extractTAR}.
+	 * @param ctx the parse tree
+	 */
+	void exitExtractTAR(RavenParser.ExtractTARContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#createTAR}.
+	 * @param ctx the parse tree
+	 */
+	void enterCreateTAR(RavenParser.CreateTARContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#createTAR}.
+	 * @param ctx the parse tree
+	 */
+	void exitCreateTAR(RavenParser.CreateTARContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#createDirectory}.
+	 * @param ctx the parse tree
+	 */
+	void enterCreateDirectory(RavenParser.CreateDirectoryContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#createDirectory}.
+	 * @param ctx the parse tree
+	 */
+	void exitCreateDirectory(RavenParser.CreateDirectoryContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#createFile}.
+	 * @param ctx the parse tree
+	 */
+	void enterCreateFile(RavenParser.CreateFileContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#createFile}.
+	 * @param ctx the parse tree
+	 */
+	void exitCreateFile(RavenParser.CreateFileContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#deleteFileDirectory}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeleteFileDirectory(RavenParser.DeleteFileDirectoryContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#deleteFileDirectory}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeleteFileDirectory(RavenParser.DeleteFileDirectoryContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#transferFileDirectory}.
+	 * @param ctx the parse tree
+	 */
+	void enterTransferFileDirectory(RavenParser.TransferFileDirectoryContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#transferFileDirectory}.
+	 * @param ctx the parse tree
+	 */
+	void exitTransferFileDirectory(RavenParser.TransferFileDirectoryContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link RavenParser#expression}.
 	 * @param ctx the parse tree
 	 */
@@ -219,6 +289,16 @@ public interface RavenListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitExpression(RavenParser.ExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#resource}.
+	 * @param ctx the parse tree
+	 */
+	void enterResource(RavenParser.ResourceContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#resource}.
+	 * @param ctx the parse tree
+	 */
+	void exitResource(RavenParser.ResourceContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link RavenParser#json}.
 	 * @param ctx the parse tree

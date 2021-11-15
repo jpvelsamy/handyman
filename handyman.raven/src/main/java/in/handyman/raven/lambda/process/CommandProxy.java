@@ -7,7 +7,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.compiler.RavenLexer;
 import in.handyman.raven.compiler.RavenParser;
 import in.handyman.raven.exception.HandymanException;
+import in.handyman.raven.lambda.access.repo.HandymanRepo;
+import in.handyman.raven.lambda.access.repo.HandymanRepoR2Impl;
 import in.handyman.raven.lambda.action.IActionContext;
+import in.handyman.raven.lambda.doa.ResourceConnection;
 import in.handyman.raven.lib.model.RestPart;
 import in.handyman.raven.lib.model.StartProcess;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +35,7 @@ import java.util.stream.Collectors;
 public class CommandProxy {
 
     private static final ObjectMapper mapper = new ObjectMapper();
+    private static final HandymanRepo HANDYMAN_REPO=new HandymanRepoR2Impl();
 
     private CommandProxy() {
     }
@@ -70,6 +74,11 @@ public class CommandProxy {
                             final String text = o.getText();
                             final JsonNode node = mapper.readTree(getString(context, text));
                             setValue(target, fieldName, getter, node);
+                        }else if (field.getType() == RavenParser.ResourceContext.class) {
+                            final RavenParser.ResourceContext o = (RavenParser.ResourceContext) fieldValue;
+                            final String text = o.getText();
+                            final ResourceConnection connection = HANDYMAN_REPO.getResourceConfig(getString(context, text));
+                            setValue(target, fieldName, getter, connection);
                         } else if (field.getType() == List.class) {
                             final List<Object> tokens = (List<Object>) fieldValue;
                             final Type actualTypeArgument = ((ParameterizedType) getter.getGenericReturnType()).getActualTypeArguments()[0];
