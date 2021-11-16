@@ -144,9 +144,8 @@ restPart:
 
 exportCsv:
     'exportCsv' 'as' name=STRING 'source' source=STRING 'executionSource' executionSource=STRING
-    ('using' stmt= STRING)* 'targetLocation' targetLocation=STRING 'using'
-                                                                   	 '{'
-                                                                   	'}'
+    ('using' stmt= STRING)* 'targetLocation' targetLocation=STRING
+    'using' '{''}'
      ('on-condition' condition=expression)* ('fielding' writeThreadCount=NON_ZERO_DIGIT)* ;
 
 importCsvToDB:

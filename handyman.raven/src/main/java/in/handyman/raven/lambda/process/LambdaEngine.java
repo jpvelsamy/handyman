@@ -159,9 +159,11 @@ public class LambdaEngine {
             action.setContext(context);
             action.setPipelineId(pipeline.getPipelineId());
             toAction(action, pipeline);
-            log.info("Action context has been set successfully for action name {}", action.getActionName());
-            log.info("Action execution has been started");
+            log.info("");
+            log.info("Action context has been set successfully for action {}", action.getActionId());
             doAction(action, actionContext);
+            log.info("Action context has been executed successfully for action {}", action.getActionId());
+            log.info("");
         });
     }
 
@@ -204,23 +206,25 @@ public class LambdaEngine {
     }
 
     public static void doAction(final Action action, final RavenParser.ActionContext actionContext) {
+        final SubstituteLogger logger = getLogger(action);
         HandymanActorSystemAccess.insert(action);
         action.updateExecutionStatusId(ExecutionStatus.STAGED.getId());
         HandymanActorSystemAccess.update(action);
+        logger.info("\n");
         try {
+            logger.info("Action execution has been started");
+            logger.info("Given context {}", action.getContext());
             final IActionExecution execution = load(actionContext, action);
             execute(execution, action);
-            log.info("Execution has been completed successfully");
+            logger.info("Execution has been completed successfully");
         } catch (Exception e) {
-            log.error("Failed " + action, e);
-            final SubstituteLogger logger = getLogger(action);
-            logger.error("Exception", e);
+            logger.error("Exception " + action.getActionName(), e);
             action.updateExecutionStatusId(ExecutionStatus.FAILED.getId());
             throw new HandymanException("Failed to convert", e);
         } finally {
             HandymanActorSystemAccess.update(action);
             final StringBuilder stringBuilder = new StringBuilder();
-            log.info("Started collecting Lambda engine logs");
+            logger.info("Started collecting Lambda engine logs {}", action.getActionName());
             stringBuilder.append("\n");
             action.getEventQueue().forEach(event -> {
                 append(stringBuilder, Instant.ofEpochMilli(event.getTimeStamp()));
@@ -242,6 +246,7 @@ public class LambdaEngine {
                 }
                 stringBuilder.append("\n");
             });
+            logger.info("\n");
             log.info("Completed collecting LambdaEngine logs");
             action.setLog(stringBuilder.toString());
             log.info(stringBuilder.toString());
@@ -251,7 +256,7 @@ public class LambdaEngine {
 
     private static void append(final StringBuilder stringBuilder, final Object value) {
         if (value != null) {
-            stringBuilder.append(String.format("%s",  value));
+            stringBuilder.append(String.format("%s", value));
         }
     }
 
@@ -286,6 +291,8 @@ public class LambdaEngine {
                 logger.info("Execution class {} condition passed", actionName);
                 execution.execute();
                 logger.info("Execution class {} executed", actionName);
+            } else {
+                logger.info("Execution class {} condition failed", actionName);
             }
             action.updateExecutionStatusId(ExecutionStatus.COMPLETED.getId());
         } catch (Exception e) {
@@ -310,7 +317,7 @@ public class LambdaEngine {
         logger.debug("actionContext Execution class {} instance created", actionName);
         CommandProxy.setTarget(actionContext, child, action.getContext());
         action.setActionName(actionContext.getName());
-        logger.debug("actionContext Execution class {} actionContext mapped", actionName);
+        logger.debug("actionContext Execution context {}", actionContext);
         action.setInput(MAPPER.convertValue(actionContext, JsonNode.class));
         HandymanActorSystemAccess.update(action);
         return (IActionExecution) ProcessExecutor.ACTION_EXECUTION_MAP.get(actionName)

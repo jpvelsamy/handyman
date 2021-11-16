@@ -27,6 +27,7 @@ public class CommonQueryUtil {
                 configContext.put(((prefix.isBlank() || prefix.isEmpty()) ? "" : (prefix + ".")) + key, value);
                 logger.info("query.output." + key, value);
             } catch (SQLException e) {
+                logger.error("failed to set value",e);
                 throw new HandymanException("Fetch config failed", e);
             }
         });

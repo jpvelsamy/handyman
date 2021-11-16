@@ -39,13 +39,13 @@ public class AssignAction implements IActionExecution {
         this.assign = (Assign) assign;
         this.action = action;
         this.log = log;
-        this.aMarker = MarkerFactory.getMarker("Assign");
+        this.aMarker = MarkerFactory.getMarker("Assign:" + action.getActionName());
     }
 
     @Override
     public void execute() throws Exception {
         final String dbSrc = assign.getSource();
-        log.info(aMarker, "Transform action input variables id: {}, name: {}, source-database: {} ", action.getActionId(), assign.getName(), dbSrc);
+        log.info(aMarker, " input variables id: {}, name: {}, source-database: {} ", action.getActionId(), assign.getName(), dbSrc);
         log.info(aMarker, "Sql input post parameter ingestion \n {}", assign.getValue());
         final HikariDataSource hikariDataSource = ResourceAccess.rdbmsConn(dbSrc);
         try (final Connection connection = hikariDataSource.getConnection()) {
@@ -59,7 +59,6 @@ public class AssignAction implements IActionExecution {
                         var columnCount = rs.getMetaData().getColumnCount();
                         while (rs.next()) {
                             final Map<String, String> context = action.getContext();
-                            log.info(aMarker, "Value {} has been set to the key {}", context.get(assign.getName()), assign.getName());
                             CommonQueryUtil.addKeyConfig(context, log,
                                     rs, columnCount, assign.getName());
                         }
