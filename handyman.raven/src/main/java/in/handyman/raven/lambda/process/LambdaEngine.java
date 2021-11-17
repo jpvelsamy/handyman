@@ -196,6 +196,21 @@ public class LambdaEngine {
                 .build();
     }
 
+    public static Action getAction(final String actionName,final Action action) {
+        var vAction = Action.builder()
+                .pipelineId(action.getPipelineId())
+                .executionGroupId(ExecutionGroup.ACTION.getId())
+                .actionName(actionName)
+                .build();
+        vAction.setContext(action.getContext());
+        LambdaEngine.toAction(vAction, action);
+        vAction.setParentPipelineId(action.getPipelineId());
+        vAction.setParentPipelineName(action.getPipelineName());
+        vAction.setParentActionId(action.getActionId());
+        vAction.setParentActionName(action.getActionName());
+        return vAction;
+    }
+
     public static void toAction(final Action action, final AbstractAudit abstractAudit) {
         action.setPipelineName(abstractAudit.getPipelineName());
         action.setLambdaName(action.getLambdaName());

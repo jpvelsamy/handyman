@@ -42,6 +42,9 @@ public abstract class AbstractAudit extends Auditable {
 
     private Map<String, String> context = new HashMap<>();
 
+    public void setPipelineName(final String pipelineName) {
+        this.pipelineName = pipelineName;
+    }
 
     @JsonIgnore
     private String contextNode;

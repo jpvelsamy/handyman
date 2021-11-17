@@ -280,6 +280,36 @@ public interface RavenListener extends ParseTreeListener {
 	 */
 	void exitTransferFileDirectory(RavenParser.TransferFileDirectoryContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link RavenParser#producerConsumerModel}.
+	 * @param ctx the parse tree
+	 */
+	void enterProducerConsumerModel(RavenParser.ProducerConsumerModelContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#producerConsumerModel}.
+	 * @param ctx the parse tree
+	 */
+	void exitProducerConsumerModel(RavenParser.ProducerConsumerModelContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#producer}.
+	 * @param ctx the parse tree
+	 */
+	void enterProducer(RavenParser.ProducerContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#producer}.
+	 * @param ctx the parse tree
+	 */
+	void exitProducer(RavenParser.ProducerContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#consumer}.
+	 * @param ctx the parse tree
+	 */
+	void enterConsumer(RavenParser.ConsumerContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#consumer}.
+	 * @param ctx the parse tree
+	 */
+	void exitConsumer(RavenParser.ConsumerContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link RavenParser#expression}.
 	 * @param ctx the parse tree
 	 */

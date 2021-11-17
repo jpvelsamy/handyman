@@ -51,7 +51,10 @@ action:
     |transferFileDirectory
     |createTAR
     |extractTAR
-    |importCsvToDB);
+    |importCsvToDB
+    |producerConsumerModel
+    |producer
+    |consumer);
 
 multitude:
     'multitude' 'as' name=STRING ('on' on= STRING)* 'using'
@@ -182,11 +185,33 @@ deleteFileDirectory:
 
 transferFileDirectory:
 	'transferFileDirectory' 'as' name= STRING 'from' source=STRING 'to' to=STRING 'operation' operation=STRING 'using'
-	 '{'
+
 		value=STRING
 	'}' ('on-condition' condition=expression)*;
 
+producerConsumerModel:
+    'pcm' 'as' name=STRING
+    'produce''{'
+        produce+=producer
+    '}' ('fielding' produceThreadCount=NON_ZERO_DIGIT)*
+    'consume''{'
+        consume+=consumer
+    '}'('fielding' consumeThreadCount=NON_ZERO_DIGIT)*  ('on-condition' condition=expression)*;
+
+producer:
+    'producer''as' name=STRING 'on' source=resource 'generate-by' stmt=STRING 'push-identity' push=STRING  'using''{'
+       (actions+=action)*
+       '}' ('on-condition' condition=expression)* ;
+
+consumer:
+    'consumer''as' name=STRING 'pop-identity' pop=STRING 'pop-size' popSize=NON_ZERO_DIGIT 'using''{'
+       (actions+=action)*
+       '}' ('on-condition' condition=expression)* ;
+
 expression :'if' (lhs=STRING operator=Operator rhs=STRING);
+
+
+
 
 resource : STRING;
 

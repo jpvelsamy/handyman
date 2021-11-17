@@ -107,6 +107,10 @@ public class CommandProxy {
                                                     .build();
                                         } else if (o instanceof RavenParser.ActionContext) {
                                             return o;
+                                        } else if (o instanceof RavenParser.ProducerContext) {
+                                            return o;
+                                        } else if (o instanceof RavenParser.ConsumerContext) {
+                                            return o;
                                         }
                                         throw new HandymanException("RavenParserContext mapping failed for List");
                                     }).collect(Collectors.toList());

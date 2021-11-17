@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import in.handyman.raven.compiler.RavenParser;
 import in.handyman.raven.lambda.action.ActionContext;
 import in.handyman.raven.lambda.action.IActionContext;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -17,18 +19,22 @@ import java.util.List;
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @ActionContext(
-        actionName = "Multitude"
+        actionName = "ProducerConsumerModel"
 )
-public class Multitude implements IActionContext {
+public class ProducerConsumerModel implements IActionContext {
     private String name;
 
-    private String on;
+    private String produceThreadCount;
+
+    private String consumeThreadCount;
 
     @JsonIgnore
-    private List<RavenParser.ActionContext> actions=new ArrayList<>();
+    private List<RavenParser.ProducerContext> produce = new ArrayList<>();
+    @JsonIgnore
+    private List<RavenParser.ConsumerContext> consume = new ArrayList<>();
 
     private Boolean condition = true;
-
-    private String writeThreadCount;
 }

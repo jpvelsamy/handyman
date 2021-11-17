@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.jdbi.v3.core.Jdbi;
 
 @Getter
 @Setter
@@ -28,4 +29,9 @@ public class ResourceConnection extends Auditable {
     private String url;
     private boolean active;
     private Integer version;
+
+    public Jdbi get(){
+        return Jdbi.create(url,userName,password);
+    }
+
 }
