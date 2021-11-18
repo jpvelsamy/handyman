@@ -11,7 +11,7 @@ import in.handyman.raven.lambda.doa.Statement;
 
 public class AuditInsertActor extends AbstractActor {
 
-    private static final HandymanRepo REPO = new HandymanRepoR2Impl();
+    private final HandymanRepo REPO = new HandymanRepoR2Impl();
 
     @Override
     public Receive createReceive() {

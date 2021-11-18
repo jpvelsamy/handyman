@@ -1,5 +1,6 @@
 package in.handyman.raven.lib;
 
+import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.Action;
@@ -12,6 +13,7 @@ import org.slf4j.MarkerFactory;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -44,29 +46,34 @@ public class ConsumerAction implements IActionExecution {
 
             final List<String> collect = consumer.getNodes().stream().limit(popSize).collect(Collectors.toList());
 
+            try {
+                collect.stream().filter(s -> !Objects.equals(s, consumer.getPoison())).forEach(node -> {
 
-            collect.forEach(node -> {
+                    final Map<String, String> context = new HashMap<>(action.getContext());
+                    context.put(consumer.getPop(), node);
 
-                final Map<String, String> context = new HashMap<>(action.getContext());
-                context.put(consumer.getPop(), node);
+                    Optional.ofNullable(consumer.getActions()).filter(x -> !x.isEmpty())
+                            .ifPresent(actionContexts -> {
 
-                Optional.ofNullable(consumer.getActions()).filter(x -> !x.isEmpty())
-                        .ifPresent(actionContexts -> {
+                                var vAction = LambdaEngine.getAction(consumer.getName(), action);
+                                vAction.setContext(context);
 
-                            var vAction = LambdaEngine.getAction(consumer.getName(), action);
-                            vAction.setContext(context);
+                                actionContexts.stream()
+                                        .map(actionContext -> new ActionCallable(actionContext, vAction, null))
+                                        .forEach(ActionCallable::run);
 
-                            actionContexts.stream()
-                                    .map(actionContext -> new ActionCallable(actionContext, vAction, null))
-                                    .forEach(ActionCallable::run);
-
-                        });
+                            });
 
 
-            });
+                });
+            } catch (Exception e) {
+                throw new HandymanException("", e);
+            }
+
 
             final boolean contains = collect.contains(consumer.getPoison());
             if (contains) {
+                log.info("consumer breaking with {}", collect);
                 break;
             }
 
@@ -75,7 +82,7 @@ public class ConsumerAction implements IActionExecution {
     }
 
     @Override
-    public boolean executeIf()  {
+    public boolean executeIf() {
         return consumer.getCondition();
     }
 }

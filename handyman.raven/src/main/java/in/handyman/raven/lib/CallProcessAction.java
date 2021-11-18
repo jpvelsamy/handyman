@@ -5,6 +5,7 @@ import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.Pipeline;
 import in.handyman.raven.lambda.process.HRequestResolver;
 import in.handyman.raven.lambda.process.LContext;
 import in.handyman.raven.lambda.process.LambdaEngine;
@@ -62,7 +63,8 @@ public class CallProcessAction implements IActionExecution {
                                 .parentPipelineId(action.getPipelineId())
                                 .parentPipelineName(action.getPipelineName())
                                 .build();
-                        LambdaEngine.start(lContext);
+                        final Pipeline start = LambdaEngine.start(lContext);
+                        context.putAll(start.getContext());
                     }
                 }
             }

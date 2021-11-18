@@ -44,12 +44,17 @@ public class ProducerAction implements IActionExecution {
 
                     var vAction = LambdaEngine.getAction(producer.getName(), action);
                     vAction.setContext(action.getContext());
+                    log.info(aMarker, "Before execution Context {}", vAction.getContext());
 
                     actionContexts.stream()
                             .map(actionContext -> new ActionCallable(actionContext, vAction, null))
                             .forEach(ActionCallable::run);
 
-                    final String key = action.getContext().get(producer.getPush());
+                    log.info(aMarker, "After execution Context {}", vAction.getContext());
+
+                    final String key = vAction.getContext().get(producer.getPush());
+
+
                     if (key != null) {
                         producer.getNodes().add(key);
                     }

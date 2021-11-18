@@ -310,6 +310,26 @@ public interface RavenListener extends ParseTreeListener {
 	 */
 	void exitConsumer(RavenParser.ConsumerContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link RavenParser#pushJson}.
+	 * @param ctx the parse tree
+	 */
+	void enterPushJson(RavenParser.PushJsonContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#pushJson}.
+	 * @param ctx the parse tree
+	 */
+	void exitPushJson(RavenParser.PushJsonContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#mapJsonContext}.
+	 * @param ctx the parse tree
+	 */
+	void enterMapJsonContext(RavenParser.MapJsonContextContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#mapJsonContext}.
+	 * @param ctx the parse tree
+	 */
+	void exitMapJsonContext(RavenParser.MapJsonContextContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link RavenParser#expression}.
 	 * @param ctx the parse tree
 	 */
@@ -319,6 +339,26 @@ public interface RavenListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitExpression(RavenParser.ExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#log}.
+	 * @param ctx the parse tree
+	 */
+	void enterLog(RavenParser.LogContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#log}.
+	 * @param ctx the parse tree
+	 */
+	void exitLog(RavenParser.LogContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#exception}.
+	 * @param ctx the parse tree
+	 */
+	void enterException(RavenParser.ExceptionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#exception}.
+	 * @param ctx the parse tree
+	 */
+	void exitException(RavenParser.ExceptionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link RavenParser#resource}.
 	 * @param ctx the parse tree

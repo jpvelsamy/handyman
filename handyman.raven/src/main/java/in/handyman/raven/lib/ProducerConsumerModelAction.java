@@ -1,7 +1,5 @@
 package in.handyman.raven.lib;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
@@ -93,23 +91,6 @@ public class ProducerConsumerModelAction implements IActionExecution {
         final BlockingQueue<String> nodes = new LinkedBlockingQueue<>(size + 1);
         final String poison = UUID.randomUUID().toString();
 
-        producerActions.forEach(producerAction -> {
-
-            pExecutorService.submit(() -> {
-
-                final Producer producer = producerAction.getProducer();
-                producer.setNodes(nodes);
-                producer.setPoison(poison);
-
-                if (producerAction.executeIf()) {
-                    producerAction.execute();
-                }
-
-                countDown.countDown();
-            });
-
-        });
-
         final List<ConsumerAction> consumerActions = producerConsumerModel.getConsume().stream().map(consumerContext -> {
             var consumer = new Consumer();
             consumer.setNodes(nodes);
@@ -121,22 +102,65 @@ public class ProducerConsumerModelAction implements IActionExecution {
             return new ConsumerAction(vAction, log, consumer);
         }).collect(Collectors.toList());
 
-        consumerActions.forEach(consumerAction -> {
-            if (consumerAction.executeIf()) {
-                cExecutorService.execute(consumerAction::execute);
-            }
-        });
+
+        var consumerCountDown = new CountDownLatch(consumerActions.size());
+
 
         try {
-            countDown.await();
+
+
+            consumerActions.forEach(consumerAction -> {
+                cExecutorService.submit(() -> {
+
+
+                    try {
+                        if (consumerAction.executeIf()) {
+                            consumerAction.execute();
+                        }
+                    } finally {
+                        consumerCountDown.countDown();
+                    }
+
+                });
+            });
+
+            producerActions.forEach(producerAction -> {
+
+                pExecutorService.submit(() -> {
+
+                    final Producer producer = producerAction.getProducer();
+                    producer.setNodes(nodes);
+                    producer.setPoison(poison);
+
+                    try {
+                        if (producerAction.executeIf()) {
+                            producerAction.execute();
+                        }
+                    } finally {
+                        countDown.countDown();
+                    }
+
+                });
+
+            });
+
+            try {
+                countDown.await();
+            } catch (InterruptedException e) {
+                throw new HandymanException("Failed to execute", e);
+            }
+        } catch (Exception e) {
+            throw new HandymanException("Failed to execute", e);
+        } finally {
+            nodes.add(poison);
+        }
+
+
+        try {
+            consumerCountDown.await();
         } catch (InterruptedException e) {
             throw new HandymanException("Failed to execute", e);
         }
-        nodes.add(poison);
-
-
-
-
     }
 
 

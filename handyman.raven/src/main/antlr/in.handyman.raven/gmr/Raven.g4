@@ -54,7 +54,9 @@ action:
     |importCsvToDB
     |producerConsumerModel
     |producer
-    |consumer);
+    |consumer
+    |pushJson
+    |mapJsonContext);
 
 multitude:
     'multitude' 'as' name=STRING ('on' on= STRING)* 'using'
@@ -199,19 +201,37 @@ producerConsumerModel:
     '}'('fielding' consumeThreadCount=NON_ZERO_DIGIT)*  ('on-condition' condition=expression)*;
 
 producer:
-    'producer''as' name=STRING 'on' source=resource 'generate-by' stmt=STRING 'push-identity' push=STRING  'using''{'
+    'producer''as' name=STRING 'push-result-at' push=STRING  'on-resource' source=resource
+     'for-every''{'
+     	stmt=STRING
+     '}'
+     'execute''{'
+       (actions+=action)*
+     '}' ('on-condition' condition=expression)* ;
+
+consumer:
+    'consumer''as' name=STRING 'pop-result-from' pop=STRING 'pop-size' popSize=NON_ZERO_DIGIT 'execute''{'
        (actions+=action)*
        '}' ('on-condition' condition=expression)* ;
 
-consumer:
-    'consumer''as' name=STRING 'pop-identity' pop=STRING 'pop-size' popSize=NON_ZERO_DIGIT 'using''{'
-       (actions+=action)*
-       '}' ('on-condition' condition=expression)* ;
+
+pushJson :
+     'push-json-into-context' 'as' name=STRING 'with-key' key=STRING 'using-value'  '{'
+       value=json
+    '}' ('on-condition' condition=expression)* ;
+
+mapJsonContext :
+      'map-json-into-context' 'as' name=STRING  'using'  '{'
+                                                      value=STRING
+                                                   '}' ('on-condition' condition=expression)* ;
 
 expression :'if' (lhs=STRING operator=Operator rhs=STRING);
 
+log:
+   'log' 'as' 'level' level=STRING 'with' 'message' '{' message=STRING '}';
 
-
+exception:
+    'raise exception' '{' message=STRING '}';
 
 resource : STRING;
 

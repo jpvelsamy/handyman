@@ -196,7 +196,7 @@ public class LambdaEngine {
                 .build();
     }
 
-    public static Action getAction(final String actionName,final Action action) {
+    public static Action getAction(final String actionName, final Action action) {
         var vAction = Action.builder()
                 .pipelineId(action.getPipelineId())
                 .executionGroupId(ExecutionGroup.ACTION.getId())
@@ -300,6 +300,9 @@ public class LambdaEngine {
         final Logger logger = getLogger(action);
         final String actionName = action.getActionName();
         try {
+            if ("target_table".equals(actionName)) {
+                System.out.println("");
+            }
             action.updateExecutionStatusId(ExecutionStatus.RUNNING.getId());
             logger.info("Execution class {} loaded", actionName);
             if (execution.executeIf()) {
