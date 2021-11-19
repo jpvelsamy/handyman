@@ -1,5 +1,6 @@
 package in.handyman.raven.lib;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
@@ -19,11 +20,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
 /**
@@ -56,9 +57,12 @@ public class ProducerConsumerModelAction implements IActionExecution {
         final Integer pThreadCount = Optional.ofNullable(producerConsumerModel.getProduceThreadCount()).map(Integer::valueOf).orElse(1);
         final Integer cThreadCount = Optional.ofNullable(producerConsumerModel.getConsumeThreadCount()).map(Integer::valueOf).orElse(1);
 
-        final ExecutorService pExecutorService = Executors.newWorkStealingPool(pThreadCount);
-        final ExecutorService cExecutorService = Executors.newWorkStealingPool(cThreadCount);
-
+        final ThreadFactoryBuilder producerThreadFactoryBuilder = new ThreadFactoryBuilder();
+        producerThreadFactoryBuilder.setNameFormat("Producer-%d");
+        final ThreadFactoryBuilder consumerThreadFactoryBuilder = new ThreadFactoryBuilder();
+        consumerThreadFactoryBuilder.setNameFormat("Consumer-%d");
+        final ExecutorService pExecutorService = Executors.newFixedThreadPool(pThreadCount, producerThreadFactoryBuilder.build());
+        final ExecutorService cExecutorService = Executors.newFixedThreadPool(cThreadCount, consumerThreadFactoryBuilder.build());
 
         final List<ProducerAction> producerActions = producerConsumerModel.getProduce().stream().flatMap(producerContext -> {
 
@@ -88,7 +92,7 @@ public class ProducerConsumerModelAction implements IActionExecution {
 
         final int size = producerActions.size();
         var countDown = new CountDownLatch(size);
-        final BlockingQueue<String> nodes = new LinkedBlockingQueue<>(size + 1);
+        final BlockingQueue<String> nodes = new ArrayBlockingQueue<>(size + 1);
         final String poison = UUID.randomUUID().toString();
 
         final List<ConsumerAction> consumerActions = producerConsumerModel.getConsume().stream().map(consumerContext -> {
@@ -102,21 +106,13 @@ public class ProducerConsumerModelAction implements IActionExecution {
             return new ConsumerAction(vAction, log, consumer);
         }).collect(Collectors.toList());
 
-
         var consumerCountDown = new CountDownLatch(consumerActions.size());
 
-
         try {
-
-
             consumerActions.forEach(consumerAction -> {
                 cExecutorService.submit(() -> {
-
-
                     try {
-                        if (consumerAction.executeIf()) {
-                            consumerAction.execute();
-                        }
+                        LambdaEngine.execute(consumerAction, consumerAction.getAction());
                     } finally {
                         consumerCountDown.countDown();
                     }
@@ -133,9 +129,7 @@ public class ProducerConsumerModelAction implements IActionExecution {
                     producer.setPoison(poison);
 
                     try {
-                        if (producerAction.executeIf()) {
-                            producerAction.execute();
-                        }
+                        LambdaEngine.execute(producerAction, producerAction.getAction());
                     } finally {
                         countDown.countDown();
                     }
@@ -149,17 +143,15 @@ public class ProducerConsumerModelAction implements IActionExecution {
             } catch (InterruptedException e) {
                 throw new HandymanException("Failed to execute", e);
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new HandymanException("Failed to execute", e);
         } finally {
             nodes.add(poison);
-        }
-
-
-        try {
-            consumerCountDown.await();
-        } catch (InterruptedException e) {
-            throw new HandymanException("Failed to execute", e);
+            try {
+                consumerCountDown.await();
+            } catch (InterruptedException e) {
+                log.error("", e);
+            }
         }
     }
 

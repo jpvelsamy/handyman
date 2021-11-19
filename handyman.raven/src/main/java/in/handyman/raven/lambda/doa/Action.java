@@ -26,7 +26,7 @@ import java.util.Optional;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Action extends AbstractAudit implements IAction{
+public class Action extends AbstractAudit implements IAction {
 
     @JsonIgnore
     private final ArrayDeque<SubstituteLoggingEvent> eventQueue = new ArrayDeque<>();
@@ -37,6 +37,7 @@ public class Action extends AbstractAudit implements IAction{
     private JsonNode input;
     private String log;
     private Integer executionGroupId;
+    private String threadName;
 
     @JsonIgnore
     private String inputNode;

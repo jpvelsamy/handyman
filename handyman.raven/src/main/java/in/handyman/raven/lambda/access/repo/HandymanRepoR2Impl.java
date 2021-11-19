@@ -246,14 +246,14 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     @Override
     public void update(final Pipeline audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
-        jdbi.useHandle(handle -> handle.createUpdate("UPDATE pipeline SET created_by = :createdBy, created_date = :createdDate, last_modified_by = :lastModifiedBy, last_modified_date = :lastModifiedDate, context_node = :contextNode, execution_status_id = :executionStatusId, lambda_name = :lambdaName, parent_action_id = :parentActionId, parent_action_name = :parentActionName, parent_pipeline_id = :parentPipelineId, parent_pipeline_name = :parentPipelineName, pipeline_name = :pipelineName, file_content = :fileContent, host_name = :hostName, mode_of_execution = :modeOfExecution, pipeline_load_type = :pipelineLoadType , relative_path = :relativePath, request_body = :requestBody, thread_name = :threadName, process_name = :processName WHERE pipeline_id = :pipelineId ;")
+        jdbi.useHandle(handle -> handle.createUpdate("UPDATE pipeline SET created_by = :createdBy, created_date = :createdDate, last_modified_by = :lastModifiedBy, last_modified_date = :lastModifiedDate, context_node = :contextNode, execution_status_id = :executionStatusId, lambda_name = :lambdaName, parent_action_id = :parentActionId, parent_action_name = :parentActionName, parent_pipeline_id = :parentPipelineId, parent_pipeline_name = :parentPipelineName, pipeline_name = :pipelineName, file_content = :fileContent, host_name = :hostName, mode_of_execution = :modeOfExecution, pipeline_load_type = :pipelineLoadType , relative_path = :relativePath, request_body = :requestBody,  process_name = :processName WHERE pipeline_id = :pipelineId ;")
                 .bindBean(audit).execute());
     }
 
     @Override
     public void update(final Action audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
-        jdbi.useHandle(handle -> handle.createUpdate("UPDATE action SET created_by = :createdBy, created_date = :createdDate, last_modified_by = :lastModifiedBy, last_modified_date = :lastModifiedDate, context_node = :contextNode, execution_status_id = :executionStatusId, lambda_name = :lambdaName, parent_action_id = :parentActionId, parent_action_name = :parentActionName, parent_pipeline_id = :parentPipelineId, parent_pipeline_name = :parentPipelineName, pipeline_name = :pipelineName, action_name = :actionName, execution_group_id = :executionGroupId, input_node = :inputNode, log = :log, pipeline_id = :pipelineId WHERE action_id = :actionId ;")
+        jdbi.useHandle(handle -> handle.createUpdate("UPDATE action SET created_by = :createdBy, created_date = :createdDate, last_modified_by = :lastModifiedBy, last_modified_date = :lastModifiedDate, context_node = :contextNode, execution_status_id = :executionStatusId, lambda_name = :lambdaName, parent_action_id = :parentActionId, parent_action_name = :parentActionName, parent_pipeline_id = :parentPipelineId, parent_pipeline_name = :parentPipelineName, pipeline_name = :pipelineName, action_name = :actionName, execution_group_id = :executionGroupId, input_node = :inputNode, log = :log, pipeline_id = :pipelineId,thread_name = :threadName WHERE action_id = :actionId ;")
                 .bindBean(audit).execute());
     }
 

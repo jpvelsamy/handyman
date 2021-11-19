@@ -108,6 +108,7 @@ public class LambdaEngine {
                             .findFirst().map(Action::getExecutionStatusId).orElse(ExecutionStatus.COMPLETED.getId());
                     pipeline.updateExecutionStatusId(executionStatusId);
                 }
+                HandymanActorSystemAccess.update(pipeline);
             }
         } catch (Exception e) {
             log.error("Process section failed", e);
@@ -213,7 +214,7 @@ public class LambdaEngine {
 
     public static void toAction(final Action action, final AbstractAudit abstractAudit) {
         action.setPipelineName(abstractAudit.getPipelineName());
-        action.setLambdaName(action.getLambdaName());
+        action.setLambdaName(abstractAudit.getLambdaName());
         action.setParentActionId(abstractAudit.getParentActionId());
         action.setParentActionName(abstractAudit.getParentActionName());
         action.setParentPipelineId(abstractAudit.getParentPipelineId());
@@ -296,13 +297,11 @@ public class LambdaEngine {
         throw new HandymanException("Unknown ActionContext");
     }
 
-    private static void execute(final IActionExecution execution, final Action action) {
+    public static void execute(final IActionExecution execution, final Action action) {
         final Logger logger = getLogger(action);
         final String actionName = action.getActionName();
         try {
-            if ("target_table".equals(actionName)) {
-                System.out.println("");
-            }
+            action.setThreadName(Thread.currentThread().getName());
             action.updateExecutionStatusId(ExecutionStatus.RUNNING.getId());
             logger.info("Execution class {} loaded", actionName);
             if (execution.executeIf()) {

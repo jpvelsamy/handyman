@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -62,12 +63,18 @@ public class ImportCsvToDBAction implements IActionExecution {
         log.info(aMarker, "Resource provided " + target.getName());
 
         final Jdbi jdbi = Jdbi.create(target.getUrl(), target.getUserName(), target.getPassword());
-        if (threadCount > 1 && importCsvToDB.getValue().size() > 1) {
+        final int size = importCsvToDB.getValue().size();
+        if (threadCount > 1 && size > 1) {
             final ExecutorService taskList
                     = Executors.newWorkStealingPool(threadCount);
+            final CountDownLatch downLatch=new CountDownLatch(size);
             for (var path : importCsvToDB.getValue()) {
-                taskList.execute(() -> doImport(batchSize, jdbi, path));
+                taskList.execute(() -> {
+                    doImport(batchSize, jdbi, path);
+                    downLatch.countDown();
+                });
             }
+            downLatch.await();
         } else {
             for (var path : importCsvToDB.getValue()) {
                 doImport(batchSize, jdbi, path);

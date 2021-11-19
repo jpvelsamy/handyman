@@ -42,17 +42,20 @@ public class ProducerAction implements IActionExecution {
         Optional.ofNullable(producer.getActions()).filter(x -> !x.isEmpty())
                 .ifPresent(actionContexts -> {
 
-                    var vAction = LambdaEngine.getAction(producer.getName(), action);
-                    vAction.setContext(action.getContext());
-                    log.info(aMarker, "Before execution Context {}", vAction.getContext());
+
 
                     actionContexts.stream()
-                            .map(actionContext -> new ActionCallable(actionContext, vAction, null))
+                            .map(actionContext -> {
+                                var vAction = LambdaEngine.getAction(producer.getName(), action);
+                                vAction.setContext(action.getContext());
+                                log.info(aMarker, "Before execution Context {}", vAction.getContext());
+                                return new ActionCallable(actionContext, vAction, null);
+                            })
                             .forEach(ActionCallable::run);
 
-                    log.info(aMarker, "After execution Context {}", vAction.getContext());
+                    log.info(aMarker, "After execution Context {}", action.getContext());
 
-                    final String key = vAction.getContext().get(producer.getPush());
+                    final String key = action.getContext().get(producer.getPush());
 
 
                     if (key != null) {
@@ -63,6 +66,10 @@ public class ProducerAction implements IActionExecution {
 
         log.info(aMarker, "Completed Execution");
 
+    }
+
+    public Action getAction() {
+        return action;
     }
 
     public Producer getProducer() {
