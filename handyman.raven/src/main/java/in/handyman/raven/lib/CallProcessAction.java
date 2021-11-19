@@ -8,7 +8,6 @@ import in.handyman.raven.lambda.doa.Action;
 import in.handyman.raven.lambda.doa.Pipeline;
 import in.handyman.raven.lambda.process.HRequestResolver;
 import in.handyman.raven.lambda.process.LContext;
-import in.handyman.raven.lambda.process.LambdaEngine;
 import in.handyman.raven.lib.model.CallProcess;
 import in.handyman.raven.util.CommonQueryUtil;
 import org.slf4j.Logger;
@@ -63,7 +62,7 @@ public class CallProcessAction implements IActionExecution {
                                 .parentPipelineId(action.getPipelineId())
                                 .parentPipelineName(action.getPipelineName())
                                 .build();
-                        final Pipeline start = LambdaEngine.start(lContext);
+                        final Pipeline start = new LambdaCallable(lContext, null).call();
                         context.putAll(start.getContext());
                     }
                 }

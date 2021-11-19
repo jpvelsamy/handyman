@@ -49,7 +49,7 @@ public class LambdaEngine {
     /**
      * Execution starts from here
      */
-    public static Pipeline start(final LContext lContext) {
+    public static Pipeline start(final LContext lContext) throws HandymanException {
         log.info("LContext => " + lContext);
         final String hostName;
         try {
@@ -114,7 +114,7 @@ public class LambdaEngine {
             log.error("Process section failed", e);
             pipeline.updateExecutionStatusId(ExecutionStatus.FAILED.getId());
             HandymanActorSystemAccess.update(pipeline);
-            throw new HandymanException("Failed", e);
+            throw new HandymanException("Failed for " + pipeline.getPipelineName(), e);
         }
         return pipeline;
     }
