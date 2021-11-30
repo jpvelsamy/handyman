@@ -26,7 +26,7 @@ public class Multitude implements IActionContext {
     private String on;
 
     @JsonIgnore
-    private List<RavenParser.ActionContext> actions=new ArrayList<>();
+    private List<RavenParser.ActionContext> actions = new ArrayList<>();
 
     private Boolean condition = true;
 

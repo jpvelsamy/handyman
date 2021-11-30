@@ -62,7 +62,7 @@ public class TransformAction implements IActionExecution {
                         log.info(aMarker, sqlToExecute + ".count", rowCount);
                         log.info(aMarker, sqlToExecute + ".stmtCount", stmt.getUpdateCount());
                         log.info(aMarker, sqlToExecute + ".warnings", warnings);
-                        log.info(aMarker,  "Transform id# {}, executed script {} rows returned {}", statementId, sqlToExecute, rowCount);
+                        log.info(aMarker, "Transform id# {}, executed script {} rows returned {}", statementId, sqlToExecute, rowCount);
                         stmt.clearWarnings();
                     } catch (SQLSyntaxErrorException ex) {
                         log.error(aMarker, "Stopping execution, General Error executing sql for {} with for {}", sqlToExecute, ex);

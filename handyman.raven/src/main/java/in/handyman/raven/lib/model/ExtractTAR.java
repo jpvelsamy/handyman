@@ -13,16 +13,16 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @ActionContext(
-    actionName = "ExtractTAR"
+        actionName = "ExtractTAR"
 )
 public class ExtractTAR implements IActionContext {
-  private String name;
+    private String name;
 
-  private String source;
+    private String source;
 
-  private String destination;
+    private String destination;
 
-  private String value;
+    private String value;
 
-  private Boolean condition = true;
+    private Boolean condition = true;
 }

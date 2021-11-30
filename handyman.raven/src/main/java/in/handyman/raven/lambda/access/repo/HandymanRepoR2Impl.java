@@ -108,14 +108,6 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     }
 
     @Override
-    public List<ResourceConnection> getResourceConfigList(final String name) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM resource_connection where name = ? ")
-                .bind(0, name)
-                .mapToBean(ResourceConnection.class)
-                .list());
-    }
-
-    @Override
     public String findValueCommonConfig(final String configName, final String variable) {
         return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where variable = ? and name = ? and active=true ")
                 .bind(0, variable)
@@ -140,16 +132,6 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     }
 
     @Override
-    public List<ConfigStore> findConfigStore(final ConfigType configType, final String configName, final String variable) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where config_type_id = ? and name = ? and variable=? ")
-                .bind(0, configType.getId())
-                .bind(1, configName)
-                .bind(2, variable)
-                .mapToBean(ConfigStore.class)
-                .list());
-    }
-
-    @Override
     public void save(final ConfigStore configStore) {
         final List<ConfigStore> stores = findConfigStore(ConfigType.get(configStore.getConfigTypeId()),
                 configStore.getName(), configStore.getVariable());
@@ -168,6 +150,16 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     }
 
     @Override
+    public List<ConfigStore> findConfigStore(final ConfigType configType, final String configName, final String variable) {
+        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where config_type_id = ? and name = ? and variable=? ")
+                .bind(0, configType.getId())
+                .bind(1, configName)
+                .bind(2, variable)
+                .mapToBean(ConfigStore.class)
+                .list());
+    }
+
+    @Override
     public void save(final ResourceConnection resourceConnection) {
         final List<ResourceConnection> list = getResourceConfigList(resourceConnection.getName());
         final int version = list.size() + 1;
@@ -183,6 +175,14 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
         jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO resource_connection (name, created_by, created_date, last_modified_by, last_modified_date, active, config_type, driver_class_name, password, url, user_name, version) " +
                         " VALUES( :name, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :active, :configType, :driverClassName, :password, :url, :userName, :version);")
                 .bindBean(resourceConnection).execute());
+    }
+
+    @Override
+    public List<ResourceConnection> getResourceConfigList(final String name) {
+        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM resource_connection where name = ? ")
+                .bind(0, name)
+                .mapToBean(ResourceConnection.class)
+                .list());
     }
 
     @Override

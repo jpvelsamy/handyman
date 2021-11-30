@@ -15,14 +15,14 @@ import java.util.List;
 @EqualsAndHashCode
 @NoArgsConstructor
 @ActionContext(
-    actionName = "DeleteFileDirectory"
+        actionName = "DeleteFileDirectory"
 )
 public class DeleteFileDirectory implements IActionContext {
-  private String name;
+    private String name;
 
-  private String STRING;
+    private String STRING;
 
-  private List<String> path;
+    private List<String> path;
 
-  private Boolean condition = true;
+    private Boolean condition = true;
 }

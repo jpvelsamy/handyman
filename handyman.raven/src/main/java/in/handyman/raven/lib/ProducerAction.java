@@ -43,7 +43,6 @@ public class ProducerAction implements IActionExecution {
                 .ifPresent(actionContexts -> {
 
 
-
                     actionContexts.stream()
                             .map(actionContext -> {
                                 var vAction = LambdaEngine.getAction(producer.getName(), action);

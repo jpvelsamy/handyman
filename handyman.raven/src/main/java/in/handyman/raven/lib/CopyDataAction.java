@@ -90,9 +90,9 @@ public class CopyDataAction implements IActionExecution {
             var insert = (Insert) givenStatement;
             var select = insert.getSelect();
 
-           log.info(aMarker,"CopyData action input variables id:{},name: {}, source-database:{}, target-database:{}, fetchSize:{}, writeSize:{},threadCount:{} ", pipelineId, name, source, target, fetchSize, writeSize, upperThreadCount);
-           log.info(aMarker,"CopyData Insert Sql input post parameter ingestion \n : {}", insert);
-           log.info(aMarker,"CopyData Select Sql input post parameter ingestion \n : {}", insert);
+            log.info(aMarker, "CopyData action input variables id:{},name: {}, source-database:{}, target-database:{}, fetchSize:{}, writeSize:{},threadCount:{} ", pipelineId, name, source, target, fetchSize, writeSize, upperThreadCount);
+            log.info(aMarker, "CopyData Insert Sql input post parameter ingestion \n : {}", insert);
+            log.info(aMarker, "CopyData Select Sql input post parameter ingestion \n : {}", insert);
             //initializing the connection related statement
             var hikariDataSource = ResourceAccess.rdbmsConn(source);
             final Long statementId = UniqueID.getId();
@@ -109,7 +109,7 @@ public class CopyDataAction implements IActionExecution {
                     IntStream.range(lowerThreadCount, upperThreadCount + 1).forEach(i -> {
                         var rowQueue = new LinkedBlockingDeque<Table.Row>();
                         var poisonPill = new Table.Row(i, null);
-                       log.info(aMarker, " action is prepping up writer thread with poison pill {}", poisonPill);
+                        log.info(aMarker, " action is prepping up writer thread with poison pill {}", poisonPill);
                         final CopyDataJdbcWriter jdbcWriter = new CopyDataJdbcWriter(configMap, insert, poisonPill, copyData,
                                 action, rowQueue, countDownLatch);
                         executor.submit(jdbcWriter);

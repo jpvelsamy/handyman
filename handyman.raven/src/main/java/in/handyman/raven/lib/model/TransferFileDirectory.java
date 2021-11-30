@@ -13,18 +13,18 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @ActionContext(
-    actionName = "TransferFileDirectory"
+        actionName = "TransferFileDirectory"
 )
 public class TransferFileDirectory implements IActionContext {
-  private String name;
+    private String name;
 
-  private String source;
+    private String source;
 
-  private String to;
+    private String to;
 
-  private String operation;
+    private String operation;
 
-  private String value;
+    private String value;
 
-  private Boolean condition = true;
+    private Boolean condition = true;
 }

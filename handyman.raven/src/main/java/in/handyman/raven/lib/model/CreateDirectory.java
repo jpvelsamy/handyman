@@ -15,12 +15,12 @@ import java.util.List;
 @EqualsAndHashCode
 @NoArgsConstructor
 @ActionContext(
-    actionName = "CreateDirectory"
+        actionName = "CreateDirectory"
 )
 public class CreateDirectory implements IActionContext {
-  private String name;
-  
-  private List<String> directoryPath;
+    private String name;
 
-  private Boolean condition = true;
+    private List<String> directoryPath;
+
+    private Boolean condition = true;
 }

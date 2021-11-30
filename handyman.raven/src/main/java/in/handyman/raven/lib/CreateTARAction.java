@@ -49,7 +49,7 @@ public class CreateTARAction implements IActionExecution {
     public void execute() throws Exception {
         var source = createTAR.getSource();
         if (!Files.exists(Paths.get(source))) {
-           log.info(aMarker,"{} source Folder not found", source);
+            log.info(aMarker, "{} source Folder not found", source);
         }
         var destination = createTAR.getDestination();
         final Path dPath = Paths.get(destination);
@@ -60,7 +60,7 @@ public class CreateTARAction implements IActionExecution {
         var sourceFile = new File(source);
         var fileNameWithOutExt = FileNameUtils.getBaseName(sourceFile.getName());
         var destinationFile = new File(destination.concat("/" + fileNameWithOutExt));
-       log.info(aMarker,"Destination {}", destinationFile);
+        log.info(aMarker, "Destination {}", destinationFile);
         final String fileName = destinationFile.getAbsolutePath().concat("." + extension);
         try (var fileOutputStream = new FileOutputStream(fileName)) {
             try (var gzipOutputStream = new GzipCompressorOutputStream(fileOutputStream)) {
@@ -74,7 +74,7 @@ public class CreateTARAction implements IActionExecution {
     }
 
     private void addFilesToTarGZ(final String filePath, final String parent, final TarArchiveOutputStream tarArchive) throws IOException {
-       log.info(aMarker," source {} parent {}", filePath, parent);
+        log.info(aMarker, " source {} parent {}", filePath, parent);
         final File file = new File(filePath);
         final String baseName = parent + file.getName();
         final TarArchiveEntry archiveEntry = new TarArchiveEntry(file);

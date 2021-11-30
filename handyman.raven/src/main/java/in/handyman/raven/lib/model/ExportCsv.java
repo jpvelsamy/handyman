@@ -2,8 +2,6 @@ package in.handyman.raven.lib.model;
 
 import in.handyman.raven.lambda.action.ActionContext;
 import in.handyman.raven.lambda.action.IActionContext;
-import java.lang.Boolean;
-import java.lang.String;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,24 +17,24 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "ExportCsv"
+        actionName = "ExportCsv"
 )
 public class ExportCsv implements IActionContext {
 
-  private String name;
+    private String name;
 
-  private String source;
+    private String source;
 
-  private String executionSource;
+    private String executionSource;
 
-  private String stmt;
+    private String stmt;
 
-  private String targetLocation;
+    private String targetLocation;
 
-  @Builder.Default
-  private Boolean condition = true;
+    @Builder.Default
+    private Boolean condition = true;
 
-  private String writeThreadCount;
+    private String writeThreadCount;
 
-  private String payloadSize;
+    private String payloadSize;
 }

@@ -39,7 +39,6 @@ public class Pipeline extends AbstractAudit implements IPipeline {
     private String relativePath = "";
 
 
-
     public void updateExecutionStatusId(final Integer executionStatusId) {
         this.setExecutionStatusId(executionStatusId);
         HandymanActorSystemAccess.insert(LambdaExecutionAudit.builder().pipelineId(this.pipelineId).executionStatusId(executionStatusId).build());

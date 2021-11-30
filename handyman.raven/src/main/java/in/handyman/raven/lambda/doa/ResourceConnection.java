@@ -30,8 +30,8 @@ public class ResourceConnection extends Auditable {
     private boolean active;
     private Integer version;
 
-    public Jdbi get(){
-        return Jdbi.create(url,userName,password);
+    public Jdbi get() {
+        return Jdbi.create(url, userName, password);
     }
 
 }

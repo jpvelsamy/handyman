@@ -17,16 +17,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "CreateTAR"
+        actionName = "CreateTAR"
 )
 public class CreateTAR implements IActionContext {
-  private String name;
+    private String name;
 
-  private String source;
+    private String source;
 
-  private String destination;
+    private String destination;
 
-  private String extension;
+    private String extension;
 
-  private Boolean condition = true;
+    private Boolean condition = true;
 }

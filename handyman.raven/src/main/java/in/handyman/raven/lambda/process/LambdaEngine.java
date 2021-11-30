@@ -125,16 +125,9 @@ public class LambdaEngine {
         return pipeline;
     }
 
-    private static void toPipeline(final LContext lContext, final Pipeline pipeline) {
-        pipeline.setRelativePath(lContext.getRelativePath());
-        pipeline.setPipelineLoadType(lContext.getProcessLoadType());
-        pipeline.setLambdaName(lContext.getLambdaName());
-        pipeline.setPipelineName(lContext.getPipelineName());
-        pipeline.setParentPipelineId(lContext.getParentPipelineId());
-        pipeline.setParentPipelineName(lContext.getParentPipelineName());
-        pipeline.setParentActionId(lContext.getParentActionId());
-        pipeline.setParentActionName(lContext.getParentActionName());
-        pipeline.setRequestBody(lContext.getPayload());
+    private static HashMap<String, String> getEContext(final String lambdaName) {
+        log.info("Configuration for the lambda {}", lambdaName);
+        return new HashMap<>(ConfigAccess.getAllConfig(lambdaName));
     }
 
     private static String getProcessFile(final LContext lContext, final Map<String, String> context) {
@@ -153,6 +146,29 @@ public class LambdaEngine {
         return processFile;
     }
 
+    private static RavenParserContext getRavenParserContext(final String processFile, final String lambdaName,
+                                                            final Map<String, String> context) {
+        log.debug("Handyman Engine start for {}", lambdaName);
+        final RavenParser.ProcessContext ravenParser = LambdaParser.doParse(processFile);
+        return RavenParserContext.builder()
+                .processName(CommandProxy.getString(ravenParser.name, context))
+                .tryContext(ravenParser.tryBlock.actions)
+                .catchContext(ravenParser.catchBlock.actions)
+                .finallyContext(ravenParser.finallyBlock.actions)
+                .build();
+    }
+
+    private static void toPipeline(final LContext lContext, final Pipeline pipeline) {
+        pipeline.setRelativePath(lContext.getRelativePath());
+        pipeline.setPipelineLoadType(lContext.getProcessLoadType());
+        pipeline.setLambdaName(lContext.getLambdaName());
+        pipeline.setPipelineName(lContext.getPipelineName());
+        pipeline.setParentPipelineId(lContext.getParentPipelineId());
+        pipeline.setParentPipelineName(lContext.getParentPipelineName());
+        pipeline.setParentActionId(lContext.getParentActionId());
+        pipeline.setParentActionName(lContext.getParentActionName());
+        pipeline.setRequestBody(lContext.getPayload());
+    }
 
     private static void run(final Pipeline pipeline,
                             final List<RavenParser.ActionContext> contexts,
@@ -174,11 +190,6 @@ public class LambdaEngine {
         });
     }
 
-    private static HashMap<String, String> getEContext(final String lambdaName) {
-        log.info("Configuration for the lambda {}", lambdaName);
-        return new HashMap<>(ConfigAccess.getAllConfig(lambdaName));
-    }
-
     private static String getProcessFile(final String processLoadType, final String lambdaName, final Map<String, String> context, final String relativePath) {
         final String processFile = relativePath != null ? HRequestResolver.readFile(relativePath, "") :
                 HRequestResolver.doResolve(lambdaName, processLoadType, context);
@@ -189,33 +200,6 @@ public class LambdaEngine {
             throw new HandymanException("Content configuration for process " + lambdaName + " is missing, check spw_process_config or spw_instance_config");
         }
         return processFile;
-    }
-
-    private static RavenParserContext getRavenParserContext(final String processFile, final String lambdaName,
-                                                            final Map<String, String> context) {
-        log.debug("Handyman Engine start for {}", lambdaName);
-        final RavenParser.ProcessContext ravenParser = LambdaParser.doParse(processFile);
-        return RavenParserContext.builder()
-                .processName(CommandProxy.getString(ravenParser.name, context))
-                .tryContext(ravenParser.tryBlock.actions)
-                .catchContext(ravenParser.catchBlock.actions)
-                .finallyContext(ravenParser.finallyBlock.actions)
-                .build();
-    }
-
-    public static Action getAction(final String actionName, final Action action) {
-        var vAction = Action.builder()
-                .pipelineId(action.getPipelineId())
-                .executionGroupId(ExecutionGroup.ACTION.getId())
-                .actionName(actionName)
-                .build();
-        vAction.setContext(action.getContext());
-        LambdaEngine.toAction(vAction, action);
-        vAction.setParentPipelineId(action.getPipelineId());
-        vAction.setParentPipelineName(action.getPipelineName());
-        vAction.setParentActionId(action.getActionId());
-        vAction.setParentActionName(action.getActionName());
-        return vAction;
     }
 
     public static void toAction(final Action action, final AbstractAudit abstractAudit) {
@@ -276,10 +260,8 @@ public class LambdaEngine {
         }
     }
 
-    private static void append(final StringBuilder stringBuilder, final Object value) {
-        if (value != null) {
-            stringBuilder.append(String.format("%s", value));
-        }
+    public static SubstituteLogger getLogger(final Action action) {
+        return new SubstituteLogger(action.getActionName(), action.getEventQueue(), false);
     }
 
     private static IActionExecution load(final RavenParser.ActionContext actionContext, final Action action) {
@@ -325,8 +307,10 @@ public class LambdaEngine {
         }
     }
 
-    public static SubstituteLogger getLogger(final Action action) {
-        return new SubstituteLogger(action.getActionName(), action.getEventQueue(), false);
+    private static void append(final StringBuilder stringBuilder, final Object value) {
+        if (value != null) {
+            stringBuilder.append(String.format("%s", value));
+        }
     }
 
     //TODO preload actions for staging
@@ -346,6 +330,21 @@ public class LambdaEngine {
         return (IActionExecution) ProcessExecutor.ACTION_EXECUTION_MAP.get(actionName)
                 .getConstructor(Action.class, Logger.class, Object.class)
                 .newInstance(action, logger, actionContext);
+    }
+
+    public static Action getAction(final String actionName, final Action action) {
+        var vAction = Action.builder()
+                .pipelineId(action.getPipelineId())
+                .executionGroupId(ExecutionGroup.ACTION.getId())
+                .actionName(actionName)
+                .build();
+        vAction.setContext(action.getContext());
+        LambdaEngine.toAction(vAction, action);
+        vAction.setParentPipelineId(action.getPipelineId());
+        vAction.setParentPipelineName(action.getPipelineName());
+        vAction.setParentActionId(action.getActionId());
+        vAction.setParentActionName(action.getActionName());
+        return vAction;
     }
 
 }

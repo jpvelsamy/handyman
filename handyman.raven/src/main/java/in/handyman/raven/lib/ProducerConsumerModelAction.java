@@ -115,7 +115,7 @@ public class ProducerConsumerModelAction implements IActionExecution {
                         LambdaEngine.execute(consumerAction, consumerAction.getAction());
                     } catch (Throwable e) {
                         throw new HandymanException("Failed to execute", e);
-                    }finally {
+                    } finally {
                         consumerCountDown.countDown();
                     }
 
@@ -132,7 +132,7 @@ public class ProducerConsumerModelAction implements IActionExecution {
 
                     try {
                         LambdaEngine.execute(producerAction, producerAction.getAction());
-                    }catch (Throwable e) {
+                    } catch (Throwable e) {
                         throw new HandymanException("Failed to execute", e);
                     } finally {
                         countDown.countDown();

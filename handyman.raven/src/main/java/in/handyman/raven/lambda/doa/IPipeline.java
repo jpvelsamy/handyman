@@ -14,9 +14,12 @@ public interface IPipeline {
     }
 
     Long getPipelineId();
+
     Long getParentPipelineId();
+
     Long getParentActionId();
 
     String getPipelineName();
+
     String getLambdaName();
 }

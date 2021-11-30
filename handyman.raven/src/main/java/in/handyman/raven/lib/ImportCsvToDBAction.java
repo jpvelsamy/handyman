@@ -67,7 +67,7 @@ public class ImportCsvToDBAction implements IActionExecution {
         if (threadCount > 1 && size > 1) {
             final ExecutorService taskList
                     = Executors.newWorkStealingPool(threadCount);
-            final CountDownLatch downLatch=new CountDownLatch(size);
+            final CountDownLatch downLatch = new CountDownLatch(size);
             for (var path : importCsvToDB.getValue()) {
                 taskList.execute(() -> {
                     doImport(batchSize, jdbi, path);
