@@ -41,14 +41,13 @@ public class MultitudeAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-       log.info(aMarker, "given {}", multitude);
+        log.info(aMarker, "given {}", multitude);
         Optional.ofNullable(multitude.getActions()).filter(x -> !x.isEmpty())
                 .ifPresent(actionContexts -> {
 
                     final boolean isParallel = Optional.ofNullable(multitude.getOn()).filter(s -> Objects.equals("PARALLEL", s)).isPresent();
                     final int threadCount = Optional.ofNullable(multitude.getWriteThreadCount()).map(Integer::parseInt).orElse(0);
-                    var countDown = new CountDownLatch(actionContexts.size());
-                   log.info(aMarker,"Multitude has been initialized in a {} mode with threadcount of {} and countdown of {}", isParallel, threadCount, countDown);
+                    log.info(aMarker, "Multitude has been initialized in a {} mode with thread count of {} and countdown ", isParallel, threadCount);
                     final Set<ActionCallable> collect = actionContexts.stream().map(actionContext -> {
                         var vAction = Action.builder()
                                 .pipelineId(action.getPipelineId())
@@ -57,24 +56,38 @@ public class MultitudeAction implements IActionExecution {
                                 .build();
                         vAction.setContext(action.getContext());
                         LambdaEngine.toAction(vAction, action);
-                        return new ActionCallable(actionContext, vAction, countDown);
+                        return new ActionCallable(actionContext, vAction, null);
                     }).collect(Collectors.toSet());
-
-                    if (isParallel) {
-                       log.info(aMarker,"Execution has been started in a Parallel with thread count of {}", threadCount);
-                        var executor = threadCount != 0 ? Executors.newWorkStealingPool(threadCount) : Executors.newWorkStealingPool();
-                        collect.forEach(executor::submit);
-                       log.info(aMarker,"Completed Execution of multitude");
-                    } else {
-                       log.info(aMarker,"Execution started in a sequential manner");
-                        collect.forEach(ActionCallable::run);
-                       log.info(aMarker,"Completed execution of multitude");
-                    }
-
+                    var countDown = new CountDownLatch(actionContexts.size());
                     try {
-                        countDown.await();
-                    } catch (InterruptedException e) {
+                        if (isParallel) {
+                            log.info(aMarker, "Execution has been started in a Parallel with thread count of {}", threadCount);
+                            var executor = threadCount != 0 ? Executors.newFixedThreadPool(threadCount) : Executors.newWorkStealingPool();
+                            collect.forEach(actionCallable -> {
+                                executor.submit(() -> {
+                                    try {
+                                        actionCallable.run();
+                                    } catch (Exception e) {
+                                        throw new HandymanException("Failed to execute", e);
+                                    } finally {
+                                        countDown.countDown();
+                                    }
+                                });
+                            });
+                            log.info(aMarker, "Completed Execution of multitude");
+                        } else {
+                            log.info(aMarker, "Execution started in a sequential manner");
+                            collect.forEach(ActionCallable::run);
+                            log.info(aMarker, "Completed execution of multitude");
+                        }
+                    } catch (Exception e) {
                         throw new HandymanException("Failed to execute", e);
+                    } finally {
+                        try {
+                            countDown.await();
+                        } catch (InterruptedException e) {
+                            log.error("Executors", e);
+                        }
                     }
 
 

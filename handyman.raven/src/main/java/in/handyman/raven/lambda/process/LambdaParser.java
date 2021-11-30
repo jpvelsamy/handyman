@@ -13,7 +13,7 @@ import java.util.Map;
 @Slf4j
 public class LambdaParser {
 
-    protected static RavenParser.ProcessContext doParse(final String processFile, final Map<String, String> context) {
+    protected static RavenParser.ProcessContext doParse(final String processFile) {
 //        final String tokenMappedProcessFile = bindToken(processFile, context); to skip context mapping while compiling
         final CharStream input = CharStreams.fromString(processFile);
         // create lexer

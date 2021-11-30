@@ -32,4 +32,7 @@ public class ConfigStore extends Auditable {
 
     private Integer version;
 
+    public ConfigType getConfigType(){
+        return ConfigType.get(this.configTypeId);
+    }
 }

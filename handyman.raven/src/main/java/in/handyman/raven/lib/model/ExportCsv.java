@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
     actionName = "ExportCsv"
 )
 public class ExportCsv implements IActionContext {
+
   private String name;
 
   private String source;
@@ -32,7 +33,10 @@ public class ExportCsv implements IActionContext {
 
   private String targetLocation;
 
+  @Builder.Default
   private Boolean condition = true;
 
   private String writeThreadCount;
+
+  private String payloadSize;
 }

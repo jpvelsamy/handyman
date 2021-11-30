@@ -59,3 +59,14 @@ services:
       MYSQL_DATABASE: handyman_vm
       MYSQL_ROOT_PASSWORD: password
 
+  zio_app_ui:
+    image: openjdk:11
+    container_name: zio-app-ui
+    #    restart: always
+    ports:
+      - "9000:9000"
+    environment:
+      TZ: "Asia/Kolkata"
+    command: [ 'java', '-jar', '/zio-app-ui.jar' ]
+
+

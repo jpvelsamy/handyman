@@ -58,7 +58,7 @@ public class CallProcessAction implements IActionExecution {
                                 .parentActionName(action.getActionName())
                                 .relativePath(fileRelativePath)
                                 .processLoadType(HRequestResolver.LoadType.FILE.name())
-                                .pipelineName(callProcess.getName())
+                                .pipelineName(callProcess.getTarget())
                                 .parentPipelineId(action.getPipelineId())
                                 .parentPipelineName(action.getPipelineName())
                                 .build();

@@ -81,6 +81,12 @@ public class LambdaEngine {
             final RavenParserContext ravenParserContext = getRavenParserContext(processFile, lContext.getLambdaName(), context);
 
             toPipeline(lContext, pipeline);
+
+            final String relativePath = context.get(HRequestResolver.LoadType.FILE.getVariable());
+//            if (relativePath != null) {
+//                final int i = relativePath.indexOf(pipeline.getPipelineName());
+//                pipeline.setLambdaName(relativePath.substring(i ).replace(pipeline.getPipelineName() + "/", ""));
+//            }
             pipeline.setProcessName(ravenParserContext.getProcessName());
             pipeline.setContext(context);
 
@@ -188,7 +194,7 @@ public class LambdaEngine {
     private static RavenParserContext getRavenParserContext(final String processFile, final String lambdaName,
                                                             final Map<String, String> context) {
         log.debug("Handyman Engine start for {}", lambdaName);
-        final RavenParser.ProcessContext ravenParser = LambdaParser.doParse(processFile, context);
+        final RavenParser.ProcessContext ravenParser = LambdaParser.doParse(processFile);
         return RavenParserContext.builder()
                 .processName(CommandProxy.getString(ravenParser.name, context))
                 .tryContext(ravenParser.tryBlock.actions)

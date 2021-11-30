@@ -30,10 +30,9 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     private static final String CONFIG_USER = "config.r2.user";
     private static final Config CONFIG = ConfigFactory.parseResources("handyman-raven-configstore.props");
 
-    private final Jdbi jdbi;
+    private static final Jdbi jdbi;
 
-    public HandymanRepoR2Impl() {
-
+    static {
         log.info("Initializing the config store from config file {}", CONFIG.origin().url());
         final String username = CONFIG.getString(CONFIG_USER);
         final String password = CONFIG.getString(CONFIG_PASSWORD);

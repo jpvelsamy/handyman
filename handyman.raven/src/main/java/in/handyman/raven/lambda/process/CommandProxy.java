@@ -16,6 +16,7 @@ import in.handyman.raven.lib.model.StartProcess;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.text.StringSubstitutor;
 
 import java.lang.reflect.Field;
@@ -71,8 +72,9 @@ public class CommandProxy {
                             setValue(target, fieldName, getter, condition);
                         } else if (field.getType() == RavenParser.JsonContext.class) {
                             final RavenParser.JsonContext o = (RavenParser.JsonContext) fieldValue;
-                            final String text = o.getText();
-                            final JsonNode node = mapper.readTree(getString(context, text));
+                            final String text = o.getText();// StringEscapeUtils.escapeJson();
+                            final String string = getString(context, text);
+                            final JsonNode node = mapper.readTree(string);
                             setValue(target, fieldName, getter, node);
                         } else if (field.getType() == RavenParser.ResourceContext.class) {
                             final RavenParser.ResourceContext o = (RavenParser.ResourceContext) fieldValue;
@@ -132,7 +134,7 @@ public class CommandProxy {
                 } catch (JsonMappingException e) {
                     throw new HandymanException("Json RavenParserContext mapping failed", e);
                 } catch (JsonProcessingException e) {
-                    throw new HandymanException("Unknown RavenParserContext provided");
+                    throw new HandymanException("Unknown JSON RavenParserContext provided", e);
                 }
             }
         }

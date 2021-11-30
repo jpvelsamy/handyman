@@ -19,7 +19,9 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -55,31 +57,37 @@ public class ExportCsvAction implements IActionExecution {
         var location = exportCsv.getTargetLocation();
         var execStmt = exportCsv.getStmt();
         log.info(aMarker, "Starting the execution with id {} dbSrc {} execStmt {} location {} executionSource {}", action.getActionId(), dbSrc, execStmt, location, executionSource);
-        final HikariDataSource hikariDataSource = ResourceAccess.rdbmsConn(dbSrc);
-        log.info(aMarker, "Created a hikariDataSource for rdbms connection src {}", dbSrc);
         var sql = new ArrayList<String>();
-        try (var con = hikariDataSource.getConnection()) {
-            try (var stmt = con.createStatement()) {
-                log.info(aMarker, "Executing sql statement {}", execStmt);
-                var result = stmt.executeQuery(execStmt);
-                while (result.next()) {
-                    sql.add(result.getString(1));
+        if (dbSrc != null) {
+            final HikariDataSource hikariDataSource = ResourceAccess.rdbmsConn(dbSrc);
+            log.info(aMarker, "Created a hikariDataSource for rdbms connection src {}", dbSrc);
+            try (var con = hikariDataSource.getConnection()) {
+                try (var stmt = con.createStatement()) {
+                    log.info(aMarker, "Executing sql statement {}", execStmt);
+                    var result = stmt.executeQuery(execStmt);
+                    while (result.next()) {
+                        sql.add(result.getString(1));
+                    }
                 }
             } catch (SQLException ex) {
                 log.error(aMarker, "Stopping execution, General Error executing sql for {} with for campaign {}", execStmt, ex);
                 log.info(aMarker, execStmt + ".exception", ExceptionUtil.toString(ex));
                 throw new HandymanException("Process failed", ex);
             }
+
         }
         if (!sql.isEmpty()) {
             getSqlExecution(sql, executionSource, location);
+        } else if (execStmt != null) {
+            getSqlExecution(Collections.singletonList(execStmt), executionSource, location);
         } else {
-            log.error("SQL stmts are empty");
+            log.error("Sql stmts are empty");
         }
     }
 
     private void getSqlExecution(final List<String> sql, final String executionSource, final String location) {
-
+        var payloadSize = Optional.ofNullable(exportCsv.getPayloadSize()).map(Integer::valueOf).orElse(10000);
+        log.info("payload {}", payloadSize);
         for (var execStmt : sql) {
             final HikariDataSource hikariDataSource = ResourceAccess.rdbmsConn(executionSource);
             log.info(aMarker, "Created a hikariDataSource for rdbms connection src {}", executionSource);
@@ -87,6 +95,7 @@ public class ExportCsvAction implements IActionExecution {
                 try (var stmt = con.createStatement()) {
                     log.info(aMarker, "Executing sql statement {}", execStmt);
                     var result = stmt.executeQuery(execStmt);
+                    result.setFetchSize(payloadSize);
                     performWriteCsv(result, location);
                 }
             } catch (SQLException ex) {

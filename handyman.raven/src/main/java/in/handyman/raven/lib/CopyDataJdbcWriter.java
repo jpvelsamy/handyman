@@ -124,14 +124,19 @@ public class CopyDataJdbcWriter implements Callable<Void> {
             for (final Table.ColumnInARow column : columnSet) {
                 final String columnTypeName = column.getColumnTypeName();
 
-                if (Objects.nonNull(columnTypeName) && (Objects.equals(columnTypeName.toLowerCase(), Constants.STRING_DATATYPE)
-                        || Objects.equals(columnTypeName.toLowerCase(), "java.lang.string")
-                        || Objects.equals(columnTypeName.toLowerCase(), "datetime")
-                        || Objects.equals(columnTypeName.toLowerCase(), "timestamp"))) {
-                    dataFrameBuilder.append(Constants.STRING_ENCLOSER).
-                            append(column.getValue()).append(Constants.STRING_ENCLOSER);
+                final Object columnValue = column.getValue();
+                if (columnValue != null) {
+                    if (Objects.nonNull(columnTypeName) && (Objects.equals(columnTypeName.toLowerCase(), Constants.STRING_DATATYPE)
+                            || Objects.equals(columnTypeName.toLowerCase(), "java.lang.string")
+                            || Objects.equals(columnTypeName.toLowerCase(), "datetime")
+                            || Objects.equals(columnTypeName.toLowerCase(), "timestamp"))) {
+                        dataFrameBuilder.append(Constants.STRING_ENCLOSER).
+                                append(columnValue).append(Constants.STRING_ENCLOSER);
+                    } else {
+                        dataFrameBuilder.append(columnValue);
+                    }
                 } else {
-                    dataFrameBuilder.append(column.getValue());
+                    dataFrameBuilder.append(columnValue);
                 }
                 if (!column.getIsLastColumn()) {
                     dataFrameBuilder.append(Constants.FIELD_SEPARATOR);
