@@ -11,11 +11,12 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -44,8 +45,6 @@ public class ConsumerAction implements IActionExecution {
     public void execute() {
 
         final int limit = Optional.ofNullable(consumer.getLimit()).map(Integer::valueOf).orElse(1);
-
-        var check = new AtomicBoolean();
         while (true) {
             final List<Map<String, Object>> maps = consumer.getSource().get()
                     .withHandle(handle -> handle.createQuery("SELECT id,payload FROM pcm_event where pcm_id = ? and process = 0 order by created_date limit ?")
@@ -55,11 +54,14 @@ public class ConsumerAction implements IActionExecution {
             final List<Map<String, Object>> collect = maps.stream()
                     .filter(stringObjectMap -> stringObjectMap.containsKey(PAYLOAD) && stringObjectMap.containsKey(ID))
                     .collect(Collectors.toList());
+            final Set<String> payloads = new HashSet<>();
             for (var node : collect) {
                 final String payload = String.valueOf(node.get(PAYLOAD));
-                check.set(!Objects.equals(payload, consumer.getPoison()));
+                if (Objects.equals(payload, consumer.getPoison())) {
+                    payloads.add(payload);
+                }
                 try {
-                    if (check.get()) {
+                    if (!Objects.equals(payload, consumer.getPoison())) {
 
                         final Map<String, String> context = new HashMap<>(action.getContext());
                         context.put(consumer.getPop(), payload);
@@ -83,12 +85,8 @@ public class ConsumerAction implements IActionExecution {
                 consumer.getSource().get()
                         .useHandle(handle -> handle.createUpdate("UPDATE pcm_event SET process = 1, last_modified_date = current_timestamp WHERE id = ?")
                                 .bind(0, id).execute());
-                if (!check.get()) {
-                    log.info("consumer breaking with {}", consumer.getPoison());
-                    break;
-                }
             }
-            if (!check.get()) {
+            if (!payloads.isEmpty()) {
                 log.info("consumer breaking with {}", consumer.getPoison());
                 break;
             }

@@ -111,22 +111,18 @@ public class ProducerConsumerModelAction implements IActionExecution {
         var consumerCountDown = new CountDownLatch(consumerActions.size());
 
         try {
-            consumerActions.forEach(consumerAction -> {
-                cExecutorService.submit(() -> {
-                    try {
-                        LambdaEngine.execute(consumerAction, consumerAction.getAction());
-                    } catch (Throwable e) {
-                        throw new HandymanException("Failed to execute", e);
-                    } finally {
-                        consumerCountDown.countDown();
-                    }
+            consumerActions.forEach(consumerAction -> cExecutorService.submit(() -> {
+                try {
+                    LambdaEngine.execute(consumerAction, consumerAction.getAction());
+                } catch (Throwable e) {
+                    throw new HandymanException("Failed to execute", e);
+                } finally {
+                    consumerCountDown.countDown();
+                }
 
-                });
-            });
+            }));
 
             producerActions.forEach(producerAction -> pExecutorService.submit(() -> {
-
-                final Producer producer = producerAction.getProducer();
 
                 try {
                     LambdaEngine.execute(producerAction, producerAction.getAction());
