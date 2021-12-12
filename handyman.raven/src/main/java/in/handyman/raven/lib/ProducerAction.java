@@ -58,7 +58,9 @@ public class ProducerAction implements IActionExecution {
 
 
                     if (key != null) {
-                        producer.getNodes().add(key);
+                        producer.getSource().get()
+                                .useHandle(handle -> handle.createUpdate("INSERT INTO pcm_event ( payload, pcm_id,process) VALUES(:payload, :pcmId,0)")
+                                        .bind("payload", key).bind("pcmId", producer.getPcmId()).execute());
                     }
 
                 });

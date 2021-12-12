@@ -192,7 +192,7 @@ transferFileDirectory:
 	'}' ('on-condition' condition=expression)*;
 
 producerConsumerModel:
-    'pcm' 'as' name=STRING
+    'pcm' 'as'  name=STRING 'on-resource' source=resource
     'produce''{'
         produce+=producer
     '}' ('fielding' produceThreadCount=NON_ZERO_DIGIT)*
@@ -201,7 +201,7 @@ producerConsumerModel:
     '}'('fielding' consumeThreadCount=NON_ZERO_DIGIT)*  ('on-condition' condition=expression)*;
 
 producer:
-    'producer''as' name=STRING 'push-result-at' push=STRING  'on-resource' source=resource
+    'producer''as' name=STRING 'push-result-at' push=STRING
      'for-every''{'
      	stmt=STRING
      '}'
@@ -210,7 +210,7 @@ producer:
      '}' ('on-condition' condition=expression)* ;
 
 consumer:
-    'consumer''as' name=STRING 'pop-result-from' pop=STRING 'pop-size' popSize=NON_ZERO_DIGIT 'execute''{'
+    'consumer''as' name=STRING 'pop-result-from' pop=STRING 'limit' limit=NON_ZERO_DIGIT 'execute''{'
        (actions+=action)*
        '}' ('on-condition' condition=expression)* ;
 

@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -64,9 +62,13 @@ public class ProducerConsumerModelAction implements IActionExecution {
         final ExecutorService pExecutorService = Executors.newFixedThreadPool(pThreadCount, producerThreadFactoryBuilder.build());
         final ExecutorService cExecutorService = Executors.newFixedThreadPool(cThreadCount, consumerThreadFactoryBuilder.build());
 
+        final Long pipelineId = this.action.getPipelineId();
         final List<ProducerAction> producerActions = producerConsumerModel.getProduce().stream().flatMap(producerContext -> {
 
             var producer = new Producer();
+            producer.setPcmId(pipelineId);
+            producer.setSource(producerConsumerModel.getSource());
+
             CommandProxy.setTarget(producer, producerContext, action.getContext());
             log.info(aMarker, "{}", producerContext);
 
@@ -92,13 +94,13 @@ public class ProducerConsumerModelAction implements IActionExecution {
 
         final int size = producerActions.size();
         var countDown = new CountDownLatch(size);
-        final BlockingQueue<String> nodes = new ArrayBlockingQueue<>(size + 1);
         final String poison = UUID.randomUUID().toString();
 
         final List<ConsumerAction> consumerActions = producerConsumerModel.getConsume().stream().map(consumerContext -> {
             var consumer = new Consumer();
-            consumer.setNodes(nodes);
             consumer.setPoison(poison);
+            consumer.setPcmId(pipelineId);
+            consumer.setSource(producerConsumerModel.getSource());
 
             CommandProxy.setTarget(consumer, consumerContext, action.getContext());
             log.info(aMarker, "{}", consumerContext);
@@ -122,25 +124,19 @@ public class ProducerConsumerModelAction implements IActionExecution {
                 });
             });
 
-            producerActions.forEach(producerAction -> {
+            producerActions.forEach(producerAction -> pExecutorService.submit(() -> {
 
-                pExecutorService.submit(() -> {
+                final Producer producer = producerAction.getProducer();
 
-                    final Producer producer = producerAction.getProducer();
-                    producer.setNodes(nodes);
-                    producer.setPoison(poison);
+                try {
+                    LambdaEngine.execute(producerAction, producerAction.getAction());
+                } catch (Throwable e) {
+                    throw new HandymanException("Failed to execute", e);
+                } finally {
+                    countDown.countDown();
+                }
 
-                    try {
-                        LambdaEngine.execute(producerAction, producerAction.getAction());
-                    } catch (Throwable e) {
-                        throw new HandymanException("Failed to execute", e);
-                    } finally {
-                        countDown.countDown();
-                    }
-
-                });
-
-            });
+            }));
 
             try {
                 countDown.await();
@@ -150,11 +146,13 @@ public class ProducerConsumerModelAction implements IActionExecution {
         } catch (Throwable e) {
             throw new HandymanException("Failed to execute", e);
         } finally {
-            nodes.add(poison);
+            producerConsumerModel.getSource().get()
+                    .useHandle(handle -> handle.createUpdate("INSERT INTO pcm_event ( payload, pcm_id,process) VALUES(:payload, :pcmId,0)")
+                            .bind("payload", poison).bind("pcmId", pipelineId).execute());
             try {
                 consumerCountDown.await();
             } catch (InterruptedException e) {
-                log.error("", e);
+                log.error("Poison addition failed", e);
             }
         }
     }
