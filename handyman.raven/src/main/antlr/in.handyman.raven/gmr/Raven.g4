@@ -78,7 +78,7 @@ transform:
 	'transform' 'as' name= STRING 'on' on= STRING 'using'
 	 '{'
 		value+=STRING
-	 '}' ('on-condition' condition=expression)*;
+	 '}' ('on-condition' condition=expression)* ('do-format' format=expression)*;
 
 loadCsv:
 	'loadcsv' 'as' name=STRING 'pid' pid=STRING 'from' source=STRING 'to' to=STRING 'with' delim=STRING 'by-batch'

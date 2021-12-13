@@ -119,22 +119,24 @@ public class ImportCsvToDBAction implements IActionExecution {
             final String namedParams = objects.stream().map(String::valueOf).map(s -> ":" + s).collect(Collectors.joining(DELIMITER));
 
 
-            jdbi.useHandle(handle -> {
+            final Integer rowCount = jdbi.inTransaction(handle -> {
 
                 final String format = String.format(" INSERT INTO %s  (%s) VALUES(%s);", importCsvToDB.getTableName(), columnNames, namedParams);
                 var counter = new AtomicInteger();
                 try (PreparedBatch batch = handle.prepareBatch(format)) {
                     maps.forEach(map1 -> {
                         batch.bindMap(map1).add();
-                        counter.incrementAndGet();
-                        if (counter.get() % batchSize == 0) {
+                        if (counter.getAndIncrement() % batchSize == 0) {
                             log.info(aMarker, "added batch size " + batch.execute().length);
                         }
                     });
                     log.info(aMarker, "added batch size " + batch.execute().length);
                 }
-
+                return counter.get();
             });
+
+            log.info(aMarker, "completed batch size " + rowCount);
+
         }
     }
 

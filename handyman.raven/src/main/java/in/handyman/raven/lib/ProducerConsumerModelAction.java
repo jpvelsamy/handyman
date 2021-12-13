@@ -63,6 +63,9 @@ public class ProducerConsumerModelAction implements IActionExecution {
         final ExecutorService cExecutorService = Executors.newFixedThreadPool(cThreadCount, consumerThreadFactoryBuilder.build());
 
         final Long pipelineId = this.action.getPipelineId();
+
+        this.action.getContext().put("pcmId", String.valueOf(pipelineId));
+
         final List<ProducerAction> producerActions = producerConsumerModel.getProduce().stream().flatMap(producerContext -> {
 
             var producer = new Producer();

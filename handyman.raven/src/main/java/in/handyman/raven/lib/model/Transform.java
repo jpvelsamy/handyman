@@ -27,4 +27,7 @@ public class Transform implements IActionContext {
     private List<String> value;
 
     private Boolean condition = true;
+
+    private Boolean format = true;
+
 }
