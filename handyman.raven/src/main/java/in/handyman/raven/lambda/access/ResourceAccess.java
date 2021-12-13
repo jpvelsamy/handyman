@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.ResourceConnection;
 import lombok.extern.slf4j.Slf4j;
+import org.jdbi.v3.core.Jdbi;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -18,6 +19,14 @@ public class ResourceAccess {
             log.warn("{} not found in Resource connections", resourceName);
         }
         return getHikariDataSource(resource);
+    }
+
+    public static Jdbi rdbmsJDBIConn(final String resourceName) {
+        final ResourceConnection resource = ConfigAccess.getResourceConfig(resourceName);
+        if (Objects.isNull(resource)) {
+            log.warn("{} not found in Resource connections", resourceName);
+        }
+        return resource.get();
     }
 
     public static HikariDataSource getHikariDataSource(final ResourceConnection resource) {

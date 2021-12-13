@@ -1,6 +1,5 @@
 package in.handyman.raven.lib;
 
-import com.zaxxer.hikari.HikariDataSource;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
@@ -10,6 +9,7 @@ import in.handyman.raven.lib.model.Transform;
 import in.handyman.raven.util.CommonQueryUtil;
 import in.handyman.raven.util.ExceptionUtil;
 import in.handyman.raven.util.UniqueID;
+import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -48,46 +48,51 @@ public class TransformAction implements IActionExecution {
         final String dbSrc = transform.getOn();
         log.info(aMarker, "Transform action input variables id: {}, name: {}, source-database: {} ", action.getActionId(), transform.getName(), dbSrc);
         log.info(aMarker, "Sql input post parameter ingestion \n {}", transform.getValue());
-        final HikariDataSource hikariDataSource = ResourceAccess.rdbmsConn(dbSrc);
-        try (final Connection connection = hikariDataSource.getConnection()) {
-            connection.setAutoCommit(false);
-            for (String givenQuery : transform.getValue()) {
-                var sqlList = transform.getFormat() ? CommonQueryUtil.getFormattedQuery(givenQuery) : Collections.singletonList(givenQuery);
-                for (var sqlToExecute : sqlList) {
-                    log.info(aMarker, "Transform with id:{}, executing script {}", action.getActionId(), givenQuery);
-                    final Long statementId = UniqueID.getId();
-                    //TODO
-                    try (final Statement stmt = connection.createStatement()) {
-                        var rowCount = stmt.executeUpdate(sqlToExecute);
-                        var warnings = ExceptionUtil.completeSQLWarning(stmt.getWarnings());
-                        log.info(aMarker, sqlToExecute + ".count", rowCount);
-                        log.info(aMarker, sqlToExecute + ".stmtCount", stmt.getUpdateCount());
-                        log.info(aMarker, sqlToExecute + ".warnings", warnings);
-                        log.info(aMarker, "Transform id# {}, executed script {} rows returned {}", statementId, sqlToExecute, rowCount);
-                        stmt.clearWarnings();
-                    } catch (SQLSyntaxErrorException ex) {
-                        log.error(aMarker, "Stopping execution, General Error executing sql for {} with for {}", sqlToExecute, ex);
-                        log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
-                        throw new HandymanException("Process failed", ex);
-                    } catch (SQLException ex) {
-                        log.error(aMarker, "Continuing to execute, even though SQL Error executing sql for {} ", sqlToExecute, ex);
-                        log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
-                        throw new HandymanException("Process failed", ex);
-                    } catch (Throwable ex) {
-                        log.error(aMarker, "Stopping execution, General Error executing sql for {} with for {}", sqlToExecute, ex);
-                        log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
-                        throw new HandymanException("Process failed", ex);
+        final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(dbSrc);
+        jdbi.useTransaction(handle -> {
+            try  {
+                final Connection connection = handle.getConnection();
+                connection.setAutoCommit(false);
+                for (String givenQuery : transform.getValue()) {
+                    var sqlList = transform.getFormat() ? CommonQueryUtil.getFormattedQuery(givenQuery) : Collections.singletonList(givenQuery);
+                    for (var sqlToExecute : sqlList) {
+                        log.info(aMarker, "Transform with id:{}, executing script {}", action.getActionId(), givenQuery);
+                        final Long statementId = UniqueID.getId();
+                        //TODO
+                        try (final Statement stmt = connection.createStatement()) {
+                            var rowCount = stmt.executeUpdate(sqlToExecute);
+                            var warnings = ExceptionUtil.completeSQLWarning(stmt.getWarnings());
+                            log.info(aMarker, sqlToExecute + ".count", rowCount);
+                            log.info(aMarker, sqlToExecute + ".stmtCount", stmt.getUpdateCount());
+                            log.info(aMarker, sqlToExecute + ".warnings", warnings);
+                            log.info(aMarker, "Transform id# {}, executed script {} rows returned {}", statementId, sqlToExecute, rowCount);
+                            stmt.clearWarnings();
+                        } catch (SQLSyntaxErrorException ex) {
+                            log.error(aMarker, "Stopping execution, General Error executing sql for {} with for {}", sqlToExecute, ex);
+                            log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
+                            throw new HandymanException("Process failed", ex);
+                        } catch (SQLException ex) {
+                            log.error(aMarker, "Continuing to execute, even though SQL Error executing sql for {} ", sqlToExecute, ex);
+                            log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
+                            throw new HandymanException("Process failed", ex);
+                        } catch (Throwable ex) {
+                            log.error(aMarker, "Stopping execution, General Error executing sql for {} with for {}", sqlToExecute, ex);
+                            log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
+                            throw new HandymanException("Process failed", ex);
+                        }
                     }
+                    connection.commit();
+                    log.info(aMarker, "Completed Transform id#{}, name#{}, dbSrc#{}, sqlList#{}", action.getActionId(), transform.getName()
+                            , dbSrc, sqlList);
                 }
-                connection.commit();
-                log.info(aMarker, "Completed Transform id#{}, name#{}, dbSrc#{}, sqlList#{}", action.getActionId(), transform.getName()
-                        , dbSrc, sqlList);
+            } catch (SQLException ex) {
+                log.error(aMarker, "Stopping execution, Fetching connection failed", ex);
+                log.info(aMarker, "connection.exception {}", ExceptionUtil.toString(ex));
+                throw new HandymanException("Process failed", ex);
             }
-        } catch (SQLException ex) {
-            log.error(aMarker, "Stopping execution, Fetching connection failed", ex);
-            log.info(aMarker, "connection.exception {}", ExceptionUtil.toString(ex));
-            throw new HandymanException("Process failed", ex);
-        }
+        });
+
+
     }
 
 
