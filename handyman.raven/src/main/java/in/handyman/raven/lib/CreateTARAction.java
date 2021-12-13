@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,6 +53,8 @@ public class CreateTARAction implements IActionExecution {
         if (!Files.exists(Paths.get(source))) {
             log.info(aMarker, "{} source Folder not found", source);
         }
+        this.action.getContext().put("tar.source.fileName", source);
+        this.action.getContext().put("tar.source.fileSize", String.valueOf(calculateSize(source)));
         var destination = createTAR.getDestination();
         final Path dPath = Paths.get(destination);
         if (!Files.exists(dPath)) {
@@ -71,6 +75,13 @@ public class CreateTARAction implements IActionExecution {
                 }
             }
         }
+        this.action.getContext().put("tar.dest.fileName", fileName);
+        this.action.getContext().put("tar.dest.fileSize", String.valueOf(calculateSize(fileName)));
+
+    }
+
+    private double calculateSize(final String fileName) throws IOException {
+        return BigDecimal.valueOf(Files.size(new File(fileName).toPath()) / (1024.0 * 1024)).setScale(2, RoundingMode.CEILING).doubleValue();
     }
 
     private void addFilesToTarGZ(final String filePath, final String parent, final TarArchiveOutputStream tarArchive) throws IOException {

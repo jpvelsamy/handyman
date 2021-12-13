@@ -9,6 +9,7 @@ import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.Action;
 import in.handyman.raven.lib.model.ExportCsv;
 import in.handyman.raven.util.ExceptionUtil;
+import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -18,9 +19,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -55,9 +56,9 @@ public class ExportCsvAction implements IActionExecution {
         var dbSrc = exportCsv.getSource();
         var executionSource = exportCsv.getExecutionSource();
         var location = exportCsv.getTargetLocation();
-        var execStmt = exportCsv.getStmt();
+        var execStmt = StringEscapeUtils.unescapeJava(exportCsv.getStmt());
         log.info(aMarker, "Starting the execution with id {} dbSrc {} execStmt {} location {} executionSource {}", action.getActionId(), dbSrc, execStmt, location, executionSource);
-        var sql = new ArrayList<String>();
+        var sql = new HashMap<String, String>();
         if (dbSrc != null) {
             final HikariDataSource hikariDataSource = ResourceAccess.rdbmsConn(dbSrc);
             log.info(aMarker, "Created a hikariDataSource for rdbms connection src {}", dbSrc);
@@ -66,7 +67,7 @@ public class ExportCsvAction implements IActionExecution {
                     log.info(aMarker, "Executing sql statement {}", execStmt);
                     var result = stmt.executeQuery(execStmt);
                     while (result.next()) {
-                        sql.add(result.getString(1));
+                        sql.put(result.getString(1), result.getString(2));
                     }
                 }
             } catch (SQLException ex) {
@@ -79,39 +80,39 @@ public class ExportCsvAction implements IActionExecution {
         if (!sql.isEmpty()) {
             getSqlExecution(sql, executionSource, location);
         } else if (execStmt != null) {
-            getSqlExecution(Collections.singletonList(execStmt), executionSource, location);
+            getSqlExecution(Collections.singletonMap("output_" + UUID.randomUUID(), execStmt), executionSource, location);
         } else {
             log.error("Sql stmts are empty");
         }
     }
 
-    private void getSqlExecution(final List<String> sql, final String executionSource, final String location) {
-        var payloadSize = Optional.ofNullable(exportCsv.getPayloadSize()).map(Integer::valueOf).orElse(10000);
+    private void getSqlExecution(final Map<String, String> sql, final String executionSource, final String location) {
+        final int payloadSize = Optional.ofNullable(exportCsv.getPayloadSize()).map(Integer::valueOf).orElse(10000);
         log.info("payload {}", payloadSize);
-        for (var execStmt : sql) {
+
+
+        for (var execStmt : sql.entrySet()) {
             final HikariDataSource hikariDataSource = ResourceAccess.rdbmsConn(executionSource);
             log.info(aMarker, "Created a hikariDataSource for rdbms connection src {}", executionSource);
             try (var con = hikariDataSource.getConnection()) {
                 try (var stmt = con.createStatement()) {
                     log.info(aMarker, "Executing sql statement {}", execStmt);
-                    var result = stmt.executeQuery(execStmt);
+                    var result = stmt.executeQuery(execStmt.getValue());
                     result.setFetchSize(payloadSize);
-                    performWriteCsv(result, location);
+                    performWriteCsv(result, location + execStmt.getKey() + ".csv");
                 }
             } catch (SQLException ex) {
                 log.error(aMarker, "Stopping execution, General Error executing sql for {} with for campaign {}", execStmt, ex);
-                log.info(aMarker, execStmt + ".exception", ExceptionUtil.toString(ex));
+                log.info(aMarker, execStmt.getValue() + ".exception", ExceptionUtil.toString(ex));
                 throw new HandymanException("Process failed", ex);
             }
         }
 
     }
 
-    private void performWriteCsv(final ResultSet resultSet, final String location) {
-
-        var file = new File(location);
-        if (file.isDirectory()) {
-            var fileName = location + "output_" + UUID.randomUUID() + ".csv";
+    private void performWriteCsv(final ResultSet resultSet, final String fileName) {
+        var file = new File(fileName);
+        if (file.getParentFile().exists()) {
             log.info(aMarker, "Filename {} has been built", fileName);
             try (var writer = new CSVWriter(new FileWriter(fileName))) {
                 writer.writeAll(resultSet, true);
