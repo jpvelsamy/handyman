@@ -1,6 +1,7 @@
 package in.handyman.raven.lib;
 
 import com.opencsv.CSVWriter;
+import com.opencsv.ResultSetHelperService;
 import com.zaxxer.hikari.HikariDataSource;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
@@ -115,6 +116,11 @@ public class ExportCsvAction implements IActionExecution {
         if (file.getParentFile().exists()) {
             log.info(aMarker, "Filename {} has been built", fileName);
             try (var writer = new CSVWriter(new FileWriter(fileName))) {
+                var resultService = new ResultSetHelperService();
+                resultService.setDateFormat("yyyy-MM-dd");
+                resultService.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
+                writer.setResultService(resultService);
+
                 writer.writeAll(resultSet, true);
             } catch (IOException | SQLException ex) {
                 throw new HandymanException(ex.toString());
