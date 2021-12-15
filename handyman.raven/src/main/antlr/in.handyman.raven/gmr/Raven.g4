@@ -151,13 +151,13 @@ exportCsv:
     'exportCsv' 'as' name=STRING 'source' source=STRING 'executionSource' executionSource=STRING
     ('using' stmt= STRING)* 'targetLocation' targetLocation=STRING
     'using' '{''}'
-     ('on-condition' condition=expression)* ('fielding' writeThreadCount=NON_ZERO_DIGIT)* ;
+     ('on-condition' condition=expression)* ('fielding' writeThreadCount=STRING)* ;
 
 importCsvToDB:
 	'importCsvToDB' 'as' name= STRING 'target' target=resource 'on' tableName=STRING 'using'
 	 '{'
 		value+=STRING
-	'}' ('on-condition' condition=expression)* ('fielding' writeThreadCount=NON_ZERO_DIGIT)* ('batch' batchSize=NON_ZERO_DIGIT)*;
+	'}' ('on-condition' condition=expression)* ('fielding' writeThreadCount=STRING)* ('batch' batchSize=STRING)*;
 
 extractTAR:
 	'extractTAR' 'as' name= STRING 'from' source=STRING 'destination' destination=STRING 'using'
@@ -195,10 +195,10 @@ producerConsumerModel:
     'pcm' 'as'  name=STRING 'on-resource' source=resource
     'produce''{'
         produce+=producer
-    '}' ('fielding' produceThreadCount=NON_ZERO_DIGIT)*
+    '}' ('fielding' produceThreadCount=STRING)*
     'consume''{'
         consume+=consumer
-    '}'('fielding' consumeThreadCount=NON_ZERO_DIGIT)*  ('on-condition' condition=expression)*;
+    '}'('fielding' consumeThreadCount=STRING)*  ('on-condition' condition=expression)*;
 
 producer:
     'producer''as' name=STRING 'push-result-at' push=STRING

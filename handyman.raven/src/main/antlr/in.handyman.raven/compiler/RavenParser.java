@@ -2053,10 +2053,6 @@ public class RavenParser extends Parser {
 		public ExpressionContext expression(int i) {
 			return getRuleContext(ExpressionContext.class,i);
 		}
-		public List<TerminalNode> NON_ZERO_DIGIT() { return getTokens(RavenParser.NON_ZERO_DIGIT); }
-		public TerminalNode NON_ZERO_DIGIT(int i) {
-			return getToken(RavenParser.NON_ZERO_DIGIT, i);
-		}
 		public ExportCsvContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -2143,7 +2139,7 @@ public class RavenParser extends Parser {
 				setState(473);
 				match(T__11);
 				setState(474);
-				((ExportCsvContext)_localctx).writeThreadCount = match(NON_ZERO_DIGIT);
+				((ExportCsvContext)_localctx).writeThreadCount = match(STRING);
 				}
 				}
 				setState(479);
@@ -2184,10 +2180,6 @@ public class RavenParser extends Parser {
 		}
 		public ExpressionContext expression(int i) {
 			return getRuleContext(ExpressionContext.class,i);
-		}
-		public List<TerminalNode> NON_ZERO_DIGIT() { return getTokens(RavenParser.NON_ZERO_DIGIT); }
-		public TerminalNode NON_ZERO_DIGIT(int i) {
-			return getToken(RavenParser.NON_ZERO_DIGIT, i);
 		}
 		public ImportCsvToDBContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -2258,7 +2250,7 @@ public class RavenParser extends Parser {
 				setState(498);
 				match(T__11);
 				setState(499);
-				((ImportCsvToDBContext)_localctx).writeThreadCount = match(NON_ZERO_DIGIT);
+				((ImportCsvToDBContext)_localctx).writeThreadCount = match(STRING);
 				}
 				}
 				setState(504);
@@ -2274,7 +2266,7 @@ public class RavenParser extends Parser {
 				setState(505);
 				match(T__52);
 				setState(506);
-				((ImportCsvToDBContext)_localctx).batchSize = match(NON_ZERO_DIGIT);
+				((ImportCsvToDBContext)_localctx).batchSize = match(STRING);
 				}
 				}
 				setState(511);
@@ -2823,7 +2815,10 @@ public class RavenParser extends Parser {
 		public List<ConsumerContext> consume = new ArrayList<ConsumerContext>();
 		public Token consumeThreadCount;
 		public ExpressionContext condition;
-		public TerminalNode STRING() { return getToken(RavenParser.STRING, 0); }
+		public List<TerminalNode> STRING() { return getTokens(RavenParser.STRING); }
+		public TerminalNode STRING(int i) {
+			return getToken(RavenParser.STRING, i);
+		}
 		public ResourceContext resource() {
 			return getRuleContext(ResourceContext.class,0);
 		}
@@ -2832,10 +2827,6 @@ public class RavenParser extends Parser {
 		}
 		public ConsumerContext consumer() {
 			return getRuleContext(ConsumerContext.class,0);
-		}
-		public List<TerminalNode> NON_ZERO_DIGIT() { return getTokens(RavenParser.NON_ZERO_DIGIT); }
-		public TerminalNode NON_ZERO_DIGIT(int i) {
-			return getToken(RavenParser.NON_ZERO_DIGIT, i);
 		}
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
@@ -2892,7 +2883,7 @@ public class RavenParser extends Parser {
 				setState(624);
 				match(T__11);
 				setState(625);
-				((ProducerConsumerModelContext)_localctx).produceThreadCount = match(NON_ZERO_DIGIT);
+				((ProducerConsumerModelContext)_localctx).produceThreadCount = match(STRING);
 				}
 				}
 				setState(630);
@@ -2917,7 +2908,7 @@ public class RavenParser extends Parser {
 				setState(635);
 				match(T__11);
 				setState(636);
-				((ProducerConsumerModelContext)_localctx).consumeThreadCount = match(NON_ZERO_DIGIT);
+				((ProducerConsumerModelContext)_localctx).consumeThreadCount = match(STRING);
 				}
 				}
 				setState(641);
@@ -4070,7 +4061,7 @@ public class RavenParser extends Parser {
 		"\2\2\u01d2\u01d3\7\4\2\2\u01d3\u01d8\7\5\2\2\u01d4\u01d5\7\r\2\2\u01d5"+
 		"\u01d7\5B\"\2\u01d6\u01d4\3\2\2\2\u01d7\u01da\3\2\2\2\u01d8\u01d6\3\2"+
 		"\2\2\u01d8\u01d9\3\2\2\2\u01d9\u01df\3\2\2\2\u01da\u01d8\3\2\2\2\u01db"+
-		"\u01dc\7\16\2\2\u01dc\u01de\7]\2\2\u01dd\u01db\3\2\2\2\u01de\u01e1\3\2"+
+		"\u01dc\7\16\2\2\u01dc\u01de\7^\2\2\u01dd\u01db\3\2\2\2\u01de\u01e1\3\2"+
 		"\2\2\u01df\u01dd\3\2\2\2\u01df\u01e0\3\2\2\2\u01e0)\3\2\2\2\u01e1\u01df"+
 		"\3\2\2\2\u01e2\u01e3\7\65\2\2\u01e3\u01e4\7\n\2\2\u01e4\u01e5\7^\2\2\u01e5"+
 		"\u01e6\7\66\2\2\u01e6\u01e7\5H%\2\u01e7\u01e8\7\13\2\2\u01e8\u01e9\7^"+
@@ -4078,9 +4069,9 @@ public class RavenParser extends Parser {
 		"\u01f1\7\5\2\2\u01ed\u01ee\7\r\2\2\u01ee\u01f0\5B\"\2\u01ef\u01ed\3\2"+
 		"\2\2\u01f0\u01f3\3\2\2\2\u01f1\u01ef\3\2\2\2\u01f1\u01f2\3\2\2\2\u01f2"+
 		"\u01f8\3\2\2\2\u01f3\u01f1\3\2\2\2\u01f4\u01f5\7\16\2\2\u01f5\u01f7\7"+
-		"]\2\2\u01f6\u01f4\3\2\2\2\u01f7\u01fa\3\2\2\2\u01f8\u01f6\3\2\2\2\u01f8"+
+		"^\2\2\u01f6\u01f4\3\2\2\2\u01f7\u01fa\3\2\2\2\u01f8\u01f6\3\2\2\2\u01f8"+
 		"\u01f9\3\2\2\2\u01f9\u01ff\3\2\2\2\u01fa\u01f8\3\2\2\2\u01fb\u01fc\7\67"+
-		"\2\2\u01fc\u01fe\7]\2\2\u01fd\u01fb\3\2\2\2\u01fe\u0201\3\2\2\2\u01ff"+
+		"\2\2\u01fc\u01fe\7^\2\2\u01fd\u01fb\3\2\2\2\u01fe\u0201\3\2\2\2\u01ff"+
 		"\u01fd\3\2\2\2\u01ff\u0200\3\2\2\2\u0200+\3\2\2\2\u0201\u01ff\3\2\2\2"+
 		"\u0202\u0203\78\2\2\u0203\u0204\7\n\2\2\u0204\u0205\7^\2\2\u0205\u0206"+
 		"\7\20\2\2\u0206\u0207\7^\2\2\u0207\u0208\79\2\2\u0208\u0209\7^\2\2\u0209"+
@@ -4115,10 +4106,10 @@ public class RavenParser extends Parser {
 		"\2\u0269\u026a\7C\2\2\u026a\u026b\7\n\2\2\u026b\u026c\7^\2\2\u026c\u026d"+
 		"\7D\2\2\u026d\u026e\5H%\2\u026e\u026f\7E\2\2\u026f\u0270\7\4\2\2\u0270"+
 		"\u0271\5:\36\2\u0271\u0276\7\5\2\2\u0272\u0273\7\16\2\2\u0273\u0275\7"+
-		"]\2\2\u0274\u0272\3\2\2\2\u0275\u0278\3\2\2\2\u0276\u0274\3\2\2\2\u0276"+
+		"^\2\2\u0274\u0272\3\2\2\2\u0275\u0278\3\2\2\2\u0276\u0274\3\2\2\2\u0276"+
 		"\u0277\3\2\2\2\u0277\u0279\3\2\2\2\u0278\u0276\3\2\2\2\u0279\u027a\7F"+
 		"\2\2\u027a\u027b\7\4\2\2\u027b\u027c\5<\37\2\u027c\u0281\7\5\2\2\u027d"+
-		"\u027e\7\16\2\2\u027e\u0280\7]\2\2\u027f\u027d\3\2\2\2\u0280\u0283\3\2"+
+		"\u027e\7\16\2\2\u027e\u0280\7^\2\2\u027f\u027d\3\2\2\2\u0280\u0283\3\2"+
 		"\2\2\u0281\u027f\3\2\2\2\u0281\u0282\3\2\2\2\u0282\u0288\3\2\2\2\u0283"+
 		"\u0281\3\2\2\2\u0284\u0285\7\r\2\2\u0285\u0287\5B\"\2\u0286\u0284\3\2"+
 		"\2\2\u0287\u028a\3\2\2\2\u0288\u0286\3\2\2\2\u0288\u0289\3\2\2\2\u0289"+
