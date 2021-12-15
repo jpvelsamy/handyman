@@ -99,7 +99,7 @@ callProcess:
 	'for-every'
 	'{'
 	value=STRING
-	'}' ('on-condition' condition=expression)*;
+	'}' ('on-condition' condition=expression)* ('on-parallel-fielding' forkBatchSize=STRING)*;
 
 
 forkProcess:

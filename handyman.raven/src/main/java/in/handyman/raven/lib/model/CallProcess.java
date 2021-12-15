@@ -27,4 +27,6 @@ public class CallProcess implements IActionContext {
     private String value;
 
     private Boolean condition = true;
+
+    private String forkBatchSize;
 }
