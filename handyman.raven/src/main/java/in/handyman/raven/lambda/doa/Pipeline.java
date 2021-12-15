@@ -41,7 +41,7 @@ public class Pipeline extends AbstractAudit implements IPipeline {
 
     public void updateExecutionStatusId(final Integer executionStatusId) {
         this.setExecutionStatusId(executionStatusId);
-        HandymanActorSystemAccess.insert(LambdaExecutionAudit.builder().pipelineId(this.pipelineId).executionStatusId(executionStatusId).build());
+        HandymanActorSystemAccess.insert(LambdaExecutionAudit.builder().pipelineId(this.pipelineId).executionStatusId(executionStatusId).rootPipelineId(this.getRootPipelineId()).build());
         log.info("Pipeline audit has been inserted with PipelineId {} as {}", this.getPipelineName(), ExecutionStatus.get(executionStatusId));
     }
 

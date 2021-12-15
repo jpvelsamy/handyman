@@ -145,9 +145,9 @@ public class ProducerConsumerModelAction implements IActionExecution {
         } catch (Throwable e) {
             throw new HandymanException("Failed to execute", e);
         } finally {
-            producerConsumerModel.getSource().get()
-                    .useHandle(handle -> handle.createUpdate("INSERT INTO pcm_event ( payload, pcm_id,process) VALUES(:payload, :pcmId,0)")
-                            .bind("payload", poison).bind("pcmId", pipelineId).execute());
+//            producerConsumerModel.getSource().get()
+//                    .useHandle(handle -> handle.createUpdate("INSERT INTO pcm_event ( payload, pcm_id,process) VALUES(:payload, :pcmId,0)")
+//                            .bind("payload", poison).bind("pcmId", pipelineId).execute());
             try {
                 consumerCountDown.await();
             } catch (InterruptedException e) {

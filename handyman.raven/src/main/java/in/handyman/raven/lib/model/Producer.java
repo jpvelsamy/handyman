@@ -28,6 +28,7 @@ import java.util.List;
 public class Producer implements IActionContext {
 
     private Long pcmId;
+    private String poison;
     private ResourceConnection source;
 
     private String name;

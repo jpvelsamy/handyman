@@ -50,6 +50,7 @@ public class Action extends AbstractAudit implements IAction {
     public void updateExecutionStatusId(final Integer executionStatusId) {
         this.setExecutionStatusId(executionStatusId);
         HandymanActorSystemAccess.insert(ActionExecutionAudit.builder().actionId(actionId)
+                .rootPipelineId(this.getRootPipelineId())
                 .pipelineId(this.pipelineId).executionStatusId(executionStatusId).build());
         LambdaEngine.getLogger(this).info("Action audit has been inserted with ActionId {} as {}", this.actionName, ExecutionStatus.get(executionStatusId));
     }

@@ -25,5 +25,6 @@ public class LambdaExecutionAudit extends Auditable {
     private Long id = UniqueID.getId();
     private Long pipelineId;
     private Integer executionStatusId;
+    private Long rootPipelineId;
 
 }

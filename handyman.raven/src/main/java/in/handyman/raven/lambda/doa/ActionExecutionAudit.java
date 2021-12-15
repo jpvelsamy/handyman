@@ -26,5 +26,6 @@ public class ActionExecutionAudit extends Auditable {
     private Long actionId;
     private Long pipelineId;
     private Integer executionStatusId;
+    private Long rootPipelineId;
 
 }

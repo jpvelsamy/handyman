@@ -52,7 +52,7 @@ public class LambdaEngine {
      * Execution starts from here
      */
     public static Pipeline start(final LContext lContext) throws HandymanException {
-        if (lContext.getRootPipelineId() != null) {
+        if (lContext.getRootPipelineId() == null) {
             lContext.setRootPipelineId(UniqueID.getId());
             log.info("LContext rootID => {} ", lContext.getRootPipelineId());
         }
@@ -82,6 +82,7 @@ public class LambdaEngine {
             context.put("parent-pipeline-id", String.valueOf(lContext.getParentPipelineId()));
             context.put("pipeline-id", String.valueOf(pipeline.getPipelineId()));
             context.put("process-id", String.valueOf(pipeline.getPipelineId()));
+            context.put("root-ref-id", String.valueOf(pipeline.getPipelineId()));
             context.putAll(lContext.getInheritedContext());
 //            final Map<String, String> other = getOther(pipeline);
 //            context.putAll(other);

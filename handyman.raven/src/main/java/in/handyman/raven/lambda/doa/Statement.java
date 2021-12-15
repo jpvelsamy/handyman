@@ -26,6 +26,7 @@ public class Statement extends Auditable {
     private Long actionId;
 
     private String statementContent;
+    private Long rootPipelineId;
 
     private Integer rowsWritten;
     private Integer rowsRead;

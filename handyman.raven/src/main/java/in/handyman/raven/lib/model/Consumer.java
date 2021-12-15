@@ -29,7 +29,9 @@ public class Consumer implements IActionContext {
 
     private String poison;
     private Long pcmId;
+
     private ResourceConnection source;
+    private String event;
 
     private String name;
     private String limit;
