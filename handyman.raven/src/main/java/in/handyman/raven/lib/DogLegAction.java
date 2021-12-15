@@ -59,6 +59,7 @@ public class DogLegAction implements IActionExecution {
                     .pipelineName(processName)
                     .parentPipelineId(action.getPipelineId())
                     .parentPipelineName(action.getPipelineName())
+                    .rootPipelineId(action.getRootPipelineId())
                     .build();
             var processWorker = new LambdaCallable(lContext, countDownLatch);
             executor.submit(processWorker);

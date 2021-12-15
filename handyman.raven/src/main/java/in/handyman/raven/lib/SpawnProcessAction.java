@@ -46,6 +46,7 @@ public class SpawnProcessAction implements IActionExecution {
                 .pipelineName(spawnProcess.getTarget())
                 .parentPipelineId(action.getPipelineId())
                 .parentPipelineName(action.getPipelineName())
+                .rootPipelineId(action.getRootPipelineId())
                 .build();
         var processWorker = new LambdaCallable(lContext, null);
         executor.submit(processWorker);

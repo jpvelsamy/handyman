@@ -31,6 +31,7 @@ public abstract class AbstractAudit extends Auditable {
     private String lambdaName;
     private String pipelineName;
     private String processName;
+    private Long rootPipelineId;
 
     private Long parentPipelineId = -1L;
     private String parentPipelineName = "";

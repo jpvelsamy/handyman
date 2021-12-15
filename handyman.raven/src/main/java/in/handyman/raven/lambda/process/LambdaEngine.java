@@ -16,6 +16,7 @@ import in.handyman.raven.lambda.doa.Action;
 import in.handyman.raven.lambda.doa.ExecutionGroup;
 import in.handyman.raven.lambda.doa.ExecutionStatus;
 import in.handyman.raven.lambda.doa.Pipeline;
+import in.handyman.raven.util.UniqueID;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.slf4j.Logger;
@@ -38,6 +39,7 @@ public class LambdaEngine {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final HandymanRepo REPO = new HandymanRepoR2Impl();
+    private static final String RAVEN_VM = "RavenVM";
 
     static {
         MAPPER.registerModule(new JavaTimeModule());
@@ -50,6 +52,10 @@ public class LambdaEngine {
      * Execution starts from here
      */
     public static Pipeline start(final LContext lContext) throws HandymanException {
+        if (lContext.getRootPipelineId() != null) {
+            lContext.setRootPipelineId(UniqueID.getId());
+            log.info("LContext rootID => {} ", lContext.getRootPipelineId());
+        }
         log.info("LContext => " + lContext);
         final String hostName;
         try {
@@ -60,9 +66,11 @@ public class LambdaEngine {
         }
         final Pipeline pipeline = Pipeline.builder()
                 .hostName(hostName)
-                .modeOfExecution("RavenVM")
+                .modeOfExecution(RAVEN_VM)
                 .threadName(Thread.currentThread().getName())
                 .build();
+        pipeline.setRootPipelineId(lContext.getRootPipelineId());
+
         HandymanActorSystemAccess.insert(pipeline);
         pipeline.updateExecutionStatusId(ExecutionStatus.STAGED.getId());
         log.info("Started building the pipeline context");
@@ -209,6 +217,7 @@ public class LambdaEngine {
         action.setParentActionName(abstractAudit.getParentActionName());
         action.setParentPipelineId(abstractAudit.getParentPipelineId());
         action.setParentPipelineName(abstractAudit.getParentPipelineName());
+        action.setRootPipelineId(abstractAudit.getRootPipelineId());
     }
 
     public static void doAction(final Action action, final RavenParser.ActionContext actionContext) {

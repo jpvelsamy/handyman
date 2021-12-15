@@ -210,7 +210,7 @@ producer:
      '}' ('on-condition' condition=expression)* ;
 
 consumer:
-    'consumer''as' name=STRING 'pop-result-from' pop=STRING 'limit' limit=NON_ZERO_DIGIT 'execute''{'
+    'consumer''as' name=STRING 'pop-result-from' pop=STRING 'limit' limit=STRING 'execute''{'
        (actions+=action)*
        '}' ('on-condition' condition=expression)* ;
 

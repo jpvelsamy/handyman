@@ -15,6 +15,7 @@ import java.util.Map;
 @Data
 public class LContext {
 
+    private Long rootPipelineId;
     //Load Enum
     private String processLoadType;
     // Config name

@@ -68,6 +68,7 @@ public class CallProcessAction implements IActionExecution {
                                 .pipelineName(callProcess.getTarget())
                                 .parentPipelineId(action.getPipelineId())
                                 .parentPipelineName(action.getPipelineName())
+                                .rootPipelineId(action.getRootPipelineId())
                                 .build();
                         runContext.add(lContext);
                     }

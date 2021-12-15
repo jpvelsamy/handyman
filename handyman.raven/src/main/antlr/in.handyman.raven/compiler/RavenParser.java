@@ -3085,7 +3085,6 @@ public class RavenParser extends Parser {
 		public TerminalNode STRING(int i) {
 			return getToken(RavenParser.STRING, i);
 		}
-		public TerminalNode NON_ZERO_DIGIT() { return getToken(RavenParser.NON_ZERO_DIGIT, 0); }
 		public List<ActionContext> action() {
 			return getRuleContexts(ActionContext.class);
 		}
@@ -3132,7 +3131,7 @@ public class RavenParser extends Parser {
 			setState(686);
 			match(T__74);
 			setState(687);
-			((ConsumerContext)_localctx).limit = match(NON_ZERO_DIGIT);
+			((ConsumerContext)_localctx).limit = match(STRING);
 			setState(688);
 			match(T__71);
 			setState(689);
@@ -4143,7 +4142,7 @@ public class RavenParser extends Parser {
 		"\u02a7\5B\"\2\u02a6\u02a4\3\2\2\2\u02a7\u02aa\3\2\2\2\u02a8\u02a6\3\2"+
 		"\2\2\u02a8\u02a9\3\2\2\2\u02a9;\3\2\2\2\u02aa\u02a8\3\2\2\2\u02ab\u02ac"+
 		"\7K\2\2\u02ac\u02ad\7\n\2\2\u02ad\u02ae\7_\2\2\u02ae\u02af\7L\2\2\u02af"+
-		"\u02b0\7_\2\2\u02b0\u02b1\7M\2\2\u02b1\u02b2\7^\2\2\u02b2\u02b3\7J\2\2"+
+		"\u02b0\7_\2\2\u02b0\u02b1\7M\2\2\u02b1\u02b2\7_\2\2\u02b2\u02b3\7J\2\2"+
 		"\u02b3\u02b7\7\4\2\2\u02b4\u02b6\5\n\6\2\u02b5\u02b4\3\2\2\2\u02b6\u02b9"+
 		"\3\2\2\2\u02b7\u02b5\3\2\2\2\u02b7\u02b8\3\2\2\2\u02b8\u02ba\3\2\2\2\u02b9"+
 		"\u02b7\3\2\2\2\u02ba\u02bf\7\5\2\2\u02bb\u02bc\7\r\2\2\u02bc\u02be\5B"+

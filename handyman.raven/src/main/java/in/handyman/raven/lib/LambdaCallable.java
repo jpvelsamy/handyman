@@ -14,6 +14,7 @@ import java.util.concurrent.CountDownLatch;
 @RequiredArgsConstructor
 public class LambdaCallable implements Callable<Pipeline> {
 
+    //TODO move all the context generation part into a method
     private final LContext lContext;
     private final CountDownLatch countDownLatch;
 

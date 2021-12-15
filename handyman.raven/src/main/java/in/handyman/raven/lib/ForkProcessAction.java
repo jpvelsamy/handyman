@@ -73,6 +73,7 @@ public class ForkProcessAction implements IActionExecution {
                                 .pipelineName(processName)
                                 .parentPipelineId(action.getPipelineId())
                                 .parentPipelineName(action.getPipelineName())
+                                .rootPipelineId(action.getRootPipelineId())
                                 .build();
                         lContexts.add(lContext);
                     }
