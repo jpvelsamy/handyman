@@ -54,7 +54,7 @@ public class ImportCsvToDBAction implements IActionExecution {
     public void execute() throws Exception {
 
         final int threadCount = Optional.ofNullable(importCsvToDB.getWriteThreadCount()).map(Integer::valueOf).orElse(1);
-        final Integer batchSize = Optional.ofNullable(importCsvToDB.getBatchSize()).map(Integer::valueOf).orElse(1);
+        final Integer batchSize = Optional.ofNullable(importCsvToDB.getBatchSize()).map(Integer::valueOf).orElse(10000);
 
         final ResourceConnection target = importCsvToDB.getTarget();
         if (Objects.isNull(target)) {
