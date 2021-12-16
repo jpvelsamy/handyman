@@ -40,4 +40,6 @@ public class Consumer implements IActionContext {
     @JsonIgnore
     private List<RavenParser.ActionContext> actions = new ArrayList<>();
     private Boolean condition = true;
+
+    private String threadCount;
 }
