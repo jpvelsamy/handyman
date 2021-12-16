@@ -201,7 +201,7 @@ producerConsumerModel:
     '}'('fielding' consumeThreadCount=STRING)*  ('on-condition' condition=expression)*;
 
 producer:
-    'producer''as' name=STRING ('push-result-at' push=STRING)*
+    'producer''as' name=STRING ('push-result-at' push=STRING)*  ('on-resource' source=resource)*
      'for-every''{'
      	stmt=STRING
      '}'
