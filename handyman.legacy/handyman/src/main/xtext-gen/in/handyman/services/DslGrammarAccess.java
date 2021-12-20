@@ -38,12 +38,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightCurlyBracketKeyword_6 = (Keyword)cGroup.eContents().get(6);
 		
 		//Process:
-		//	'process' name=STRING
-		//	'{'
-		//	try=Try
-		//	catch=Catch
-		//	finally=Finally
-		//	'}';
+		//	'process' name=STRING '{' try=Try catch=Catch finally=Finally '}';
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'process' name=STRING '{' try=Try catch=Catch finally=Finally '}'
@@ -94,10 +89,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightCurlyBracketKeyword_4 = (Keyword)cGroup.eContents().get(4);
 		
 		//Try:
-		//	'try' name=ID
-		//	'{'
-		//	action+=Action*
-		//	'}';
+		//	'try' name=ID '{' action+=Action* '}';
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'try' name=ID '{' action+=Action* '}'
@@ -136,10 +128,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightCurlyBracketKeyword_4 = (Keyword)cGroup.eContents().get(4);
 		
 		//Finally:
-		//	'finally' name=ID
-		//	'{'
-		//	action+=Action*
-		//	'}';
+		//	'finally' name=ID '{' action+=Action* '}';
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'finally' name=ID '{' action+=Action* '}'
@@ -178,10 +167,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightCurlyBracketKeyword_4 = (Keyword)cGroup.eContents().get(4);
 		
 		//Catch:
-		//	'catch' name=ID
-		//	'{'
-		//	action+=Action*
-		//	'}';
+		//	'catch' name=ID '{' action+=Action* '}';
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'catch' name=ID '{' action+=Action* '}'
@@ -241,34 +227,10 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cSpawnprocessParserRuleCall_27 = (RuleCall)cAlternatives.eContents().get(27);
 		
 		//Action:
-		//	Copydata
-		//	| LoadCsv
-		//	| WriteCsv
-		//	| Transform
-		//	| GooglecalPUT
-		//	| SlackPUT
-		//	| ClickSendSms
-		//	| Updatedaudit
-		//	| Callprocess
-		//	| Forkprocess
-		//	| Fetch
-		//	| TrelloPUT
-		//	| TrelloGET
-		//	| Rest
-		//	| Doozle
-		//	| Dropfile
-		//	| FBCLead
-		//	| FBFormDownload
-		//	| SendMail
-		//	| GooglecontactPUT
-		//	| GooglecontactSelectAll
-		//	| Abort
-		//	| SmsLeadSms
-		//	| FirebaseReactiveNotification
-		//	| FirebaseDatabasePut
-		//	| ExecJava
-		//	| Dogleg
-		//	| Spawnprocess;
+		//	Copydata | LoadCsv | WriteCsv | Transform | GooglecalPUT | SlackPUT | ClickSendSms | Updatedaudit | Callprocess |
+		//	Forkprocess | Fetch | TrelloPUT | TrelloGET | Rest | Doozle | Dropfile | FBCLead | FBFormDownload | SendMail |
+		//	GooglecontactPUT | GooglecontactSelectAll | Abort | SmsLeadSms | FirebaseReactiveNotification | FirebaseDatabasePut |
+		//	ExecJava | Dogleg | Spawnprocess;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//Copydata | LoadCsv | WriteCsv | Transform | GooglecalPUT | SlackPUT | ClickSendSms | Updatedaudit | Callprocess |
@@ -444,10 +406,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cConditionExpressionParserRuleCall_10_0 = (RuleCall)cConditionAssignment_10.eContents().get(0);
 		
 		//Dogleg:
-		//	"dogleg" 'as' name=STRING 'use-parent-context' inheritContext=STRING 'using'
-		//	'{'
-		//	processList+=StartProcess
-		//	'}' 'on-condition' condition=Expression;
+		//	"dogleg" 'as' name=STRING 'use-parent-context' inheritContext=STRING 'using' '{' processList+=StartProcess '}'
+		//	'on-condition' condition=Expression;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//"dogleg" 'as' name=STRING 'use-parent-context' inheritContext=STRING 'using' '{' processList+=StartProcess '}'
@@ -521,10 +481,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cConditionExpressionParserRuleCall_11_0 = (RuleCall)cConditionAssignment_11.eContents().get(0);
 		
 		//ExecJava:
-		//	"java" 'as' name=STRING 'using' classFqn=STRING 'name-sake-db' dbSrc=STRING
-		//	'{'
-		//	value=STRING
-		//	'}' 'on-condition' condition=Expression;
+		//	"java" 'as' name=STRING 'using' classFqn=STRING 'name-sake-db' dbSrc=STRING '{' value=STRING '}' 'on-condition'
+		//	condition=Expression;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//"java" 'as' name=STRING 'using' classFqn=STRING 'name-sake-db' dbSrc=STRING '{' value=STRING '}' 'on-condition'
@@ -615,10 +573,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//FirebaseDatabasePut:
 		//	'fbdp' 'as' name=STRING 'on' url=STRING 'auth-by' fbjson=STRING 'for-group' groupPath=STRING 'from-source'
-		//	dbSrc=STRING 'with-class' classFqn=STRING 'using'
-		//	'{'
-		//	value=STRING
-		//	'}' 'on-condition' condition=Expression;
+		//	dbSrc=STRING 'with-class' classFqn=STRING 'using' '{' value=STRING '}' 'on-condition' condition=Expression;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'fbdp' 'as' name=STRING 'on' url=STRING 'auth-by' fbjson=STRING 'for-group' groupPath=STRING 'from-source' dbSrc=STRING
@@ -843,10 +798,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//SmsLeadSms:
 		//	'smsleadssms' 'as' name=STRING 'on' url=STRING 'with-sender' sender=STRING 'through-account' account=STRING
-		//	'secured-by' privateKey=STRING 'from-source' dbSrc=STRING 'using'
-		//	'{'
-		//	value=STRING
-		//	'}' 'on-condition' condition=Expression 'do-dryrun-with' dryrunNumber=STRING;
+		//	'secured-by' privateKey=STRING 'from-source' dbSrc=STRING 'using' '{' value=STRING '}' 'on-condition'
+		//	condition=Expression 'do-dryrun-with' dryrunNumber=STRING;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'smsleadssms' 'as' name=STRING 'on' url=STRING 'with-sender' sender=STRING 'through-account' account=STRING 'secured-by'
@@ -960,10 +913,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cConditionExpressionParserRuleCall_7_0 = (RuleCall)cConditionAssignment_7.eContents().get(0);
 		
 		//Abort:
-		//	'abort' 'as' name=STRING
-		//	'{'
-		//	value=STRING
-		//	'}' 'on-condition' condition=Expression;
+		//	'abort' 'as' name=STRING '{' value=STRING '}' 'on-condition' condition=Expression;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'abort' 'as' name=STRING '{' value=STRING '}' 'on-condition' condition=Expression
@@ -1039,10 +989,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		//GooglecontactSelectAll:
 		//	'gcontact-fetchall' 'as' name=STRING 'through-account' account=STRING 'secured-by' privateKey=STRING 'with-key'
 		//	ptwelveFile=STRING 'for-project' project=STRING 'on-behalf-of' impersonatedUser=STRING 'to-target' dbSrc=STRING
-		//	'using'
-		//	'{'
-		//	value=STRING
-		//	'}' 'on-condition' condition=Expression;
+		//	'using' '{' value=STRING '}' 'on-condition' condition=Expression;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'gcontact-fetchall' 'as' name=STRING 'through-account' account=STRING 'secured-by' privateKey=STRING 'with-key'
@@ -1170,10 +1117,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//SendMail:
 		//	'sendmail' 'as' name=STRING 'secured-by' privateKey=STRING 'on-behalf-of' impersonatedUser=STRING 'from-source'
-		//	dbSrc=STRING 'using'
-		//	'{'
-		//	value=STRING
-		//	'}' 'on-condition' condition=Expression 'do-dryrun-with' dryrunMail=STRING;
+		//	dbSrc=STRING 'using' '{' value=STRING '}' 'on-condition' condition=Expression 'do-dryrun-with' dryrunMail=STRING;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'sendmail' 'as' name=STRING 'secured-by' privateKey=STRING 'on-behalf-of' impersonatedUser=STRING 'from-source'
@@ -1289,10 +1233,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		//GooglecontactPUT:
 		//	'gcontact' 'as' name=STRING 'through-account' account=STRING 'secured-by' privateKey=STRING 'with-key'
 		//	ptwelveFile=STRING 'for-project' project=STRING 'on-behalf-of' impersonatedUser=STRING 'from-source' dbSrc=STRING
-		//	'using'
-		//	'{'
-		//	value=STRING
-		//	'}' 'on-condition' condition=Expression;
+		//	'using' '{' value=STRING '}' 'on-condition' condition=Expression;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'gcontact' 'as' name=STRING 'through-account' account=STRING 'secured-by' privateKey=STRING 'with-key'
@@ -1427,10 +1368,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		//GooglecalPUT:
 		//	'gcalendar' 'as' name=STRING 'through-account' account=STRING 'secured-by' privateKey=STRING 'with-key'
 		//	ptwelveFile=STRING 'for-project' project=STRING 'on-behalf-of' impersonatedUser=STRING 'from-source' dbSrc=STRING
-		//	'using'
-		//	'{'
-		//	value=STRING
-		//	'}' 'on-condition' condition=Expression;
+		//	'using' '{' value=STRING '}' 'on-condition' condition=Expression;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'gcalendar' 'as' name=STRING 'through-account' account=STRING 'secured-by' privateKey=STRING 'with-key'
@@ -1561,10 +1499,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//FBCLead:
 		//	'fblc' 'as' name=STRING 'secured-by' accessToken=STRING 'with-key' appSecret=STRING 'through-user' accountId=STRING
-		//	'for-campaign' campaignId=STRING 'into' target=STRING 'using'
-		//	'{'
-		//	value=STRING
-		//	'}' 'on-condition' condition=Expression;
+		//	'for-campaign' campaignId=STRING 'into' target=STRING 'using' '{' value=STRING '}' 'on-condition'
+		//	condition=Expression;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'fblc' 'as' name=STRING 'secured-by' accessToken=STRING 'with-key' appSecret=STRING 'through-user' accountId=STRING
@@ -1685,10 +1621,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//FBFormDownload:
 		//	'fbfd' 'as' name=STRING 'secured-by' accessToken=STRING 'with-key' appSecret=STRING 'through-user' accountId=STRING
-		//	'for-form' formId=STRING 'into' target=STRING 'using'
-		//	'{'
-		//	value=STRING
-		//	'}' 'on-condition' condition=Expression;
+		//	'for-form' formId=STRING 'into' target=STRING 'using' '{' value=STRING '}' 'on-condition' condition=Expression;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'fbfd' 'as' name=STRING 'secured-by' accessToken=STRING 'with-key' appSecret=STRING 'through-user' accountId=STRING
@@ -1850,10 +1783,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cConditionExpressionParserRuleCall_12_0 = (RuleCall)cConditionAssignment_12.eContents().get(0);
 		
 		//Doozle:
-		//	'doozle' 'as' name=STRING 'in-table' target=STRING 'on' on=STRING 'using'
-		//	'{'
-		//	value=CreateStatement
-		//	'}' 'on-condition' condition=Expression;
+		//	'doozle' 'as' name=STRING 'in-table' target=STRING 'on' on=STRING 'using' '{' value=CreateStatement '}'
+		//	'on-condition' condition=Expression;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'doozle' 'as' name=STRING 'in-table' target=STRING 'on' on=STRING 'using' '{' value=CreateStatement '}' 'on-condition'
@@ -1975,22 +1906,11 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cConditionExpressionParserRuleCall_40_0 = (RuleCall)cConditionAssignment_40.eContents().get(0);
 		
 		//Rest:
-		//	'rest' 'as' name=STRING 'secured-by' authtoken=STRING 'with-url' url=STRING 'and-method-as' method=STRING
-		//	'{'
-		//	'from' resourcedatafrom=STRING 'update-url-with' '{'
-		//	urldata=SelectStatement
-		//	'}'
-		//	'from' headerdatafrom=STRING 'update-header-with' '{'
-		//	headerdata=SelectStatement
-		//	'}'
-		//	'from' postdatafrom=STRING 'update-body-with' '{'
-		//	'parent' 'as' parentName=STRING parentdata=SelectStatement
-		//	parts+=RestPart*
-		//	'}'
-		//	'into' ackdatato=STRING 'store-ack-at' '{'
-		//	ackdata=SelectStatement
-		//	'}'
-		//	'}' 'on-condition' condition=Expression;
+		//	'rest' 'as' name=STRING 'secured-by' authtoken=STRING 'with-url' url=STRING 'and-method-as' method=STRING '{' 'from'
+		//	resourcedatafrom=STRING 'update-url-with' '{' urldata=SelectStatement '}' 'from' headerdatafrom=STRING
+		//	'update-header-with' '{' headerdata=SelectStatement '}' 'from' postdatafrom=STRING 'update-body-with' '{' 'parent'
+		//	'as' parentName=STRING parentdata=SelectStatement parts+=RestPart* '}' 'into' ackdatato=STRING 'store-ack-at' '{'
+		//	ackdata=SelectStatement '}' '}' 'on-condition' condition=Expression;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'rest' 'as' name=STRING 'secured-by' authtoken=STRING 'with-url' url=STRING 'and-method-as' method=STRING '{' 'from'
@@ -2240,10 +2160,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//TrelloGET:
 		//	'trelloget' 'as' name=STRING 'secured-by' authtoken=STRING 'with-key' key=STRING 'through-user' useraccount=STRING
-		//	'from-board' board=STRING 'to' target=STRING 'using'
-		//	'{'
-		//	value=SelectStatement
-		//	'}' 'on-condition' condition=Expression;
+		//	'from-board' board=STRING 'to' target=STRING 'using' '{' value=SelectStatement '}' 'on-condition'
+		//	condition=Expression;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'trelloget' 'as' name=STRING 'secured-by' authtoken=STRING 'with-key' key=STRING 'through-user' useraccount=STRING
@@ -2364,10 +2282,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//TrelloPUT:
 		//	'trelloput' 'as' name=STRING 'secured-by' authtoken=STRING 'with-key' key=STRING 'through-user' useraccount=STRING
-		//	'for-list' list=STRING 'from-source' source=STRING 'using'
-		//	'{'
-		//	value=SelectStatement
-		//	'}' 'on-condition' condition=Expression;
+		//	'for-list' list=STRING 'from-source' source=STRING 'using' '{' value=SelectStatement '}' 'on-condition'
+		//	condition=Expression;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'trelloput' 'as' name=STRING 'secured-by' authtoken=STRING 'with-key' key=STRING 'through-user' useraccount=STRING
@@ -2476,10 +2392,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cConditionExpressionParserRuleCall_10_0 = (RuleCall)cConditionAssignment_10.eContents().get(0);
 		
 		//Fetch:
-		//	'assign' 'as' name=STRING 'source' source=STRING 'using'
-		//	'{'
-		//	value=STRING
-		//	'}' 'on-condition' condition=Expression;
+		//	'assign' 'as' name=STRING 'source' source=STRING 'using' '{' value=STRING '}' 'on-condition' condition=Expression;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'assign' 'as' name=STRING 'source' source=STRING 'using' '{' value=STRING '}' 'on-condition' condition=Expression
@@ -2557,10 +2470,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//Callprocess:
 		//	'callprocess' 'as' name=STRING 'with-target' target=STRING 'from-file' source=STRING 'using' datasource=STRING
-		//	'for-every'
-		//	'{'
-		//	value=SelectStatement
-		//	'}' 'on-condition' condition=Expression;
+		//	'for-every' '{' value=SelectStatement '}' 'on-condition' condition=Expression;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'callprocess' 'as' name=STRING 'with-target' target=STRING 'from-file' source=STRING 'using' datasource=STRING
@@ -2660,10 +2570,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//Forkprocess:
 		//	'forkprocess' 'as' name=STRING 'with-target' target=STRING 'from-file' source=STRING 'using' datasource=STRING
-		//	'for-every'
-		//	'{'
-		//	value=SelectStatement
-		//	'}' 'watermark' forkBatchSize=STRING 'on-condition' condition=Expression;
+		//	'for-every' '{' value=SelectStatement '}' 'watermark' forkBatchSize=STRING 'on-condition' condition=Expression;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'forkprocess' 'as' name=STRING 'with-target' target=STRING 'from-file' source=STRING 'using' datasource=STRING
@@ -2765,10 +2672,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cConditionExpressionParserRuleCall_12_0 = (RuleCall)cConditionAssignment_12.eContents().get(0);
 		
 		//Updatedaudit:
-		//	'log' 'as' name=STRING 'logto' logsink=STRING 'in' datasource=STRING 'using'
-		//	'{'
-		//	value=SelectStatement
-		//	'}' 'on-condition' condition=Expression;
+		//	'log' 'as' name=STRING 'logto' logsink=STRING 'in' datasource=STRING 'using' '{' value=SelectStatement '}'
+		//	'on-condition' condition=Expression;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'log' 'as' name=STRING 'logto' logsink=STRING 'in' datasource=STRING 'using' '{' value=SelectStatement '}'
@@ -2856,10 +2761,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//ClickSendSms:
 		//	'c2sms' 'as' name=STRING 'with-user' userid=STRING 'secured-by' securityKey=STRING 'from-source' target=STRING
-		//	'using'
-		//	'{'
-		//	value=STRING
-		//	'}' 'on-condition' condition=Expression;
+		//	'using' '{' value=STRING '}' 'on-condition' condition=Expression;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'c2sms' 'as' name=STRING 'with-user' userid=STRING 'secured-by' securityKey=STRING 'from-source' target=STRING 'using'
@@ -2952,10 +2854,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cConditionExpressionParserRuleCall_12_0 = (RuleCall)cConditionAssignment_12.eContents().get(0);
 		
 		//SlackPUT:
-		//	'slackput' 'as' name=STRING 'to' team=STRING 'on' channel=STRING 'using'
-		//	'{'
-		//	value=STRING
-		//	'}' 'on-condition' condition=Expression;
+		//	'slackput' 'as' name=STRING 'to' team=STRING 'on' channel=STRING 'using' '{' value=STRING '}' 'on-condition'
+		//	condition=Expression;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'slackput' 'as' name=STRING 'to' team=STRING 'on' channel=STRING 'using' '{' value=STRING '}' 'on-condition'
@@ -3048,11 +2948,9 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cWriteBatchSizeSTRINGTerminalRuleCall_18_0 = (RuleCall)cWriteBatchSizeAssignment_18.eContents().get(0);
 		
 		//Copydata:
-		//	'copydata' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'using'
-		//	'{'
-		//	value=STRING
-		//	'}' 'on-condition' condition=Expression 'fielding' writeThreadCount=STRING 'with-fetch-batch-size'
-		//	fetchBatchSize=STRING 'with-write-batch-size' writeBatchSize=STRING;
+		//	'copydata' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'using' '{' value=STRING '}' 'on-condition'
+		//	condition=Expression 'fielding' writeThreadCount=STRING 'with-fetch-batch-size' fetchBatchSize=STRING
+		//	'with-write-batch-size' writeBatchSize=STRING;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'copydata' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'using' '{' value=STRING '}' 'on-condition'
@@ -3167,9 +3065,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cConditionExpressionParserRuleCall_14_0 = (RuleCall)cConditionAssignment_14.eContents().get(0);
 		
 		//WriteCsv:
-		//	'writecsv' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'with' delim=STRING 'using'
-		//	'{'
-		//	value=SelectStatement
+		//	'writecsv' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'with' delim=STRING 'using' '{' value=SelectStatement
 		//	'}' 'on-condition' condition=Expression;
 		@Override public ParserRule getRule() { return rule; }
 		
@@ -3276,10 +3172,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//LoadCsv:
 		//	'loadcsv' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'with' delim=STRING 'with-fetch-batch-size'
-		//	fetchBatchSize=INT 'with-write-batch-size' writeBatchSize=INT 'using'
-		//	'{'
-		//	value=SelectStatement
-		//	'}' 'on-condition' condition=Expression 'fielding' writeThreadCount=INT;
+		//	fetchBatchSize=INT 'with-write-batch-size' writeBatchSize=INT 'using' '{' value=SelectStatement '}' 'on-condition'
+		//	condition=Expression 'fielding' writeThreadCount=INT;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'loadcsv' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'with' delim=STRING 'with-fetch-batch-size'
@@ -3397,10 +3291,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cConditionExpressionParserRuleCall_10_0 = (RuleCall)cConditionAssignment_10.eContents().get(0);
 		
 		//Transform:
-		//	'transform' 'as' name=STRING 'on' on=STRING 'using'
-		//	'{'
-		//	value+=NonSelectStatement
-		//	'}' 'on-condition' condition=Expression;
+		//	'transform' 'as' name=STRING 'on' on=STRING 'using' '{' value+=NonSelectStatement '}' 'on-condition'
+		//	condition=Expression;
 		@Override public ParserRule getRule() { return rule; }
 		
 		//'transform' 'as' name=STRING 'on' on=STRING 'using' '{' value+=NonSelectStatement '}' 'on-condition'
@@ -3721,12 +3613,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 
 	
 	//Process:
-	//	'process' name=STRING
-	//	'{'
-	//	try=Try
-	//	catch=Catch
-	//	finally=Finally
-	//	'}';
+	//	'process' name=STRING '{' try=Try catch=Catch finally=Finally '}';
 	public ProcessElements getProcessAccess() {
 		return pProcess;
 	}
@@ -3736,10 +3623,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//Try:
-	//	'try' name=ID
-	//	'{'
-	//	action+=Action*
-	//	'}';
+	//	'try' name=ID '{' action+=Action* '}';
 	public TryElements getTryAccess() {
 		return pTry;
 	}
@@ -3749,10 +3633,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//Finally:
-	//	'finally' name=ID
-	//	'{'
-	//	action+=Action*
-	//	'}';
+	//	'finally' name=ID '{' action+=Action* '}';
 	public FinallyElements getFinallyAccess() {
 		return pFinally;
 	}
@@ -3762,10 +3643,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//Catch:
-	//	'catch' name=ID
-	//	'{'
-	//	action+=Action*
-	//	'}';
+	//	'catch' name=ID '{' action+=Action* '}';
 	public CatchElements getCatchAccess() {
 		return pCatch;
 	}
@@ -3775,34 +3653,10 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//Action:
-	//	Copydata
-	//	| LoadCsv
-	//	| WriteCsv
-	//	| Transform
-	//	| GooglecalPUT
-	//	| SlackPUT
-	//	| ClickSendSms
-	//	| Updatedaudit
-	//	| Callprocess
-	//	| Forkprocess
-	//	| Fetch
-	//	| TrelloPUT
-	//	| TrelloGET
-	//	| Rest
-	//	| Doozle
-	//	| Dropfile
-	//	| FBCLead
-	//	| FBFormDownload
-	//	| SendMail
-	//	| GooglecontactPUT
-	//	| GooglecontactSelectAll
-	//	| Abort
-	//	| SmsLeadSms
-	//	| FirebaseReactiveNotification
-	//	| FirebaseDatabasePut
-	//	| ExecJava
-	//	| Dogleg
-	//	| Spawnprocess;
+	//	Copydata | LoadCsv | WriteCsv | Transform | GooglecalPUT | SlackPUT | ClickSendSms | Updatedaudit | Callprocess |
+	//	Forkprocess | Fetch | TrelloPUT | TrelloGET | Rest | Doozle | Dropfile | FBCLead | FBFormDownload | SendMail |
+	//	GooglecontactPUT | GooglecontactSelectAll | Abort | SmsLeadSms | FirebaseReactiveNotification | FirebaseDatabasePut |
+	//	ExecJava | Dogleg | Spawnprocess;
 	public ActionElements getActionAccess() {
 		return pAction;
 	}
@@ -3822,10 +3676,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//Dogleg:
-	//	"dogleg" 'as' name=STRING 'use-parent-context' inheritContext=STRING 'using'
-	//	'{'
-	//	processList+=StartProcess
-	//	'}' 'on-condition' condition=Expression;
+	//	"dogleg" 'as' name=STRING 'use-parent-context' inheritContext=STRING 'using' '{' processList+=StartProcess '}'
+	//	'on-condition' condition=Expression;
 	public DoglegElements getDoglegAccess() {
 		return pDogleg;
 	}
@@ -3835,10 +3687,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//ExecJava:
-	//	"java" 'as' name=STRING 'using' classFqn=STRING 'name-sake-db' dbSrc=STRING
-	//	'{'
-	//	value=STRING
-	//	'}' 'on-condition' condition=Expression;
+	//	"java" 'as' name=STRING 'using' classFqn=STRING 'name-sake-db' dbSrc=STRING '{' value=STRING '}' 'on-condition'
+	//	condition=Expression;
 	public ExecJavaElements getExecJavaAccess() {
 		return pExecJava;
 	}
@@ -3849,10 +3699,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	//FirebaseDatabasePut:
 	//	'fbdp' 'as' name=STRING 'on' url=STRING 'auth-by' fbjson=STRING 'for-group' groupPath=STRING 'from-source'
-	//	dbSrc=STRING 'with-class' classFqn=STRING 'using'
-	//	'{'
-	//	value=STRING
-	//	'}' 'on-condition' condition=Expression;
+	//	dbSrc=STRING 'with-class' classFqn=STRING 'using' '{' value=STRING '}' 'on-condition' condition=Expression;
 	public FirebaseDatabasePutElements getFirebaseDatabasePutAccess() {
 		return pFirebaseDatabasePut;
 	}
@@ -3874,10 +3721,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	//SmsLeadSms:
 	//	'smsleadssms' 'as' name=STRING 'on' url=STRING 'with-sender' sender=STRING 'through-account' account=STRING
-	//	'secured-by' privateKey=STRING 'from-source' dbSrc=STRING 'using'
-	//	'{'
-	//	value=STRING
-	//	'}' 'on-condition' condition=Expression 'do-dryrun-with' dryrunNumber=STRING;
+	//	'secured-by' privateKey=STRING 'from-source' dbSrc=STRING 'using' '{' value=STRING '}' 'on-condition'
+	//	condition=Expression 'do-dryrun-with' dryrunNumber=STRING;
 	public SmsLeadSmsElements getSmsLeadSmsAccess() {
 		return pSmsLeadSms;
 	}
@@ -3887,10 +3732,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//Abort:
-	//	'abort' 'as' name=STRING
-	//	'{'
-	//	value=STRING
-	//	'}' 'on-condition' condition=Expression;
+	//	'abort' 'as' name=STRING '{' value=STRING '}' 'on-condition' condition=Expression;
 	public AbortElements getAbortAccess() {
 		return pAbort;
 	}
@@ -3902,10 +3744,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	//GooglecontactSelectAll:
 	//	'gcontact-fetchall' 'as' name=STRING 'through-account' account=STRING 'secured-by' privateKey=STRING 'with-key'
 	//	ptwelveFile=STRING 'for-project' project=STRING 'on-behalf-of' impersonatedUser=STRING 'to-target' dbSrc=STRING
-	//	'using'
-	//	'{'
-	//	value=STRING
-	//	'}' 'on-condition' condition=Expression;
+	//	'using' '{' value=STRING '}' 'on-condition' condition=Expression;
 	public GooglecontactSelectAllElements getGooglecontactSelectAllAccess() {
 		return pGooglecontactSelectAll;
 	}
@@ -3916,10 +3755,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	//SendMail:
 	//	'sendmail' 'as' name=STRING 'secured-by' privateKey=STRING 'on-behalf-of' impersonatedUser=STRING 'from-source'
-	//	dbSrc=STRING 'using'
-	//	'{'
-	//	value=STRING
-	//	'}' 'on-condition' condition=Expression 'do-dryrun-with' dryrunMail=STRING;
+	//	dbSrc=STRING 'using' '{' value=STRING '}' 'on-condition' condition=Expression 'do-dryrun-with' dryrunMail=STRING;
 	public SendMailElements getSendMailAccess() {
 		return pSendMail;
 	}
@@ -3931,10 +3767,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	//GooglecontactPUT:
 	//	'gcontact' 'as' name=STRING 'through-account' account=STRING 'secured-by' privateKey=STRING 'with-key'
 	//	ptwelveFile=STRING 'for-project' project=STRING 'on-behalf-of' impersonatedUser=STRING 'from-source' dbSrc=STRING
-	//	'using'
-	//	'{'
-	//	value=STRING
-	//	'}' 'on-condition' condition=Expression;
+	//	'using' '{' value=STRING '}' 'on-condition' condition=Expression;
 	public GooglecontactPUTElements getGooglecontactPUTAccess() {
 		return pGooglecontactPUT;
 	}
@@ -3946,10 +3779,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	//GooglecalPUT:
 	//	'gcalendar' 'as' name=STRING 'through-account' account=STRING 'secured-by' privateKey=STRING 'with-key'
 	//	ptwelveFile=STRING 'for-project' project=STRING 'on-behalf-of' impersonatedUser=STRING 'from-source' dbSrc=STRING
-	//	'using'
-	//	'{'
-	//	value=STRING
-	//	'}' 'on-condition' condition=Expression;
+	//	'using' '{' value=STRING '}' 'on-condition' condition=Expression;
 	public GooglecalPUTElements getGooglecalPUTAccess() {
 		return pGooglecalPUT;
 	}
@@ -3960,10 +3790,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	//FBCLead:
 	//	'fblc' 'as' name=STRING 'secured-by' accessToken=STRING 'with-key' appSecret=STRING 'through-user' accountId=STRING
-	//	'for-campaign' campaignId=STRING 'into' target=STRING 'using'
-	//	'{'
-	//	value=STRING
-	//	'}' 'on-condition' condition=Expression;
+	//	'for-campaign' campaignId=STRING 'into' target=STRING 'using' '{' value=STRING '}' 'on-condition'
+	//	condition=Expression;
 	public FBCLeadElements getFBCLeadAccess() {
 		return pFBCLead;
 	}
@@ -3974,10 +3802,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	//FBFormDownload:
 	//	'fbfd' 'as' name=STRING 'secured-by' accessToken=STRING 'with-key' appSecret=STRING 'through-user' accountId=STRING
-	//	'for-form' formId=STRING 'into' target=STRING 'using'
-	//	'{'
-	//	value=STRING
-	//	'}' 'on-condition' condition=Expression;
+	//	'for-form' formId=STRING 'into' target=STRING 'using' '{' value=STRING '}' 'on-condition' condition=Expression;
 	public FBFormDownloadElements getFBFormDownloadAccess() {
 		return pFBFormDownload;
 	}
@@ -3997,10 +3822,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//Doozle:
-	//	'doozle' 'as' name=STRING 'in-table' target=STRING 'on' on=STRING 'using'
-	//	'{'
-	//	value=CreateStatement
-	//	'}' 'on-condition' condition=Expression;
+	//	'doozle' 'as' name=STRING 'in-table' target=STRING 'on' on=STRING 'using' '{' value=CreateStatement '}'
+	//	'on-condition' condition=Expression;
 	public DoozleElements getDoozleAccess() {
 		return pDoozle;
 	}
@@ -4010,22 +3833,11 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//Rest:
-	//	'rest' 'as' name=STRING 'secured-by' authtoken=STRING 'with-url' url=STRING 'and-method-as' method=STRING
-	//	'{'
-	//	'from' resourcedatafrom=STRING 'update-url-with' '{'
-	//	urldata=SelectStatement
-	//	'}'
-	//	'from' headerdatafrom=STRING 'update-header-with' '{'
-	//	headerdata=SelectStatement
-	//	'}'
-	//	'from' postdatafrom=STRING 'update-body-with' '{'
-	//	'parent' 'as' parentName=STRING parentdata=SelectStatement
-	//	parts+=RestPart*
-	//	'}'
-	//	'into' ackdatato=STRING 'store-ack-at' '{'
-	//	ackdata=SelectStatement
-	//	'}'
-	//	'}' 'on-condition' condition=Expression;
+	//	'rest' 'as' name=STRING 'secured-by' authtoken=STRING 'with-url' url=STRING 'and-method-as' method=STRING '{' 'from'
+	//	resourcedatafrom=STRING 'update-url-with' '{' urldata=SelectStatement '}' 'from' headerdatafrom=STRING
+	//	'update-header-with' '{' headerdata=SelectStatement '}' 'from' postdatafrom=STRING 'update-body-with' '{' 'parent'
+	//	'as' parentName=STRING parentdata=SelectStatement parts+=RestPart* '}' 'into' ackdatato=STRING 'store-ack-at' '{'
+	//	ackdata=SelectStatement '}' '}' 'on-condition' condition=Expression;
 	public RestElements getRestAccess() {
 		return pRest;
 	}
@@ -4046,10 +3858,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	//TrelloGET:
 	//	'trelloget' 'as' name=STRING 'secured-by' authtoken=STRING 'with-key' key=STRING 'through-user' useraccount=STRING
-	//	'from-board' board=STRING 'to' target=STRING 'using'
-	//	'{'
-	//	value=SelectStatement
-	//	'}' 'on-condition' condition=Expression;
+	//	'from-board' board=STRING 'to' target=STRING 'using' '{' value=SelectStatement '}' 'on-condition'
+	//	condition=Expression;
 	public TrelloGETElements getTrelloGETAccess() {
 		return pTrelloGET;
 	}
@@ -4060,10 +3870,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	//TrelloPUT:
 	//	'trelloput' 'as' name=STRING 'secured-by' authtoken=STRING 'with-key' key=STRING 'through-user' useraccount=STRING
-	//	'for-list' list=STRING 'from-source' source=STRING 'using'
-	//	'{'
-	//	value=SelectStatement
-	//	'}' 'on-condition' condition=Expression;
+	//	'for-list' list=STRING 'from-source' source=STRING 'using' '{' value=SelectStatement '}' 'on-condition'
+	//	condition=Expression;
 	public TrelloPUTElements getTrelloPUTAccess() {
 		return pTrelloPUT;
 	}
@@ -4073,10 +3881,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//Fetch:
-	//	'assign' 'as' name=STRING 'source' source=STRING 'using'
-	//	'{'
-	//	value=STRING
-	//	'}' 'on-condition' condition=Expression;
+	//	'assign' 'as' name=STRING 'source' source=STRING 'using' '{' value=STRING '}' 'on-condition' condition=Expression;
 	public FetchElements getFetchAccess() {
 		return pFetch;
 	}
@@ -4087,10 +3892,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	//Callprocess:
 	//	'callprocess' 'as' name=STRING 'with-target' target=STRING 'from-file' source=STRING 'using' datasource=STRING
-	//	'for-every'
-	//	'{'
-	//	value=SelectStatement
-	//	'}' 'on-condition' condition=Expression;
+	//	'for-every' '{' value=SelectStatement '}' 'on-condition' condition=Expression;
 	public CallprocessElements getCallprocessAccess() {
 		return pCallprocess;
 	}
@@ -4101,10 +3903,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	//Forkprocess:
 	//	'forkprocess' 'as' name=STRING 'with-target' target=STRING 'from-file' source=STRING 'using' datasource=STRING
-	//	'for-every'
-	//	'{'
-	//	value=SelectStatement
-	//	'}' 'watermark' forkBatchSize=STRING 'on-condition' condition=Expression;
+	//	'for-every' '{' value=SelectStatement '}' 'watermark' forkBatchSize=STRING 'on-condition' condition=Expression;
 	public ForkprocessElements getForkprocessAccess() {
 		return pForkprocess;
 	}
@@ -4114,10 +3913,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//Updatedaudit:
-	//	'log' 'as' name=STRING 'logto' logsink=STRING 'in' datasource=STRING 'using'
-	//	'{'
-	//	value=SelectStatement
-	//	'}' 'on-condition' condition=Expression;
+	//	'log' 'as' name=STRING 'logto' logsink=STRING 'in' datasource=STRING 'using' '{' value=SelectStatement '}'
+	//	'on-condition' condition=Expression;
 	public UpdatedauditElements getUpdatedauditAccess() {
 		return pUpdatedaudit;
 	}
@@ -4128,10 +3925,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	//ClickSendSms:
 	//	'c2sms' 'as' name=STRING 'with-user' userid=STRING 'secured-by' securityKey=STRING 'from-source' target=STRING
-	//	'using'
-	//	'{'
-	//	value=STRING
-	//	'}' 'on-condition' condition=Expression;
+	//	'using' '{' value=STRING '}' 'on-condition' condition=Expression;
 	public ClickSendSmsElements getClickSendSmsAccess() {
 		return pClickSendSms;
 	}
@@ -4141,10 +3935,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//SlackPUT:
-	//	'slackput' 'as' name=STRING 'to' team=STRING 'on' channel=STRING 'using'
-	//	'{'
-	//	value=STRING
-	//	'}' 'on-condition' condition=Expression;
+	//	'slackput' 'as' name=STRING 'to' team=STRING 'on' channel=STRING 'using' '{' value=STRING '}' 'on-condition'
+	//	condition=Expression;
 	public SlackPUTElements getSlackPUTAccess() {
 		return pSlackPUT;
 	}
@@ -4154,11 +3946,9 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//Copydata:
-	//	'copydata' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'using'
-	//	'{'
-	//	value=STRING
-	//	'}' 'on-condition' condition=Expression 'fielding' writeThreadCount=STRING 'with-fetch-batch-size'
-	//	fetchBatchSize=STRING 'with-write-batch-size' writeBatchSize=STRING;
+	//	'copydata' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'using' '{' value=STRING '}' 'on-condition'
+	//	condition=Expression 'fielding' writeThreadCount=STRING 'with-fetch-batch-size' fetchBatchSize=STRING
+	//	'with-write-batch-size' writeBatchSize=STRING;
 	public CopydataElements getCopydataAccess() {
 		return pCopydata;
 	}
@@ -4168,9 +3958,7 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//WriteCsv:
-	//	'writecsv' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'with' delim=STRING 'using'
-	//	'{'
-	//	value=SelectStatement
+	//	'writecsv' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'with' delim=STRING 'using' '{' value=SelectStatement
 	//	'}' 'on-condition' condition=Expression;
 	public WriteCsvElements getWriteCsvAccess() {
 		return pWriteCsv;
@@ -4182,10 +3970,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	//LoadCsv:
 	//	'loadcsv' 'as' name=STRING 'from' source=STRING 'to' to=STRING 'with' delim=STRING 'with-fetch-batch-size'
-	//	fetchBatchSize=INT 'with-write-batch-size' writeBatchSize=INT 'using'
-	//	'{'
-	//	value=SelectStatement
-	//	'}' 'on-condition' condition=Expression 'fielding' writeThreadCount=INT;
+	//	fetchBatchSize=INT 'with-write-batch-size' writeBatchSize=INT 'using' '{' value=SelectStatement '}' 'on-condition'
+	//	condition=Expression 'fielding' writeThreadCount=INT;
 	public LoadCsvElements getLoadCsvAccess() {
 		return pLoadCsv;
 	}
@@ -4195,10 +3981,8 @@ public class DslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//Transform:
-	//	'transform' 'as' name=STRING 'on' on=STRING 'using'
-	//	'{'
-	//	value+=NonSelectStatement
-	//	'}' 'on-condition' condition=Expression;
+	//	'transform' 'as' name=STRING 'on' on=STRING 'using' '{' value+=NonSelectStatement '}' 'on-condition'
+	//	condition=Expression;
 	public TransformElements getTransformAccess() {
 		return pTransform;
 	}

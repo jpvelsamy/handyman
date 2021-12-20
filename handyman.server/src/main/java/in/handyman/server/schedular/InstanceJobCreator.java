@@ -7,6 +7,7 @@ import in.handyman.raven.lambda.doa.ConfigStore;
 import in.handyman.raven.lambda.doa.ConfigType;
 import in.handyman.server.legacy.HLegacyRepo;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
@@ -21,7 +22,7 @@ import org.quartz.impl.StdSchedulerFactory;
 import java.util.Properties;
 import java.util.Set;
 
-@Log4j2
+@Slf4j
 public class InstanceJobCreator implements Job {
 
     private static final QuartzRepo REPO = new QuartzRepo();

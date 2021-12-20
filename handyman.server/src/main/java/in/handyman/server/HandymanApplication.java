@@ -12,9 +12,10 @@ import io.dropwizard.setup.Environment;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.SchedulerException;
 
-@Log4j2
+@Slf4j
 public class HandymanApplication extends Application<Configuration> {
 
 
