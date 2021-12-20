@@ -50,7 +50,7 @@ public class TransformAction implements IActionExecution {
         log.info(aMarker, "Sql input post parameter ingestion \n {}", transform.getValue());
         final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(dbSrc);
         jdbi.useTransaction(handle -> {
-            try  {
+            try {
                 final Connection connection = handle.getConnection();
                 connection.setAutoCommit(false);
                 for (String givenQuery : transform.getValue()) {

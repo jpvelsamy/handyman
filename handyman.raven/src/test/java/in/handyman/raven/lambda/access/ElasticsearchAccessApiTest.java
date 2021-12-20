@@ -4,7 +4,6 @@ import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.repo.ElasticsearchAccessApi;
 import in.handyman.raven.lambda.doa.ConfigStore;
 import in.handyman.raven.lambda.doa.ResourceConnection;
-import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -12,7 +11,7 @@ import java.util.UUID;
 class ElasticsearchAccessApiTest {
 
 
-//    @Test
+    //    @Test
     void init() {
         try {
             if (ElasticsearchAccessApi.isExists(ElasticsearchAccessApi.toIndexName(ResourceConnection.class))) {

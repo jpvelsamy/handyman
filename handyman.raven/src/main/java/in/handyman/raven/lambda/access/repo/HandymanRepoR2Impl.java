@@ -211,7 +211,7 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
                 .bind(18, audit.getRequestBody())
                 .bind(19, audit.getThreadName())
                 .bind(20, audit.getProcessName())
-                .bind(21,audit.getRootPipelineId())
+                .bind(21, audit.getRootPipelineId())
                 .execute());
     }
 

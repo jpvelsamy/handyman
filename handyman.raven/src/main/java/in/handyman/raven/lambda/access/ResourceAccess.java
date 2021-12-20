@@ -21,14 +21,6 @@ public class ResourceAccess {
         return getHikariDataSource(resource);
     }
 
-    public static Jdbi rdbmsJDBIConn(final String resourceName) {
-        final ResourceConnection resource = ConfigAccess.getResourceConfig(resourceName);
-        if (Objects.isNull(resource)) {
-            log.warn("{} not found in Resource connections", resourceName);
-        }
-        return resource.get();
-    }
-
     public static HikariDataSource getHikariDataSource(final ResourceConnection resource) {
         if (Objects.isNull(resource)) {
             log.warn("not found in Resource connections");
@@ -58,6 +50,14 @@ public class ResourceAccess {
         config.addDataSourceProperty("prepStmtCacheSize", "250");
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
         return new HikariDataSource(config);
+    }
+
+    public static Jdbi rdbmsJDBIConn(final String resourceName) {
+        final ResourceConnection resource = ConfigAccess.getResourceConfig(resourceName);
+        if (Objects.isNull(resource)) {
+            log.warn("{} not found in Resource connections", resourceName);
+        }
+        return resource.get();
     }
 
 }

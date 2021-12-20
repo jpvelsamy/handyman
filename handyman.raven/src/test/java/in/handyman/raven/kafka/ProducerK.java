@@ -2,8 +2,6 @@ package in.handyman.raven.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.confluent.kafka.serializers.KafkaAvroDeserializer;
-import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.DeleteTopicsResult;
@@ -12,6 +10,8 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.KafkaFuture;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -21,7 +21,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-public class ProducerK {
+class ProducerK {
 
     // Load producer configuration settings from a local file
     protected static final Properties PROPS = new Properties();
@@ -29,10 +29,10 @@ public class ProducerK {
 
     static {
         PROPS.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        PROPS.put("key.serializer", KafkaAvroSerializer.class.getName());
-        PROPS.put("value.serializer", KafkaAvroSerializer.class.getName());
-        PROPS.put("key.deserializer", KafkaAvroDeserializer.class.getName());
-        PROPS.put("value.deserializer", KafkaAvroDeserializer.class.getName());
+        PROPS.put("key.serializer", StringSerializer.class.getName());
+        PROPS.put("value.serializer", StringSerializer.class.getName());
+        PROPS.put("key.deserializer", StringDeserializer.class.getName());
+        PROPS.put("value.deserializer", StringDeserializer.class.getName());
 
     }
 
