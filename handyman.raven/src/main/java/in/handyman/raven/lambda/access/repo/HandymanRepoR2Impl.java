@@ -31,6 +31,7 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     private static final Config CONFIG = ConfigFactory.parseResources("handyman-raven-configstore.props");
 
     private static final Jdbi jdbi;
+    public static final String SELECT_FROM_CONFIG_STORE_WHERE_CONFIG_TYPE_ID_AND_NAME_AND_ACTIVE_TRUE = "SELECT * FROM config_store where config_type_id = ? and name = ? and active=true ";
 
     static {
         log.info("Initializing the config store from config file {}", CONFIG.origin().url());
@@ -54,7 +55,7 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public List<ConfigStore> findConfigEntities(final ConfigType configType, final String configName) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where config_type_id = ? and name = ? and active=true ")
+        return jdbi.withHandle(handle -> handle.createQuery(SELECT_FROM_CONFIG_STORE_WHERE_CONFIG_TYPE_ID_AND_NAME_AND_ACTIVE_TRUE)
                 .bind(0, configType.getId())
                 .bind(1, configName)
                 .mapToBean(ConfigStore.class)
