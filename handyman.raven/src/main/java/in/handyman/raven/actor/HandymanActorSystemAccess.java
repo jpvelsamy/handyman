@@ -5,16 +5,16 @@ import in.handyman.raven.lambda.access.repo.HandymanRepoR2Impl;
 import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.ActionExecutionStatusAudit;
 import in.handyman.raven.lambda.doa.PipelineExecutionStatusAudit;
-import in.handyman.raven.lambda.doa.Pipeline;
+import in.handyman.raven.lambda.doa.PipelineExecutionAudit;
 import in.handyman.raven.lambda.doa.StatementExecutionAudit;
 
 public class HandymanActorSystemAccess {
 
     private static final HandymanRepo HANDYMAN_REPO = new HandymanRepoR2Impl();
 
-    public static void insert(final Pipeline pipeline) {
+    public static void insert(final PipelineExecutionAudit pipelineExecutionAudit) {
 
-        HANDYMAN_REPO.insertPipeline(pipeline);
+        HANDYMAN_REPO.insertPipeline(pipelineExecutionAudit);
     }
 
     public static void insert(final ActionExecutionAudit actionExecutionAudit) {
@@ -40,9 +40,9 @@ public class HandymanActorSystemAccess {
     }
 
 
-    public static void update(final Pipeline pipeline) {
+    public static void update(final PipelineExecutionAudit pipelineExecutionAudit) {
 
-        HANDYMAN_REPO.update(pipeline);
+        HANDYMAN_REPO.update(pipelineExecutionAudit);
     }
 
     public static void update(final ActionExecutionAudit actionExecutionAudit) {

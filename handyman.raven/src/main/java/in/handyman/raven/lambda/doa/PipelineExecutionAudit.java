@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Slf4j
-public class Pipeline extends AbstractAudit implements IPipeline {
+public class PipelineExecutionAudit extends AbstractAudit implements IPipeline {
 
     @Builder.Default
     private Long pipelineId = UniqueID.getId();

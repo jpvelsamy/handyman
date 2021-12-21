@@ -30,7 +30,7 @@ public class ResourceAccess {
             return createHP(resource.getUrl(), resource.getDriverClassName(),
                     resource.getUserName(), resource.getPassword());
         } catch (ClassNotFoundException e) {
-            throw new HandymanException("Resource " + Optional.of(resource).map(ResourceConnection::getName).orElse("not found") + " failed to connect", e);
+            throw new HandymanException("Resource " + Optional.of(resource).map(ResourceConnection::getConfigName).orElse("not found") + " failed to connect", e);
         }
     }
 
@@ -56,7 +56,9 @@ public class ResourceAccess {
         final ResourceConnection resource = ConfigAccess.getResourceConfig(resourceName);
         if (Objects.isNull(resource)) {
             log.warn("{} not found in Resource connections", resourceName);
+            throw new HandymanException("Resource connection is null");
         }
+        log.warn("{} found in Resource connections", resource.getConfigName());
         return resource.get();
     }
 

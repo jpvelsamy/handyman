@@ -15,7 +15,7 @@ import in.handyman.raven.lambda.doa.AbstractAudit;
 import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.ExecutionGroup;
 import in.handyman.raven.lambda.doa.ExecutionStatus;
-import in.handyman.raven.lambda.doa.Pipeline;
+import in.handyman.raven.lambda.doa.PipelineExecutionAudit;
 import in.handyman.raven.util.UniqueID;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -51,11 +51,8 @@ public class LambdaEngine {
     /**
      * Execution starts from here
      */
-    public static Pipeline start(final LContext lContext) throws HandymanException {
-        if (lContext.getRootPipelineId() == null) {
-            lContext.setRootPipelineId(UniqueID.getId());
-            log.info("LContext rootID => {} ", lContext.getRootPipelineId());
-        }
+    public static PipelineExecutionAudit start(final LContext lContext) throws HandymanException {
+
         log.info("LContext => " + lContext);
         final String hostName;
         try {
@@ -64,74 +61,79 @@ public class LambdaEngine {
         } catch (UnknownHostException e) {
             throw new HandymanException("hostName not found ", e);
         }
-        final Pipeline pipeline = Pipeline.builder()
+        final PipelineExecutionAudit pipelineExecutionAudit = PipelineExecutionAudit.builder()
                 .hostName(hostName)
                 .modeOfExecution(RAVEN_VM)
                 .threadName(Thread.currentThread().getName())
                 .build();
-        pipeline.setRootPipelineId(lContext.getRootPipelineId());
+        if (lContext.getRootPipelineId() == null) {
+            lContext.setRootPipelineId(UniqueID.getId());
+            log.info("LContext rootID => {} ", lContext.getRootPipelineId());
+            pipelineExecutionAudit.setPipelineId(lContext.getRootPipelineId());
+        }
+        pipelineExecutionAudit.setRootPipelineId(lContext.getRootPipelineId());
 
-        HandymanActorSystemAccess.insert(pipeline);
-        pipeline.updateExecutionStatusId(ExecutionStatus.STAGED.getId());
+        HandymanActorSystemAccess.insert(pipelineExecutionAudit);
+        pipelineExecutionAudit.updateExecutionStatusId(ExecutionStatus.STAGED.getId());
         log.info("Started building the pipeline context");
         try {
-            pipeline.updateExecutionStatusId(ExecutionStatus.STARTED.getId());
+            pipelineExecutionAudit.updateExecutionStatusId(ExecutionStatus.STARTED.getId());
             final Map<String, String> context = getEContext(lContext.getPipelineName());
             log.info("Raven Context has been initialized");
             final String processFile = getProcessFile(lContext, context);
             context.put("parent-pipeline-id", String.valueOf(lContext.getParentPipelineId()));
-            context.put("pipeline-id", String.valueOf(pipeline.getPipelineId()));
-            context.put("process-id", String.valueOf(pipeline.getPipelineId()));
-            context.put("root-ref-id", String.valueOf(pipeline.getPipelineId()));
+            context.put("pipeline-id", String.valueOf(pipelineExecutionAudit.getPipelineId()));
+            context.put("process-id", String.valueOf(pipelineExecutionAudit.getPipelineId()));
+            context.put("root-ref-id", String.valueOf(pipelineExecutionAudit.getPipelineId()));
             context.putAll(lContext.getInheritedContext());
 //            final Map<String, String> other = getOther(pipeline);
 //            context.putAll(other);
             log.info("Raven context has been populated with inheritedContext");
             final RavenParserContext ravenParserContext = getRavenParserContext(processFile, lContext.getLambdaName(), context);
 
-            toPipeline(lContext, pipeline);
+            toPipeline(lContext, pipelineExecutionAudit);
 
             final String relativePath = context.get(HRequestResolver.LoadType.FILE.getVariable());
 //            if (relativePath != null) {
 //                final int i = relativePath.indexOf(pipeline.getPipelineName());
 //                pipeline.setLambdaName(relativePath.substring(i ).replace(pipeline.getPipelineName() + "/", ""));
 //            }
-            pipeline.setProcessName(ravenParserContext.getProcessName());
-            pipeline.setContext(context);
+            pipelineExecutionAudit.setProcessName(ravenParserContext.getProcessName());
+            pipelineExecutionAudit.setContext(context);
 
             log.info("Initial Pipeline context has been build successfully");
             try {
                 log.info("Pipeline execution has been started");
-                pipeline.updateExecutionStatusId(ExecutionStatus.RUNNING.getId());
-                run(pipeline, ravenParserContext.getTryContext(), context, ExecutionGroup.TRY);
+                pipelineExecutionAudit.updateExecutionStatusId(ExecutionStatus.RUNNING.getId());
+                run(pipelineExecutionAudit, ravenParserContext.getTryContext(), context, ExecutionGroup.TRY);
                 log.info("Pipeline execution has been completed successfully");
             } catch (Exception e) {
                 log.info("Started Executing the catch block");
-                run(pipeline, ravenParserContext.getCatchContext(), context, ExecutionGroup.CATCH);
-                pipeline.updateExecutionStatusId(ExecutionStatus.FAILED.getId());
+                run(pipelineExecutionAudit, ravenParserContext.getCatchContext(), context, ExecutionGroup.CATCH);
+                pipelineExecutionAudit.updateExecutionStatusId(ExecutionStatus.FAILED.getId());
                 log.error("try section failed", e);
                 log.error("Completed Execution catch block");
                 throw new HandymanException("Failed", e);
             } finally {
                 log.info("Executing Finally Block");
-                run(pipeline, ravenParserContext.getFinallyContext(), context, ExecutionGroup.FINALLY);
-                HandymanActorSystemAccess.update(pipeline);
+                run(pipelineExecutionAudit, ravenParserContext.getFinallyContext(), context, ExecutionGroup.FINALLY);
+                HandymanActorSystemAccess.update(pipelineExecutionAudit);
                 log.info("Completed execution finally block");
-                if (ExecutionStatus.get(pipeline.getExecutionStatusId()) == ExecutionStatus.RUNNING) {
-                    final List<ActionExecutionAudit> actionExecutionAudits = REPO.findActions(pipeline.getPipelineId());
-                    final Integer executionStatusId = actionExecutionAudits.stream().filter(action -> ExecutionStatus.get(pipeline.getExecutionStatusId()) != ExecutionStatus.COMPLETED)
+                if (ExecutionStatus.get(pipelineExecutionAudit.getExecutionStatusId()) == ExecutionStatus.RUNNING) {
+                    final List<ActionExecutionAudit> actionExecutionAudits = REPO.findActions(pipelineExecutionAudit.getPipelineId());
+                    final Integer executionStatusId = actionExecutionAudits.stream().filter(action -> ExecutionStatus.get(pipelineExecutionAudit.getExecutionStatusId()) != ExecutionStatus.COMPLETED)
                             .findFirst().map(ActionExecutionAudit::getExecutionStatusId).orElse(ExecutionStatus.COMPLETED.getId());
-                    pipeline.updateExecutionStatusId(executionStatusId);
+                    pipelineExecutionAudit.updateExecutionStatusId(executionStatusId);
                 }
-                HandymanActorSystemAccess.update(pipeline);
+                HandymanActorSystemAccess.update(pipelineExecutionAudit);
             }
         } catch (Exception e) {
             log.error("Process section failed", e);
-            pipeline.updateExecutionStatusId(ExecutionStatus.FAILED.getId());
-            HandymanActorSystemAccess.update(pipeline);
-            throw new HandymanException("Failed for " + pipeline.getPipelineName(), e);
+            pipelineExecutionAudit.updateExecutionStatusId(ExecutionStatus.FAILED.getId());
+            HandymanActorSystemAccess.update(pipelineExecutionAudit);
+            throw new HandymanException("Failed for " + pipelineExecutionAudit.getPipelineName(), e);
         }
-        return pipeline;
+        return pipelineExecutionAudit;
     }
 
     private static HashMap<String, String> getEContext(final String lambdaName) {
@@ -167,30 +169,30 @@ public class LambdaEngine {
                 .build();
     }
 
-    private static void toPipeline(final LContext lContext, final Pipeline pipeline) {
-        pipeline.setRelativePath(lContext.getRelativePath());
-        pipeline.setPipelineLoadType(lContext.getProcessLoadType());
-        pipeline.setLambdaName(lContext.getLambdaName());
-        pipeline.setPipelineName(lContext.getPipelineName());
-        pipeline.setParentPipelineId(lContext.getParentPipelineId());
-        pipeline.setParentPipelineName(lContext.getParentPipelineName());
-        pipeline.setParentActionId(lContext.getParentActionId());
-        pipeline.setParentActionName(lContext.getParentActionName());
-        pipeline.setRequestBody(lContext.getPayload());
+    private static void toPipeline(final LContext lContext, final PipelineExecutionAudit pipelineExecutionAudit) {
+        pipelineExecutionAudit.setRelativePath(lContext.getRelativePath());
+        pipelineExecutionAudit.setPipelineLoadType(lContext.getProcessLoadType());
+        pipelineExecutionAudit.setLambdaName(lContext.getLambdaName());
+        pipelineExecutionAudit.setPipelineName(lContext.getPipelineName());
+        pipelineExecutionAudit.setParentPipelineId(lContext.getParentPipelineId());
+        pipelineExecutionAudit.setParentPipelineName(lContext.getParentPipelineName());
+        pipelineExecutionAudit.setParentActionId(lContext.getParentActionId());
+        pipelineExecutionAudit.setParentActionName(lContext.getParentActionName());
+        pipelineExecutionAudit.setRequestBody(lContext.getPayload());
     }
 
-    private static void run(final Pipeline pipeline,
+    private static void run(final PipelineExecutionAudit pipelineExecutionAudit,
                             final List<RavenParser.ActionContext> contexts,
                             final Map<String, String> context,
                             final ExecutionGroup executionGroup) {
         contexts.forEach(actionContext -> {
             var action = ActionExecutionAudit.builder()
                     .executionGroupId(executionGroup.getId())
-                    .pipelineId(pipeline.getPipelineId())
+                    .pipelineId(pipelineExecutionAudit.getPipelineId())
                     .build();
             action.setContext(context);
-            action.setPipelineId(pipeline.getPipelineId());
-            toAction(action, pipeline);
+            action.setPipelineId(pipelineExecutionAudit.getPipelineId());
+            toAction(action, pipelineExecutionAudit);
             log.info("");
             log.info("Action context has been set successfully for action {}", action.getActionId());
             doAction(action, actionContext);

@@ -7,7 +7,7 @@ import in.handyman.raven.lambda.doa.ActionExecutionStatusAudit;
 import in.handyman.raven.lambda.doa.ConfigStore;
 import in.handyman.raven.lambda.doa.ConfigType;
 import in.handyman.raven.lambda.doa.PipelineExecutionStatusAudit;
-import in.handyman.raven.lambda.doa.Pipeline;
+import in.handyman.raven.lambda.doa.PipelineExecutionAudit;
 import in.handyman.raven.lambda.doa.ResourceConnection;
 import in.handyman.raven.lambda.doa.StatementExecutionAudit;
 import lombok.extern.slf4j.Slf4j;
@@ -161,7 +161,7 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public void save(final ResourceConnection resourceConnection) {
-        final List<ResourceConnection> list = getResourceConfigList(resourceConnection.getName());
+        final List<ResourceConnection> list = getResourceConfigList(resourceConnection.getConfigName());
         final int version = list.size() + 1;
         list.forEach(connection -> {
             connection.setLastModifiedDate(LocalDateTime.now());
@@ -186,7 +186,7 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     }
 
     @Override
-    public void insertPipeline(final Pipeline audit) {
+    public void insertPipeline(final PipelineExecutionAudit audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
         jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO pipeline (pipeline_id, created_by, created_date, last_modified_by, last_modified_date,pipeline_name," +
                         " context_node, execution_status_id, lambda_name, parent_action_id, parent_action_name, parent_pipeline_id, parent_pipeline_name,  file_content, host_name, mode_of_execution, pipeline_load_type, relative_path, request_body, thread_name,process_name,root_pipeline_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)")
@@ -244,7 +244,7 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     }
 
     @Override
-    public void update(final Pipeline audit) {
+    public void update(final PipelineExecutionAudit audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
         jdbi.useHandle(handle -> handle.createUpdate("UPDATE pipeline SET created_by = :createdBy, created_date = :createdDate, last_modified_by = :lastModifiedBy, last_modified_date = :lastModifiedDate, context_node = :contextNode, execution_status_id = :executionStatusId, lambda_name = :lambdaName, parent_action_id = :parentActionId, parent_action_name = :parentActionName, parent_pipeline_id = :parentPipelineId, parent_pipeline_name = :parentPipelineName, pipeline_name = :pipelineName, file_content = :fileContent, host_name = :hostName, mode_of_execution = :modeOfExecution, pipeline_load_type = :pipelineLoadType , relative_path = :relativePath, request_body = :requestBody,  process_name = :processName , root_pipeline_id = :rootPipelineId WHERE pipeline_id = :pipelineId ;")
                 .bindBean(audit).execute());
@@ -258,10 +258,10 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     }
 
     @Override
-    public Optional<Pipeline> findPipeline(final Long pipelineId) {
+    public Optional<PipelineExecutionAudit> findPipeline(final Long pipelineId) {
         return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM pipeline where pipeline_id = ?")
                 .bind(0, pipelineId)
-                .mapToBean(Pipeline.class)
+                .mapToBean(PipelineExecutionAudit.class)
                 .findOne());
     }
 
@@ -274,25 +274,25 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     }
 
     @Override
-    public List<Pipeline> findPipelines(final Long parentActionId) {
+    public List<PipelineExecutionAudit> findPipelines(final Long parentActionId) {
         return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM pipeline where parent_action_id = ?")
                 .bind(0, parentActionId)
-                .mapToBean(Pipeline.class)
+                .mapToBean(PipelineExecutionAudit.class)
                 .list());
     }
 
     @Override
-    public List<Pipeline> findAllPipelines() {
+    public List<PipelineExecutionAudit> findAllPipelines() {
         return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM pipeline")
-                .mapToBean(Pipeline.class)
+                .mapToBean(PipelineExecutionAudit.class)
                 .list());
     }
 
     @Override
-    public List<Pipeline> findAllPipelines(final String pipelineName) {
+    public List<PipelineExecutionAudit> findAllPipelines(final String pipelineName) {
         return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM pipeline where pipeline_name =? ")
                 .bind(0, pipelineName)
-                .mapToBean(Pipeline.class)
+                .mapToBean(PipelineExecutionAudit.class)
                 .list());
     }
 }

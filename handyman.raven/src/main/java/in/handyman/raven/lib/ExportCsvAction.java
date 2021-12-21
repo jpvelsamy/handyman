@@ -11,6 +11,7 @@ import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lib.model.ExportCsv;
 import in.handyman.raven.util.ExceptionUtil;
 import org.apache.commons.text.StringEscapeUtils;
+import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -61,22 +62,22 @@ public class ExportCsvAction implements IActionExecution {
         log.info(aMarker, "Starting the execution with id {} dbSrc {} execStmt {} location {} executionSource {}", actionExecutionAudit.getActionId(), dbSrc, execStmt, location, executionSource);
         var sql = new HashMap<String, String>();
         if (dbSrc != null) {
-            final HikariDataSource hikariDataSource = ResourceAccess.rdbmsConn(dbSrc);
-            log.info(aMarker, "Created a hikariDataSource for rdbms connection src {}", dbSrc);
-            try (var con = hikariDataSource.getConnection()) {
-                try (var stmt = con.createStatement()) {
-                    log.info(aMarker, "Executing sql statement {}", execStmt);
-                    var result = stmt.executeQuery(execStmt);
-                    while (result.next()) {
-                        sql.put(result.getString(1), result.getString(2));
+            final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(dbSrc);
+            jdbi.useTransaction(handle -> {
+                try (var con = handle.getConnection()) {
+                    try (var stmt = con.createStatement()) {
+                        log.info(aMarker, "Executing sql statement {}", execStmt);
+                        var result = stmt.executeQuery(execStmt);
+                        while (result.next()) {
+                            sql.put(result.getString(1), result.getString(2));
+                        }
                     }
+                } catch (SQLException ex) {
+                    log.error(aMarker, "Stopping execution, General Error executing sql for {} with for campaign {}", execStmt, ex);
+                    log.info(aMarker, execStmt + ".exception", ExceptionUtil.toString(ex));
+                    throw new HandymanException("Process failed", ex);
                 }
-            } catch (SQLException ex) {
-                log.error(aMarker, "Stopping execution, General Error executing sql for {} with for campaign {}", execStmt, ex);
-                log.info(aMarker, execStmt + ".exception", ExceptionUtil.toString(ex));
-                throw new HandymanException("Process failed", ex);
-            }
-
+            });
         }
         if (!sql.isEmpty()) {
             getSqlExecution(sql, executionSource, location);

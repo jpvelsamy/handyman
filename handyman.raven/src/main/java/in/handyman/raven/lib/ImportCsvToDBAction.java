@@ -60,7 +60,7 @@ public class ImportCsvToDBAction implements IActionExecution {
         if (Objects.isNull(target)) {
             throw new HandymanException("target connection not provided");
         }
-        log.info(aMarker, "Resource provided " + target.getName());
+        log.info(aMarker, "Resource provided " + target.getConfigName());
 
         final Jdbi jdbi = Jdbi.create(target.getUrl(), target.getUserName(), target.getPassword());
         final int size = importCsvToDB.getValue().size();

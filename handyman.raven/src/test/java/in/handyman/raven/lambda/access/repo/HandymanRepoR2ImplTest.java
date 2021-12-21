@@ -3,7 +3,7 @@ package in.handyman.raven.lambda.access.repo;
 import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.ConfigStore;
 import in.handyman.raven.lambda.doa.ConfigType;
-import in.handyman.raven.lambda.doa.Pipeline;
+import in.handyman.raven.lambda.doa.PipelineExecutionAudit;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -20,7 +20,7 @@ class HandymanRepoR2ImplTest {
 
     @Test
     void insertPipeline() {
-        repoR2.insertPipeline(Pipeline.builder().build());
+        repoR2.insertPipeline(PipelineExecutionAudit.builder().build());
     }
 
     @Test

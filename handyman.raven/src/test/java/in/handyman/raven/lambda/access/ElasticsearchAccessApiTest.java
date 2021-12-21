@@ -16,10 +16,9 @@ class ElasticsearchAccessApiTest {
         try {
             if (ElasticsearchAccessApi.isExists(ElasticsearchAccessApi.toIndexName(ResourceConnection.class))) {
                 ElasticsearchAccessApi.saveIndex(UUID.randomUUID().toString(), ResourceConnection.builder()
-                        .configType("")
                         .active(false)
                         .driverClassName("")
-                        .name("")
+                        .configName("")
                         .password("")
                         .url("")
                         .userName("")

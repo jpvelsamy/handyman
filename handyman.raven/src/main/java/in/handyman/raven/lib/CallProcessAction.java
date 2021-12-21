@@ -6,7 +6,7 @@ import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.ActionExecutionAudit;
-import in.handyman.raven.lambda.doa.Pipeline;
+import in.handyman.raven.lambda.doa.PipelineExecutionAudit;
 import in.handyman.raven.lambda.process.HRequestResolver;
 import in.handyman.raven.lambda.process.LContext;
 import in.handyman.raven.lib.model.CallProcess;
@@ -95,7 +95,7 @@ public class CallProcessAction implements IActionExecution {
         } else {
             runContext.forEach(lContext -> {
                 final LambdaCallable lambdaCallable = new LambdaCallable(lContext, null);
-                final Pipeline start = lambdaCallable.call();
+                final PipelineExecutionAudit start = lambdaCallable.call();
                 context.putAll(start.getContext());
             });
         }

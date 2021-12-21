@@ -6,7 +6,7 @@ import in.handyman.raven.lambda.access.repo.HandymanRepoR2Impl;
 import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.ActionExecutionStatusAudit;
 import in.handyman.raven.lambda.doa.PipelineExecutionStatusAudit;
-import in.handyman.raven.lambda.doa.Pipeline;
+import in.handyman.raven.lambda.doa.PipelineExecutionAudit;
 import in.handyman.raven.lambda.doa.StatementExecutionAudit;
 
 public class AuditInsertActor extends AbstractActor {
@@ -16,7 +16,7 @@ public class AuditInsertActor extends AbstractActor {
     @Override
     public Receive createReceive() {
         return receiveBuilder()
-                .match(Pipeline.class, REPO::insertPipeline)
+                .match(PipelineExecutionAudit.class, REPO::insertPipeline)
                 .match(ActionExecutionAudit.class, REPO::insertAction)
                 .match(StatementExecutionAudit.class, REPO::insertStatement)
                 .match(PipelineExecutionStatusAudit.class, REPO::save)
