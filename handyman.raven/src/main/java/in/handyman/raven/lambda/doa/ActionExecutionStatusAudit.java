@@ -1,5 +1,6 @@
 package in.handyman.raven.lambda.doa;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import in.handyman.raven.util.UniqueID;
@@ -18,19 +19,13 @@ import lombok.ToString;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Statement extends Auditable {
+public class ActionExecutionStatusAudit extends Auditable {
 
     @Builder.Default
-    private Long statementId = UniqueID.getId();
-
+    private Long id = UniqueID.getId();
     private Long actionId;
-
-    private String statementContent;
+    private Long pipelineId;
+    private Integer executionStatusId;
     private Long rootPipelineId;
-
-    private Integer rowsWritten;
-    private Integer rowsRead;
-    private Integer rowsProcessed;
-    private Double timeTaken;
 
 }

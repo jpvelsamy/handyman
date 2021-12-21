@@ -1,6 +1,6 @@
 package in.handyman.raven.lib;
 
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.ResourceConnection;
 import in.handyman.raven.lib.model.ImportCsvToDB;
 import org.junit.jupiter.api.Test;
@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 
-class ImportCsvToDBActionTest {
+class ImportCsvToDBActionTestExecutionAudit {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -17,7 +17,7 @@ class ImportCsvToDBActionTest {
     @Test
     void execute() throws Exception {
 
-        final ImportCsvToDBAction importCsvToDBAction = new ImportCsvToDBAction(Action.builder().build(),
+        final ImportCsvToDBAction importCsvToDBAction = new ImportCsvToDBAction(ActionExecutionAudit.builder().build(),
                 logger, ImportCsvToDB.builder()
                 .condition(true)
                 .tableName("CCCU_DNA.dbo.MOCK_DATA")

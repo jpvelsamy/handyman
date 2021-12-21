@@ -27,6 +27,9 @@ public class ResourceConnection extends Auditable {
     private String userName;
     private String password;
     private String url;
+    private String host;
+    private String port;
+    private String databaseName;
     private boolean active;
     private Integer version;
 

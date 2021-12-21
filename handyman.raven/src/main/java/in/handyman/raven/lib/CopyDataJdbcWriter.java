@@ -2,7 +2,7 @@ package in.handyman.raven.lib;
 
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lambda.process.LambdaEngine;
 import in.handyman.raven.lib.model.CopyData;
 import in.handyman.raven.util.Table;
@@ -27,7 +27,7 @@ public class CopyDataJdbcWriter implements Callable<Void> {
 
     private final Insert insert;
     private final Table.Row poisonPill;
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
     private final LinkedBlockingDeque<Table.Row> rowQueue;
     private final CountDownLatch countDownLatch;
 
@@ -38,11 +38,11 @@ public class CopyDataJdbcWriter implements Callable<Void> {
     private final Logger log;
 
     public CopyDataJdbcWriter(final Map<String, String> configMap, final Insert insert,
-                              final Table.Row poisonPill, final CopyData copyData, final Action action,
+                              final Table.Row poisonPill, final CopyData copyData, final ActionExecutionAudit actionExecutionAudit,
                               final LinkedBlockingDeque<Table.Row> rowQueue, final CountDownLatch countDownLatch) {
         this.insert = insert;
         this.poisonPill = poisonPill;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.rowQueue = rowQueue;
         this.countDownLatch = countDownLatch;
 
@@ -56,7 +56,7 @@ public class CopyDataJdbcWriter implements Callable<Void> {
                 .orElseGet(() -> Integer.valueOf(configMap.getOrDefault(Constants.WRITE_SIZE, Constants.DEFAULT_WRITE_SIZE).trim()));
         this.columnList = insert.getColumns().stream().map(Column::getColumnName).collect(Collectors.joining(","));
 
-        this.log = LambdaEngine.getLogger(action);
+        this.log = LambdaEngine.getLogger(actionExecutionAudit);
     }
 
 
@@ -104,7 +104,7 @@ public class CopyDataJdbcWriter implements Callable<Void> {
                 writeBuffer.clear();
             }
         } catch (Throwable ex) {
-            log.error("CopyDataWriter: {} error closing source connection for database: {} ", action.getActionId(), target, ex);
+            log.error("CopyDataWriter: {} error closing source connection for database: {} ", actionExecutionAudit.getActionId(), target, ex);
             throw new HandymanException("writeToDb failed", ex);
         }
     }

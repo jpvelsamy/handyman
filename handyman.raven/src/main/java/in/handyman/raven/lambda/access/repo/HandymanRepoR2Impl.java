@@ -2,14 +2,14 @@ package in.handyman.raven.lambda.access.repo;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import in.handyman.raven.lambda.doa.Action;
 import in.handyman.raven.lambda.doa.ActionExecutionAudit;
+import in.handyman.raven.lambda.doa.ActionExecutionStatusAudit;
 import in.handyman.raven.lambda.doa.ConfigStore;
 import in.handyman.raven.lambda.doa.ConfigType;
-import in.handyman.raven.lambda.doa.LambdaExecutionAudit;
+import in.handyman.raven.lambda.doa.PipelineExecutionStatusAudit;
 import in.handyman.raven.lambda.doa.Pipeline;
 import in.handyman.raven.lambda.doa.ResourceConnection;
-import in.handyman.raven.lambda.doa.Statement;
+import in.handyman.raven.lambda.doa.StatementExecutionAudit;
 import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
 
@@ -216,28 +216,28 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     }
 
     @Override
-    public void insertAction(final Action audit) {
+    public void insertAction(final ActionExecutionAudit audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
         jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO action (action_id, created_by, created_date, last_modified_by, last_modified_date, context_node, execution_status_id, lambda_name, parent_action_id, parent_action_name, parent_pipeline_id, parent_pipeline_name, pipeline_name, action_name, execution_group_id, input_node, log, pipeline_id, root_pipeline_id) VALUES(:actionId, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :contextNode, :executionStatusId, :lambdaName, :parentActionId, :parentActionName, :parentPipelineId, :parentPipelineName, :pipelineName, :actionName, :executionGroupId, :inputNode, :log, :pipelineId ,:rootPipelineId);")
                 .bindBean(audit).execute());
     }
 
     @Override
-    public void insertStatement(final Statement audit) {
+    public void insertStatement(final StatementExecutionAudit audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
         jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO statement (statement_id, created_by, created_date, last_modified_by, last_modified_date, action_id, rows_processed, rows_read, rows_written, statement_content, time_taken,root_pipeline_id) VALUES(:statementId, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :actionId, :rowsProcessed, :rowsRead, :rowsWritten, :statementContent, :timeTaken,:rootPipelineId);")
                 .bindBean(audit).execute());
     }
 
     @Override
-    public void save(final LambdaExecutionAudit audit) {
+    public void save(final PipelineExecutionStatusAudit audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
         jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO lambda_execution_audit (id, created_by, created_date, last_modified_by, last_modified_date, execution_status_id, pipeline_id,root_pipeline_id) VALUES(:id, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :executionStatusId, :pipelineId,:rootPipelineId);")
                 .bindBean(audit).execute());
     }
 
     @Override
-    public void save(final ActionExecutionAudit audit) {
+    public void save(final ActionExecutionStatusAudit audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
         jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO action_execution_audit (id, created_by, created_date, last_modified_by, last_modified_date, action_id, execution_status_id, pipeline_id,root_pipeline_id) VALUES(:id, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :actionId, :executionStatusId, :pipelineId,:rootPipelineId);")
                 .bindBean(audit).execute());
@@ -251,7 +251,7 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     }
 
     @Override
-    public void update(final Action audit) {
+    public void update(final ActionExecutionAudit audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
         jdbi.useHandle(handle -> handle.createUpdate("UPDATE action SET created_by = :createdBy, created_date = :createdDate, last_modified_by = :lastModifiedBy, last_modified_date = :lastModifiedDate, context_node = :contextNode, execution_status_id = :executionStatusId, lambda_name = :lambdaName, parent_action_id = :parentActionId, parent_action_name = :parentActionName, parent_pipeline_id = :parentPipelineId, parent_pipeline_name = :parentPipelineName, pipeline_name = :pipelineName, action_name = :actionName, execution_group_id = :executionGroupId, input_node = :inputNode, log = :log, pipeline_id = :pipelineId,thread_name = :threadName, root_pipeline_id = :rootPipelineId  WHERE action_id = :actionId ;")
                 .bindBean(audit).execute());
@@ -266,10 +266,10 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     }
 
     @Override
-    public List<Action> findActions(final Long pipelineId) {
+    public List<ActionExecutionAudit> findActions(final Long pipelineId) {
         return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM action where pipeline_id = ?;\n")
                 .bind(0, pipelineId)
-                .mapToBean(Action.class)
+                .mapToBean(ActionExecutionAudit.class)
                 .list());
     }
 

@@ -19,7 +19,7 @@ import lombok.ToString;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class LambdaExecutionAudit extends Auditable {
+public class PipelineExecutionStatusAudit extends Auditable {
 
     @Builder.Default
     private Long id = UniqueID.getId();

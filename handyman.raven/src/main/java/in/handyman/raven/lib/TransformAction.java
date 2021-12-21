@@ -4,7 +4,7 @@ import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lib.model.Transform;
 import in.handyman.raven.util.CommonQueryUtil;
 import in.handyman.raven.util.ExceptionUtil;
@@ -30,15 +30,15 @@ public class TransformAction implements IActionExecution {
 
     protected static final String TRANSFORM = "Transform";
 
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
     private final Logger log;
     private final Transform transform;
 
     private final Marker aMarker;
 
-    public TransformAction(final Action action, final Logger log, final Object transform) {
+    public TransformAction(final ActionExecutionAudit actionExecutionAudit, final Logger log, final Object transform) {
         this.transform = (Transform) transform;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker(TRANSFORM);
     }
@@ -46,7 +46,7 @@ public class TransformAction implements IActionExecution {
     @Override
     public void execute() {
         final String dbSrc = transform.getOn();
-        log.info(aMarker, "Transform action input variables id: {}, name: {}, source-database: {} ", action.getActionId(), transform.getName(), dbSrc);
+        log.info(aMarker, "Transform action input variables id: {}, name: {}, source-database: {} ", actionExecutionAudit.getActionId(), transform.getName(), dbSrc);
         log.info(aMarker, "Sql input post parameter ingestion \n {}", transform.getValue());
         final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(dbSrc);
         jdbi.useTransaction(handle -> {
@@ -56,7 +56,7 @@ public class TransformAction implements IActionExecution {
                 for (String givenQuery : transform.getValue()) {
                     var sqlList = transform.getFormat() ? CommonQueryUtil.getFormattedQuery(givenQuery) : Collections.singletonList(givenQuery);
                     for (var sqlToExecute : sqlList) {
-                        log.info(aMarker, "Transform with id:{}, executing script {}", action.getActionId(), givenQuery);
+                        log.info(aMarker, "Transform with id:{}, executing script {}", actionExecutionAudit.getActionId(), givenQuery);
                         final Long statementId = UniqueID.getId();
                         //TODO
                         try (final Statement stmt = connection.createStatement()) {
@@ -82,7 +82,7 @@ public class TransformAction implements IActionExecution {
                         }
                     }
                     connection.commit();
-                    log.info(aMarker, "Completed Transform id#{}, name#{}, dbSrc#{}, sqlList#{}", action.getActionId(), transform.getName()
+                    log.info(aMarker, "Completed Transform id#{}, name#{}, dbSrc#{}, sqlList#{}", actionExecutionAudit.getActionId(), transform.getName()
                             , dbSrc, sqlList);
                 }
             } catch (SQLException ex) {

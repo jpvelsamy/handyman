@@ -11,7 +11,7 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import in.handyman.raven.compiler.RavenParser;
 import in.handyman.raven.exception.HandymanException;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.ResourceConnection;
 import in.handyman.raven.lib.model.RestPart;
 import in.handyman.raven.lib.model.StartProcess;
@@ -105,13 +105,13 @@ public class ActionGeneration {
                 .addAnnotation(AnnotationSpec.builder(ActionExecution.class)
                         .addMember("actionName", String.format("\"%s\"", actionName)).build())
                 .addModifiers(Modifier.PUBLIC)
-                .addField(Action.class, "action", Modifier.FINAL, Modifier.PRIVATE)
+                .addField(ActionExecutionAudit.class, "action", Modifier.FINAL, Modifier.PRIVATE)
                 .addField(Logger.class, "log", Modifier.FINAL, Modifier.PRIVATE)
                 .addField(actionAttributeClassName, variableName, Modifier.FINAL, Modifier.PRIVATE)
                 .addField(Marker.class, "aMarker", Modifier.FINAL, Modifier.PRIVATE)
                 .addMethod(MethodSpec.constructorBuilder()
                         .addModifiers(Modifier.PUBLIC)
-                        .addParameter(Action.class, "action", Modifier.FINAL)
+                        .addParameter(ActionExecutionAudit.class, "action", Modifier.FINAL)
                         .addParameter(Logger.class, "log", Modifier.FINAL)
                         .addParameter(Object.class, variableName, Modifier.FINAL)
                         .addStatement(String.format("this.%s = ($T) %s", variableName, variableName), actionAttributeClassName)

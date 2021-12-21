@@ -1,6 +1,6 @@
 package in.handyman.raven.lambda.access.repo;
 
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.ConfigStore;
 import in.handyman.raven.lambda.doa.ConfigType;
 import in.handyman.raven.lambda.doa.Pipeline;
@@ -25,7 +25,7 @@ class HandymanRepoR2ImplTest {
 
     @Test
     void insertAction() {
-        final Action build = Action.builder().build();
+        final ActionExecutionAudit build = ActionExecutionAudit.builder().build();
         repoR2.insertAction(build);
         build.setLog("Hello");
         repoR2.update(build);

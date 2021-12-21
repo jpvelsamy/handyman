@@ -2,7 +2,7 @@ package in.handyman.raven.lib;
 
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lib.model.PushJson;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -15,7 +15,7 @@ import org.slf4j.MarkerFactory;
         actionName = "PushJson"
 )
 public class PushJsonAction implements IActionExecution {
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
 
     private final Logger log;
 
@@ -24,9 +24,9 @@ public class PushJsonAction implements IActionExecution {
     private final Marker aMarker;
 
 
-    public PushJsonAction(final Action action, final Logger log, final Object pushJson) {
+    public PushJsonAction(final ActionExecutionAudit actionExecutionAudit, final Logger log, final Object pushJson) {
         this.pushJson = (PushJson) pushJson;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker(" PushJson:" + this.pushJson.getName());
     }
@@ -35,7 +35,7 @@ public class PushJsonAction implements IActionExecution {
     public void execute() throws Exception {
         if (pushJson.getValue() != null) {
             log.info(aMarker, "{}", pushJson);
-            action.getContext().put(pushJson.getKey(), pushJson.getValue().toString());
+            actionExecutionAudit.getContext().put(pushJson.getKey(), pushJson.getValue().toString());
         }
     }
 

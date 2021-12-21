@@ -1,6 +1,6 @@
 package in.handyman.raven.metric;
 
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.ExecutionStatus;
 import io.github.mweirauch.micrometer.jvm.extras.ProcessMemoryMetrics;
 import io.github.mweirauch.micrometer.jvm.extras.ProcessThreadMetrics;
@@ -66,38 +66,38 @@ public class MetricUtil {
         new FileDescriptorMetrics().bindTo(registry);
     }
 
-    public static void addAfter(final Action action) {
-        final String name = "process." + action.getPipelineName();
+    public static void addAfter(final ActionExecutionAudit actionExecutionAudit) {
+        final String name = "process." + actionExecutionAudit.getPipelineName();
         Counter.builder(name)
-                .tag("LambdaName", action.getLambdaName())
-                .tag("status", Optional.ofNullable(ExecutionStatus.get(action.getExecutionStatusId())).map(ExecutionStatus::name).orElse(""))
+                .tag("LambdaName", actionExecutionAudit.getLambdaName())
+                .tag("status", Optional.ofNullable(ExecutionStatus.get(actionExecutionAudit.getExecutionStatusId())).map(ExecutionStatus::name).orElse(""))
                 .register(registry).increment();
         Counter.builder(name + ".try")
                 .description("Number of Try Actions")
-                .tag("LambdaName", action.getLambdaName())
-                .tag("status", Optional.ofNullable(ExecutionStatus.get(action.getExecutionStatusId())).map(ExecutionStatus::name).orElse(""))
+                .tag("LambdaName", actionExecutionAudit.getLambdaName())
+                .tag("status", Optional.ofNullable(ExecutionStatus.get(actionExecutionAudit.getExecutionStatusId())).map(ExecutionStatus::name).orElse(""))
                 .register(registry).increment();
         Counter.builder(name + ".catch")
                 .description("Number of Catch Actions")
-                .tag("LambdaName", action.getLambdaName())
-                .tag("status", Optional.ofNullable(ExecutionStatus.get(action.getExecutionStatusId())).map(ExecutionStatus::name).orElse(""))
+                .tag("LambdaName", actionExecutionAudit.getLambdaName())
+                .tag("status", Optional.ofNullable(ExecutionStatus.get(actionExecutionAudit.getExecutionStatusId())).map(ExecutionStatus::name).orElse(""))
                 .register(registry).increment();
         Counter.builder(name + ".finally")
                 .description("Number of Finally Actions")
-                .tag("LambdaName", action.getLambdaName())
-                .tag("status", Optional.ofNullable(ExecutionStatus.get(action.getExecutionStatusId())).map(ExecutionStatus::name).orElse(""))
+                .tag("LambdaName", actionExecutionAudit.getLambdaName())
+                .tag("status", Optional.ofNullable(ExecutionStatus.get(actionExecutionAudit.getExecutionStatusId())).map(ExecutionStatus::name).orElse(""))
                 .register(registry).increment();
-        final long amount = System.nanoTime() - action.getCreatedDate().getNano();
+        final long amount = System.nanoTime() - actionExecutionAudit.getCreatedDate().getNano();
         Timer.builder(name + ".requests")
-                .tag("LambdaName", action.getLambdaName())
+                .tag("LambdaName", actionExecutionAudit.getLambdaName())
                 .register(registry)
                 .record(amount, TimeUnit.NANOSECONDS);
         LongTaskTimer.builder(name + ".requests.slow")
-                .tag("LambdaName", action.getLambdaName())
+                .tag("LambdaName", actionExecutionAudit.getLambdaName())
                 .register(registry);
         DistributionSummary.builder(name + ".detail")
-                .tag("LambdaName", action.getLambdaName())
-                .tag("ActionId", String.valueOf(action.getActionId()))
+                .tag("LambdaName", actionExecutionAudit.getLambdaName())
+                .tag("ActionId", String.valueOf(actionExecutionAudit.getActionId()))
                 .register(registry).record(amount);
         persist();
     }

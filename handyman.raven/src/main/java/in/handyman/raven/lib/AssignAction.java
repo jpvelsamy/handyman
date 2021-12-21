@@ -5,7 +5,7 @@ import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lib.model.Assign;
 import in.handyman.raven.util.CommonQueryUtil;
 import in.handyman.raven.util.ExceptionUtil;
@@ -29,23 +29,23 @@ import java.util.Map;
 )
 public class AssignAction implements IActionExecution {
 
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
     private final Logger log;
     private final Assign assign;
 
     private final Marker aMarker;
 
-    public AssignAction(final Action action, final Logger log, final Object assign) {
+    public AssignAction(final ActionExecutionAudit actionExecutionAudit, final Logger log, final Object assign) {
         this.assign = (Assign) assign;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
-        this.aMarker = MarkerFactory.getMarker("Assign:" + action.getActionName());
+        this.aMarker = MarkerFactory.getMarker("Assign:" + actionExecutionAudit.getActionName());
     }
 
     @Override
     public void execute() throws Exception {
         final String dbSrc = assign.getSource();
-        log.info(aMarker, " input variables id: {}, name: {}, source-database: {} ", action.getActionId(), assign.getName(), dbSrc);
+        log.info(aMarker, " input variables id: {}, name: {}, source-database: {} ", actionExecutionAudit.getActionId(), assign.getName(), dbSrc);
         log.info(aMarker, "Sql input post parameter ingestion \n {}", assign.getValue());
         final HikariDataSource hikariDataSource = ResourceAccess.rdbmsConn(dbSrc);
         try (final Connection connection = hikariDataSource.getConnection()) {
@@ -58,7 +58,7 @@ public class AssignAction implements IActionExecution {
                     try (var rs = stmt.executeQuery(sqlToExecute)) {
                         var columnCount = rs.getMetaData().getColumnCount();
                         while (rs.next()) {
-                            final Map<String, String> context = action.getContext();
+                            final Map<String, String> context = actionExecutionAudit.getContext();
                             CommonQueryUtil.addKeyConfig(context, log,
                                     rs, columnCount, assign.getName());
                         }

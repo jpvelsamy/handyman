@@ -2,11 +2,11 @@ package in.handyman.raven.actor;
 
 import in.handyman.raven.lambda.access.repo.HandymanRepo;
 import in.handyman.raven.lambda.access.repo.HandymanRepoR2Impl;
-import in.handyman.raven.lambda.doa.Action;
 import in.handyman.raven.lambda.doa.ActionExecutionAudit;
-import in.handyman.raven.lambda.doa.LambdaExecutionAudit;
+import in.handyman.raven.lambda.doa.ActionExecutionStatusAudit;
+import in.handyman.raven.lambda.doa.PipelineExecutionStatusAudit;
 import in.handyman.raven.lambda.doa.Pipeline;
-import in.handyman.raven.lambda.doa.Statement;
+import in.handyman.raven.lambda.doa.StatementExecutionAudit;
 
 public class HandymanActorSystemAccess {
 
@@ -17,24 +17,24 @@ public class HandymanActorSystemAccess {
         HANDYMAN_REPO.insertPipeline(pipeline);
     }
 
-    public static void insert(final Action action) {
-
-        HANDYMAN_REPO.insertAction(action);
-    }
-
-    public static void insert(final Statement statement) {
-
-        HANDYMAN_REPO.insertStatement(statement);
-    }
-
-    public static void insert(final LambdaExecutionAudit lambdaExecutionAudit) {
-
-        HANDYMAN_REPO.save(lambdaExecutionAudit);
-    }
-
     public static void insert(final ActionExecutionAudit actionExecutionAudit) {
 
-        HANDYMAN_REPO.save(actionExecutionAudit);
+        HANDYMAN_REPO.insertAction(actionExecutionAudit);
+    }
+
+    public static void insert(final StatementExecutionAudit statementExecutionAudit) {
+
+        HANDYMAN_REPO.insertStatement(statementExecutionAudit);
+    }
+
+    public static void insert(final PipelineExecutionStatusAudit pipelineExecutionStatusAudit) {
+
+        HANDYMAN_REPO.save(pipelineExecutionStatusAudit);
+    }
+
+    public static void insert(final ActionExecutionStatusAudit actionExecutionStatusAudit) {
+
+        HANDYMAN_REPO.save(actionExecutionStatusAudit);
 
 
     }
@@ -45,9 +45,9 @@ public class HandymanActorSystemAccess {
         HANDYMAN_REPO.update(pipeline);
     }
 
-    public static void update(final Action action) {
+    public static void update(final ActionExecutionAudit actionExecutionAudit) {
 
-        HANDYMAN_REPO.update(action);
+        HANDYMAN_REPO.update(actionExecutionAudit);
 
     }
 }

@@ -5,7 +5,7 @@ import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.Pipeline;
 import in.handyman.raven.lambda.process.HRequestResolver;
 import in.handyman.raven.lambda.process.LContext;
@@ -28,15 +28,15 @@ import java.util.concurrent.Executors;
 @ActionExecution(actionName = "CallProcess")
 public class CallProcessAction implements IActionExecution {
 
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
     private final Logger log;
     private final CallProcess callProcess;
 
     private final Marker aMarker;
 
-    public CallProcessAction(final Action action, final Logger log, final Object callProcess) {
+    public CallProcessAction(final ActionExecutionAudit actionExecutionAudit, final Logger log, final Object callProcess) {
         this.callProcess = (CallProcess) callProcess;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker("CallProcess");
     }
@@ -47,10 +47,10 @@ public class CallProcessAction implements IActionExecution {
         var targetProcess = callProcess.getTarget();
         var dbSrc = callProcess.getDatasource();
         var sql = callProcess.getValue().replaceAll("\"", "");
-        log.info(aMarker, " id#{}, name#{}, calledProcess#{}, calledFile#{}, db=#{}", action.getActionId(), callProcess.getName(), targetProcess, fileRelativePath, dbSrc);
+        log.info(aMarker, " id#{}, name#{}, calledProcess#{}, calledFile#{}, db=#{}", actionExecutionAudit.getActionId(), callProcess.getName(), targetProcess, fileRelativePath, dbSrc);
         final HikariDataSource source = ResourceAccess.rdbmsConn(dbSrc);
         var runContext = new ArrayList<LContext>();
-        final Map<String, String> context = action.getContext();
+        final Map<String, String> context = actionExecutionAudit.getContext();
         try (var conn = source.getConnection()) {
             try (var stmt = conn.createStatement()) {
                 try (var rs = stmt.executeQuery(sql)) {
@@ -60,15 +60,15 @@ public class CallProcessAction implements IActionExecution {
                                 rs, columnCount, "");
                         final LContext lContext = LContext.builder()
                                 .inheritedContext(new HashMap<>(context))
-                                .lambdaName(action.getLambdaName())
-                                .parentActionId(action.getActionId())
-                                .parentActionName(action.getActionName())
+                                .lambdaName(actionExecutionAudit.getLambdaName())
+                                .parentActionId(actionExecutionAudit.getActionId())
+                                .parentActionName(actionExecutionAudit.getActionName())
                                 .relativePath(fileRelativePath)
                                 .processLoadType(HRequestResolver.LoadType.FILE.name())
                                 .pipelineName(callProcess.getTarget())
-                                .parentPipelineId(action.getPipelineId())
-                                .parentPipelineName(action.getPipelineName())
-                                .rootPipelineId(action.getRootPipelineId())
+                                .parentPipelineId(actionExecutionAudit.getPipelineId())
+                                .parentPipelineName(actionExecutionAudit.getPipelineName())
+                                .rootPipelineId(actionExecutionAudit.getRootPipelineId())
                                 .build();
                         runContext.add(lContext);
                     }

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.ResourceConnection;
 import in.handyman.raven.lib.model.ImportCsvToDB;
 import org.jdbi.v3.core.Jdbi;
@@ -38,14 +38,14 @@ import java.util.stream.Collectors;
 public class ImportCsvToDBAction implements IActionExecution {
 
     private static final String DELIMITER = ",";
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
     private final Logger log;
     private final ImportCsvToDB importCsvToDB;
     private final Marker aMarker;
 
-    public ImportCsvToDBAction(final Action action, final Logger log, final Object importCsvToDB) {
+    public ImportCsvToDBAction(final ActionExecutionAudit actionExecutionAudit, final Logger log, final Object importCsvToDB) {
         this.importCsvToDB = (ImportCsvToDB) importCsvToDB;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker(" ImportCsvToDB:" + this.importCsvToDB.getName());
     }

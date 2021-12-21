@@ -1,13 +1,13 @@
 package in.handyman.raven.lambda.access.repo;
 
-import in.handyman.raven.lambda.doa.Action;
 import in.handyman.raven.lambda.doa.ActionExecutionAudit;
+import in.handyman.raven.lambda.doa.ActionExecutionStatusAudit;
 import in.handyman.raven.lambda.doa.ConfigStore;
 import in.handyman.raven.lambda.doa.ConfigType;
-import in.handyman.raven.lambda.doa.LambdaExecutionAudit;
+import in.handyman.raven.lambda.doa.PipelineExecutionStatusAudit;
 import in.handyman.raven.lambda.doa.Pipeline;
 import in.handyman.raven.lambda.doa.ResourceConnection;
-import in.handyman.raven.lambda.doa.Statement;
+import in.handyman.raven.lambda.doa.StatementExecutionAudit;
 
 import java.util.List;
 import java.util.Map;
@@ -48,21 +48,21 @@ public interface HandymanRepo {
 
     void insertPipeline(final Pipeline audit);
 
-    void insertAction(final Action audit);
+    void insertAction(final ActionExecutionAudit audit);
 
-    void insertStatement(final Statement audit);
+    void insertStatement(final StatementExecutionAudit audit);
 
-    void save(final LambdaExecutionAudit audit);
+    void save(final PipelineExecutionStatusAudit audit);
 
-    void save(final ActionExecutionAudit audit);
+    void save(final ActionExecutionStatusAudit audit);
 
     void update(final Pipeline audit);
 
-    void update(final Action audit);
+    void update(final ActionExecutionAudit audit);
 
     Optional<Pipeline> findPipeline(final Long pipelineId);
 
-    List<Action> findActions(final Long pipelineId);
+    List<ActionExecutionAudit> findActions(final Long pipelineId);
 
     List<Pipeline> findPipelines(final Long parentActionId);
 

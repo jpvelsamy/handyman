@@ -7,7 +7,7 @@ import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lib.model.ExportCsv;
 import in.handyman.raven.util.ExceptionUtil;
 import org.apache.commons.text.StringEscapeUtils;
@@ -36,7 +36,7 @@ public class ExportCsvAction implements IActionExecution {
 
     protected static final String EXPORT_CSV = "ExportCsv";
 
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
 
     private final Logger log;
 
@@ -44,9 +44,9 @@ public class ExportCsvAction implements IActionExecution {
 
     private final Marker aMarker;
 
-    public ExportCsvAction(final Action action, final Logger log, final Object exportCsv) {
+    public ExportCsvAction(final ActionExecutionAudit actionExecutionAudit, final Logger log, final Object exportCsv) {
         this.exportCsv = (ExportCsv) exportCsv;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker(" ExportCsv:" + this.exportCsv.getName());
     }
@@ -58,7 +58,7 @@ public class ExportCsvAction implements IActionExecution {
         var executionSource = exportCsv.getExecutionSource();
         var location = exportCsv.getTargetLocation();
         var execStmt = StringEscapeUtils.unescapeJava(exportCsv.getStmt());
-        log.info(aMarker, "Starting the execution with id {} dbSrc {} execStmt {} location {} executionSource {}", action.getActionId(), dbSrc, execStmt, location, executionSource);
+        log.info(aMarker, "Starting the execution with id {} dbSrc {} execStmt {} location {} executionSource {}", actionExecutionAudit.getActionId(), dbSrc, execStmt, location, executionSource);
         var sql = new HashMap<String, String>();
         if (dbSrc != null) {
             final HikariDataSource hikariDataSource = ResourceAccess.rdbmsConn(dbSrc);

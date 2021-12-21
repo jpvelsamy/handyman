@@ -2,7 +2,7 @@ package in.handyman.raven.lib;
 
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lambda.process.HRequestResolver;
 import in.handyman.raven.lambda.process.LContext;
 import in.handyman.raven.lib.model.DogLeg;
@@ -25,15 +25,15 @@ import java.util.concurrent.Executors;
 public class DogLegAction implements IActionExecution {
 
     protected static final String DOG_LEG = "DogLeg";
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
     private final Logger log;
     private final DogLeg dogLeg;
 
     private final Marker aMarker;
 
-    public DogLegAction(final Action action, final Logger log, final Object dogLeg) {
+    public DogLegAction(final ActionExecutionAudit actionExecutionAudit, final Logger log, final Object dogLeg) {
         this.dogLeg = (DogLeg) dogLeg;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker(DOG_LEG);
     }
@@ -41,25 +41,25 @@ public class DogLegAction implements IActionExecution {
     @Override
     public void execute() throws Exception {
         var processList = dogLeg.getProcessList();
-        log.info(aMarker, " id: {}, name: {} given params {}", action.getActionId(), dogLeg.getName(), dogLeg);
+        log.info(aMarker, " id: {}, name: {} given params {}", actionExecutionAudit.getActionId(), dogLeg.getName(), dogLeg);
         var countDownLatch = new CountDownLatch(processList.size());
         var inheritContext = Objects.equals(dogLeg.getInheritContext(), "true");
         var executor = Executors.newWorkStealingPool();
-        final Map<String, String> context = inheritContext ? action.getContext() : Collections.emptyMap();
+        final Map<String, String> context = inheritContext ? actionExecutionAudit.getContext() : Collections.emptyMap();
         processList.forEach(startProcess -> {
             var processName = startProcess.getName();
             var fileRelativePath = startProcess.getTarget();
             final LContext lContext = LContext.builder()
                     .inheritedContext(context)
-                    .lambdaName(action.getLambdaName())
-                    .parentActionId(action.getActionId())
-                    .parentActionName(action.getActionName())
+                    .lambdaName(actionExecutionAudit.getLambdaName())
+                    .parentActionId(actionExecutionAudit.getActionId())
+                    .parentActionName(actionExecutionAudit.getActionName())
                     .relativePath(fileRelativePath)
                     .processLoadType(HRequestResolver.LoadType.FILE.name())
                     .pipelineName(processName)
-                    .parentPipelineId(action.getPipelineId())
-                    .parentPipelineName(action.getPipelineName())
-                    .rootPipelineId(action.getRootPipelineId())
+                    .parentPipelineId(actionExecutionAudit.getPipelineId())
+                    .parentPipelineName(actionExecutionAudit.getPipelineName())
+                    .rootPipelineId(actionExecutionAudit.getRootPipelineId())
                     .build();
             var processWorker = new LambdaCallable(lContext, countDownLatch);
             executor.submit(processWorker);

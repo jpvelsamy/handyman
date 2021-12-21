@@ -2,7 +2,7 @@ package in.handyman.raven.lib;
 
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lib.model.TransferFileDirectory;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -20,7 +20,7 @@ import java.nio.file.StandardCopyOption;
         actionName = "TransferFileDirectory"
 )
 public class TransferFileDirectoryAction implements IActionExecution {
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
 
     private final Logger log;
 
@@ -28,10 +28,10 @@ public class TransferFileDirectoryAction implements IActionExecution {
 
     private final Marker aMarker;
 
-    public TransferFileDirectoryAction(final Action action, final Logger log,
+    public TransferFileDirectoryAction(final ActionExecutionAudit actionExecutionAudit, final Logger log,
                                        final Object transferFileDirectory) {
         this.transferFileDirectory = (TransferFileDirectory) transferFileDirectory;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker("TransferFileDirectory");
     }

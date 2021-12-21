@@ -3,11 +3,11 @@ package in.handyman.raven.actor;
 import akka.actor.AbstractActor;
 import in.handyman.raven.lambda.access.repo.HandymanRepo;
 import in.handyman.raven.lambda.access.repo.HandymanRepoR2Impl;
-import in.handyman.raven.lambda.doa.Action;
 import in.handyman.raven.lambda.doa.ActionExecutionAudit;
-import in.handyman.raven.lambda.doa.LambdaExecutionAudit;
+import in.handyman.raven.lambda.doa.ActionExecutionStatusAudit;
+import in.handyman.raven.lambda.doa.PipelineExecutionStatusAudit;
 import in.handyman.raven.lambda.doa.Pipeline;
-import in.handyman.raven.lambda.doa.Statement;
+import in.handyman.raven.lambda.doa.StatementExecutionAudit;
 
 public class AuditInsertActor extends AbstractActor {
 
@@ -17,10 +17,10 @@ public class AuditInsertActor extends AbstractActor {
     public Receive createReceive() {
         return receiveBuilder()
                 .match(Pipeline.class, REPO::insertPipeline)
-                .match(Action.class, REPO::insertAction)
-                .match(Statement.class, REPO::insertStatement)
-                .match(LambdaExecutionAudit.class, REPO::save)
-                .match(ActionExecutionAudit.class, REPO::save)
+                .match(ActionExecutionAudit.class, REPO::insertAction)
+                .match(StatementExecutionAudit.class, REPO::insertStatement)
+                .match(PipelineExecutionStatusAudit.class, REPO::save)
+                .match(ActionExecutionStatusAudit.class, REPO::save)
                 .build();
     }
 }

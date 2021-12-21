@@ -4,7 +4,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.ResourceConnection;
 import in.handyman.raven.lambda.process.CommandProxy;
 import in.handyman.raven.lambda.process.LambdaEngine;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
         actionName = "ProducerConsumerModel"
 )
 public class ProducerConsumerModelAction implements IActionExecution {
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
 
     private final Logger log;
 
@@ -40,10 +40,10 @@ public class ProducerConsumerModelAction implements IActionExecution {
 
     private final Marker aMarker;
 
-    public ProducerConsumerModelAction(final Action action, final Logger log,
+    public ProducerConsumerModelAction(final ActionExecutionAudit actionExecutionAudit, final Logger log,
                                        final Object producerConsumerModel) {
         this.producerConsumerModel = (ProducerConsumerModel) producerConsumerModel;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker(" ProducerConsumerModel:" + this.producerConsumerModel.getName());
     }
@@ -62,9 +62,9 @@ public class ProducerConsumerModelAction implements IActionExecution {
         final ExecutorService pExecutorService = Executors.newFixedThreadPool(pThreadCount, producerThreadFactoryBuilder.build());
         final ExecutorService cExecutorService = Executors.newFixedThreadPool(cThreadCount, consumerThreadFactoryBuilder.build());
 
-        final Long pipelineId = this.action.getPipelineId();
+        final Long pipelineId = this.actionExecutionAudit.getPipelineId();
 
-        this.action.getContext().put("pcmId", String.valueOf(pipelineId));
+        this.actionExecutionAudit.getContext().put("pcmId", String.valueOf(pipelineId));
 
         final List<ProducerAction> producerActions = producerConsumerModel.getProduce().stream().flatMap(producerContext -> {
 
@@ -72,7 +72,7 @@ public class ProducerConsumerModelAction implements IActionExecution {
             producer.setPcmId(pipelineId);
             producer.setSource(producerConsumerModel.getSource());
 
-            CommandProxy.setTarget(producer, producerContext, action.getContext());
+            CommandProxy.setTarget(producer, producerContext, actionExecutionAudit.getContext());
             log.info(aMarker, "{}", producerContext);
 
             final ResourceConnection source = producer.getSource();
@@ -84,9 +84,9 @@ public class ProducerConsumerModelAction implements IActionExecution {
                             .collect(Collectors.toList()));
 
             return maps.stream().map(stringObjectMap -> {
-                var vAction = LambdaEngine.getAction(producer.getName(), action);
+                var vAction = LambdaEngine.getAction(producer.getName(), actionExecutionAudit);
 
-                final Map<String, String> map = new HashMap<>(Map.copyOf(action.getContext()));
+                final Map<String, String> map = new HashMap<>(Map.copyOf(actionExecutionAudit.getContext()));
                 map.putAll(stringObjectMap);
                 vAction.setContext(map);
 
@@ -105,9 +105,9 @@ public class ProducerConsumerModelAction implements IActionExecution {
             consumer.setPcmId(pipelineId);
             consumer.setSource(producerConsumerModel.getSource());
 
-            CommandProxy.setTarget(consumer, consumerContext, action.getContext());
+            CommandProxy.setTarget(consumer, consumerContext, actionExecutionAudit.getContext());
             log.info(aMarker, "{}", consumerContext);
-            var vAction = LambdaEngine.getAction(consumer.getName(), action);
+            var vAction = LambdaEngine.getAction(consumer.getName(), actionExecutionAudit);
             return new ConsumerAction(vAction, log, consumer);
         }).collect(Collectors.toList());
 

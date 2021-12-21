@@ -7,7 +7,7 @@ import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.ActionExecutionAudit;
 import in.handyman.raven.lib.model.RestApi;
 import in.handyman.raven.util.CommonQueryUtil;
 import in.handyman.raven.util.ExceptionUtil;
@@ -42,15 +42,15 @@ public class RestApiAction implements IActionExecution {
     private static final String DELETE = "DELETE";
     private static final String GET = "GET";
     private static final String PUT = "PUT";
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
     private final Logger log;
     private final RestApi restApi;
 
     private final Marker aMarker;
 
-    public RestApiAction(final Action action, final Logger log, final Object restApi) {
+    public RestApiAction(final ActionExecutionAudit actionExecutionAudit, final Logger log, final Object restApi) {
         this.restApi = (RestApi) restApi;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker(REST_API);
     }
@@ -62,7 +62,7 @@ public class RestApiAction implements IActionExecution {
         var method = restApi.getMethod();
         var name = restApi.getName();
         var payload = restApi.getValue();
-        var id = action.getActionId();
+        var id = actionExecutionAudit.getActionId();
         var header = restApi.getHeaders();
         final HikariDataSource hikariDataSource = ResourceAccess.rdbmsConn(source);
         log.info(aMarker, " id#{}, name#{}, url#{}, payload#{}", id, name, url, payload);
