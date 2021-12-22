@@ -1,0 +1,18 @@
+config= {
+
+    raven.driver = org.mariadb.jdbc.Driver
+    raven.url ="jdbc:mariadb://localhost:3306/handyman_vm?useSSL=false"
+    raven.user=root
+    raven.password=password
+
+    legacy.driver = org.mariadb.jdbc.Driver
+    legacy.url ="jdbc:mariadb://localhost:3306/handyman_vm?useSSL=false"
+    legacy.user=root
+    legacy.password=password
+
+    quartz.driver = org.mariadb.jdbc.Driver
+    quartz.url ="jdbc:mariadb://localhost:3306/handyman_vm?useSSL=false"
+    quartz.user=root
+    quartz.password=password
+
+}

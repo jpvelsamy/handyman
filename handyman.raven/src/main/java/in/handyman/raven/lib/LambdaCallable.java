@@ -1,30 +1,33 @@
 package in.handyman.raven.lib;
 
-import in.handyman.raven.process.Process;
-import in.handyman.raven.process.ProcessEngine;
+import in.handyman.raven.exception.HandymanException;
+import in.handyman.raven.lambda.doa.Pipeline;
+import in.handyman.raven.lambda.process.LContext;
+import in.handyman.raven.lambda.process.LambdaEngine;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 
-@Log4j2
+@Slf4j
 @RequiredArgsConstructor
-public class LambdaCallable implements Callable<Process> {
+public class LambdaCallable implements Callable<Pipeline> {
 
-    private final Process process;
+    //TODO move all the context generation part into a method
+    private final LContext lContext;
     private final CountDownLatch countDownLatch;
 
-
     @Override
-    public Process call() throws Exception {
+    public Pipeline call() {
         try {
-            ProcessEngine.run(process);
+            return LambdaEngine.start(lContext);
+        } catch (Exception e) {
+            throw new HandymanException("", e);
         } finally {
             if (countDownLatch != null) {
                 countDownLatch.countDown();
             }
         }
-        return process;
     }
 }

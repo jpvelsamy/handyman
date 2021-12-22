@@ -1,19 +1,18 @@
 package in.handyman.raven.lib;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zaxxer.hikari.HikariDataSource;
-import in.handyman.raven.action.ActionExecution;
-import in.handyman.raven.action.IActionExecution;
-import in.handyman.raven.audit.AuditService;
-import in.handyman.raven.connection.ResourceAccess;
 import in.handyman.raven.exception.HandymanException;
+import in.handyman.raven.lambda.access.ResourceAccess;
+import in.handyman.raven.lambda.action.ActionExecution;
+import in.handyman.raven.lambda.action.IActionExecution;
+import in.handyman.raven.lambda.doa.Action;
 import in.handyman.raven.lib.model.Assign;
-import in.handyman.raven.process.Context;
 import in.handyman.raven.util.CommonQueryUtil;
 import in.handyman.raven.util.ExceptionUtil;
 import in.handyman.raven.util.UniqueID;
-import lombok.extern.log4j.Log4j2;
-import org.apache.logging.log4j.MarkerManager;
+import org.slf4j.Logger;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -28,59 +27,57 @@ import java.util.Map;
 @ActionExecution(
         actionName = "Assign"
 )
-@Log4j2
 public class AssignAction implements IActionExecution {
 
-    private final Context context;
+    private final Action action;
+    private final Logger log;
     private final Assign assign;
-    private final MarkerManager.Log4jMarker aMarker;
 
-    public AssignAction(final Context context, final Object assign) {
+    private final Marker aMarker;
+
+    public AssignAction(final Action action, final Logger log, final Object assign) {
         this.assign = (Assign) assign;
-        this.context = context;
-        this.aMarker = new MarkerManager.Log4jMarker("Assign");
-        this.context.getDetailMap().putPOJO("context", assign);
+        this.action = action;
+        this.log = log;
+        this.aMarker = MarkerFactory.getMarker("Assign:" + action.getActionName());
     }
 
     @Override
     public void execute() throws Exception {
         final String dbSrc = assign.getSource();
-        log.info("Transform action input variables id: {}, name: {}, source-database: {} ", context.getLambdaId(), assign.getName(), dbSrc);
-        log.info("Sql input post parameter ingestion \n {}", assign.getValue());
+        log.info(aMarker, " input variables id: {}, name: {}, source-database: {} ", action.getActionId(), assign.getName(), dbSrc);
+        log.info(aMarker, "Sql input post parameter ingestion \n {}", assign.getValue());
         final HikariDataSource hikariDataSource = ResourceAccess.rdbmsConn(dbSrc);
-        final ObjectNode detailMap = context.getDetailMap();
         try (final Connection connection = hikariDataSource.getConnection()) {
             final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(assign.getValue());
             for (var sqlToExecute : formattedQuery) {
                 log.info(aMarker, "Execution query sql#{} on db=#{}", sqlToExecute, dbSrc);
                 final Long statementId = UniqueID.getId();
-                AuditService.insertStatementAudit(statementId, context.getLambdaId(),
-                        assign.getName(), context.getProcessName());
+                //TODO
                 try (final Statement stmt = connection.createStatement()) {
                     try (var rs = stmt.executeQuery(sqlToExecute)) {
                         var columnCount = rs.getMetaData().getColumnCount();
                         while (rs.next()) {
-                            final Map<String, String> configContext = context.getContext();
-                            CommonQueryUtil.addKeyConfig(configContext, detailMap,
+                            final Map<String, String> context = action.getContext();
+                            CommonQueryUtil.addKeyConfig(context, log,
                                     rs, columnCount, assign.getName());
                         }
                     }
                     var warnings = ExceptionUtil.completeSQLWarning(stmt.getWarnings());
-                    detailMap.put(sqlToExecute + ".stmtCount", stmt.getUpdateCount());
-                    detailMap.put(sqlToExecute + ".warnings", warnings);
-                    AuditService.updateStatementAudit(statementId, 0, 0, sqlToExecute, 1);
-                    log.info(aMarker, " id# {}, executed script {} rows returned {}", statementId.toString(), sqlToExecute, 0);
+                    log.info(aMarker, sqlToExecute + ".stmtCount", stmt.getUpdateCount());
+                    log.info(aMarker, sqlToExecute + ".warnings", warnings);
+                    log.info(aMarker, " id# {}, executed script {} rows returned {}", statementId, sqlToExecute, 0);
                     stmt.clearWarnings();
                 } catch (SQLSyntaxErrorException ex) {
                     log.error(aMarker, "Stopping execution, General Error executing sql for {} with for campaign {}", sqlToExecute, ex);
-                    detailMap.put(sqlToExecute + ".exception", ExceptionUtil.toString(ex));
+                    log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
                     throw new HandymanException("Process failed", ex);
                 } catch (SQLException ex) {
                     log.error(aMarker, "Continuing to execute, even though SQL Error executing sql for {} ", sqlToExecute, ex);
-                    detailMap.put(sqlToExecute + ".exception", ExceptionUtil.toString(ex));
+                    log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
                 } catch (Throwable ex) {
                     log.error(aMarker, "Stopping execution, General Error executing sql for {} with for campaign {}", sqlToExecute, ex);
-                    detailMap.put(sqlToExecute + ".exception", ExceptionUtil.toString(ex));
+                    log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
                     throw new HandymanException("Process failed", ex);
                 }
             }

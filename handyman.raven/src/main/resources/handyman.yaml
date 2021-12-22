@@ -1,8 +1,0 @@
-server:
-  type: Handyman
-  applicationContextPath: /handyman/
-  connector:
-    type: http
-    port: 2909
-swagger:
-  resourcePackage: in.handyman

@@ -1,8 +1,8 @@
 package in.handyman.raven.lib.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import in.handyman.raven.action.ActionContext;
-import in.handyman.raven.action.IActionContext;
+import in.handyman.raven.lambda.action.ActionContext;
+import in.handyman.raven.lambda.action.IActionContext;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
