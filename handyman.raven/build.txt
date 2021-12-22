@@ -1,5 +1,4 @@
 Dependency:
 - https://github.com/jpvelsamy/JSqlParser.git (gammadev_bubblet)
 
-
 mvn clean antlr4:antlr4 test -Dtest=ActionGenerationTest#generate compile install
