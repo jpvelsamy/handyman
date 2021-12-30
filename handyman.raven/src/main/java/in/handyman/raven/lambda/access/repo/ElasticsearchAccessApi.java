@@ -53,7 +53,7 @@ import java.util.stream.StreamSupport;
 public class ElasticsearchAccessApi {
 
     public static final ObjectMapper MAPPER = new ObjectMapper();
-    private static final String RAVEN_CONFIGSTORE_PROPS = "handyman-raven-configstore.props";
+    private static final String RAVEN_CONFIGSTORE_PROPS = "config.props";
     private static final RestHighLevelClient CLIENT = getRestHighLevelClientConnection();
 
     static {

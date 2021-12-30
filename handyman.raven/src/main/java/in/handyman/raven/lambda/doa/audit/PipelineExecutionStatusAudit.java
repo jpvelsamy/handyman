@@ -1,7 +1,10 @@
-package in.handyman.raven.lambda.doa;
+package in.handyman.raven.lambda.doa.audit;
+
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import in.handyman.raven.lambda.doa.Auditable;
+import in.handyman.raven.util.UniqueID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,22 +20,12 @@ import lombok.ToString;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ConfigStore extends Auditable {
+public class PipelineExecutionStatusAudit extends Auditable {
 
-    private Long id;
+    @Builder.Default
+    private Long id = UniqueID.getId();
+    private Long pipelineId;
+    private Integer executionStatusId;
+    private Long rootPipelineId;
 
-    private String name;
-    private String variable;
-
-    //    @ColumnName("config_type_id")
-    private Integer configTypeId;
-
-    private String value;
-    private boolean active;
-
-    private Integer version;
-
-    public ConfigType getConfigType() {
-        return ConfigType.get(this.configTypeId);
-    }
 }

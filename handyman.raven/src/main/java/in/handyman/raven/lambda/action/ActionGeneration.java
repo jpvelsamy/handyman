@@ -11,8 +11,8 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import in.handyman.raven.compiler.RavenParser;
 import in.handyman.raven.exception.HandymanException;
-import in.handyman.raven.lambda.doa.ActionExecutionAudit;
-import in.handyman.raven.lambda.doa.ResourceConnection;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
+import in.handyman.raven.lambda.doa.config.SpwResourceConfig;
 import in.handyman.raven.lib.model.RestPart;
 import in.handyman.raven.lib.model.StartProcess;
 import lombok.AllArgsConstructor;
@@ -181,7 +181,7 @@ public class ActionGeneration {
             } else if (type == Token.class) {
                 builder.addField(String.class, name, Modifier.PRIVATE);
             } else if (type == RavenParser.ResourceContext.class) {
-                builder.addField(ResourceConnection.class, name, Modifier.PRIVATE);
+                builder.addField(SpwResourceConfig.class, name, Modifier.PRIVATE);
             } else if (type == List.class) {
                 final Type actualTypeArgument = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
                 if (actualTypeArgument == Token.class) {

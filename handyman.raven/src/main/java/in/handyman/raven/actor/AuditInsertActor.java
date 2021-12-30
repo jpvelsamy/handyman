@@ -3,11 +3,11 @@ package in.handyman.raven.actor;
 import akka.actor.AbstractActor;
 import in.handyman.raven.lambda.access.repo.HandymanRepo;
 import in.handyman.raven.lambda.access.repo.HandymanRepoR2Impl;
-import in.handyman.raven.lambda.doa.ActionExecutionAudit;
-import in.handyman.raven.lambda.doa.ActionExecutionStatusAudit;
-import in.handyman.raven.lambda.doa.PipelineExecutionStatusAudit;
-import in.handyman.raven.lambda.doa.PipelineExecutionAudit;
-import in.handyman.raven.lambda.doa.StatementExecutionAudit;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionStatusAudit;
+import in.handyman.raven.lambda.doa.audit.PipelineExecutionStatusAudit;
+import in.handyman.raven.lambda.doa.audit.PipelineExecutionAudit;
+import in.handyman.raven.lambda.doa.audit.StatementExecutionAudit;
 
 public class AuditInsertActor extends AbstractActor {
 

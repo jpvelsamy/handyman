@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 
-class ActionExecutionAuditGenerationTest {
+class ActionGenerationTest {
 
     @Test
     void generate() {

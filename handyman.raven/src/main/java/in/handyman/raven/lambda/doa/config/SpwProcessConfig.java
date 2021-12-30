@@ -1,5 +1,6 @@
-package in.handyman.raven.lambda.doa;
+package in.handyman.raven.lambda.doa.config;
 
+import in.handyman.raven.lambda.doa.Auditable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,12 +14,12 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SpwInstanceConfig extends Auditable {
+public class SpwProcessConfig extends Auditable {
 
     public static final String SCHEMA_NAME = "handyman_config";
-    public static final String TABLE_NAME = "spw_instance_config";
+    public static final String TABLE_NAME = "spw_process_config";
 
-    private String instance;
+    private Long id;
     private String process;
 
     private String variable;

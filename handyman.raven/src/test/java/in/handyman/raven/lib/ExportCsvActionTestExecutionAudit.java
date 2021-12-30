@@ -1,6 +1,6 @@
 package in.handyman.raven.lib;
 
-import in.handyman.raven.lambda.doa.ActionExecutionAudit;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.ExportCsv;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;

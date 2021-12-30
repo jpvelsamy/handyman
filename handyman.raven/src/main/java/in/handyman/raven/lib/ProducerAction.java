@@ -3,7 +3,7 @@ package in.handyman.raven.lib;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.ActionExecutionAudit;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lambda.process.LambdaEngine;
 import in.handyman.raven.lib.model.Producer;
 import org.slf4j.Logger;

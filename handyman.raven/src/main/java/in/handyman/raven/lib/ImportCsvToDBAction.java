@@ -7,8 +7,8 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.ActionExecutionAudit;
-import in.handyman.raven.lambda.doa.ResourceConnection;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
+import in.handyman.raven.lambda.doa.config.SpwResourceConfig;
 import in.handyman.raven.lib.model.ImportCsvToDB;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.PreparedBatch;
@@ -56,7 +56,7 @@ public class ImportCsvToDBAction implements IActionExecution {
         final int threadCount = Optional.ofNullable(importCsvToDB.getWriteThreadCount()).map(Integer::valueOf).orElse(1);
         final Integer batchSize = Optional.ofNullable(importCsvToDB.getBatchSize()).map(Integer::valueOf).orElse(10000);
 
-        final ResourceConnection target = importCsvToDB.getTarget();
+        final SpwResourceConfig target = importCsvToDB.getTarget();
         if (Objects.isNull(target)) {
             throw new HandymanException("target connection not provided");
         }

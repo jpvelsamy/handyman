@@ -1,7 +1,7 @@
 package in.handyman.raven.lib;
 
 import in.handyman.raven.compiler.RavenParser;
-import in.handyman.raven.lambda.doa.ActionExecutionAudit;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lambda.process.LambdaEngine;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

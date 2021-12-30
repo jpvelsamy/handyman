@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import in.handyman.raven.compiler.RavenParser;
 import in.handyman.raven.lambda.action.ActionContext;
 import in.handyman.raven.lambda.action.IActionContext;
-import in.handyman.raven.lambda.doa.ResourceConnection;
+import in.handyman.raven.lambda.doa.config.SpwResourceConfig;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,7 +29,7 @@ public class Producer implements IActionContext {
 
     private Long pcmId;
     private String poison;
-    private ResourceConnection source;
+    private SpwResourceConfig source;
 
     private String name;
     private String stmt;

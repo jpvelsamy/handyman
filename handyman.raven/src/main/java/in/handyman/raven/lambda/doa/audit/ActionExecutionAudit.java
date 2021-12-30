@@ -1,10 +1,12 @@
-package in.handyman.raven.lambda.doa;
+package in.handyman.raven.lambda.doa.audit;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import in.handyman.raven.actor.HandymanActorSystemAccess;
+import in.handyman.raven.lambda.doa.AbstractAudit;
+import in.handyman.raven.lambda.doa.IAction;
 import in.handyman.raven.lambda.process.LambdaEngine;
 import in.handyman.raven.util.UniqueID;
 import lombok.AllArgsConstructor;
@@ -27,6 +29,9 @@ import java.util.Optional;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ActionExecutionAudit extends AbstractAudit implements IAction {
+
+    public static final String SCHEMA_NAME = "handyman_audit";
+    public static final String TABLE_NAME = "action_execution_audit";
 
     @JsonIgnore
     private final ArrayDeque<SubstituteLoggingEvent> eventQueue = new ArrayDeque<>();

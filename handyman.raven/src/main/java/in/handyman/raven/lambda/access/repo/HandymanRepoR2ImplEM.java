@@ -13,7 +13,7 @@ package in.handyman.raven.lambda.access.repo;
 //    private final EntityManager ENTITY_MANAGER;
 //
 //    public HandymanRepoR2ImplEM() {
-//        var config = ConfigFactory.parseResources("handyman-raven-configstore.props");
+//        var config = ConfigFactory.parseResources("config.props");
 //        log.info("Initializing the config store from config file {}", config.origin().url());
 //
 //        final String driver = config.getString(CONFIG_DRIVER);

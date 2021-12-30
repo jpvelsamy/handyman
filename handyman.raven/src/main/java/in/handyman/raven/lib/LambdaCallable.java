@@ -1,7 +1,7 @@
 package in.handyman.raven.lib;
 
 import in.handyman.raven.exception.HandymanException;
-import in.handyman.raven.lambda.doa.PipelineExecutionAudit;
+import in.handyman.raven.lambda.doa.audit.PipelineExecutionAudit;
 import in.handyman.raven.lambda.process.LContext;
 import in.handyman.raven.lambda.process.LambdaEngine;
 import lombok.RequiredArgsConstructor;

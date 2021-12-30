@@ -4,8 +4,8 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.ActionExecutionAudit;
-import in.handyman.raven.lambda.doa.ResourceConnection;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
+import in.handyman.raven.lambda.doa.config.SpwResourceConfig;
 import in.handyman.raven.lambda.process.CommandProxy;
 import in.handyman.raven.lambda.process.LambdaEngine;
 import in.handyman.raven.lib.model.Consumer;
@@ -75,7 +75,7 @@ public class ProducerConsumerModelAction implements IActionExecution {
             CommandProxy.setTarget(producer, producerContext, actionExecutionAudit.getContext());
             log.info(aMarker, "{}", producerContext);
 
-            final ResourceConnection source = producer.getSource();
+            final SpwResourceConfig source = producer.getSource();
             final List<Map<String, String>> maps = source.get()
                     .withHandle(handle -> handle.createQuery(producer.getStmt()).mapToMap().stream()
                             .map(stringObjectMap -> stringObjectMap.entrySet()

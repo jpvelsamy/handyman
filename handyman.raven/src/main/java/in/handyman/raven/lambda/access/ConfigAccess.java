@@ -2,7 +2,7 @@ package in.handyman.raven.lambda.access;
 
 import in.handyman.raven.lambda.access.repo.HandymanRepo;
 import in.handyman.raven.lambda.access.repo.HandymanRepoR2Impl;
-import in.handyman.raven.lambda.doa.ResourceConnection;
+import in.handyman.raven.lambda.doa.config.SpwResourceConfig;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
@@ -13,7 +13,7 @@ public class ConfigAccess {
 
     private static final HandymanRepo REPO = new HandymanRepoR2Impl();
 
-    public static ResourceConnection getResourceConfig(final String name) {
+    public static SpwResourceConfig getResourceConfig(final String name) {
         return REPO.getResourceConfig(name);
     }
 

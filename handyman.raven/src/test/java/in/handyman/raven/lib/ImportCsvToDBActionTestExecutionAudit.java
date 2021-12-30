@@ -1,7 +1,7 @@
 package in.handyman.raven.lib;
 
-import in.handyman.raven.lambda.doa.ActionExecutionAudit;
-import in.handyman.raven.lambda.doa.ResourceConnection;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
+import in.handyman.raven.lambda.doa.config.SpwResourceConfig;
 import in.handyman.raven.lib.model.ImportCsvToDB;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -24,7 +24,7 @@ class ImportCsvToDBActionTestExecutionAudit {
                 .value(Collections.singletonList("/home/shankar.t@zucisystems.com/Downloads/MOCK_DATA.csv"))
                 .batchSize("99")
                 .writeThreadCount("3")
-                .target(ResourceConnection.builder()
+                .target(SpwResourceConfig.builder()
                         .url("jdbc:sqlserver://localhost:1433;databaseName=CCCU_DNA;")
                         .userName("SA")
                         .password("Marvel2018")

@@ -1,25 +1,27 @@
 package in.handyman.raven.lambda.access.repo;
 
-import in.handyman.raven.lambda.doa.ActionExecutionAudit;
-import in.handyman.raven.lambda.doa.ConfigStore;
-import in.handyman.raven.lambda.doa.ConfigType;
-import in.handyman.raven.lambda.doa.PipelineExecutionAudit;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
+import in.handyman.raven.lambda.doa.audit.PipelineExecutionAudit;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
+@Slf4j
 class HandymanRepoR2ImplTest {
 
     private final HandymanRepoR2Impl repoR2 = new HandymanRepoR2Impl();
 
     @Test
     void findConfigEntities() {
-        final List<ConfigStore> configEntities = repoR2.findConfigEntities(ConfigType.PIPELINE, "RestApiActionTest");
-        assert !configEntities.isEmpty();
+        repoR2.findAllCommonConfigs();
+        repoR2.findAllInstances();
+        repoR2.findAllProcesses();
+        repoR2.findAllResourceConfigs();
+        log.info("Hello ");
     }
 
     @Test
     void insertPipeline() {
+        log.debug("Hello ");
         repoR2.insertPipeline(PipelineExecutionAudit.builder().build());
     }
 
@@ -29,5 +31,6 @@ class HandymanRepoR2ImplTest {
         repoR2.insertAction(build);
         build.setLog("Hello");
         repoR2.update(build);
+        log.error("Hello ");
     }
 }

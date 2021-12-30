@@ -1,13 +1,14 @@
 package in.handyman.raven.lambda.access.repo;
 
-import in.handyman.raven.lambda.doa.ActionExecutionAudit;
-import in.handyman.raven.lambda.doa.ActionExecutionStatusAudit;
-import in.handyman.raven.lambda.doa.ConfigStore;
-import in.handyman.raven.lambda.doa.ConfigType;
-import in.handyman.raven.lambda.doa.PipelineExecutionStatusAudit;
-import in.handyman.raven.lambda.doa.PipelineExecutionAudit;
-import in.handyman.raven.lambda.doa.ResourceConnection;
-import in.handyman.raven.lambda.doa.StatementExecutionAudit;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionStatusAudit;
+import in.handyman.raven.lambda.doa.audit.PipelineExecutionAudit;
+import in.handyman.raven.lambda.doa.audit.PipelineExecutionStatusAudit;
+import in.handyman.raven.lambda.doa.audit.StatementExecutionAudit;
+import in.handyman.raven.lambda.doa.config.SpwCommonConfig;
+import in.handyman.raven.lambda.doa.config.SpwInstanceConfig;
+import in.handyman.raven.lambda.doa.config.SpwProcessConfig;
+import in.handyman.raven.lambda.doa.config.SpwResourceConfig;
 
 import java.util.List;
 import java.util.Map;
@@ -20,31 +21,59 @@ public interface HandymanRepo {
 
     Map<String, String> getAllConfig(final String pipelineName);
 
-    List<ConfigStore> getAllConfigStores(final String pipelineName);
-
     Map<String, String> getCommonConfig();
 
-    ResourceConnection getResourceConfig(final String name);
-
-    List<ResourceConnection> getResourceConfigList(final String name);
-
-    String findValueCommonConfig(final String configName, final String variable);
+    SpwResourceConfig getResourceConfig(final String name);
 
     Set<String> getPackageAction();
 
-    List<ConfigStore> findConfigEntities(final ConfigType configType, final String configName);
+    // SPW Instance
 
-    List<ConfigStore> findConfigEntitiesByVariable(final ConfigType configType, final String variable);
+    void insert(final SpwInstanceConfig spwInstanceConfig);
 
-    Optional<ConfigStore> findConfigEntities(final ConfigType configType, final String configName, final String variable);
+    void update(final SpwInstanceConfig spwInstanceConfig);
 
-    List<ConfigStore> findConfigStore(final ConfigType configType, final String configName, final String variable);
+    List<SpwInstanceConfig> findAllInstances();
 
-    List<ConfigStore> findConfigEntities(final ConfigType configType);
+    List<SpwInstanceConfig> findAllByInstance(final String instance, final String process);
 
-    void save(final ConfigStore configStore);
+    Optional<SpwInstanceConfig> findOneInstance(final String instance, final String process, final String variable);
 
-    void save(final ResourceConnection resourceConnection);
+
+    // SPW Process
+
+    void insert(final SpwProcessConfig spwProcessConfig);
+
+    void update(final SpwProcessConfig spwProcessConfig);
+
+    List<SpwProcessConfig> findAllProcesses();
+
+    List<SpwProcessConfig> findAllByProcess(final String process);
+
+    Optional<SpwProcessConfig> findOneProcess(final String process, final String variable);
+
+
+    // SPW Common
+
+    void insert(final SpwCommonConfig spwCommonConfig);
+
+    void update(final SpwCommonConfig spwCommonConfig);
+
+    List<SpwCommonConfig> findAllCommonConfigs();
+
+    Optional<SpwCommonConfig> findOneCommonConfig(final String variable);
+
+    // SPW Resource
+
+    void insert(final SpwResourceConfig spwResourceConfig);
+
+    void update(final SpwResourceConfig spwResourceConfig);
+
+    List<SpwResourceConfig> findAllResourceConfigs();
+
+    Optional<SpwResourceConfig> findOneResourceConfig(final String configName);
+
+    // Audit
 
     void insertPipeline(final PipelineExecutionAudit audit);
 
@@ -64,10 +93,11 @@ public interface HandymanRepo {
 
     List<ActionExecutionAudit> findActions(final Long pipelineId);
 
+    List<ActionExecutionAudit> findAllActionsByRootPipelineId(final Long rootPipelineId);
+
     List<PipelineExecutionAudit> findPipelines(final Long parentActionId);
 
     List<PipelineExecutionAudit> findAllPipelines();
 
     List<PipelineExecutionAudit> findAllPipelines(final String pipelineName);
-
 }

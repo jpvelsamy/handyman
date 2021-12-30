@@ -1,4 +1,4 @@
-package in.handyman.raven.lambda.doa;
+package in.handyman.raven.lambda.doa.audit;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
