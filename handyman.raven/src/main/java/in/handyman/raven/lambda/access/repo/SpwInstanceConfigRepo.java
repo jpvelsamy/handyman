@@ -38,4 +38,9 @@ public interface SpwInstanceConfigRepo {
     @RegisterBeanMapper(value = SpwInstanceConfig.class)
     Optional<SpwInstanceConfig> findOne(@Bind("instance") final String instance, @Bind("process") final String process, @Bind("variable") final String variable);
 
+
+    @SqlQuery("SELECT " + COLUMNS + " FROM  " + SpwInstanceConfig.SCHEMA_NAME + "." + SpwInstanceConfig.TABLE_NAME + " where variable= :variable and active=1 ; ")
+    @RegisterBeanMapper(value = SpwInstanceConfig.class)
+    List<SpwInstanceConfig> findAllByInstanceVariable(@Bind("variable") final String variable);
+
 }

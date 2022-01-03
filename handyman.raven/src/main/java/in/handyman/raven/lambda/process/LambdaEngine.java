@@ -53,7 +53,7 @@ public class LambdaEngine {
      */
     public static PipelineExecutionAudit start(final LContext lContext) throws HandymanException {
 
-        log.info("LContext => " + lContext);
+        log.info("the given request  => " + lContext);
         final String hostName;
         try {
             hostName = InetAddress.getLocalHost().getHostAddress();
@@ -179,6 +179,7 @@ public class LambdaEngine {
         pipelineExecutionAudit.setParentActionId(lContext.getParentActionId());
         pipelineExecutionAudit.setParentActionName(lContext.getParentActionName());
         pipelineExecutionAudit.setRequestBody(lContext.getPayload());
+        pipelineExecutionAudit.setCreatedBy(lContext.getUserId());
     }
 
     private static void run(final PipelineExecutionAudit pipelineExecutionAudit,
@@ -214,6 +215,7 @@ public class LambdaEngine {
     }
 
     public static void toAction(final ActionExecutionAudit actionExecutionAudit, final AbstractAudit abstractAudit) {
+        actionExecutionAudit.setCreatedBy(abstractAudit.getCreatedBy());
         actionExecutionAudit.setPipelineName(abstractAudit.getPipelineName());
         actionExecutionAudit.setLambdaName(abstractAudit.getLambdaName());
         actionExecutionAudit.setParentActionId(abstractAudit.getParentActionId());
@@ -279,19 +281,19 @@ public class LambdaEngine {
     private static IActionExecution load(final RavenParser.ActionContext actionContext, final ActionExecutionAudit actionExecutionAudit) {
         final ParseTree child = actionContext.getChild(0);
         if (child != null) {
-            final String actionName = child.getClass().getSimpleName().replace(ProcessExecutor.CONTEXT, "");
-            actionExecutionAudit.setActionName(actionName);
+            final String macroName = child.getClass().getSimpleName().replace(ProcessExecutor.CONTEXT, "");
+            actionExecutionAudit.setMacroName(macroName);
             final Logger logger = getLogger(actionExecutionAudit);
-            logger.info("Execution class {} staged", actionName);
-            if (ProcessExecutor.ACTION_CONTEXT_MAP.containsKey(actionName) && ProcessExecutor.ACTION_EXECUTION_MAP.containsKey(actionName)) {
+            logger.info("Execution class {} staged", macroName);
+            if (ProcessExecutor.ACTION_CONTEXT_MAP.containsKey(macroName) && ProcessExecutor.ACTION_EXECUTION_MAP.containsKey(macroName)) {
                 try {
                     actionExecutionAudit.updateExecutionStatusId(ExecutionStatus.STARTED.getId());
                     return initialization(child, actionExecutionAudit);
                 } catch (Exception e) {
-                    logger.trace("Error at Initialization " + actionName, e);
+                    logger.trace("Error at Initialization " + macroName, e);
                 }
             } else {
-                logger.trace("Error Not found action " + actionName);
+                logger.trace("Error Not found action " + macroName);
             }
         }
         throw new HandymanException("Unknown ActionContext");
@@ -331,15 +333,17 @@ public class LambdaEngine {
             final ActionExecutionAudit actionExecutionAudit)
             throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         final Logger logger = getLogger(actionExecutionAudit);
-        final String actionName = actionExecutionAudit.getActionName();
-        final IActionContext actionContext = (IActionContext) ProcessExecutor.ACTION_CONTEXT_MAP.get(actionName).getConstructor().newInstance();
-        logger.debug("actionContext Execution class {} instance created", actionName);
+        final String macroName = actionExecutionAudit.getMacroName();
+
+        final IActionContext actionContext = (IActionContext) ProcessExecutor.ACTION_CONTEXT_MAP.get(macroName).getConstructor().newInstance();
+        logger.debug("actionContext Execution class {} instance created", macroName);
         CommandProxy.setTarget(actionContext, child, actionExecutionAudit.getContext());
         actionExecutionAudit.setActionName(actionContext.getName());
         logger.debug("actionContext Execution context {}", actionContext);
         actionExecutionAudit.setInput(MAPPER.convertValue(actionContext, JsonNode.class));
         HandymanActorSystemAccess.update(actionExecutionAudit);
-        return (IActionExecution) ProcessExecutor.ACTION_EXECUTION_MAP.get(actionName)
+
+        return (IActionExecution) ProcessExecutor.ACTION_EXECUTION_MAP.get(macroName)
                 .getConstructor(ActionExecutionAudit.class, Logger.class, Object.class)
                 .newInstance(actionExecutionAudit, logger, actionContext);
     }

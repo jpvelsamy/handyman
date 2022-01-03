@@ -38,6 +38,9 @@ public class ActionExecutionAudit extends AbstractAudit implements IAction {
     @Builder.Default
     private Long actionId = UniqueID.getId();
     private String actionName;
+
+    private String macroName;
+
     private Long pipelineId;
     private JsonNode input;
     private String log;

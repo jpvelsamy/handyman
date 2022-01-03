@@ -35,6 +35,9 @@ public interface HandymanRepo {
 
     List<SpwInstanceConfig> findAllInstances();
 
+    List<SpwInstanceConfig> findAllByInstanceVariable(final String variable);
+
+
     List<SpwInstanceConfig> findAllByInstance(final String instance, final String process);
 
     Optional<SpwInstanceConfig> findOneInstance(final String instance, final String process, final String variable);

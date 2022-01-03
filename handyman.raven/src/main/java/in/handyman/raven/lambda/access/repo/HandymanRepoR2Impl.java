@@ -37,7 +37,8 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
 
     static {
 
-        final File file = new File(System.getenv("handyman.config.location"));
+        final String getenv = Optional.ofNullable(System.getenv("handyman.config.location")).orElse("config.props");
+        final File file = new File(getenv);
 
         if (!file.exists()) {
             throw new HandymanException("Config file not found");
@@ -286,6 +287,14 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
         return jdbi.withHandle(handle -> {
             var repo = handle.attach(SpwInstanceConfigRepo.class);
             return repo.findAll();
+        });
+    }
+
+    @Override
+    public List<SpwInstanceConfig> findAllByInstanceVariable(final String variable) {
+        return jdbi.withHandle(handle -> {
+            var repo = handle.attach(SpwInstanceConfigRepo.class);
+            return repo.findAllByInstanceVariable(variable);
         });
     }
 

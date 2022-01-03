@@ -15,6 +15,7 @@ public class InstanceJob implements Job {
     public static final String VM = "VM";
     public static final String NAME = "NAME";
     public static final String LOAD_TYPE = "loadType";
+    public static final String QRTZ = "QRTZ";
     public static final String CRON = "CRON";
     public static final String LOAD_TYPE_VARIABLE = "LOAD_TYPE";
 
