@@ -6,7 +6,7 @@
     <parent>
         <artifactId>handyman.parent</artifactId>
         <groupId>in.handyman</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
 	<properties>
 		<xtextVersion>2.16.0</xtextVersion>
