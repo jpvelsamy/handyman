@@ -9,6 +9,8 @@ services:
       - "8081:8081"
     environment:
       TZ: "Asia/Kolkata"
+    env_file:
+      - config.env
     volumes:
       - ./target/handyman-server.jar:/handyman-server.jar
     command: [ 'java', '-jar', '/handyman-server.jar' ]

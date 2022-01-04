@@ -3,7 +3,6 @@ package in.handyman.server.schedular;
 import in.handyman.raven.lambda.process.LContext;
 import in.handyman.raven.lambda.process.LambdaEngine;
 import in.handyman.server.StartProcess;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobDataMap;

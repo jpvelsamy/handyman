@@ -1,7 +1,6 @@
 package in.handyman.server.resource;
 
 import in.handyman.server.StartProcess;
-import io.swagger.annotations.Api;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -9,7 +8,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@Api
+//@Api
 @Path("/legacy-vm")
 @Produces(MediaType.APPLICATION_JSON)
 public class HLegacyResource {

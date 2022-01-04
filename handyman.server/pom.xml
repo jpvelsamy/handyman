@@ -93,15 +93,37 @@
         </dependency>
 
         <!-- Swagger UI -->
+<!--        <dependency>-->
+<!--            <groupId>com.smoketurner</groupId>-->
+<!--            <artifactId>dropwizard-swagger</artifactId>-->
+<!--            <version>2.0.12-1</version>-->
+<!--        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/org.reflections/reflections -->
         <dependency>
-            <groupId>com.smoketurner</groupId>
-            <artifactId>dropwizard-swagger</artifactId>
-            <version>2.0.12-1</version>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.10.2</version>
         </dependency>
 
     </dependencies>
     <build>
         <finalName>handyman-server</finalName>
+        <plugins>
+            <plugin>
+                <!-- Build an executable JAR -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>in,handyman.server.HandymanApplication</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
     <repositories>
         <repository>
