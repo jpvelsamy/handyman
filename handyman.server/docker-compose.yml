@@ -13,4 +13,5 @@ services:
       - config.env
     volumes:
       - ./target/handyman-server.jar:/handyman-server.jar
+      - ./config:/config
     command: [ 'java', '-jar', '/handyman-server.jar' ]
