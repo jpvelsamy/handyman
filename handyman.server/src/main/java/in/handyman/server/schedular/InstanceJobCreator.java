@@ -134,7 +134,6 @@ public class InstanceJobCreator implements Job {
                     data.put(InstanceJob.NAME, instance);
                     data.put(InstanceJob.VM, ravenVm.name());
                     data.put(InstanceJob.LOAD_TYPE, HANDYMAN_REPO.findOneInstance(instance,
-                                    InstanceJob.QRTZ,
                                     InstanceJob.LOAD_TYPE_VARIABLE).map(SpwInstanceConfig::getValue)
                             .orElse(null));
 

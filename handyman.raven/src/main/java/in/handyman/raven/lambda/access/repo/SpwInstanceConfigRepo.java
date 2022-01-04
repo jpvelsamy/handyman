@@ -26,17 +26,17 @@ public interface SpwInstanceConfigRepo {
     @RegisterBeanMapper(value = SpwInstanceConfig.class)
     List<SpwInstanceConfig> findAll();
 
-    @SqlQuery("SELECT " + COLUMNS + " FROM  " + SpwInstanceConfig.SCHEMA_NAME + "." + SpwInstanceConfig.TABLE_NAME + " where instance= :instance and process= :process and active=1 ; ")
+    @SqlQuery("SELECT " + COLUMNS + " FROM  " + SpwInstanceConfig.SCHEMA_NAME + "." + SpwInstanceConfig.TABLE_NAME + " where instance= :instance  and active=1 ; ")
     @RegisterBeanMapper(value = SpwInstanceConfig.class)
-    List<SpwInstanceConfig> findAllByInstance(@Bind("instance") final String instance, @Bind("process") final String process);
+    List<SpwInstanceConfig> findAllByInstance(@Bind("instance") final String instance);
 
-    @SqlQuery("SELECT count(1)+1 FROM  " + SpwInstanceConfig.SCHEMA_NAME + "." + SpwInstanceConfig.TABLE_NAME + " where instance= :instance and process= :process and variable= :variable ; ")
+    @SqlQuery("SELECT count(1)+1 FROM  " + SpwInstanceConfig.SCHEMA_NAME + "." + SpwInstanceConfig.TABLE_NAME + " where instance= :instance  and variable= :variable ; ")
     @RegisterBeanMapper(value = SpwInstanceConfig.class)
     Long getNextVersion(@BindBean final SpwInstanceConfig spwInstanceConfig);
 
-    @SqlQuery("SELECT " + COLUMNS + " FROM  " + SpwInstanceConfig.SCHEMA_NAME + "." + SpwInstanceConfig.TABLE_NAME + " where instance= :instance and process= :process and variable= :variable  and active=1 order by version desc limit 1; ")
+    @SqlQuery("SELECT " + COLUMNS + " FROM  " + SpwInstanceConfig.SCHEMA_NAME + "." + SpwInstanceConfig.TABLE_NAME + " where instance= :instance  and variable= :variable  and active=1 order by version desc limit 1; ")
     @RegisterBeanMapper(value = SpwInstanceConfig.class)
-    Optional<SpwInstanceConfig> findOne(@Bind("instance") final String instance, @Bind("process") final String process, @Bind("variable") final String variable);
+    Optional<SpwInstanceConfig> findOne(@Bind("instance") final String instance,  @Bind("variable") final String variable);
 
 
     @SqlQuery("SELECT " + COLUMNS + " FROM  " + SpwInstanceConfig.SCHEMA_NAME + "." + SpwInstanceConfig.TABLE_NAME + " where variable= :variable and active=1 ; ")

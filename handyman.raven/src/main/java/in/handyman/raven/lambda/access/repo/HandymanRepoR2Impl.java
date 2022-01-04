@@ -57,8 +57,7 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     @Override
     public Map<String, String> getAllConfig(final String pipelineName) {
         final String lambdaName = getLambdaName(pipelineName);
-
-        final Map<String, String> pipelineConfig = findAllByInstance(pipelineName, lambdaName).stream()
+        final Map<String, String> pipelineConfig = findAllByInstance(pipelineName).stream()
                 .collect(Collectors
                         .toMap((SpwInstanceConfig::getVariable),
                                 SpwInstanceConfig::getValue,
@@ -80,10 +79,10 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     }
 
     @Override
-    public List<SpwInstanceConfig> findAllByInstance(final String instance, final String process) {
+    public List<SpwInstanceConfig> findAllByInstance(final String instance) {
         return jdbi.withHandle(handle -> {
             var repo = handle.attach(SpwInstanceConfigRepo.class);
-            return repo.findAllByInstance(instance, process);
+            return repo.findAllByInstance(instance);
         });
     }
 
@@ -299,10 +298,10 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     }
 
     @Override
-    public Optional<SpwInstanceConfig> findOneInstance(final String instance, final String process, final String variable) {
+    public Optional<SpwInstanceConfig> findOneInstance(final String instance, final String variable) {
         return jdbi.withHandle(handle -> {
             var repo = handle.attach(SpwInstanceConfigRepo.class);
-            return repo.findOne(instance, process, variable);
+            return repo.findOne(instance, variable);
         });
     }
 
