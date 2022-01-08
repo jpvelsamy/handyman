@@ -37,7 +37,7 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
 
     static {
 
-        final String getenv = Optional.ofNullable(System.getenv("handyman.config.location")).orElse("config.props");
+        final String getenv = Optional.ofNullable(System.getProperty("handyman.config.location")).orElse("config.props");
         final File file = new File(getenv);
 
         if (!file.exists()) {
