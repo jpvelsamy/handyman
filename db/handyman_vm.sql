@@ -421,4 +421,20 @@ CREATE TABLE QRTZ_LOCKS
 );
 
 
+INSERT INTO handyman_config.spw_process_config (id, process, variable, value, active, created_by, created_date, last_modified_by, last_modified_date, version) VALUES(1, 'SYS_PACKAGE', 'raven.java.lib', 'in.handyman.raven.lib', 'Y', 1, '2022-01-01 00:00:00.000', 1, '2022-01-01 00:00:00.000', 1);
+INSERT INTO handyman_config.spw_process_config (id, process, variable, value, active, created_by, created_date, last_modified_by, last_modified_date, version) VALUES(2, 'ZIO_CORE', 'zio.lambda.temp', '/home/naruto/data/handyman/tmp', 'Y', 1, '2022-01-01 00:00:00.000', 1, '2022-01-01 00:00:00.000', 1);
+INSERT INTO handyman_config.spw_process_config (id, process, variable, value, active, created_by, created_date, last_modified_by, last_modified_date, version) VALUES(3, 'ZIO_CORE', 'zio.lambda.dir', 'src/main/lambda', 'Y', 1, '2022-01-01 00:00:00.000', 1, '2022-01-01 00:00:00.000', 1);
+INSERT INTO handyman_audit.execution_group (id, value) VALUES(4, 'ACTION');
+INSERT INTO handyman_audit.execution_group (id, value) VALUES(2, 'CATCH');
+INSERT INTO handyman_audit.execution_group (id, value) VALUES(3, 'FINALLY');
+INSERT INTO handyman_audit.execution_group (id, value) VALUES(1, 'TRY');
+INSERT INTO handyman_audit.execution_status (id, value) VALUES(5, 'COMPLETED');
+INSERT INTO handyman_audit.execution_status (id, value) VALUES(4, 'FAILED');
+INSERT INTO handyman_audit.execution_status (id, value) VALUES(2, 'RUNNING');
+INSERT INTO handyman_audit.execution_status (id, value) VALUES(6, 'STAGED');
+INSERT INTO handyman_audit.execution_status (id, value) VALUES(1, 'STARTED');
+INSERT INTO handyman_audit.execution_status (id, value) VALUES(3, 'STOPPED');
+INSERT INTO handyman_audit.execution_status (id, value) VALUES(7, 'WARNING');
+
+
 commit;
