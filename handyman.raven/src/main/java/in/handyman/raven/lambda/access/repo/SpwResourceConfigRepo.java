@@ -33,6 +33,6 @@ public interface SpwResourceConfigRepo {
 
     @SqlQuery("SELECT " + COLUMNS + " FROM  " + SpwResourceConfig.SCHEMA_NAME + "." + SpwResourceConfig.TABLE_NAME + " where config_name= :configName  and active=1 order by version desc limit 1; ")
     @RegisterBeanMapper(value = SpwResourceConfig.class)
-    Optional<SpwResourceConfig> findOne(@Bind("variable") final String variable);
+    Optional<SpwResourceConfig> findOne(@Bind("configName") final String variable);
 
 }
