@@ -43,4 +43,10 @@ public interface SpwInstanceConfigRepo {
     @RegisterBeanMapper(value = SpwInstanceConfig.class)
     List<SpwInstanceConfig> findAllByInstanceVariable(@Bind("variable") final String variable);
 
+    @SqlQuery("select count(1) from "+SpwInstanceConfig.SCHEMA_NAME + " where name = :name and variable= :variable and config_type_id= :configTypeId")
+    Integer count(@Bind("name") final String name,@Bind("variable") final String variable,@Bind("configTypeId") final Integer configTypeId);
+
+    @SqlQuery("SELECT " + COLUMNS + " FROM  " + SpwInstanceConfig.SCHEMA_NAME + "." + SpwInstanceConfig.TABLE_NAME + " where name = :name and variable= :variable and config_type_id= :configTypeId and active=1 order by version desc limit 1; ")
+    @RegisterBeanMapper(value = SpwInstanceConfig.class)
+    Optional<SpwInstanceConfig> get(@Bind("name") final String name,@Bind("variable") final String variable,@Bind("configTypeId") final Integer configTypeId);
 }
