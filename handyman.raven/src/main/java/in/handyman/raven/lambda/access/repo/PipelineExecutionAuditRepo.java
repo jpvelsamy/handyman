@@ -8,6 +8,7 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PipelineExecutionAuditRepo {
 
@@ -16,7 +17,7 @@ public interface PipelineExecutionAuditRepo {
     @SqlUpdate("insert into " + PipelineExecutionAudit.SCHEMA_NAME + "." + PipelineExecutionAudit.TABLE_NAME + "  ( " + COLUMNS + " ) VALUES( :pipelineId,:createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :contextNode,:executionStatusId,:lambdaName,:parentActionId, :parentActionName, :parentPipelineId, :parentPipelineName, :pipelineName, :fileContent,:hostName,:modeOfExecution,:pipelineLoadType,:relativePath,:requestBody,:threadName,:processName,:rootPipelineId,:processId ); ")
     void insert(final PipelineExecutionAudit actionExecutionAudit);
 
-    @SqlUpdate("update  " + PipelineExecutionAudit.SCHEMA_NAME + "." + PipelineExecutionAudit.TABLE_NAME + " SET created_by = :createdBy, created_date = :createdDate, last_modified_by = :lastModifiedBy, last_modified_date = :lastModifiedDate, context_node = :contextNode, execution_status_id = :executionStatusId, lambda_name = :lambdaName, parent_action_id = :parentActionId, parent_action_name = :parentActionName, parent_pipeline_id = :parentPipelineId, parent_pipeline_name = :parentPipelineName, pipeline_name = :pipelineName, file_content = :fileContent, host_name = :hostName, mode_of_execution = :modeOfExecution, pipeline_load_type = :pipelineLoadType , relative_path = :relativePath, request_body = :requestBody,  process_name = :processName , root_pipeline_id = :rootPipelineId WHERE pipeline_id = :pipelineId ")
+    @SqlUpdate("update  " + PipelineExecutionAudit.SCHEMA_NAME + "." + PipelineExecutionAudit.TABLE_NAME + " SET created_by = :createdBy, created_date = :createdDate, last_modified_by = :lastModifiedBy, last_modified_date = :lastModifiedDate, context_node = :contextNode, execution_status_id = :executionStatusId, lambda_name = :lambdaName, parent_action_id = :parentActionId, parent_action_name = :parentActionName, parent_pipeline_id = :parentPipelineId, parent_pipeline_name = :parentPipelineName, pipeline_name = :pipelineName, file_content = :fileContent, host_name = :hostName, mode_of_execution = :modeOfExecution, pipeline_load_type = :pipelineLoadType , relative_path = :relativePath, request_body = :requestBody,  process_name = :processName , root_pipeline_id = :rootPipelineId , process_id = :processId WHERE pipeline_id = :pipelineId ")
     void update(final PipelineExecutionAudit actionExecutionAudit);
 
 
@@ -28,4 +29,16 @@ public interface PipelineExecutionAuditRepo {
     @RegisterBeanMapper(value = PipelineExecutionAudit.class)
     List<PipelineExecutionAudit> findAllPipelinesByRootPipelineId(@Bind("rootPipelineId") final Long rootPipelineId);
 
+
+    @SqlQuery("SELECT " + COLUMNS + " FROM  " + PipelineExecutionAudit.SCHEMA_NAME + "." + PipelineExecutionAudit.TABLE_NAME + " where pipeline_name= :pipelineName ; ")
+    @RegisterBeanMapper(value = PipelineExecutionAudit.class)
+    List<PipelineExecutionAudit> findAllByPipelineName(@Bind("pipelineName") final String pipelineName);
+
+    @SqlQuery("SELECT " + COLUMNS + " FROM  " + PipelineExecutionAudit.SCHEMA_NAME + "." + PipelineExecutionAudit.TABLE_NAME + " where parent_action_id= :parentActionId ; ")
+    @RegisterBeanMapper(value = PipelineExecutionAudit.class)
+    List<PipelineExecutionAudit> findAllPipelinesByParentActionId(@Bind("parentActionId") final Long parentActionId);
+
+    @SqlQuery("SELECT " + COLUMNS + " FROM  " + PipelineExecutionAudit.SCHEMA_NAME + "." + PipelineExecutionAudit.TABLE_NAME + " where pipeline_id= :pipelineId ; ")
+    @RegisterBeanMapper(value = PipelineExecutionAudit.class)
+    Optional<PipelineExecutionAudit> findOneByPipelineId(@Bind("pipelineId") final Long pipelineId);
 }

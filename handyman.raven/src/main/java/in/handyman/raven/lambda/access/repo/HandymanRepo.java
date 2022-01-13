@@ -92,15 +92,17 @@ public interface HandymanRepo {
 
     void update(final ActionExecutionAudit audit);
 
+    List<PipelineExecutionAudit> findAllPipelinesByRootPipelineId(final Long rootPipelineId);
+
     Optional<PipelineExecutionAudit> findPipeline(final Long pipelineId);
 
     List<ActionExecutionAudit> findActions(final Long pipelineId);
 
     List<ActionExecutionAudit> findAllActionsByRootPipelineId(final Long rootPipelineId);
 
-    List<PipelineExecutionAudit> findPipelines(final Long parentActionId);
+    List<PipelineExecutionAudit> findAllPipelinesByParentActionId(final Long parentActionId);
 
     List<PipelineExecutionAudit> findAllPipelines();
 
-    List<PipelineExecutionAudit> findAllPipelines(final String pipelineName);
+    List<PipelineExecutionAudit> findAllByPipelineName(final String pipelineName);
 }

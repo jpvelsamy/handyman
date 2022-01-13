@@ -131,33 +131,11 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public void insertPipeline(final PipelineExecutionAudit audit) {
-        audit.setLastModifiedDate(LocalDateTime.now());
-        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO  (pipeline_id, created_by, created_date, last_modified_by, last_modified_date,pipeline_name," +
-                        " context_node, execution_status_id, lambda_name, parent_action_id, parent_action_name, parent_pipeline_id, parent_pipeline_name,  file_content, host_name, mode_of_execution," +
-                        " pipeline_load_type, relative_path, request_body, thread_name,process_name,root_pipeline_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)")
-                .bind(0, audit.getPipelineId())
-                .bind(1, audit.getCreatedBy())
-                .bind(2, audit.getCreatedDate())
-                .bind(3, audit.getLastModifiedBy())
-                .bind(4, audit.getLastModifiedDate())
-                .bind(5, audit.getPipelineName())
-                .bind(6, audit.getContextNode())
-                .bind(7, audit.getExecutionStatusId())
-                .bind(8, audit.getLambdaName())
-                .bind(9, audit.getParentActionId())
-                .bind(10, audit.getParentActionName())
-                .bind(11, audit.getParentPipelineId())
-                .bind(12, audit.getParentPipelineName())
-                .bind(13, audit.getFileContent())
-                .bind(14, audit.getHostName())
-                .bind(15, audit.getModeOfExecution())
-                .bind(16, audit.getPipelineLoadType())
-                .bind(17, audit.getRelativePath())
-                .bind(18, audit.getRequestBody())
-                .bind(19, audit.getThreadName())
-                .bind(20, audit.getProcessName())
-                .bind(21, audit.getRootPipelineId())
-                .execute());
+        jdbi.useHandle(handle -> {
+            audit.setLastModifiedDate(LocalDateTime.now());
+            var repo = handle.attach(PipelineExecutionAuditRepo.class);
+            repo.insert(audit);
+        });
     }
 
     @Override
@@ -201,8 +179,6 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public void insertStatement(final StatementExecutionAudit audit) {
-
-
         audit.setLastModifiedDate(LocalDateTime.now());
         jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO " + StatementExecutionAudit.SCHEMA_NAME + "." + StatementExecutionAudit.TABLE_NAME + " (statement_id, created_by, created_date, last_modified_by, last_modified_date, action_id, rows_processed, rows_read, rows_written, statement_content, time_taken,root_pipeline_id) VALUES(:statementId, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :actionId, :rowsProcessed, :rowsRead, :rowsWritten, :statementContent, :timeTaken,:rootPipelineId);")
                 .bindBean(audit).execute());
@@ -211,7 +187,7 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     @Override
     public void save(final PipelineExecutionStatusAudit audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
-        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO lambda_execution_audit (id, created_by, created_date, last_modified_by, last_modified_date, execution_status_id, pipeline_id,root_pipeline_id) VALUES(:id, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :executionStatusId, :pipelineId,:rootPipelineId);")
+        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO " + PipelineExecutionStatusAudit.SCHEMA_NAME + "." + PipelineExecutionStatusAudit.TABLE_NAME + " (id, created_by, created_date, last_modified_by, last_modified_date, execution_status_id, pipeline_id,root_pipeline_id) VALUES(:id, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :executionStatusId, :pipelineId,:rootPipelineId);")
                 .bindBean(audit).execute());
     }
 
@@ -224,42 +200,54 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public void update(final PipelineExecutionAudit audit) {
-        audit.setLastModifiedDate(LocalDateTime.now());
-        jdbi.useHandle(handle -> handle.createUpdate("UPDATE pipeline SET created_by = :createdBy, created_date = :createdDate, last_modified_by = :lastModifiedBy, last_modified_date = :lastModifiedDate, context_node = :contextNode, execution_status_id = :executionStatusId, lambda_name = :lambdaName, parent_action_id = :parentActionId, parent_action_name = :parentActionName, parent_pipeline_id = :parentPipelineId, parent_pipeline_name = :parentPipelineName, pipeline_name = :pipelineName, file_content = :fileContent, host_name = :hostName, mode_of_execution = :modeOfExecution, pipeline_load_type = :pipelineLoadType , relative_path = :relativePath, request_body = :requestBody,  process_name = :processName , root_pipeline_id = :rootPipelineId WHERE pipeline_id = :pipelineId ;")
-                .bindBean(audit).execute());
+        jdbi.useHandle(handle -> {
+            audit.setLastModifiedDate(LocalDateTime.now());
+            var repo = handle.attach(PipelineExecutionAuditRepo.class);
+            repo.update(audit);
+        });
     }
 
 
     @Override
     public Optional<PipelineExecutionAudit> findPipeline(final Long pipelineId) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM pipeline where pipeline_id = ?")
-                .bind(0, pipelineId)
-                .mapToBean(PipelineExecutionAudit.class)
-                .findOne());
+        return jdbi.withHandle(handle -> {
+            var repo = handle.attach(PipelineExecutionAuditRepo.class);
+            return repo.findOneByPipelineId(pipelineId);
+        });
     }
 
 
     @Override
-    public List<PipelineExecutionAudit> findPipelines(final Long parentActionId) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM pipeline where parent_action_id = ?")
-                .bind(0, parentActionId)
-                .mapToBean(PipelineExecutionAudit.class)
-                .list());
+    public List<PipelineExecutionAudit> findAllPipelinesByRootPipelineId(final Long rootPipelineId) {
+        return jdbi.withHandle(handle -> {
+            var repo = handle.attach(PipelineExecutionAuditRepo.class);
+            return repo.findAllPipelinesByRootPipelineId(rootPipelineId);
+        });
+    }
+
+
+    @Override
+    public List<PipelineExecutionAudit> findAllPipelinesByParentActionId(final Long parentActionId) {
+        return jdbi.withHandle(handle -> {
+            var repo = handle.attach(PipelineExecutionAuditRepo.class);
+            return repo.findAllPipelinesByParentActionId(parentActionId);
+        });
     }
 
     @Override
     public List<PipelineExecutionAudit> findAllPipelines() {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM pipeline")
-                .mapToBean(PipelineExecutionAudit.class)
-                .list());
+        return jdbi.withHandle(handle -> {
+            var repo = handle.attach(PipelineExecutionAuditRepo.class);
+            return repo.findAllPipelines();
+        });
     }
 
     @Override
-    public List<PipelineExecutionAudit> findAllPipelines(final String pipelineName) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM pipeline where pipeline_name =? ")
-                .bind(0, pipelineName)
-                .mapToBean(PipelineExecutionAudit.class)
-                .list());
+    public List<PipelineExecutionAudit> findAllByPipelineName(final String pipelineName) {
+        return jdbi.withHandle(handle -> {
+            var repo = handle.attach(PipelineExecutionAuditRepo.class);
+            return repo.findAllByPipelineName(pipelineName);
+        });
     }
 
     // Spw Instance
