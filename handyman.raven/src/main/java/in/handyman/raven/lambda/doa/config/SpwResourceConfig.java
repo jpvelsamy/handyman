@@ -28,10 +28,10 @@ public class SpwResourceConfig extends Auditable {
     private Long id;
 
     private String configName;
-    private String driverClassName;
+    private String driverClass;
     private String userName;
     private String password;
-    private String url;
+    private String resourceUrl;
     private String host;
     private String port;
     private String databaseName;
@@ -40,7 +40,7 @@ public class SpwResourceConfig extends Auditable {
     private Integer version;
 
     public Jdbi get() {
-        return Jdbi.create(url, userName, password);
+        return Jdbi.create(resourceUrl, userName, password);
     }
 
 }

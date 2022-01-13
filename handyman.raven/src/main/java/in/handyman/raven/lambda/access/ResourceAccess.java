@@ -27,7 +27,7 @@ public class ResourceAccess {
             throw new HandymanException("Resource not found");
         }
         try {
-            return createHP(resource.getUrl(), resource.getDriverClassName(),
+            return createHP(resource.getResourceUrl(), resource.getDriverClass(),
                     resource.getUserName(), resource.getPassword());
         } catch (ClassNotFoundException e) {
             throw new HandymanException("Resource " + Optional.of(resource).map(SpwResourceConfig::getConfigName).orElse("not found") + " failed to connect", e);

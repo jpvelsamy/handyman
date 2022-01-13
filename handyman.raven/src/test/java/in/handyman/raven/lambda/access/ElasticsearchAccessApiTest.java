@@ -16,10 +16,10 @@ class ElasticsearchAccessApiTest {
             if (ElasticsearchAccessApi.isExists(ElasticsearchAccessApi.toIndexName(SpwResourceConfig.class))) {
                 ElasticsearchAccessApi.saveIndex(UUID.randomUUID().toString(), SpwResourceConfig.builder()
                         .active(false)
-                        .driverClassName("")
+                        .driverClass("")
                         .configName("")
                         .password("")
-                        .url("")
+                        .resourceUrl("")
                         .userName("")
                         .build());
             }

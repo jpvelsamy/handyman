@@ -25,7 +25,7 @@ class ImportCsvToDBActionTestExecutionAudit {
                 .batchSize("99")
                 .writeThreadCount("3")
                 .target(SpwResourceConfig.builder()
-                        .url("jdbc:sqlserver://localhost:1433;databaseName=CCCU_DNA;")
+                        .resourceUrl("jdbc:sqlserver://localhost:1433;databaseName=CCCU_DNA;")
                         .userName("SA")
                         .password("Marvel2018")
                         .build())
