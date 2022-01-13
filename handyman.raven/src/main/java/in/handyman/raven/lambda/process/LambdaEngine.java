@@ -216,6 +216,7 @@ public class LambdaEngine {
     }
 
     public static void toAction(final ActionExecutionAudit actionExecutionAudit, final AbstractAudit abstractAudit) {
+        actionExecutionAudit.setThreadName(Thread.currentThread().getName());
         actionExecutionAudit.setProcessId(ProcessHandle.current().pid());
         actionExecutionAudit.setCreatedBy(abstractAudit.getCreatedBy());
         actionExecutionAudit.setPipelineName(abstractAudit.getPipelineName());

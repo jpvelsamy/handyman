@@ -62,7 +62,7 @@ public class ImportCsvToDBAction implements IActionExecution {
         }
         log.info(aMarker, "Resource provided " + target.getConfigName());
 
-        final Jdbi jdbi = Jdbi.create(target.getUrl(), target.getUserName(), target.getPassword());
+        final Jdbi jdbi = Jdbi.create(target.getResourceUrl(), target.getUserName(), target.getPassword());
         final int size = importCsvToDB.getValue().size();
         if (threadCount > 1 && size > 1) {
             final ExecutorService taskList
