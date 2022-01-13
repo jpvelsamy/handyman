@@ -9,7 +9,7 @@ public class UniqueID {
 
     public static Long getId() {
         var uuid = Generators.timeBasedGenerator().generate();
-        return  uuid.timestamp();
+        return uuid.timestamp();
     }
 
 }

@@ -72,6 +72,7 @@ public class LambdaEngine {
             pipelineExecutionAudit.setPipelineId(lContext.getRootPipelineId());
         }
         pipelineExecutionAudit.setRootPipelineId(lContext.getRootPipelineId());
+        pipelineExecutionAudit.setProcessId(ProcessHandle.current().pid());
 
         HandymanActorSystemAccess.insert(pipelineExecutionAudit);
         pipelineExecutionAudit.updateExecutionStatusId(ExecutionStatus.STAGED.getId());
@@ -215,6 +216,7 @@ public class LambdaEngine {
     }
 
     public static void toAction(final ActionExecutionAudit actionExecutionAudit, final AbstractAudit abstractAudit) {
+        actionExecutionAudit.setProcessId(ProcessHandle.current().pid());
         actionExecutionAudit.setCreatedBy(abstractAudit.getCreatedBy());
         actionExecutionAudit.setPipelineName(abstractAudit.getPipelineName());
         actionExecutionAudit.setLambdaName(abstractAudit.getLambdaName());

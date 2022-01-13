@@ -75,7 +75,7 @@ public class TransformAction implements IActionExecution {
                             log.error(aMarker, "Continuing to execute, even though SQL Error executing sql for {} ", sqlToExecute, ex);
                             log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
                             throw new HandymanException("Process failed", ex);
-                        } catch (Throwable ex) {
+                        } catch (Exception ex) {
                             log.error(aMarker, "Stopping execution, General Error executing sql for {} with for {}", sqlToExecute, ex);
                             log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
                             throw new HandymanException("Process failed", ex);

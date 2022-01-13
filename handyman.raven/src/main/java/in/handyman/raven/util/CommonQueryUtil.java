@@ -54,13 +54,13 @@ public class CommonQueryUtil {
                 } catch (SQLException ex) {
                     log.error("Continuing to execute, even though SQL Error executing sql for {} ", sqlToExecute, ex);
                     logger.info(sqlToExecute + ".exception", ExceptionUtil.toString(ex));
-                } catch (Throwable ex) {
+                } catch (Exception ex) {
                     log.error("Stopping execution, General Error executing sql for {} with for campaign {}", sqlToExecute, ex);
                     logger.info(sqlToExecute + ".exception", ExceptionUtil.toString(ex));
                     throw new HandymanException("Process failed", ex);
                 }
             }
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             log.error("Stopping execution, General Error executing sql for {} with for campaign {}", value, ex);
             logger.info(value + ".exception", ExceptionUtil.toString(ex));
             throw new HandymanException("Process failed", ex);

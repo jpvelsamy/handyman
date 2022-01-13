@@ -6,7 +6,7 @@ import java.sql.SQLWarning;
 
 public class ExceptionUtil {
 
-    public static String toString(final Throwable ex) {
+    public static String toString(final Exception ex) {
         final StringWriter sw = new StringWriter();
         ex.printStackTrace(new PrintWriter(sw));
         return sw.toString();

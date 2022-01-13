@@ -27,7 +27,6 @@ import java.util.List;
 )
 public class Consumer implements IActionContext {
 
-    private String poison;
     private Long pcmId;
 
     private SpwResourceConfig source;
@@ -36,6 +35,9 @@ public class Consumer implements IActionContext {
     private String name;
     private String limit;
     private String pop;
+
+    private boolean completed = false;
+    private boolean standalone = false;
 
     @JsonIgnore
     private List<RavenParser.ActionContext> actions = new ArrayList<>();

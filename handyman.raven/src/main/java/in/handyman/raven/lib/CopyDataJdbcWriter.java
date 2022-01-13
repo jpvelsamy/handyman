@@ -103,7 +103,7 @@ public class CopyDataJdbcWriter implements Callable<Void> {
                 sourceConnection.commit();
                 writeBuffer.clear();
             }
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             log.error("CopyDataWriter: {} error closing source connection for database: {} ", actionExecutionAudit.getActionId(), target, ex);
             throw new HandymanException("writeToDb failed", ex);
         }

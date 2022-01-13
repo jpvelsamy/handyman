@@ -27,18 +27,6 @@ public class HLogger {
         error(aMarker, e, logMessage, objects);
     }
 
-    public static void trace(final ActionExecutionAudit actionExecutionAudit, final Logger logger, final Exception e, final String logMessage, final Object... objects) {
-        var aMarker = MarkerFactory.getMarker(actionExecutionAudit.getMacroName() + ":" + actionExecutionAudit.getActionName());
-        logger.trace(aMarker, logMessage, objects, e);
-        log.trace(aMarker, "{}: {}", e.getClass().getSimpleName(), e.getMessage(), e);
-        printANdThrow(logMessage, objects, aMarker, e);
-    }
-
-    public static void error(final Exception e, final String logMessage, final Object... objects) {
-        var aMarker = MarkerFactory.getMarker(HLogger.class.getSimpleName());
-        error(aMarker, e, logMessage, objects);
-    }
-
     private static void error(final Marker aMarker, final Exception e, final String logMessage, final Object[] objects) {
         log.error(aMarker, "{}: {}", e.getClass().getSimpleName(), e.getMessage());
         printANdThrow(logMessage, objects, aMarker, e);
@@ -55,6 +43,18 @@ public class HLogger {
         } else {
             throw new HandymanException(aMarker.getName(), e);
         }
+    }
+
+    public static void trace(final ActionExecutionAudit actionExecutionAudit, final Logger logger, final Exception e, final String logMessage, final Object... objects) {
+        var aMarker = MarkerFactory.getMarker(actionExecutionAudit.getMacroName() + ":" + actionExecutionAudit.getActionName());
+        logger.trace(aMarker, logMessage, objects, e);
+        log.trace(aMarker, "{}: {}", e.getClass().getSimpleName(), e.getMessage(), e);
+        printANdThrow(logMessage, objects, aMarker, e);
+    }
+
+    public static void error(final Exception e, final String logMessage, final Object... objects) {
+        var aMarker = MarkerFactory.getMarker(HLogger.class.getSimpleName());
+        error(aMarker, e, logMessage, objects);
     }
 
     public static void trace(final Exception e, final String logMessage, final Object... objects) {

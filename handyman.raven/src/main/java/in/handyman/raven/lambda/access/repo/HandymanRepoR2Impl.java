@@ -133,7 +133,8 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     public void insertPipeline(final PipelineExecutionAudit audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
         jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO  (pipeline_id, created_by, created_date, last_modified_by, last_modified_date,pipeline_name," +
-                        " context_node, execution_status_id, lambda_name, parent_action_id, parent_action_name, parent_pipeline_id, parent_pipeline_name,  file_content, host_name, mode_of_execution, pipeline_load_type, relative_path, request_body, thread_name,process_name,root_pipeline_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)")
+                        " context_node, execution_status_id, lambda_name, parent_action_id, parent_action_name, parent_pipeline_id, parent_pipeline_name,  file_content, host_name, mode_of_execution," +
+                        " pipeline_load_type, relative_path, request_body, thread_name,process_name,root_pipeline_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)")
                 .bind(0, audit.getPipelineId())
                 .bind(1, audit.getCreatedBy())
                 .bind(2, audit.getCreatedDate())

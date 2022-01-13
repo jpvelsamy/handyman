@@ -15,11 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -97,14 +97,12 @@ public class ProducerConsumerModelAction implements IActionExecution {
 
         final int size = producerActions.size();
         var countDown = new CountDownLatch(size);
-        final String poison = UUID.randomUUID().toString();
-
+        final List<Consumer> consumers = new ArrayList<>();
         final List<ConsumerAction> consumerActions = producerConsumerModel.getConsume().stream().map(consumerContext -> {
             var consumer = new Consumer();
-            consumer.setPoison(poison);
             consumer.setPcmId(pipelineId);
             consumer.setSource(producerConsumerModel.getSource());
-
+            consumers.add(consumer);
             CommandProxy.setTarget(consumer, consumerContext, actionExecutionAudit.getContext());
             log.info(aMarker, "{}", consumerContext);
             var vAction = LambdaEngine.getAction(consumer.getName(), actionExecutionAudit);
@@ -117,7 +115,7 @@ public class ProducerConsumerModelAction implements IActionExecution {
             consumerActions.forEach(consumerAction -> cExecutorService.submit(() -> {
                 try {
                     LambdaEngine.execute(consumerAction, consumerAction.getAction());
-                } catch (Throwable e) {
+                } catch (Exception e) {
                     throw new HandymanException("Failed to execute", e);
                 } finally {
                     consumerCountDown.countDown();
@@ -129,7 +127,7 @@ public class ProducerConsumerModelAction implements IActionExecution {
 
                 try {
                     LambdaEngine.execute(producerAction, producerAction.getAction());
-                } catch (Throwable e) {
+                } catch (Exception e) {
                     throw new HandymanException("Failed to execute", e);
                 } finally {
                     countDown.countDown();
@@ -142,12 +140,10 @@ public class ProducerConsumerModelAction implements IActionExecution {
             } catch (InterruptedException e) {
                 throw new HandymanException("Failed to execute", e);
             }
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new HandymanException("Failed to execute", e);
         } finally {
-//            producerConsumerModel.getSource().get()
-//                    .useHandle(handle -> handle.createUpdate("INSERT INTO pcm_event ( payload, pcm_id,process) VALUES(:payload, :pcmId,0)")
-//                            .bind("payload", poison).bind("pcmId", pipelineId).execute());
+            consumers.forEach(consumer -> consumer.setCompleted(true));
             try {
                 consumerCountDown.await();
             } catch (InterruptedException e) {

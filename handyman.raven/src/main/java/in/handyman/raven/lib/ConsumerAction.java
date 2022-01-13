@@ -48,10 +48,20 @@ public class ConsumerAction implements IActionExecution {
                     .withHandle(handle -> handle.createQuery(event)
                             .mapToMap().list());
             final List<List<ActionCallable>> actionCallableList = new ArrayList<>();
+
+            if (maps.isEmpty() && !consumer.isCompleted()) {
+                break;
+            }
+
+            if (maps.isEmpty() && consumer.isStandalone()) {
+                break;
+            }
+
             for (var node : maps) {
                 try {
                     final Map<String, String> context = new HashMap<>(actionExecutionAudit.getContext());
                     var map = new HashMap<String, String>();
+
                     node.forEach((s, o) -> map.put("payload." + s, String.valueOf(o)));
                     context.putAll(map);
                     Optional.ofNullable(consumer.getActions()).filter(x -> !x.isEmpty())
@@ -88,7 +98,6 @@ public class ConsumerAction implements IActionExecution {
             }
 
 
-            log.info("consumer breaking with {}", consumer.getPoison());
         }
 
     }

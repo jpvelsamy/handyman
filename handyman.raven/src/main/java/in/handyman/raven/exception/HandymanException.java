@@ -6,7 +6,7 @@ public class HandymanException extends RuntimeException {
         super(message);
     }
 
-    public HandymanException(final String message, final Throwable t) {
+    public HandymanException(final String message, final Exception t) {
         super(message, t);
     }
 }
