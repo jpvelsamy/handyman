@@ -85,7 +85,7 @@ public class ProducerConsumerModelAction implements IActionExecution {
 
             return maps.stream().map(stringObjectMap -> {
                 var vAction = LambdaEngine.getAction(producer.getName(), actionExecutionAudit);
-
+                vAction.setActionId(actionExecutionAudit.getActionId());
                 final Map<String, String> map = new HashMap<>(Map.copyOf(actionExecutionAudit.getContext()));
                 map.putAll(stringObjectMap);
                 vAction.setContext(map);
