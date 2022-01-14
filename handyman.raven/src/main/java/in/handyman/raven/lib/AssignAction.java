@@ -47,7 +47,10 @@ public class AssignAction implements IActionExecution {
             final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(assign.getValue());
             formattedQuery.forEach(sqlToExecute -> {
                 log.info(aMarker, "Execution query sql#{} on db=#{}", sqlToExecute, dbSrc);
-                handle.createQuery(sqlToExecute).mapToMap().forEach(stringObjectMap -> stringObjectMap.forEach((s, o) -> context.put(s, String.valueOf(o))));
+                handle.createQuery(sqlToExecute).mapToMap().forEach(stringObjectMap -> stringObjectMap.forEach((s, o) ->{
+                    context.put(assign.getName().isEmpty()?s:String.format("%s.%s",assign.getName(),s), String.valueOf(o));
+                    log.info("Value "+ o +" has been added for "+s);
+                }));
             });
         });
 
