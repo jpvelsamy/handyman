@@ -96,7 +96,7 @@ public class ProducerConsumerModelAction implements IActionExecution {
         }).collect(Collectors.toList());
 
         final int size = producerActions.size();
-        var countDown = new CountDownLatch(size);
+        var producerCountdown = new CountDownLatch(size);
         final List<Consumer> consumers = new ArrayList<>();
         final List<ConsumerAction> consumerActions = producerConsumerModel.getConsume().stream().map(consumerContext -> {
             var consumer = new Consumer();
@@ -106,6 +106,7 @@ public class ProducerConsumerModelAction implements IActionExecution {
             CommandProxy.setTarget(consumer, consumerContext, actionExecutionAudit.getContext());
             log.info(aMarker, "{}", consumerContext);
             var vAction = LambdaEngine.getAction(consumer.getName(), actionExecutionAudit);
+            vAction.setActionId(actionExecutionAudit.getActionId());
             return new ConsumerAction(vAction, log, consumer);
         }).collect(Collectors.toList());
 
@@ -130,13 +131,13 @@ public class ProducerConsumerModelAction implements IActionExecution {
                 } catch (Exception e) {
                     throw new HandymanException("Failed to execute", e);
                 } finally {
-                    countDown.countDown();
+                    producerCountdown.countDown();
                 }
 
             }));
 
             try {
-                countDown.await();
+                producerCountdown.await();
             } catch (InterruptedException e) {
                 throw new HandymanException("Failed to execute", e);
             }

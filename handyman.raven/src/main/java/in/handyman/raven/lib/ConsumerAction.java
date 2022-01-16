@@ -49,7 +49,7 @@ public class ConsumerAction implements IActionExecution {
                             .mapToMap().list());
             final List<List<ActionCallable>> actionCallableList = new ArrayList<>();
 
-            if (maps.isEmpty() && !consumer.isCompleted()) {
+            if (maps.isEmpty() && consumer.isCompleted()) {
                 break;
             }
 
