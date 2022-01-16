@@ -36,8 +36,8 @@ public class Consumer implements IActionContext {
     private String limit;
     private String pop;
 
-    private boolean completed = false;
-    private boolean standalone = false;
+    private Boolean completed = false;
+    private Boolean standalone = false;
 
     @JsonIgnore
     private List<RavenParser.ActionContext> actions = new ArrayList<>();

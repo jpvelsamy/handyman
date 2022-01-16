@@ -44,7 +44,6 @@ public class CommandProxy {
         final Map<String, Method> methodNames = Arrays.stream(target.getClass().getMethods())
                 .filter(method -> method.getName().startsWith("get"))
                 .collect(Collectors.toMap(method -> method.getName().substring(3), method -> method, (p, q) -> p));
-//CAse sensitive
         for (final Field field : source.getClass().getDeclaredFields()) {
             final String name = field.getName();
             final String fieldName = Character.toUpperCase(name.charAt(0)) + name.substring(1);
