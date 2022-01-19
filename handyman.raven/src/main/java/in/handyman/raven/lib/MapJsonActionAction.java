@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.MapJson;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -22,15 +22,15 @@ import java.util.stream.Collectors;
 )
 public class MapJsonActionAction implements IActionExecution {
 
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
     private final Logger log;
     private final MapJson mapJson;
     private final Marker aMarker;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public MapJsonActionAction(final Action action, final Logger log, final Object mapJson) {
+    public MapJsonActionAction(final ActionExecutionAudit actionExecutionAudit, final Logger log, final Object mapJson) {
         this.mapJson = (MapJson) mapJson;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker(" MapJson:" + this.mapJson.getName());
     }
@@ -38,16 +38,16 @@ public class MapJsonActionAction implements IActionExecution {
     @Override
     public void execute() throws Exception {
 
-        final JsonNode value = objectMapper.readTree(this.action.getContext().getOrDefault(mapJson.getValue(), "{}"));
+        final JsonNode value = objectMapper.readTree(this.actionExecutionAudit.getContext().getOrDefault(mapJson.getValue(), "{}"));
         if (value != null) {
-            action.getContext().get(value.toString());
+            actionExecutionAudit.getContext().get(value.toString());
             if (!value.isArray()) {
                 final Map<String, String> stringStringMap = objectMapper.readValue(value.toString(), new TypeReference<Map<String, String>>() {
                 });
                 final Map<String, String> stringMap = stringStringMap.entrySet().stream().collect(Collectors
                         .toMap(stringStringEntry -> mapJson.getName() + "." + stringStringEntry.getKey(),
                                 Map.Entry::getValue, (p, q) -> p));
-                action.getContext().putAll(stringMap);
+                actionExecutionAudit.getContext().putAll(stringMap);
             }
         }
 

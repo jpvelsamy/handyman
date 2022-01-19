@@ -3,7 +3,7 @@ package in.handyman.raven.lib;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lambda.process.LambdaEngine;
 import in.handyman.raven.lib.model.Producer;
 import org.slf4j.Logger;
@@ -22,15 +22,15 @@ import java.util.stream.Collectors;
 )
 public class ProducerAction implements IActionExecution {
 
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
     private final Logger log;
     private final Producer producer;
     private final Marker aMarker;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public ProducerAction(final Action action, final Logger log, final Object producer) {
+    public ProducerAction(final ActionExecutionAudit actionExecutionAudit, final Logger log, final Object producer) {
         this.producer = (Producer) producer;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker(" Producer:" + this.producer.getName());
     }
@@ -46,15 +46,15 @@ public class ProducerAction implements IActionExecution {
 
                     final List<ActionCallable> collect = actionContexts.stream()
                             .map(actionContext -> {
-                                var vAction = LambdaEngine.getAction(producer.getName(), action);
-                                vAction.setContext(action.getContext());
+                                var vAction = LambdaEngine.getAction(producer.getName(), actionExecutionAudit);
+                                vAction.setContext(actionExecutionAudit.getContext());
                                 log.info(aMarker, "Before execution Context {}", vAction.getContext());
                                 return new ActionCallable(actionContext, vAction, null);
                             }).collect(Collectors.toList());
                     collect
                             .forEach(ActionCallable::run);
 
-                    log.info(aMarker, "After execution Context {}", action.getContext());
+                    log.info(aMarker, "After execution Context {}", actionExecutionAudit.getContext());
 
                 });
 
@@ -62,8 +62,8 @@ public class ProducerAction implements IActionExecution {
 
     }
 
-    public Action getAction() {
-        return action;
+    public ActionExecutionAudit getAction() {
+        return actionExecutionAudit;
     }
 
     public Producer getProducer() {

@@ -5,7 +5,7 @@ import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lambda.process.HRequestResolver;
 import in.handyman.raven.lambda.process.LContext;
 import in.handyman.raven.lib.model.ForkProcess;
@@ -28,15 +28,15 @@ import java.util.stream.Collectors;
 @ActionExecution(actionName = "ForkProcess")
 public class ForkProcessAction implements IActionExecution {
 
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
     private final Logger log;
     private final ForkProcess forkProcess;
 
     private final Marker aMarker;
 
-    public ForkProcessAction(final Action action, final Logger log, final Object forkProcess) {
+    public ForkProcessAction(final ActionExecutionAudit actionExecutionAudit, final Logger log, final Object forkProcess) {
         this.forkProcess = (ForkProcess) forkProcess;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker("ForkProcess");
     }
@@ -50,14 +50,14 @@ public class ForkProcessAction implements IActionExecution {
         var forkBatchSize = forkProcess.getForkBatchSize();
         var forkBatchSizeInt = (forkBatchSize != null && !forkBatchSize.isEmpty()) ? Integer.parseInt(forkBatchSize) : 1;
         var sql = forkProcess.getValue();
-        var pipelineId = action.getPipelineId();
+        var pipelineId = actionExecutionAudit.getPipelineId();
 
         log.info(aMarker, " id#{}, name#{}, forked process#{}, calledFile#{}, db=#{}", pipelineId, name, processName, fileRelativePath, dbSrc);
         final HikariDataSource source = ResourceAccess.rdbmsConn(dbSrc);
         final Set<LContext> lContexts = new HashSet<>();
         try (var conn = source.getConnection()) {
             try (var stmt = conn.createStatement()) {
-                final Map<String, String> context = action.getContext();
+                final Map<String, String> context = actionExecutionAudit.getContext();
                 try (var rs = stmt.executeQuery(sql)) {
                     var columnCount = rs.getMetaData().getColumnCount();
                     while (rs.next()) {
@@ -65,15 +65,15 @@ public class ForkProcessAction implements IActionExecution {
                                 rs, columnCount, "");
                         final LContext lContext = LContext.builder()
                                 .inheritedContext(context)
-                                .lambdaName(action.getLambdaName())
-                                .parentActionId(action.getActionId())
-                                .parentActionName(action.getActionName())
+                                .lambdaName(actionExecutionAudit.getLambdaName())
+                                .parentActionId(actionExecutionAudit.getActionId())
+                                .parentActionName(actionExecutionAudit.getActionName())
                                 .relativePath(fileRelativePath)
                                 .processLoadType(HRequestResolver.LoadType.FILE.name())
                                 .pipelineName(processName)
-                                .parentPipelineId(action.getPipelineId())
-                                .parentPipelineName(action.getPipelineName())
-                                .rootPipelineId(action.getRootPipelineId())
+                                .parentPipelineId(actionExecutionAudit.getPipelineId())
+                                .parentPipelineName(actionExecutionAudit.getPipelineName())
+                                .rootPipelineId(actionExecutionAudit.getRootPipelineId())
                                 .build();
                         lContexts.add(lContext);
                     }

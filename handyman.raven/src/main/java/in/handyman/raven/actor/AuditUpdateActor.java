@@ -3,8 +3,8 @@ package in.handyman.raven.actor;
 import akka.actor.AbstractActor;
 import in.handyman.raven.lambda.access.repo.HandymanRepo;
 import in.handyman.raven.lambda.access.repo.HandymanRepoR2Impl;
-import in.handyman.raven.lambda.doa.Action;
-import in.handyman.raven.lambda.doa.Pipeline;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
+import in.handyman.raven.lambda.doa.audit.PipelineExecutionAudit;
 
 public class AuditUpdateActor extends AbstractActor {
 
@@ -13,8 +13,8 @@ public class AuditUpdateActor extends AbstractActor {
     @Override
     public Receive createReceive() {
         return receiveBuilder()
-                .match(Pipeline.class, REPO::update)
-                .match(Action.class, REPO::update)
+                .match(PipelineExecutionAudit.class, REPO::update)
+                .match(ActionExecutionAudit.class, REPO::update)
                 .build();
     }
 }

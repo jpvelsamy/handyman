@@ -7,8 +7,8 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
-import in.handyman.raven.lambda.doa.ResourceConnection;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
+import in.handyman.raven.lambda.doa.config.SpwResourceConfig;
 import in.handyman.raven.lib.model.ImportCsvToDB;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.PreparedBatch;
@@ -38,14 +38,14 @@ import java.util.stream.Collectors;
 public class ImportCsvToDBAction implements IActionExecution {
 
     private static final String DELIMITER = ",";
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
     private final Logger log;
     private final ImportCsvToDB importCsvToDB;
     private final Marker aMarker;
 
-    public ImportCsvToDBAction(final Action action, final Logger log, final Object importCsvToDB) {
+    public ImportCsvToDBAction(final ActionExecutionAudit actionExecutionAudit, final Logger log, final Object importCsvToDB) {
         this.importCsvToDB = (ImportCsvToDB) importCsvToDB;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker(" ImportCsvToDB:" + this.importCsvToDB.getName());
     }
@@ -56,13 +56,13 @@ public class ImportCsvToDBAction implements IActionExecution {
         final int threadCount = Optional.ofNullable(importCsvToDB.getWriteThreadCount()).map(Integer::valueOf).orElse(1);
         final Integer batchSize = Optional.ofNullable(importCsvToDB.getBatchSize()).map(Integer::valueOf).orElse(10000);
 
-        final ResourceConnection target = importCsvToDB.getTarget();
+        final SpwResourceConfig target = importCsvToDB.getTarget();
         if (Objects.isNull(target)) {
             throw new HandymanException("target connection not provided");
         }
-        log.info(aMarker, "Resource provided " + target.getName());
+        log.info(aMarker, "Resource provided " + target.getConfigName());
 
-        final Jdbi jdbi = Jdbi.create(target.getUrl(), target.getUserName(), target.getPassword());
+        final Jdbi jdbi = Jdbi.create(target.getResourceUrl(), target.getUserName(), target.getPassword());
         final int size = importCsvToDB.getValue().size();
         if (threadCount > 1 && size > 1) {
             final ExecutorService taskList

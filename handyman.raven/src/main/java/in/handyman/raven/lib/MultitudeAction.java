@@ -3,8 +3,8 @@ package in.handyman.raven.lib;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
-import in.handyman.raven.lambda.doa.ExecutionGroup;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
+import in.handyman.raven.lambda.doa.audit.ExecutionGroup;
 import in.handyman.raven.lambda.process.LambdaEngine;
 import in.handyman.raven.lib.model.Multitude;
 import org.slf4j.Logger;
@@ -27,14 +27,14 @@ import java.util.stream.Collectors;
 public class MultitudeAction implements IActionExecution {
 
     protected static final String MULTITUDE = "Multitude";
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
     private final Logger log;
     private final Multitude multitude;
     private final Marker aMarker;
 
-    public MultitudeAction(final Action action, final Logger log, final Object multitude) {
+    public MultitudeAction(final ActionExecutionAudit actionExecutionAudit, final Logger log, final Object multitude) {
         this.multitude = (Multitude) multitude;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker(MULTITUDE);
     }
@@ -49,13 +49,13 @@ public class MultitudeAction implements IActionExecution {
                     final int threadCount = Optional.ofNullable(multitude.getWriteThreadCount()).map(Integer::parseInt).orElse(0);
                     log.info(aMarker, "Multitude has been initialized in a {} mode with thread count of {} and countdown ", isParallel, threadCount);
                     final Set<ActionCallable> collect = actionContexts.stream().map(actionContext -> {
-                        var vAction = Action.builder()
-                                .pipelineId(action.getPipelineId())
+                        var vAction = ActionExecutionAudit.builder()
+                                .pipelineId(actionExecutionAudit.getPipelineId())
                                 .executionGroupId(ExecutionGroup.ACTION.getId())
                                 .actionName(multitude.getName())
                                 .build();
-                        vAction.setContext(action.getContext());
-                        LambdaEngine.toAction(vAction, action);
+                        vAction.setContext(actionExecutionAudit.getContext());
+                        LambdaEngine.toAction(vAction, actionExecutionAudit);
                         return new ActionCallable(actionContext, vAction, null);
                     }).collect(Collectors.toSet());
                     var countDown = new CountDownLatch(actionContexts.size());

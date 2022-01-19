@@ -34,9 +34,9 @@ import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.client.indices.CreateIndexResponse;
 import org.elasticsearch.client.indices.GetIndexRequest;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.xcontent.XContentBuilder;
+import org.elasticsearch.xcontent.XContentFactory;
+import org.elasticsearch.xcontent.XContentType;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -53,7 +53,7 @@ import java.util.stream.StreamSupport;
 public class ElasticsearchAccessApi {
 
     public static final ObjectMapper MAPPER = new ObjectMapper();
-    private static final String RAVEN_CONFIGSTORE_PROPS = "handyman-raven-configstore.props";
+    private static final String RAVEN_CONFIGSTORE_PROPS = "config.props";
     private static final RestHighLevelClient CLIENT = getRestHighLevelClientConnection();
 
     static {

@@ -1,17 +1,17 @@
 package in.handyman.raven.lib;
 
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.ExportCsv;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class ExportCsvActionTest {
+class ExportCsvActionTestExecutionAudit {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Test
     void execute() throws Exception {
-        final ExportCsvAction createTARAction = new ExportCsvAction(Action.builder().build(),
+        final ExportCsvAction createTARAction = new ExportCsvAction(ActionExecutionAudit.builder().build(),
                 logger, ExportCsv.builder()
                 .condition(true)
                 .name("CCCU_DNA.dbo.MOCK_DATA")

@@ -6,7 +6,7 @@ import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.LoadCsv;
 import in.handyman.raven.util.UniqueID;
 import org.slf4j.Logger;
@@ -33,15 +33,15 @@ public class LoadCsvAction implements IActionExecution {
     protected static final String LOAD_CSV = "LoadCsv";
 
 
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
     private final Logger log;
     private final LoadCsv loadCsv;
 
     private final Marker aMarker;
 
-    public LoadCsvAction(final Action action, final Logger log, final Object loadCsv) {
+    public LoadCsvAction(final ActionExecutionAudit actionExecutionAudit, final Logger log, final Object loadCsv) {
         this.loadCsv = (LoadCsv) loadCsv;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker(LOAD_CSV);
     }
@@ -60,7 +60,7 @@ public class LoadCsvAction implements IActionExecution {
             var file = csvFile.split("/", counter + 1);
             fileName = file[counter];
         }
-        log.info(aMarker, "id#{}, name#{}, from#{}, sqlList#{}", action.getActionId(), loadCsv.getName(), loadCsv.getSource(), sqlList);
+        log.info(aMarker, "id#{}, name#{}, from#{}, sqlList#{}", actionExecutionAudit.getActionId(), loadCsv.getName(), loadCsv.getSource(), sqlList);
         final String csvExtension = ".csv";
         final String tsvExtension = ".tsv";
         try (final CSVReader csvReader = new CSVReader(new FileReader(csvFile))) {
@@ -104,7 +104,7 @@ public class LoadCsvAction implements IActionExecution {
         var pid = loadCsv.getPid();
         var db = loadCsv.getTo();
         var name = loadCsv.getName();
-        var id = action.getActionId();
+        var id = actionExecutionAudit.getActionId();
         var limit = Integer.parseInt(loadCsv.getLimit());
         final HikariDataSource hikariDataSource = ResourceAccess.rdbmsConn(db);
         try (final Connection connection = hikariDataSource.getConnection()) {

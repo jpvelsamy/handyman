@@ -10,7 +10,7 @@ import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.repo.HandymanRepo;
 import in.handyman.raven.lambda.access.repo.HandymanRepoR2Impl;
 import in.handyman.raven.lambda.action.IActionContext;
-import in.handyman.raven.lambda.doa.ResourceConnection;
+import in.handyman.raven.lambda.doa.config.SpwResourceConfig;
 import in.handyman.raven.lib.model.RestPart;
 import in.handyman.raven.lib.model.StartProcess;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +44,6 @@ public class CommandProxy {
         final Map<String, Method> methodNames = Arrays.stream(target.getClass().getMethods())
                 .filter(method -> method.getName().startsWith("get"))
                 .collect(Collectors.toMap(method -> method.getName().substring(3), method -> method, (p, q) -> p));
-//CAse sensitive
         for (final Field field : source.getClass().getDeclaredFields()) {
             final String name = field.getName();
             final String fieldName = Character.toUpperCase(name.charAt(0)) + name.substring(1);
@@ -78,7 +77,7 @@ public class CommandProxy {
                         } else if (field.getType() == RavenParser.ResourceContext.class) {
                             final RavenParser.ResourceContext o = (RavenParser.ResourceContext) fieldValue;
                             final String text = o.getText().substring(1, o.getText().length() - 1);
-                            final ResourceConnection connection = HANDYMAN_REPO.getResourceConfig(getString(context, text));
+                            final SpwResourceConfig connection = HANDYMAN_REPO.getResourceConfig(getString(context, text));
                             setValue(target, fieldName, getter, connection);
                         } else if (field.getType() == List.class) {
                             final List<Object> tokens = (List<Object>) fieldValue;

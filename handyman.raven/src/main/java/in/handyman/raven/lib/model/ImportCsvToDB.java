@@ -2,7 +2,7 @@ package in.handyman.raven.lib.model;
 
 import in.handyman.raven.lambda.action.ActionContext;
 import in.handyman.raven.lambda.action.IActionContext;
-import in.handyman.raven.lambda.doa.ResourceConnection;
+import in.handyman.raven.lambda.doa.config.SpwResourceConfig;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +25,7 @@ import java.util.List;
 public class ImportCsvToDB implements IActionContext {
     private String name;
 
-    private ResourceConnection target;
+    private SpwResourceConfig target;
 
     private String tableName;
 

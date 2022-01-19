@@ -3,10 +3,8 @@ package in.handyman.server.schedular;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.repo.HandymanRepo;
 import in.handyman.raven.lambda.access.repo.HandymanRepoR2Impl;
-import in.handyman.raven.lambda.doa.ConfigStore;
-import in.handyman.raven.lambda.doa.ConfigType;
+import in.handyman.raven.lambda.doa.config.SpwInstanceConfig;
 import in.handyman.server.legacy.HLegacyRepo;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.Job;
@@ -121,21 +119,23 @@ public class InstanceJobCreator implements Job {
     }
 
     private void doRavenVM(final JobExecutionContext jobExecutionContext, final Set<String> awaitingTriggers) {
-        HANDYMAN_REPO.findConfigEntitiesByVariable(ConfigType.PIPELINE, InstanceJob.CRON)
+        HANDYMAN_REPO.findAllByInstanceVariable(InstanceJob.CRON)
                 .stream()
-                .filter(configStore -> !awaitingTriggers.contains(genUnique(InstanceJob.HandymanVM.RAVEN_VM, configStore.getName())))
-                .forEach(configStore -> {
-                    final String processName = configStore.getName();
+                .filter(config -> !awaitingTriggers.contains(genUnique(InstanceJob.HandymanVM.RAVEN_VM, config.getInstance())))
+                .forEach(config -> {
+
+                    final String instance = config.getInstance();
                     final InstanceJob.HandymanVM ravenVm = InstanceJob.HandymanVM.RAVEN_VM;
-                    final String name = genUnique(ravenVm, processName);
-                    final String expression = configStore.getValue();
+                    final String name = genUnique(ravenVm, instance);
+                    final String expression = config.getValue();
 
 
                     var data = new JobDataMap();
-                    data.put(InstanceJob.NAME, processName);
+                    data.put(InstanceJob.NAME, instance);
                     data.put(InstanceJob.VM, ravenVm.name());
-                    data.put(InstanceJob.LOAD_TYPE, HANDYMAN_REPO.findConfigEntities(ConfigType.PIPELINE,
-                            processName, InstanceJob.LOAD_TYPE_VARIABLE).map(ConfigStore::getValue).orElse(null));
+                    data.put(InstanceJob.LOAD_TYPE, HANDYMAN_REPO.findOneInstance(instance,
+                                    InstanceJob.LOAD_TYPE_VARIABLE).map(SpwInstanceConfig::getValue)
+                            .orElse(null));
 
                     addJob(jobExecutionContext, name, expression, data);
                 });

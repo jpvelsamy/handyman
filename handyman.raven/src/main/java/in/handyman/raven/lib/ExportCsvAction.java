@@ -7,10 +7,11 @@ import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.ExportCsv;
 import in.handyman.raven.util.ExceptionUtil;
 import org.apache.commons.text.StringEscapeUtils;
+import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -36,7 +37,7 @@ public class ExportCsvAction implements IActionExecution {
 
     protected static final String EXPORT_CSV = "ExportCsv";
 
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
 
     private final Logger log;
 
@@ -44,9 +45,9 @@ public class ExportCsvAction implements IActionExecution {
 
     private final Marker aMarker;
 
-    public ExportCsvAction(final Action action, final Logger log, final Object exportCsv) {
+    public ExportCsvAction(final ActionExecutionAudit actionExecutionAudit, final Logger log, final Object exportCsv) {
         this.exportCsv = (ExportCsv) exportCsv;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker(" ExportCsv:" + this.exportCsv.getName());
     }
@@ -58,12 +59,13 @@ public class ExportCsvAction implements IActionExecution {
         var executionSource = exportCsv.getExecutionSource();
         var location = exportCsv.getTargetLocation();
         var execStmt = StringEscapeUtils.unescapeJava(exportCsv.getStmt());
-        log.info(aMarker, "Starting the execution with id {} dbSrc {} execStmt {} location {} executionSource {}", action.getActionId(), dbSrc, execStmt, location, executionSource);
+        log.info(aMarker, "Starting the execution with id {} dbSrc {} execStmt {} location {} executionSource {}", actionExecutionAudit.getActionId(), dbSrc, execStmt, location, executionSource);
         var sql = new HashMap<String, String>();
         if (dbSrc != null) {
             final HikariDataSource hikariDataSource = ResourceAccess.rdbmsConn(dbSrc);
             log.info(aMarker, "Created a hikariDataSource for rdbms connection src {}", dbSrc);
             try (var con = hikariDataSource.getConnection()) {
+                con.setAutoCommit(false);
                 try (var stmt = con.createStatement()) {
                     log.info(aMarker, "Executing sql statement {}", execStmt);
                     var result = stmt.executeQuery(execStmt);
@@ -71,11 +73,12 @@ public class ExportCsvAction implements IActionExecution {
                         sql.put(result.getString(1), result.getString(2));
                     }
                 }
+                con.commit();
             } catch (SQLException ex) {
-                log.error(aMarker, "Stopping execution, General Error executing sql for {} with for campaign {}", execStmt, ex);
-                log.info(aMarker, execStmt + ".exception", ExceptionUtil.toString(ex));
-                throw new HandymanException("Process failed", ex);
-            }
+                    log.error(aMarker, "Stopping execution, General Error executing sql for {} with for campaign {}", execStmt, ex);
+                    log.info(aMarker, execStmt + ".exception", ExceptionUtil.toString(ex));
+                    throw new HandymanException("Process failed", ex);
+                }
 
         }
         if (!sql.isEmpty()) {

@@ -1,23 +1,16 @@
 package in.handyman.raven.lib;
 
-import com.zaxxer.hikari.HikariDataSource;
-import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.Assign;
 import in.handyman.raven.util.CommonQueryUtil;
-import in.handyman.raven.util.ExceptionUtil;
-import in.handyman.raven.util.UniqueID;
+import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.SQLSyntaxErrorException;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 
@@ -29,59 +22,38 @@ import java.util.Map;
 )
 public class AssignAction implements IActionExecution {
 
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
     private final Logger log;
     private final Assign assign;
 
     private final Marker aMarker;
 
-    public AssignAction(final Action action, final Logger log, final Object assign) {
+    public AssignAction(final ActionExecutionAudit actionExecutionAudit, final Logger log, final Object assign) {
         this.assign = (Assign) assign;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
-        this.aMarker = MarkerFactory.getMarker("Assign:" + action.getActionName());
+        this.aMarker = MarkerFactory.getMarker("Assign:" + actionExecutionAudit.getActionName());
     }
 
     @Override
     public void execute() throws Exception {
         final String dbSrc = assign.getSource();
-        log.info(aMarker, " input variables id: {}, name: {}, source-database: {} ", action.getActionId(), assign.getName(), dbSrc);
+        log.info(aMarker, " input variables id: {}, name: {}, source-database: {} ", actionExecutionAudit.getActionId(), assign.getName(), dbSrc);
         log.info(aMarker, "Sql input post parameter ingestion \n {}", assign.getValue());
-        final HikariDataSource hikariDataSource = ResourceAccess.rdbmsConn(dbSrc);
-        try (final Connection connection = hikariDataSource.getConnection()) {
+        final Map<String, String> context = actionExecutionAudit.getContext();
+
+        final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(dbSrc);
+        jdbi.useTransaction(handle -> {
             final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(assign.getValue());
-            for (var sqlToExecute : formattedQuery) {
+            formattedQuery.forEach(sqlToExecute -> {
                 log.info(aMarker, "Execution query sql#{} on db=#{}", sqlToExecute, dbSrc);
-                final Long statementId = UniqueID.getId();
-                //TODO
-                try (final Statement stmt = connection.createStatement()) {
-                    try (var rs = stmt.executeQuery(sqlToExecute)) {
-                        var columnCount = rs.getMetaData().getColumnCount();
-                        while (rs.next()) {
-                            final Map<String, String> context = action.getContext();
-                            CommonQueryUtil.addKeyConfig(context, log,
-                                    rs, columnCount, assign.getName());
-                        }
-                    }
-                    var warnings = ExceptionUtil.completeSQLWarning(stmt.getWarnings());
-                    log.info(aMarker, sqlToExecute + ".stmtCount", stmt.getUpdateCount());
-                    log.info(aMarker, sqlToExecute + ".warnings", warnings);
-                    log.info(aMarker, " id# {}, executed script {} rows returned {}", statementId, sqlToExecute, 0);
-                    stmt.clearWarnings();
-                } catch (SQLSyntaxErrorException ex) {
-                    log.error(aMarker, "Stopping execution, General Error executing sql for {} with for campaign {}", sqlToExecute, ex);
-                    log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
-                    throw new HandymanException("Process failed", ex);
-                } catch (SQLException ex) {
-                    log.error(aMarker, "Continuing to execute, even though SQL Error executing sql for {} ", sqlToExecute, ex);
-                    log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
-                } catch (Throwable ex) {
-                    log.error(aMarker, "Stopping execution, General Error executing sql for {} with for campaign {}", sqlToExecute, ex);
-                    log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
-                    throw new HandymanException("Process failed", ex);
-                }
-            }
-        }
+                handle.createQuery(sqlToExecute).mapToMap().forEach(stringObjectMap -> stringObjectMap.forEach((s, o) ->{
+                    context.put(assign.getName().isEmpty()?s:String.format("%s.%s",assign.getName(),s), String.valueOf(o));
+                    log.info("Value "+ o +" has been added for "+s);
+                }));
+            });
+        });
+
     }
 
     @Override

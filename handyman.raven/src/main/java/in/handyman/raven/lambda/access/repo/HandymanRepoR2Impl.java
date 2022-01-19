@@ -2,19 +2,22 @@ package in.handyman.raven.lambda.access.repo;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import in.handyman.raven.lambda.doa.Action;
-import in.handyman.raven.lambda.doa.ActionExecutionAudit;
-import in.handyman.raven.lambda.doa.ConfigStore;
-import in.handyman.raven.lambda.doa.ConfigType;
-import in.handyman.raven.lambda.doa.LambdaExecutionAudit;
-import in.handyman.raven.lambda.doa.Pipeline;
-import in.handyman.raven.lambda.doa.ResourceConnection;
-import in.handyman.raven.lambda.doa.Statement;
+import in.handyman.raven.exception.HandymanException;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionStatusAudit;
+import in.handyman.raven.lambda.doa.audit.PipelineExecutionAudit;
+import in.handyman.raven.lambda.doa.audit.PipelineExecutionStatusAudit;
+import in.handyman.raven.lambda.doa.audit.StatementExecutionAudit;
+import in.handyman.raven.lambda.doa.config.SpwCommonConfig;
+import in.handyman.raven.lambda.doa.config.SpwInstanceConfig;
+import in.handyman.raven.lambda.doa.config.SpwProcessConfig;
+import in.handyman.raven.lambda.doa.config.SpwResourceConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 
+import java.io.File;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,274 +28,355 @@ import java.util.stream.Collectors;
 @Slf4j
 public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
 
-    protected static final String CONFIG_URL = "config.r2.url";
-    private static final String CONFIG_PASSWORD = "config.r2.password";
-    private static final String CONFIG_USER = "config.r2.user";
-    private static final Config CONFIG = ConfigFactory.parseResources("handyman-raven-configstore.props");
+    protected static final String CONFIG_URL = "config.url";
+    private static final String CONFIG_PASSWORD = "config.password";
+    private static final String CONFIG_USER = "config.user";
+    private static final Config CONFIG;
 
     private static final Jdbi jdbi;
 
     static {
+        System.setProperty("handyman.config.location","/home/sins/workspace/handyman/handyman.server/config/config.props");
+        final String getenv = Optional.ofNullable(System.getProperty("handyman.config.location")).orElse("config.props");
+        final File file = new File(getenv);
+
+        if (!file.exists()) {
+            throw new HandymanException("Config file not found");
+        }
+
+        CONFIG = ConfigFactory.parseFile(file);
         log.info("Initializing the config store from config file {}", CONFIG.origin().url());
         final String username = CONFIG.getString(CONFIG_USER);
         final String password = CONFIG.getString(CONFIG_PASSWORD);
         final String url = CONFIG.getString(CONFIG_URL);
         jdbi = Jdbi.create(url, username, password);
+        jdbi.installPlugin(new SqlObjectPlugin());
+
     }
 
     @Override
     public Map<String, String> getAllConfig(final String pipelineName) {
         final String lambdaName = getLambdaName(pipelineName);
-        final Map<String, String> pipelineConfig = toMap(findConfigEntities(ConfigType.PIPELINE, pipelineName));
-        final Map<String, String> lambdaConfig = toMap(findConfigEntities(ConfigType.LAMBDA, lambdaName));
+        final Map<String, String> pipelineConfig = findAllByInstance(pipelineName).stream()
+                .collect(Collectors
+                        .toMap((SpwInstanceConfig::getVariable),
+                                SpwInstanceConfig::getValue,
+                                (p, q) -> p));
+
+        final Map<String, String> lambdaConfig = findAllByProcess(lambdaName).stream()
+                .collect(Collectors
+                        .toMap((SpwProcessConfig::getVariable),
+                                SpwProcessConfig::getValue,
+                                (p, q) -> p));
+
         final Map<String, String> commonConfig = getCommonConfig();
+
         final Map<String, String> finalMap = new HashMap<>(pipelineConfig);
         finalMap.putAll(lambdaConfig);
         finalMap.putAll(commonConfig);
+
         return Map.copyOf(finalMap);
     }
 
     @Override
-    public List<ConfigStore> findConfigEntities(final ConfigType configType, final String configName) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where config_type_id = ? and name = ? and active=true ")
-                .bind(0, configType.getId())
-                .bind(1, configName)
-                .mapToBean(ConfigStore.class)
-                .list());
+    public List<SpwInstanceConfig> findAllByInstance(final String instance) {
+        return jdbi.withHandle(handle -> {
+            var repo = handle.attach(SpwInstanceConfigRepo.class);
+            return repo.findAllByInstance(instance);
+        });
+    }
+
+    @Override
+    public List<SpwProcessConfig> findAllByProcess(final String process) {
+        return jdbi.withHandle(handle -> {
+            var repo = handle.attach(SpwProcessConfigRepo.class);
+            return repo.findAllByProcess(process);
+        });
     }
 
     @Override
     public Map<String, String> getCommonConfig() {
-        final List<ConfigStore> configEntities = getCommonConfigEntities();
-        return toMap(configEntities);
-    }
-
-    private List<ConfigStore> getCommonConfigEntities() {
-        return findConfigEntities(ConfigType.COMMON);
-    }
-
-    public List<ConfigStore> findConfigEntities(final ConfigType configType) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where config_type_id = ? and active=true ")
-                .bind(0, configType.getId())
-                .mapToBean(ConfigStore.class)
-                .list());
+        return findAllCommonConfigs().stream()
+                .collect(Collectors
+                        .toMap((SpwCommonConfig::getVariable),
+                                SpwCommonConfig::getValue,
+                                (p, q) -> p));
     }
 
     @Override
-    public List<ConfigStore> getAllConfigStores(final String pipelineName) {
-        final String lambdaName = getLambdaName(pipelineName);
-        final List<ConfigStore> pipelineConfig = findConfigEntities(ConfigType.PIPELINE, pipelineName);
-        final List<ConfigStore> lambdaConfig = findConfigEntities(ConfigType.LAMBDA, lambdaName);
-        final List<ConfigStore> commonConfig = getCommonConfigEntities();
-        final List<ConfigStore> finalMap = new ArrayList<>(pipelineConfig);
-        finalMap.addAll(lambdaConfig);
-        finalMap.addAll(commonConfig);
-        return List.copyOf(finalMap);
+    public List<SpwCommonConfig> findAllCommonConfigs() {
+        return jdbi.withHandle(handle -> {
+            var repo = handle.attach(SpwCommonConfigRepo.class);
+            return repo.findAll();
+        });
     }
 
     @Override
-    public List<ConfigStore> findConfigEntitiesByVariable(final ConfigType configType, final String variable) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where config_type_id = ? and variable = ? and active=true ")
-                .bind(0, configType.getId())
-                .bind(1, variable)
-                .mapToBean(ConfigStore.class)
-                .list());
+    public SpwResourceConfig getResourceConfig(final String name) {
+        return findOneResourceConfig(name).orElseThrow();
     }
 
     @Override
-    public ResourceConnection getResourceConfig(final String name) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM resource_connection where name = ? and active=true  ")
-                .bind(0, name)
-                .mapToBean(ResourceConnection.class)
-                .findOne().orElse(null));
-    }
-
-    @Override
-    public String findValueCommonConfig(final String configName, final String variable) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where variable = ? and name = ? and active=true ")
-                .bind(0, variable)
-                .bind(1, configName)
-                .mapToBean(ConfigStore.class)
-                .findOne().map(ConfigStore::getValue).orElse(null));
+    public Optional<SpwResourceConfig> findOneResourceConfig(final String configName) {
+        return jdbi.withHandle(handle -> {
+            var repo = handle.attach(SpwResourceConfigRepo.class);
+            return repo.findOne(configName);
+        });
     }
 
     @Override
     public Set<String> getPackageAction() {
-        return findConfigEntities(ConfigType.COMMON, SYS_PACKAGE).stream().map(ConfigStore::getValue).collect(Collectors.toUnmodifiableSet());
+        return findAllByProcess(SYS_PACKAGE).stream().map(SpwProcessConfig::getValue).collect(Collectors.toUnmodifiableSet());
     }
 
     @Override
-    public Optional<ConfigStore> findConfigEntities(final ConfigType configType, final String configName, final String variable) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where config_type_id = ? and name = ? and variable=? and active=true order by version desc limit 1")
-                .bind(0, configType.getId())
-                .bind(1, configName)
-                .bind(2, variable)
-                .mapToBean(ConfigStore.class)
-                .findOne());
-    }
-
-    @Override
-    public void save(final ConfigStore configStore) {
-        final List<ConfigStore> stores = findConfigStore(ConfigType.get(configStore.getConfigTypeId()),
-                configStore.getName(), configStore.getVariable());
-        final int version = stores.size() + 1;
-        stores.forEach(configStore1 -> {
-            configStore1.setLastModifiedDate(LocalDateTime.now());
-            configStore1.setActive(false);
-            jdbi.useHandle(handle -> handle.createUpdate("UPDATE config_store SET active = :active WHERE id = :id;")
-                    .bindBean(configStore1).execute());
+    public void insertPipeline(final PipelineExecutionAudit audit) {
+        jdbi.useHandle(handle -> {
+            audit.setLastModifiedDate(LocalDateTime.now());
+            var repo = handle.attach(PipelineExecutionAuditRepo.class);
+            repo.insert(audit);
         });
-        configStore.setLastModifiedDate(LocalDateTime.now());
-        configStore.setActive(true);
-        configStore.setVersion(version);
-        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO config_store (id, active, config_type_id, name, value, variable, created_by, created_date, last_modified_by, last_modified_date, version) VALUES(:id, :active, :configTypeId, :name, :value, :variable, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :version);")
-                .bindBean(configStore).execute());
     }
 
     @Override
-    public List<ConfigStore> findConfigStore(final ConfigType configType, final String configName, final String variable) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM config_store where config_type_id = ? and name = ? and variable=? ")
-                .bind(0, configType.getId())
-                .bind(1, configName)
-                .bind(2, variable)
-                .mapToBean(ConfigStore.class)
-                .list());
-    }
+    public void insertAction(final ActionExecutionAudit audit) {
 
-    @Override
-    public void save(final ResourceConnection resourceConnection) {
-        final List<ResourceConnection> list = getResourceConfigList(resourceConnection.getName());
-        final int version = list.size() + 1;
-        list.forEach(connection -> {
-            connection.setLastModifiedDate(LocalDateTime.now());
-            connection.setActive(false);
-            jdbi.useHandle(handle -> handle.createUpdate("UPDATE resource_connection SET active = :active WHERE name = :name;")
-                    .bindBean(connection).execute());
+        jdbi.useHandle(handle -> {
+            audit.setLastModifiedDate(LocalDateTime.now());
+            var repo = handle.attach(ActionExecutionAuditRepo.class);
+            repo.insert(audit);
         });
-        resourceConnection.setLastModifiedDate(LocalDateTime.now());
-        resourceConnection.setActive(true);
-        resourceConnection.setVersion(version);
-        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO resource_connection (name, created_by, created_date, last_modified_by, last_modified_date, active, config_type, driver_class_name, password, url, user_name, version) " +
-                        " VALUES( :name, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :active, :configType, :driverClassName, :password, :url, :userName, :version);")
-                .bindBean(resourceConnection).execute());
+
+    }
+
+
+    @Override
+    public void update(final ActionExecutionAudit audit) {
+
+        jdbi.useHandle(handle -> {
+            audit.setLastModifiedDate(LocalDateTime.now());
+            var repo = handle.attach(ActionExecutionAuditRepo.class);
+            repo.update(audit);
+        });
+
     }
 
     @Override
-    public List<ResourceConnection> getResourceConfigList(final String name) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM resource_connection where name = ? ")
-                .bind(0, name)
-                .mapToBean(ResourceConnection.class)
-                .list());
+    public List<ActionExecutionAudit> findActions(final Long pipelineId) {
+        return jdbi.withHandle(handle -> {
+            var repo = handle.attach(ActionExecutionAuditRepo.class);
+            return repo.findAllActionsByPipelineId(pipelineId);
+        });
     }
 
     @Override
-    public void insertPipeline(final Pipeline audit) {
+    public List<ActionExecutionAudit> findAllActionsByRootPipelineId(final Long rootPipelineId) {
+        return jdbi.withHandle(handle -> {
+            var repo = handle.attach(ActionExecutionAuditRepo.class);
+            return repo.findAllActionsByRootPipelineId(rootPipelineId);
+        });
+    }
+
+    @Override
+    public void insertStatement(final StatementExecutionAudit audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
-        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO pipeline (pipeline_id, created_by, created_date, last_modified_by, last_modified_date,pipeline_name," +
-                        " context_node, execution_status_id, lambda_name, parent_action_id, parent_action_name, parent_pipeline_id, parent_pipeline_name,  file_content, host_name, mode_of_execution, pipeline_load_type, relative_path, request_body, thread_name,process_name,root_pipeline_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)")
-                .bind(0, audit.getPipelineId())
-                .bind(1, audit.getCreatedBy())
-                .bind(2, audit.getCreatedDate())
-                .bind(3, audit.getLastModifiedBy())
-                .bind(4, audit.getLastModifiedDate())
-                .bind(5, audit.getPipelineName())
-                .bind(6, audit.getContextNode())
-                .bind(7, audit.getExecutionStatusId())
-                .bind(8, audit.getLambdaName())
-                .bind(9, audit.getParentActionId())
-                .bind(10, audit.getParentActionName())
-                .bind(11, audit.getParentPipelineId())
-                .bind(12, audit.getParentPipelineName())
-                .bind(13, audit.getFileContent())
-                .bind(14, audit.getHostName())
-                .bind(15, audit.getModeOfExecution())
-                .bind(16, audit.getPipelineLoadType())
-                .bind(17, audit.getRelativePath())
-                .bind(18, audit.getRequestBody())
-                .bind(19, audit.getThreadName())
-                .bind(20, audit.getProcessName())
-                .bind(21, audit.getRootPipelineId())
-                .execute());
-    }
-
-    @Override
-    public void insertAction(final Action audit) {
-        audit.setLastModifiedDate(LocalDateTime.now());
-        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO action (action_id, created_by, created_date, last_modified_by, last_modified_date, context_node, execution_status_id, lambda_name, parent_action_id, parent_action_name, parent_pipeline_id, parent_pipeline_name, pipeline_name, action_name, execution_group_id, input_node, log, pipeline_id, root_pipeline_id) VALUES(:actionId, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :contextNode, :executionStatusId, :lambdaName, :parentActionId, :parentActionName, :parentPipelineId, :parentPipelineName, :pipelineName, :actionName, :executionGroupId, :inputNode, :log, :pipelineId ,:rootPipelineId);")
+        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO " + StatementExecutionAudit.SCHEMA_NAME + "." + StatementExecutionAudit.TABLE_NAME + " (statement_id, created_by, created_date, last_modified_by, last_modified_date, action_id, rows_processed, rows_read, rows_written, statement_content, time_taken,root_pipeline_id) VALUES(:statementId, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :actionId, :rowsProcessed, :rowsRead, :rowsWritten, :statementContent, :timeTaken,:rootPipelineId);")
                 .bindBean(audit).execute());
     }
 
     @Override
-    public void insertStatement(final Statement audit) {
+    public void save(final PipelineExecutionStatusAudit audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
-        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO statement (statement_id, created_by, created_date, last_modified_by, last_modified_date, action_id, rows_processed, rows_read, rows_written, statement_content, time_taken,root_pipeline_id) VALUES(:statementId, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :actionId, :rowsProcessed, :rowsRead, :rowsWritten, :statementContent, :timeTaken,:rootPipelineId);")
+        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO " + PipelineExecutionStatusAudit.SCHEMA_NAME + "." + PipelineExecutionStatusAudit.TABLE_NAME + " (id, created_by, created_date, last_modified_by, last_modified_date, execution_status_id, pipeline_id,root_pipeline_id) VALUES(:id, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :executionStatusId, :pipelineId,:rootPipelineId);")
                 .bindBean(audit).execute());
     }
 
     @Override
-    public void save(final LambdaExecutionAudit audit) {
+    public void save(final ActionExecutionStatusAudit audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
-        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO lambda_execution_audit (id, created_by, created_date, last_modified_by, last_modified_date, execution_status_id, pipeline_id,root_pipeline_id) VALUES(:id, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :executionStatusId, :pipelineId,:rootPipelineId);")
+        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO " + ActionExecutionStatusAudit.SCHEMA_NAME + "." + ActionExecutionStatusAudit.TABLE_NAME + " (id, created_by, created_date, last_modified_by, last_modified_date, action_id, execution_status_id, pipeline_id,root_pipeline_id) VALUES(:id, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :actionId, :executionStatusId, :pipelineId,:rootPipelineId);")
                 .bindBean(audit).execute());
     }
 
     @Override
-    public void save(final ActionExecutionAudit audit) {
-        audit.setLastModifiedDate(LocalDateTime.now());
-        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO action_execution_audit (id, created_by, created_date, last_modified_by, last_modified_date, action_id, execution_status_id, pipeline_id,root_pipeline_id) VALUES(:id, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :actionId, :executionStatusId, :pipelineId,:rootPipelineId);")
-                .bindBean(audit).execute());
+    public void update(final PipelineExecutionAudit audit) {
+        jdbi.useHandle(handle -> {
+            audit.setLastModifiedDate(LocalDateTime.now());
+            var repo = handle.attach(PipelineExecutionAuditRepo.class);
+            repo.update(audit);
+        });
+    }
+
+
+    @Override
+    public Optional<PipelineExecutionAudit> findPipeline(final Long pipelineId) {
+        return jdbi.withHandle(handle -> {
+            var repo = handle.attach(PipelineExecutionAuditRepo.class);
+            return repo.findOneByPipelineId(pipelineId);
+        });
+    }
+
+
+    @Override
+    public List<PipelineExecutionAudit> findAllPipelinesByRootPipelineId(final Long rootPipelineId) {
+        return jdbi.withHandle(handle -> {
+            var repo = handle.attach(PipelineExecutionAuditRepo.class);
+            return repo.findAllPipelinesByRootPipelineId(rootPipelineId);
+        });
+    }
+
+
+    @Override
+    public List<PipelineExecutionAudit> findAllPipelinesByParentActionId(final Long parentActionId) {
+        return jdbi.withHandle(handle -> {
+            var repo = handle.attach(PipelineExecutionAuditRepo.class);
+            return repo.findAllPipelinesByParentActionId(parentActionId);
+        });
     }
 
     @Override
-    public void update(final Pipeline audit) {
-        audit.setLastModifiedDate(LocalDateTime.now());
-        jdbi.useHandle(handle -> handle.createUpdate("UPDATE pipeline SET created_by = :createdBy, created_date = :createdDate, last_modified_by = :lastModifiedBy, last_modified_date = :lastModifiedDate, context_node = :contextNode, execution_status_id = :executionStatusId, lambda_name = :lambdaName, parent_action_id = :parentActionId, parent_action_name = :parentActionName, parent_pipeline_id = :parentPipelineId, parent_pipeline_name = :parentPipelineName, pipeline_name = :pipelineName, file_content = :fileContent, host_name = :hostName, mode_of_execution = :modeOfExecution, pipeline_load_type = :pipelineLoadType , relative_path = :relativePath, request_body = :requestBody,  process_name = :processName , root_pipeline_id = :rootPipelineId WHERE pipeline_id = :pipelineId ;")
-                .bindBean(audit).execute());
+    public List<PipelineExecutionAudit> findAllPipelines() {
+        return jdbi.withHandle(handle -> {
+            var repo = handle.attach(PipelineExecutionAuditRepo.class);
+            return repo.findAllPipelines();
+        });
     }
 
     @Override
-    public void update(final Action audit) {
-        audit.setLastModifiedDate(LocalDateTime.now());
-        jdbi.useHandle(handle -> handle.createUpdate("UPDATE action SET created_by = :createdBy, created_date = :createdDate, last_modified_by = :lastModifiedBy, last_modified_date = :lastModifiedDate, context_node = :contextNode, execution_status_id = :executionStatusId, lambda_name = :lambdaName, parent_action_id = :parentActionId, parent_action_name = :parentActionName, parent_pipeline_id = :parentPipelineId, parent_pipeline_name = :parentPipelineName, pipeline_name = :pipelineName, action_name = :actionName, execution_group_id = :executionGroupId, input_node = :inputNode, log = :log, pipeline_id = :pipelineId,thread_name = :threadName, root_pipeline_id = :rootPipelineId  WHERE action_id = :actionId ;")
-                .bindBean(audit).execute());
+    public List<PipelineExecutionAudit> findAllByPipelineName(final String pipelineName) {
+        return jdbi.withHandle(handle -> {
+            var repo = handle.attach(PipelineExecutionAuditRepo.class);
+            return repo.findAllByPipelineName(pipelineName);
+        });
+    }
+
+    // Spw Instance
+
+    @Override
+    public void insert(final SpwInstanceConfig spwInstanceConfig) {
+        jdbi.useHandle(handle -> {
+            var repo = handle.attach(SpwInstanceConfigRepo.class);
+            final Long nextVersion = repo.getNextVersion(spwInstanceConfig);
+            spwInstanceConfig.setVersion(nextVersion.intValue());
+            repo.insert(spwInstanceConfig);
+        });
     }
 
     @Override
-    public Optional<Pipeline> findPipeline(final Long pipelineId) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM pipeline where pipeline_id = ?")
-                .bind(0, pipelineId)
-                .mapToBean(Pipeline.class)
-                .findOne());
+    public void update(final SpwInstanceConfig spwInstanceConfig) {
+        jdbi.useHandle(handle -> {
+            var repo = handle.attach(SpwInstanceConfigRepo.class);
+            repo.update(spwInstanceConfig);
+        });
     }
 
     @Override
-    public List<Action> findActions(final Long pipelineId) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM action where pipeline_id = ?;\n")
-                .bind(0, pipelineId)
-                .mapToBean(Action.class)
-                .list());
+    public List<SpwInstanceConfig> findAllInstances() {
+        return jdbi.withHandle(handle -> {
+            var repo = handle.attach(SpwInstanceConfigRepo.class);
+            return repo.findAll();
+        });
     }
 
     @Override
-    public List<Pipeline> findPipelines(final Long parentActionId) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM pipeline where parent_action_id = ?")
-                .bind(0, parentActionId)
-                .mapToBean(Pipeline.class)
-                .list());
+    public List<SpwInstanceConfig> findAllByInstanceVariable(final String variable) {
+        return jdbi.withHandle(handle -> {
+            var repo = handle.attach(SpwInstanceConfigRepo.class);
+            return repo.findAllByInstanceVariable(variable);
+        });
     }
 
     @Override
-    public List<Pipeline> findAllPipelines() {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM pipeline")
-                .mapToBean(Pipeline.class)
-                .list());
+    public Optional<SpwInstanceConfig> findOneInstance(final String instance, final String variable) {
+        return jdbi.withHandle(handle -> {
+            var repo = handle.attach(SpwInstanceConfigRepo.class);
+            return repo.findOne(instance, variable);
+        });
     }
 
     @Override
-    public List<Pipeline> findAllPipelines(final String pipelineName) {
-        return jdbi.withHandle(handle -> handle.createQuery("SELECT * FROM pipeline where pipeline_name =? ")
-                .bind(0, pipelineName)
-                .mapToBean(Pipeline.class)
-                .list());
+    public void insert(final SpwProcessConfig spwProcessConfig) {
+        jdbi.useHandle(handle -> {
+            var repo = handle.attach(SpwProcessConfigRepo.class);
+            final Long nextVersion = repo.getNextVersion(spwProcessConfig);
+            spwProcessConfig.setVersion(nextVersion.intValue());
+            repo.insert(spwProcessConfig);
+        });
+    }
+
+    @Override
+    public void update(final SpwProcessConfig spwProcessConfig) {
+        jdbi.useHandle(handle -> {
+            var repo = handle.attach(SpwProcessConfigRepo.class);
+            repo.update(spwProcessConfig);
+        });
+    }
+
+    @Override
+    public List<SpwProcessConfig> findAllProcesses() {
+        return jdbi.withHandle(handle -> {
+            var repo = handle.attach(SpwProcessConfigRepo.class);
+            return repo.findAll();
+        });
+    }
+
+    @Override
+    public Optional<SpwProcessConfig> findOneProcess(final String process, final String variable) {
+        return jdbi.withHandle(handle -> {
+            var repo = handle.attach(SpwProcessConfigRepo.class);
+            return repo.findOne(process, variable);
+        });
+    }
+
+    @Override
+    public void insert(final SpwCommonConfig spwCommonConfig) {
+        jdbi.useHandle(handle -> {
+            var repo = handle.attach(SpwCommonConfigRepo.class);
+            final Long nextVersion = repo.getNextVersion(spwCommonConfig);
+            spwCommonConfig.setVersion(nextVersion.intValue());
+            repo.insert(spwCommonConfig);
+        });
+    }
+
+    @Override
+    public void update(final SpwCommonConfig spwCommonConfig) {
+        jdbi.useHandle(handle -> {
+            var repo = handle.attach(SpwCommonConfigRepo.class);
+            repo.update(spwCommonConfig);
+        });
+    }
+
+    @Override
+    public Optional<SpwCommonConfig> findOneCommonConfig(final String variable) {
+        return jdbi.withHandle(handle -> {
+            var repo = handle.attach(SpwCommonConfigRepo.class);
+            return repo.findOne(variable);
+        });
+    }
+
+    @Override
+    public void insert(final SpwResourceConfig spwResourceConfig) {
+        jdbi.useHandle(handle -> {
+            var repo = handle.attach(SpwResourceConfigRepo.class);
+            final Long nextVersion = repo.getNextVersion(spwResourceConfig);
+            spwResourceConfig.setVersion(nextVersion.intValue());
+            repo.insert(spwResourceConfig);
+        });
+    }
+
+    @Override
+    public void update(final SpwResourceConfig spwResourceConfig) {
+        jdbi.useHandle(handle -> {
+            var repo = handle.attach(SpwResourceConfigRepo.class);
+            repo.update(spwResourceConfig);
+        });
+    }
+
+    @Override
+    public List<SpwResourceConfig> findAllResourceConfigs() {
+        return jdbi.withHandle(handle -> {
+            var repo = handle.attach(SpwResourceConfigRepo.class);
+            return repo.findAll();
+        });
     }
 }

@@ -2,7 +2,7 @@ package in.handyman.raven.lib;
 
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.CreateFile;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -29,7 +29,7 @@ import java.nio.file.Paths;
         actionName = "CreateFile"
 )
 public class CreateFileAction implements IActionExecution {
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
 
     private final Logger log;
 
@@ -37,9 +37,9 @@ public class CreateFileAction implements IActionExecution {
 
     private final Marker aMarker;
 
-    public CreateFileAction(final Action action, final Logger log, final Object createFile) {
+    public CreateFileAction(final ActionExecutionAudit actionExecutionAudit, final Logger log, final Object createFile) {
         this.createFile = (CreateFile) createFile;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker("CreateFile");
     }

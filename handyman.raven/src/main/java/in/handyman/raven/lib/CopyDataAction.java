@@ -5,7 +5,7 @@ import in.handyman.raven.lambda.access.ConfigAccess;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.CopyData;
 import in.handyman.raven.util.Table;
 import in.handyman.raven.util.UniqueID;
@@ -38,15 +38,15 @@ import java.util.stream.IntStream;
 @ActionExecution(actionName = "CopyData")
 public class CopyDataAction implements IActionExecution {
 
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
     private final Logger log;
     private final CopyData copyData;
 
     private final Marker aMarker;
 
-    public CopyDataAction(final Action action, final Logger log, final Object copyData) {
+    public CopyDataAction(final ActionExecutionAudit actionExecutionAudit, final Logger log, final Object copyData) {
         this.copyData = (CopyData) copyData;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker("CopyData");
     }
@@ -55,7 +55,7 @@ public class CopyDataAction implements IActionExecution {
     public void execute() throws Exception {
         //Retrieving the global config map for default value
         var configMap = ConfigAccess.getCommonConfig();
-        var pipelineId = action.getPipelineId();
+        var pipelineId = actionExecutionAudit.getPipelineId();
         var name = copyData.getName();
         var source = Optional.ofNullable(copyData.getSource()).map(String::trim)
                 .filter(s -> !s.isEmpty() && !s.isBlank())
@@ -111,7 +111,7 @@ public class CopyDataAction implements IActionExecution {
                         var poisonPill = new Table.Row(i, null);
                         log.info(aMarker, " action is prepping up writer thread with poison pill {}", poisonPill);
                         final CopyDataJdbcWriter jdbcWriter = new CopyDataJdbcWriter(configMap, insert, poisonPill, copyData,
-                                action, rowQueue, countDownLatch);
+                                actionExecutionAudit, rowQueue, countDownLatch);
                         executor.submit(jdbcWriter);
                         rowQueueMap.put(poisonPill.getRowId(), rowQueue);
                     });

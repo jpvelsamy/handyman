@@ -1,7 +1,7 @@
 package in.handyman.raven.lib;
 
 import in.handyman.raven.exception.HandymanException;
-import in.handyman.raven.lambda.doa.Pipeline;
+import in.handyman.raven.lambda.doa.audit.PipelineExecutionAudit;
 import in.handyman.raven.lambda.process.LContext;
 import in.handyman.raven.lambda.process.LambdaEngine;
 import lombok.RequiredArgsConstructor;
@@ -12,14 +12,14 @@ import java.util.concurrent.CountDownLatch;
 
 @Slf4j
 @RequiredArgsConstructor
-public class LambdaCallable implements Callable<Pipeline> {
+public class LambdaCallable implements Callable<PipelineExecutionAudit> {
 
     //TODO move all the context generation part into a method
     private final LContext lContext;
     private final CountDownLatch countDownLatch;
 
     @Override
-    public Pipeline call() {
+    public PipelineExecutionAudit call() {
         try {
             return LambdaEngine.start(lContext);
         } catch (Exception e) {

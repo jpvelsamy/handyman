@@ -5,13 +5,13 @@ import in.handyman.raven.lambda.process.LContext;
 import in.handyman.raven.lambda.process.LambdaEngine;
 import org.junit.jupiter.api.Test;
 
-class RestApiActionTest {
+class RestApiActionTestExecutionAudit {
 
     @Test
     void execute() {
         LambdaEngine.start(LContext.builder()
-                .pipelineName(this.getClass().getSimpleName())
-                .processLoadType(HRequestResolver.LoadType.DB.name())
+                .pipelineName("cub.test.loadcsv")
+                .processLoadType(HRequestResolver.LoadType.FILE.name())
                 .build());
     }
 }

@@ -7,7 +7,7 @@ package in.handyman.raven.lambda.access.repo;
 //    public HandymanRepoESImpl() {
 //        ElasticsearchAccessApi.createIndices(Set.of(ResourceConnection.class, ConfigStore.class, Pipeline.class,
 //                Action.class, Statement.class));
-//        config = ConfigFactory.parseResources("handyman-raven-configstore.props");
+//        config = ConfigFactory.parseResources("config.props");
 //    }
 //
 //    @Override

@@ -35,6 +35,8 @@ public class LContext {
 
     private String payload;
 
+    private Long userId;
+
     public String getLambdaName() {
         return this.lambdaName != null ? this.lambdaName : ConfigAccess.getLambdaName(this.pipelineName);
     }

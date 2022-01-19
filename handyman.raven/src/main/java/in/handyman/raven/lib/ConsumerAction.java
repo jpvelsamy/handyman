@@ -3,7 +3,7 @@ package in.handyman.raven.lib;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lambda.process.LambdaEngine;
 import in.handyman.raven.lib.model.Consumer;
 import org.slf4j.Logger;
@@ -27,14 +27,14 @@ import java.util.stream.Collectors;
 )
 public class ConsumerAction implements IActionExecution {
 
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
     private final Logger log;
     private final Consumer consumer;
     private final Marker aMarker;
 
-    public ConsumerAction(final Action action, final Logger log, final Object consumer) {
+    public ConsumerAction(final ActionExecutionAudit actionExecutionAudit, final Logger log, final Object consumer) {
         this.consumer = (Consumer) consumer;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker(" Consumer:" + this.consumer.getName());
     }
@@ -48,17 +48,27 @@ public class ConsumerAction implements IActionExecution {
                     .withHandle(handle -> handle.createQuery(event)
                             .mapToMap().list());
             final List<List<ActionCallable>> actionCallableList = new ArrayList<>();
+
+            if (maps.isEmpty() && consumer.getCompleted()) {
+                break;
+            }
+
+            if (maps.isEmpty() && consumer.getStandalone()) {
+                break;
+            }
+
             for (var node : maps) {
                 try {
-                    final Map<String, String> context = new HashMap<>(action.getContext());
+                    final Map<String, String> context = new HashMap<>(actionExecutionAudit.getContext());
                     var map = new HashMap<String, String>();
+
                     node.forEach((s, o) -> map.put("payload." + s, String.valueOf(o)));
                     context.putAll(map);
                     Optional.ofNullable(consumer.getActions()).filter(x -> !x.isEmpty())
                             .ifPresent(actionContexts -> {
                                 final List<ActionCallable> collect = actionContexts.stream()
                                         .map(actionContext -> {
-                                            var vAction = LambdaEngine.getAction(consumer.getName(), action);
+                                            var vAction = LambdaEngine.getAction(consumer.getName(), actionExecutionAudit);
                                             vAction.setContext(context);
                                             return new ActionCallable(actionContext, vAction, null);
                                         }).collect(Collectors.toList());
@@ -88,13 +98,12 @@ public class ConsumerAction implements IActionExecution {
             }
 
 
-            log.info("consumer breaking with {}", consumer.getPoison());
         }
 
     }
 
-    public Action getAction() {
-        return action;
+    public ActionExecutionAudit getAction() {
+        return actionExecutionAudit;
     }
 
     @Override

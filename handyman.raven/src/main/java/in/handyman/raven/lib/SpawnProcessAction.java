@@ -2,7 +2,7 @@ package in.handyman.raven.lib;
 
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lambda.process.HRequestResolver;
 import in.handyman.raven.lambda.process.LContext;
 import in.handyman.raven.lib.model.SpawnProcess;
@@ -19,34 +19,34 @@ import java.util.concurrent.Executors;
 public class SpawnProcessAction implements IActionExecution {
     protected static final String SPAWN_PROCESS = "SpawnProcess";
 
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
     private final Logger log;
     private final SpawnProcess spawnProcess;
 
     private final Marker aMarker;
 
-    public SpawnProcessAction(final Action action, final Logger log, final Object spawnProcess) {
+    public SpawnProcessAction(final ActionExecutionAudit actionExecutionAudit, final Logger log, final Object spawnProcess) {
         this.spawnProcess = (SpawnProcess) spawnProcess;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker(SPAWN_PROCESS);
     }
 
     @Override
     public void execute() throws Exception {
-        log.info(aMarker, " id: {}, name: {}", action.getActionId(), spawnProcess.getName());
+        log.info(aMarker, " id: {}, name: {}", actionExecutionAudit.getActionId(), spawnProcess.getName());
         var executor = Executors.newWorkStealingPool();
         final LContext lContext = LContext.builder()
-                .inheritedContext(action.getContext())
-                .lambdaName(action.getLambdaName())
-                .parentActionId(action.getActionId())
-                .parentActionName(action.getActionName())
+                .inheritedContext(actionExecutionAudit.getContext())
+                .lambdaName(actionExecutionAudit.getLambdaName())
+                .parentActionId(actionExecutionAudit.getActionId())
+                .parentActionName(actionExecutionAudit.getActionName())
                 .relativePath(spawnProcess.getSource())
                 .processLoadType(HRequestResolver.LoadType.FILE.name())
                 .pipelineName(spawnProcess.getTarget())
-                .parentPipelineId(action.getPipelineId())
-                .parentPipelineName(action.getPipelineName())
-                .rootPipelineId(action.getRootPipelineId())
+                .parentPipelineId(actionExecutionAudit.getPipelineId())
+                .parentPipelineName(actionExecutionAudit.getPipelineName())
+                .rootPipelineId(actionExecutionAudit.getRootPipelineId())
                 .build();
         var processWorker = new LambdaCallable(lContext, null);
         executor.submit(processWorker);

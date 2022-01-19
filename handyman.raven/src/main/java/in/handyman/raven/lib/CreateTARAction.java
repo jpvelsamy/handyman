@@ -2,7 +2,7 @@ package in.handyman.raven.lib;
 
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.CreateTAR;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
@@ -32,7 +32,7 @@ import java.util.Optional;
         actionName = "CreateTAR"
 )
 public class CreateTARAction implements IActionExecution {
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
 
     private final Logger log;
 
@@ -40,9 +40,9 @@ public class CreateTARAction implements IActionExecution {
 
     private final Marker aMarker;
 
-    public CreateTARAction(final Action action, final Logger log, final Object createTAR) {
+    public CreateTARAction(final ActionExecutionAudit actionExecutionAudit, final Logger log, final Object createTAR) {
         this.createTAR = (CreateTAR) createTAR;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker("CreateTAR");
     }
@@ -53,8 +53,8 @@ public class CreateTARAction implements IActionExecution {
         if (!Files.exists(Paths.get(source))) {
             log.info(aMarker, "{} source Folder not found", source);
         }
-        this.action.getContext().put("tar.source.fileName", source);
-        this.action.getContext().put("tar.source.fileSize", String.valueOf(calculateSize(source)));
+        this.actionExecutionAudit.getContext().put("tar.source.fileName", source);
+        this.actionExecutionAudit.getContext().put("tar.source.fileSize", String.valueOf(calculateSize(source)));
         var destination = createTAR.getDestination();
         final Path dPath = Paths.get(destination);
         if (!Files.exists(dPath)) {
@@ -75,8 +75,8 @@ public class CreateTARAction implements IActionExecution {
                 }
             }
         }
-        this.action.getContext().put("tar.dest.fileName", fileName);
-        this.action.getContext().put("tar.dest.fileSize", String.valueOf(calculateSize(fileName)));
+        this.actionExecutionAudit.getContext().put("tar.dest.fileName", fileName);
+        this.actionExecutionAudit.getContext().put("tar.dest.fileSize", String.valueOf(calculateSize(fileName)));
 
     }
 

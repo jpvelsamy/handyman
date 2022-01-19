@@ -1,13 +1,14 @@
 package in.handyman.raven.lambda.access.repo;
 
-import in.handyman.raven.lambda.doa.Action;
-import in.handyman.raven.lambda.doa.ActionExecutionAudit;
-import in.handyman.raven.lambda.doa.ConfigStore;
-import in.handyman.raven.lambda.doa.ConfigType;
-import in.handyman.raven.lambda.doa.LambdaExecutionAudit;
-import in.handyman.raven.lambda.doa.Pipeline;
-import in.handyman.raven.lambda.doa.ResourceConnection;
-import in.handyman.raven.lambda.doa.Statement;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionStatusAudit;
+import in.handyman.raven.lambda.doa.audit.PipelineExecutionAudit;
+import in.handyman.raven.lambda.doa.audit.PipelineExecutionStatusAudit;
+import in.handyman.raven.lambda.doa.audit.StatementExecutionAudit;
+import in.handyman.raven.lambda.doa.config.SpwCommonConfig;
+import in.handyman.raven.lambda.doa.config.SpwInstanceConfig;
+import in.handyman.raven.lambda.doa.config.SpwProcessConfig;
+import in.handyman.raven.lambda.doa.config.SpwResourceConfig;
 
 import java.util.List;
 import java.util.Map;
@@ -20,54 +21,88 @@ public interface HandymanRepo {
 
     Map<String, String> getAllConfig(final String pipelineName);
 
-    List<ConfigStore> getAllConfigStores(final String pipelineName);
-
     Map<String, String> getCommonConfig();
 
-    ResourceConnection getResourceConfig(final String name);
-
-    List<ResourceConnection> getResourceConfigList(final String name);
-
-    String findValueCommonConfig(final String configName, final String variable);
+    SpwResourceConfig getResourceConfig(final String name);
 
     Set<String> getPackageAction();
 
-    List<ConfigStore> findConfigEntities(final ConfigType configType, final String configName);
+    // SPW Instance
 
-    List<ConfigStore> findConfigEntitiesByVariable(final ConfigType configType, final String variable);
+    void insert(final SpwInstanceConfig spwInstanceConfig);
 
-    Optional<ConfigStore> findConfigEntities(final ConfigType configType, final String configName, final String variable);
+    void update(final SpwInstanceConfig spwInstanceConfig);
 
-    List<ConfigStore> findConfigStore(final ConfigType configType, final String configName, final String variable);
+    List<SpwInstanceConfig> findAllInstances();
 
-    List<ConfigStore> findConfigEntities(final ConfigType configType);
+    List<SpwInstanceConfig> findAllByInstanceVariable(final String variable);
 
-    void save(final ConfigStore configStore);
+    List<SpwInstanceConfig> findAllByInstance(final String instance);
 
-    void save(final ResourceConnection resourceConnection);
 
-    void insertPipeline(final Pipeline audit);
+    Optional<SpwInstanceConfig> findOneInstance(final String instance, final String variable);
 
-    void insertAction(final Action audit);
 
-    void insertStatement(final Statement audit);
+    // SPW Process
 
-    void save(final LambdaExecutionAudit audit);
+    void insert(final SpwProcessConfig spwProcessConfig);
 
-    void save(final ActionExecutionAudit audit);
+    void update(final SpwProcessConfig spwProcessConfig);
 
-    void update(final Pipeline audit);
+    List<SpwProcessConfig> findAllProcesses();
 
-    void update(final Action audit);
+    List<SpwProcessConfig> findAllByProcess(final String process);
 
-    Optional<Pipeline> findPipeline(final Long pipelineId);
+    Optional<SpwProcessConfig> findOneProcess(final String process, final String variable);
 
-    List<Action> findActions(final Long pipelineId);
 
-    List<Pipeline> findPipelines(final Long parentActionId);
+    // SPW Common
 
-    List<Pipeline> findAllPipelines();
+    void insert(final SpwCommonConfig spwCommonConfig);
 
-    List<Pipeline> findAllPipelines(final String pipelineName);
+    void update(final SpwCommonConfig spwCommonConfig);
 
+    List<SpwCommonConfig> findAllCommonConfigs();
+
+    Optional<SpwCommonConfig> findOneCommonConfig(final String variable);
+
+    // SPW Resource
+
+    void insert(final SpwResourceConfig spwResourceConfig);
+
+    void update(final SpwResourceConfig spwResourceConfig);
+
+    List<SpwResourceConfig> findAllResourceConfigs();
+
+    Optional<SpwResourceConfig> findOneResourceConfig(final String configName);
+
+    // Audit
+
+    void insertPipeline(final PipelineExecutionAudit audit);
+
+    void insertAction(final ActionExecutionAudit audit);
+
+    void insertStatement(final StatementExecutionAudit audit);
+
+    void save(final PipelineExecutionStatusAudit audit);
+
+    void save(final ActionExecutionStatusAudit audit);
+
+    void update(final PipelineExecutionAudit audit);
+
+    void update(final ActionExecutionAudit audit);
+
+    List<PipelineExecutionAudit> findAllPipelinesByRootPipelineId(final Long rootPipelineId);
+
+    Optional<PipelineExecutionAudit> findPipeline(final Long pipelineId);
+
+    List<ActionExecutionAudit> findActions(final Long pipelineId);
+
+    List<ActionExecutionAudit> findAllActionsByRootPipelineId(final Long rootPipelineId);
+
+    List<PipelineExecutionAudit> findAllPipelinesByParentActionId(final Long parentActionId);
+
+    List<PipelineExecutionAudit> findAllPipelines();
+
+    List<PipelineExecutionAudit> findAllByPipelineName(final String pipelineName);
 }

@@ -2,7 +2,7 @@ package in.handyman.raven.lib;
 
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.DropFile;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -19,15 +19,15 @@ public class DropFileAction implements IActionExecution {
 
     protected static final String DROP_FILE = "DropFile";
 
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
     private final Logger log;
     private final DropFile dropFile;
 
     private final Marker aMarker;
 
-    public DropFileAction(final Action action, final Logger log, final Object dropFile) {
+    public DropFileAction(final ActionExecutionAudit actionExecutionAudit, final Logger log, final Object dropFile) {
         this.dropFile = (DropFile) dropFile;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker(DROP_FILE);
     }
@@ -37,7 +37,7 @@ public class DropFileAction implements IActionExecution {
     public void execute() throws Exception {
         var filePath = dropFile.getTarget();
         var name = dropFile.getName();
-        var id = action.getActionId();
+        var id = actionExecutionAudit.getActionId();
 
         log.info(aMarker, " id#{}, name#{}, file#{}", id, name, filePath);
 

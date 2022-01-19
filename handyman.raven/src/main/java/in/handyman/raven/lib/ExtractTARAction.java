@@ -2,7 +2,7 @@ package in.handyman.raven.lib;
 
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
-import in.handyman.raven.lambda.doa.Action;
+import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.ExtractTAR;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -27,7 +27,7 @@ import java.util.zip.GZIPInputStream;
         actionName = "ExtractTAR"
 )
 public class ExtractTARAction implements IActionExecution {
-    private final Action action;
+    private final ActionExecutionAudit actionExecutionAudit;
 
     private final Logger log;
 
@@ -35,9 +35,9 @@ public class ExtractTARAction implements IActionExecution {
 
     private final Marker aMarker;
 
-    public ExtractTARAction(final Action action, final Logger log, final Object extractTAR) {
+    public ExtractTARAction(final ActionExecutionAudit actionExecutionAudit, final Logger log, final Object extractTAR) {
         this.extractTAR = (ExtractTAR) extractTAR;
-        this.action = action;
+        this.actionExecutionAudit = actionExecutionAudit;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker("ExtractTAR");
     }

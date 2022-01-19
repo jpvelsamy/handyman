@@ -1,0 +1,8 @@
+config= {
+
+    driver = org.mariadb.jdbc.Driver
+    url ="jdbc:mariadb://192.168.0.3:3306/handyman_vm?useSSL=false"
+    user=root
+    password=password
+
+}
