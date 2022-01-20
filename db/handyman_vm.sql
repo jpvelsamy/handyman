@@ -436,5 +436,12 @@ INSERT INTO handyman_audit.execution_status (id, value) VALUES(1, 'STARTED');
 INSERT INTO handyman_audit.execution_status (id, value) VALUES(3, 'STOPPED');
 INSERT INTO handyman_audit.execution_status (id, value) VALUES(7, 'WARNING');
 
+insert into spw_process_config(process, variable, value, active, version, created_by, created_date, last_modified_by, last_modified_date) values('com.test.sharepoint.process', 'filepath', 'com.test.sharepoint.process.spw', 'Y', 0, 1, now(), 1, now());
+insert into spw_process_config(process, variable, value, active, version, created_by, created_date, last_modified_by, last_modified_date) values('com.test.sharepoint.process', 'client-id', '6efe6f57-c015-4360-a8dc-87be849bc59a', 'Y', 0, 1, now(), 1, now());
+insert into spw_process_config(process, variable, value, active, version, created_by, created_date, last_modified_by, last_modified_date) values('com.test.sharepoint.process', 'tenant-id', 'f609f5e5-b221-43f3-be25-48bb8ce0552e', 'Y', 0, 1, now(), 1, now());
+insert into spw_process_config(process, variable, value, active, version, created_by, created_date, last_modified_by, last_modified_date) values('com.test.sharepoint.process', 'client-secret', 'MHajEzonOc0wrgAzXEqd1ZNKgZWtnHLvTWn8HRfnub4=', 'Y', 0, 1, now(), 1, now());
+insert into spw_process_config(process, variable, value, active, version, created_by, created_date, last_modified_by, last_modified_date) values('com.test.sharepoint.process', 'org-name', 'zuciinc', 'Y', 0, 1, now(), 1, now());
+insert into spw_process_config(process, variable, value, active, version, created_by, created_date, last_modified_by, last_modified_date) values('com.test.sharepoint.process', 'site-url', 'https://zuciinc.sharepoint.com/sites/TestSite', 'Y', 0, 1, now(), 1, now());
+
 
 commit;

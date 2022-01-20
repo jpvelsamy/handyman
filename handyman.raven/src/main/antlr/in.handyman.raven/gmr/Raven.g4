@@ -56,7 +56,8 @@ action:
     |producer
     |consumer
     |pushJson
-    |mapJsonContext);
+    |mapJsonContext
+    |sharePoint);
 
 multitude:
     'multitude' 'as' name=STRING ('on' on= STRING)* 'using'
@@ -224,6 +225,14 @@ mapJsonContext :
       'map-json-into-context' 'as' name=STRING  'using'  '{'
                                                       value=STRING
                                                    '}' ('on-condition' condition=expression)* ;
+                                                   
+sharePoint:
+	'sharepoint' 'as' name=STRING 'client-id' shpClientId=STRING 'tenant-id' shpTenantId=STRING 'client-secret' shpClientSecret=STRING 
+	'org-name' orgName=STRING 'action-type' actionType=STRING 'site-url' siteUrl=STRING 'source-relative-path' sourceRelativePath=STRING 
+	'file-name' fileName=STRING 'target-relative-path' targetRelativePath=STRING 'using'
+	'{'
+		value=STRING
+	'}' ('on-condition' condition=expression)* ;
 
 expression :'if' (lhs=STRING operator=Operator rhs=STRING);
 
