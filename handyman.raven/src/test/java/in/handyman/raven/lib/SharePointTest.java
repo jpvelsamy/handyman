@@ -5,7 +5,7 @@ import in.handyman.raven.lambda.process.LContext;
 import in.handyman.raven.lambda.process.LambdaEngine;
 import org.junit.jupiter.api.Test;
 
-class RestApiActionTestExecutionAudit {
+class SharePointTest {
 
     @Test
     void execute() {
