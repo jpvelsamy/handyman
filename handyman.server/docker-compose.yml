@@ -1,0 +1,17 @@
+version: "3.2"
+services:
+  handyman-server:
+    image: openjdk:11
+    container_name: handyman-server
+    restart: always
+    ports:
+      - "8099:8099"
+      - "8081:8081"
+    environment:
+      TZ: "Asia/Kolkata"
+    env_file:
+      - config.env
+    volumes:
+      - ./target/handyman-server.jar:/handyman-server.jar
+      - ./config:/config
+    command: [ 'java', '-jar', '/handyman-server.jar' ]

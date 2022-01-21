@@ -1,3 +1,8 @@
+/target/*
+/.cache-main
+/.classpath
+*.class
+/target/
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
@@ -33,6 +38,3 @@ build/
 .vscode/
 /.jpb/
 
-log/
-*.log
-logs/

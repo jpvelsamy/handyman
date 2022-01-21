@@ -33,6 +33,7 @@ build/
 .vscode/
 /.jpb/
 
-log/
-*.log
 logs/
+*.log
+
+gen/

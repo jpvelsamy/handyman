@@ -1,0 +1,21 @@
+process "cub.test.transform.callback"
+
+{
+
+	try {
+
+    	restapi as "test rest api" url "https://idea.com" method "GET" with headers {"hey":"hi"} {
+    	{"id1":"id2"}
+    	} on-condition if "true"=="true"
+
+	}
+
+	catch {
+
+	}
+
+	finally {
+
+	}
+
+}
