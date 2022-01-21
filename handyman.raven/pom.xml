@@ -22,7 +22,7 @@
     <properties>
         <antlr4.version>4.9.3</antlr4.version>
         <akka.version>2.6.15</akka.version>
-        <micrometer.version>1.8.1</micrometer.version>
+        <micrometer.version>1.8.2</micrometer.version>
         <google.people.version>v1-rev20210903-1.32.1</google.people.version>
         <google.cal.version>v3-rev20211026-1.32.1</google.cal.version>
         <junit.version>5.8.2</junit.version>
