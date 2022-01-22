@@ -1,0 +1,20 @@
+process "click.send.process" {
+
+	try {
+
+		c2sms as "test"
+		with-user "${click.send.user.id}"
+		secured-by "${click.send.security.key}"
+		from-source "${click.send.process.target}"
+		using
+		{"
+                SELECT '+91' as country_code,'9879879777' as target_mobile_number,'hi, Hello World' as target_message   ;
+        "}
+
+	}
+	catch{
+	}
+	finally{
+	}
+
+}
