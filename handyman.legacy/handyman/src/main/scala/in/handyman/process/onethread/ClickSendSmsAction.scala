@@ -75,7 +75,8 @@ class ClickSendSmsAction extends in.handyman.command.Action with LazyLogging {
     val smsMessages = new SmsMessageCollection
     val list = clicks.map(x => createMsg(x)).toList.asJava
     smsMessages.setMessages(new util.ArrayList[SmsMessage](list))
-    clickSendClient.getSMS.sendSms(smsMessages)
+    val str = clickSendClient.getSMS.sendSms(smsMessages)
+    print(str)
     context
   }
 

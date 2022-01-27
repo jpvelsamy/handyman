@@ -8,7 +8,7 @@ process "click.send.process" {
 		from-source "${click.send.process.target}"
 		using
 		{"
-                SELECT '+91' as country_code,'9879879777' as target_mobile_number,'hi, Hello World' as target_message   ;
+                SELECT 'IN' as country_code,'7092071649' as target_mobile_number,'hi, Hello World' as target_message   ;
         "}
 
 	}

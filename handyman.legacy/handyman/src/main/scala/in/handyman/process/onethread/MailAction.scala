@@ -17,7 +17,7 @@ class MailAction extends in.handyman.command.Action with LazyLogging {
   val auditMarker = "SENDMAIL";
   val aMarker = MarkerFactory.getMarker(auditMarker);
 
-  def execute(context: Context, action: in.handyman.dsl.Action, actionId:Integer): Context = {
+  def execute(context: Context, action: in.handyman.dsl.Action, actionId: Integer): Context = {
     val mailAsIs: in.handyman.dsl.SendMail = action.asInstanceOf[in.handyman.dsl.SendMail]
     val mail: in.handyman.dsl.SendMail = CommandProxy.createProxy(mailAsIs, classOf[in.handyman.dsl.SendMail], context)
 
@@ -26,17 +26,17 @@ class MailAction extends in.handyman.command.Action with LazyLogging {
     val securityKey = mail.getPrivateKey
     val dbSrc = mail.getDbSrc
     val sql = mail.getValue
-    
+
     val conn = ResourceAccess.rdbmsConn(dbSrc)
     val stmt = conn.createStatement
     val rs = stmt.executeQuery(sql.trim())
     val sg = new SendGrid(securityKey);
-    
+
     val incomingMailReq: AtomicInteger = new AtomicInteger
     val sentMailCount: AtomicInteger = new AtomicInteger
-    
+
     val statementId = AuditService.insertStatementAudit(actionId, "mail->" + name, context.getValue("process-name"))
-    logger.error(aMarker, "Attempting to send email using SendMail API, configurations are, name={}, asUser={}, securitykey={}, dbsrc={}", name, asUser, securityKey, dbSrc)
+    logger.info(aMarker, "Attempting to send email using SendGrid API, configurations are, name={}, asUser={}, securitykey={}, dbsrc={}", name, asUser, securityKey, dbSrc)
     try {
       while (rs.next()) {
         incomingMailReq.incrementAndGet()
@@ -59,12 +59,12 @@ class MailAction extends in.handyman.command.Action with LazyLogging {
             detailMap.put(targetEmail, response.getBody)
           } catch {
             case ex: Throwable => {
-              logger.error(aMarker, "Error sending email using SendMail API, configurations are, name={}, asUser={}, securitykey={}, dbsrc={}", name, asUser, securityKey, dbSrc)
-              detailMap.put(name+".exception", ex.getMessage)
+              logger.error(aMarker, "Error sending email using SendGrid API, configurations are, name={}, asUser={}, securitykey={}, dbsrc={}", name, asUser, securityKey, dbSrc)
+              detailMap.put(name + ".exception", ex.getMessage)
             }
           }
 
-        }else {
+        } else {
           logger.info(aMarker, "Skipping email with contents subject={}, emailid={}, from={}", targetSubject, targetEmail, body)
         }
       }
@@ -83,7 +83,7 @@ class MailAction extends in.handyman.command.Action with LazyLogging {
       stmt.close
       conn.close
     }
-    logger.error(aMarker, "Completed  sending email using SendMail API, configurations are, name={}, asUser={}, securitykey={}, dbsrc={}", name, asUser, securityKey, dbSrc)
+    logger.info(aMarker, "Completed  sending email using SendGrid API, configurations are, name={}, asUser={}, securitykey={}, dbsrc={}", name, asUser, securityKey, dbSrc)
     context
   }
 
