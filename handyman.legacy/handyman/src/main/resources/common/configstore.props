@@ -1,6 +1,6 @@
 config= {
   url = "jdbc:mysql://pazzmysaz.cherry.in:3306/spw_config?useUnicode=true&characterEncoding=utf8&dumpQueriesOnException=true"
-  driver = com.mysql.jdbc.Driver
+  driver = com.mysql.cj.jdbc.Driver
   user=root
   passwd=password
   batch_sql="select variable, value from spw_common_config"

@@ -1,0 +1,61 @@
+process "GoogleCalendar.process"
+{
+	try
+	{
+
+		assign as "findmax" source "${sor-db}" using
+		{"
+			SELECT '${calendar.sync.date}' AS last_sync_date, CASE WHEN '${calendar.sync.date}'='' THEN 'true' ELSE 'true' END as is_empty ;
+		"}
+
+		assign as "findmax" source "${sor-db}" using
+		{"
+			SELECT IFNULL(MAX(sync_date),CURRENT_DATE()) as last_sync_date from calendar_sync_audit;
+		"} on-condition if  "${findmax.is_empty}"=="true"
+
+		transform as "create-calendar-event" on "${sor-db}" using
+		{"
+			CREATE OR REPLACE TABLE ${process-id}_calender_sync AS
+			SELECT a.due_date as event_start, date_add(a.due_date, interval 1 day) as event_end, '08:30:00' as event_alert_time,
+			concat('First call for ', b.full_name,'-',b.phone_number) as event_title, concat('${target_domain}',a.id) as description, b.city as event_location, ${process-id}, NOW()
+			FROM order_info a INNER JOIN customer b on a.customer_id=b.id WHERE a.due_date>'${findmax.last_sync_date}';
+		"}
+
+		assign as "is_there_none" source "${sor-db}" using
+		{"
+			SELECT CASE WHEN IFNULL(COUNT(*),0)>0 THEN 'true' ELSE 'false' END as events FROM ${process-id}_calender_sync;
+		"}
+
+		abort as "abort_on_nodata"
+		{"
+			Process GoogleCalendar.process with ${process-id} has abruptly failed as there is no contacts to sync
+		"} on-condition if  "${is_there_none.events}"=="false"
+
+		gcalendar as "update-google-calendar"
+		through-account "${gaccountid}"
+		secured-by "${gprivatekey}"
+		with-key "${p12filepath}"
+		for-project "${gcloud-project-name}"
+		on-behalf-of "${impersonated-user}"
+		from-source "${sor-db}" using
+		{"
+			select '${calendarid}' as event_calendar_id, 1 as event_interval, event_start, event_end, event_alert_time, event_title, description, event_location FROM ${process-id}_calender_sync;
+		"} on-condition if  "${runcalendar}"=="true"
+
+		transform as "insert-audit" on "${sor-db}" using
+		{"
+			INSERT INTO calendar_sync_audit(batch_id, sync_date, processed_date) VALUES ${process-id}, '${findmax.last_sync_date}', CURRENT_DATE();
+		"}
+
+	}
+	catch
+	{
+	}
+	finally
+	{
+		transform as "cleanup.temp.tables" on "${sor-db}" using
+		{"
+			DROP TABLE IF EXISTS ${process-id}_calender_sync;
+		"}
+	}
+}

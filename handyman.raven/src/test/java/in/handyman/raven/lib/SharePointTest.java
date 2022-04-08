@@ -5,14 +5,13 @@ import in.handyman.raven.lambda.process.LContext;
 import in.handyman.raven.lambda.process.LambdaEngine;
 import org.junit.jupiter.api.Test;
 
-class RestApiActionTestExecutionAudit {
+class SharePointTest {
 
     @Test
     void execute() {
         LambdaEngine.start(LContext.builder()
-                .pipelineName("cub.test.loadcsv")
+                .pipelineName("com.test.sharepoint")
                 .processLoadType(HRequestResolver.LoadType.FILE.name())
                 .build());
     }
-
 }

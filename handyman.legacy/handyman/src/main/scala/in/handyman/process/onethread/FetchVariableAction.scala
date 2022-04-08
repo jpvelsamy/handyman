@@ -16,7 +16,6 @@ class FetchVariableAction extends in.handyman.command.Action with LazyLogging {
   def execute(context: Context, action: Action, actionId: Integer): Context = {
     val fetchAsIs: in.handyman.dsl.Fetch = action.asInstanceOf[in.handyman.dsl.Fetch]
     val fetch: in.handyman.dsl.Fetch = CommandProxy.createProxy(fetchAsIs, classOf[in.handyman.dsl.Fetch], context)
-
     val source = fetch.getSource
     val name = fetch.getName
     val sql = fetch.getValue.trim

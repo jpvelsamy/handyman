@@ -330,6 +330,16 @@ public interface RavenListener extends ParseTreeListener {
 	 */
 	void exitMapJsonContext(RavenParser.MapJsonContextContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link RavenParser#sharePoint}.
+	 * @param ctx the parse tree
+	 */
+	void enterSharePoint(RavenParser.SharePointContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#sharePoint}.
+	 * @param ctx the parse tree
+	 */
+	void exitSharePoint(RavenParser.SharePointContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link RavenParser#expression}.
 	 * @param ctx the parse tree
 	 */
