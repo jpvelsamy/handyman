@@ -22,9 +22,6 @@ import lombok.ToString;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ActionExecutionStatusAudit extends Auditable {
 
-    public static final String SCHEMA_NAME = "handyman_audit";
-    public static final String TABLE_NAME = "action_execution_status_audit";
-
     @Builder.Default
     private Long id = UniqueID.getId();
     private Long actionId;

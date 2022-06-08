@@ -16,9 +16,6 @@ import lombok.ToString;
 @Builder
 public class SpwCommonConfig extends Auditable {
 
-    public static final String SCHEMA_NAME = "handyman_config";
-    public static final String TABLE_NAME = "spw_common_config";
-
     private Long id;
 
     private String variable;

@@ -1,7 +1,7 @@
 package in.handyman.raven.actor;
 
 import in.handyman.raven.lambda.access.repo.HandymanRepo;
-import in.handyman.raven.lambda.access.repo.HandymanRepoR2Impl;
+import in.handyman.raven.lambda.access.repo.HandymanRepoImpl;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionStatusAudit;
 import in.handyman.raven.lambda.doa.audit.PipelineExecutionAudit;
@@ -10,7 +10,7 @@ import in.handyman.raven.lambda.doa.audit.StatementExecutionAudit;
 
 public class HandymanActorSystemAccess {
 
-    private static final HandymanRepo HANDYMAN_REPO = new HandymanRepoR2Impl();
+    private static final HandymanRepo HANDYMAN_REPO = new HandymanRepoImpl();
 
     public static void insert(final PipelineExecutionAudit pipelineExecutionAudit) {
 

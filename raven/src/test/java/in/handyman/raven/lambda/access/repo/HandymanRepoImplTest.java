@@ -6,9 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 @Slf4j
-class HandymanRepoR2ImplTest {
+class HandymanRepoImplTest {
 
-    private final HandymanRepoR2Impl repoR2 = new HandymanRepoR2Impl();
+    private final HandymanRepoImpl repoR2 = new HandymanRepoImpl();
 
     @Test
     void findConfigEntities() {
