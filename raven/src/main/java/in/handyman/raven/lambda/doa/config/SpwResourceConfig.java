@@ -22,9 +22,6 @@ import org.jdbi.v3.core.Jdbi;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SpwResourceConfig extends Auditable {
 
-    public static final String SCHEMA_NAME = "handyman_config";
-    public static final String TABLE_NAME = "spw_resource_config";
-
     private Long id;
 
     private String configName;

@@ -44,5 +44,6 @@ public class SharePoint implements IActionContext {
 
   private String value;
 
-  private Boolean condition = true;
+    @Builder.Default
+    private Boolean condition = true;
 }

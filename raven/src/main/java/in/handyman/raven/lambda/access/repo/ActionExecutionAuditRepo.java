@@ -1,6 +1,7 @@
 package in.handyman.raven.lambda.access.repo;
 
 
+import in.handyman.raven.lambda.doa.DoaConstant;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
@@ -13,11 +14,12 @@ import java.util.List;
 public interface ActionExecutionAuditRepo {
 
     String COLUMNS = " action_id, created_by, created_date, last_modified_by, last_modified_date, context_node, execution_status_id, lambda_name, parent_action_id, parent_action_name, parent_pipeline_id, parent_pipeline_name, pipeline_name, action_name, execution_group_id, input_node, log, pipeline_id, root_pipeline_id ";
+    String DOT = ".";
 
-    @SqlUpdate("insert into " + ActionExecutionAudit.SCHEMA_NAME + "." + ActionExecutionAudit.TABLE_NAME + "  ( " + COLUMNS + " ) VALUES(:actionId, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :contextNode, :executionStatusId, :lambdaName, :parentActionId, :parentActionName, :parentPipelineId, :parentPipelineName, :pipelineName, :actionName, :executionGroupId, :inputNode, :log, :pipelineId ,:rootPipelineId); ")
+    @SqlUpdate("insert into " + DoaConstant.AUDIT_SCHEMA_NAME + DOT + DoaConstant.AEA_TABLE_NAME + "  ( " + COLUMNS + " ) VALUES(:actionId, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :contextNode, :executionStatusId, :lambdaName, :parentActionId, :parentActionName, :parentPipelineId, :parentPipelineName, :pipelineName, :actionName, :executionGroupId, :inputNode, :log, :pipelineId ,:rootPipelineId); ")
     void insert(@BindBean final ActionExecutionAudit actionExecutionAudit);
 
-    @SqlUpdate("update  " + ActionExecutionAudit.SCHEMA_NAME + "." + ActionExecutionAudit.TABLE_NAME + " SET created_by = :createdBy, created_date = :createdDate, last_modified_by = :lastModifiedBy," +
+    @SqlUpdate("update  " + DoaConstant.AUDIT_SCHEMA_NAME + DOT + DoaConstant.AEA_TABLE_NAME + " SET created_by = :createdBy, created_date = :createdDate, last_modified_by = :lastModifiedBy," +
             " last_modified_date = :lastModifiedDate, context_node = :contextNode, execution_status_id = :executionStatusId, lambda_name = :lambdaName, " +
             "parent_action_id = :parentActionId, parent_action_name = :parentActionName, parent_pipeline_id = :parentPipelineId, " +
             "parent_pipeline_name = :parentPipelineName, pipeline_name = :pipelineName, action_name = :actionName, execution_group_id = :executionGroupId," +
@@ -25,15 +27,15 @@ public interface ActionExecutionAuditRepo {
     void update(@BindBean final ActionExecutionAudit actionExecutionAudit);
 
 
-    @SqlQuery("SELECT " + COLUMNS + " FROM  " + ActionExecutionAudit.SCHEMA_NAME + "." + ActionExecutionAudit.TABLE_NAME + " ; ")
+    @SqlQuery("SELECT " + COLUMNS + " FROM  " + DoaConstant.AUDIT_SCHEMA_NAME + DOT + DoaConstant.AEA_TABLE_NAME + " ; ")
     @RegisterBeanMapper(value = ActionExecutionAudit.class)
     List<ActionExecutionAudit> findAllActions();
 
-    @SqlQuery("SELECT " + COLUMNS + " FROM  " + ActionExecutionAudit.SCHEMA_NAME + "." + ActionExecutionAudit.TABLE_NAME + " where root_pipeline_id= :rootPipelineId ; ")
+    @SqlQuery("SELECT " + COLUMNS + " FROM  " + DoaConstant.AUDIT_SCHEMA_NAME + DOT + DoaConstant.AEA_TABLE_NAME + " where root_pipeline_id= :rootPipelineId ; ")
     @RegisterBeanMapper(value = ActionExecutionAudit.class)
     List<ActionExecutionAudit> findAllActionsByRootPipelineId(@Bind("rootPipelineId") final Long rootPipelineId);
 
-    @SqlQuery("SELECT " + COLUMNS + " FROM  " + ActionExecutionAudit.SCHEMA_NAME + "." + ActionExecutionAudit.TABLE_NAME + " where pipeline_id= :pipelineId ; ")
+    @SqlQuery("SELECT " + COLUMNS + " FROM  " + DoaConstant.AUDIT_SCHEMA_NAME + DOT + DoaConstant.AEA_TABLE_NAME + " where pipeline_id= :pipelineId ; ")
     @RegisterBeanMapper(value = ActionExecutionAudit.class)
     List<ActionExecutionAudit> findAllActionsByPipelineId(@Bind("pipelineId") final Long pipelineId);
 

@@ -3,6 +3,7 @@ package in.handyman.raven.lambda.access.repo;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import in.handyman.raven.exception.HandymanException;
+import in.handyman.raven.lambda.doa.DoaConstant;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionStatusAudit;
 import in.handyman.raven.lambda.doa.audit.PipelineExecutionAudit;
@@ -26,7 +27,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
+public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     protected static final String CONFIG_URL = "config.url";
     private static final String CONFIG_PASSWORD = "config.password";
@@ -34,12 +35,13 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     private static final Config CONFIG;
 
     private static final Jdbi jdbi;
+    public static final String DOT = ".";
+
+    public static final String HANDYMAN_CONFIG_LOCATION = "handyman.config.location";
 
     static {
-        System.setProperty("handyman.config.location","/home/sins/workspace/handyman/handyman.server/config/config.props");
-        final String getenv = Optional.ofNullable(System.getProperty("handyman.config.location")).orElse("config.props");
-        final File file = new File(getenv);
-
+        var filePath = Optional.ofNullable(System.getProperty(HANDYMAN_CONFIG_LOCATION)).orElse("src/main/resources/config.props");
+        var file = new File(filePath);
         if (!file.exists()) {
             throw new HandymanException("Config file not found");
         }
@@ -180,21 +182,21 @@ public class HandymanRepoR2Impl extends AbstractAccess implements HandymanRepo {
     @Override
     public void insertStatement(final StatementExecutionAudit audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
-        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO " + StatementExecutionAudit.SCHEMA_NAME + "." + StatementExecutionAudit.TABLE_NAME + " (statement_id, created_by, created_date, last_modified_by, last_modified_date, action_id, rows_processed, rows_read, rows_written, statement_content, time_taken,root_pipeline_id) VALUES(:statementId, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :actionId, :rowsProcessed, :rowsRead, :rowsWritten, :statementContent, :timeTaken,:rootPipelineId);")
+        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO " + DoaConstant.AUDIT_SCHEMA_NAME + DOT + DoaConstant.SEA_TABLE_NAME + " (statement_id, created_by, created_date, last_modified_by, last_modified_date, action_id, rows_processed, rows_read, rows_written, statement_content, time_taken,root_pipeline_id) VALUES(:statementId, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :actionId, :rowsProcessed, :rowsRead, :rowsWritten, :statementContent, :timeTaken,:rootPipelineId);")
                 .bindBean(audit).execute());
     }
 
     @Override
     public void save(final PipelineExecutionStatusAudit audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
-        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO " + PipelineExecutionStatusAudit.SCHEMA_NAME + "." + PipelineExecutionStatusAudit.TABLE_NAME + " (id, created_by, created_date, last_modified_by, last_modified_date, execution_status_id, pipeline_id,root_pipeline_id) VALUES(:id, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :executionStatusId, :pipelineId,:rootPipelineId);")
+        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO " + DoaConstant.AUDIT_SCHEMA_NAME + DOT + DoaConstant.PESA_TABLE_NAME + " (id, created_by, created_date, last_modified_by, last_modified_date, execution_status_id, pipeline_id,root_pipeline_id) VALUES(:id, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :executionStatusId, :pipelineId,:rootPipelineId);")
                 .bindBean(audit).execute());
     }
 
     @Override
     public void save(final ActionExecutionStatusAudit audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
-        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO " + ActionExecutionStatusAudit.SCHEMA_NAME + "." + ActionExecutionStatusAudit.TABLE_NAME + " (id, created_by, created_date, last_modified_by, last_modified_date, action_id, execution_status_id, pipeline_id,root_pipeline_id) VALUES(:id, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :actionId, :executionStatusId, :pipelineId,:rootPipelineId);")
+        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO " + DoaConstant.AUDIT_SCHEMA_NAME + DOT + DoaConstant.AESA_TABLE_NAME + " (id, created_by, created_date, last_modified_by, last_modified_date, action_id, execution_status_id, pipeline_id,root_pipeline_id) VALUES(:id, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :actionId, :executionStatusId, :pipelineId,:rootPipelineId);")
                 .bindBean(audit).execute());
     }
 

@@ -30,9 +30,6 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ActionExecutionAudit extends AbstractAudit implements IAction {
 
-    public static final String SCHEMA_NAME = "handyman_audit";
-    public static final String TABLE_NAME = "action_execution_audit";
-
     @JsonIgnore
     private final ArrayDeque<SubstituteLoggingEvent> eventQueue = new ArrayDeque<>();
     @Builder.Default

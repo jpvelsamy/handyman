@@ -26,5 +26,6 @@ public class PushJson implements IActionContext {
     private String key;
 
     private JsonNode value;
+    @Builder.Default
     private Boolean condition = true;
 }

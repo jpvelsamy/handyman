@@ -28,5 +28,6 @@ public class CreateTAR implements IActionContext {
 
     private String extension;
 
+    @Builder.Default
     private Boolean condition = true;
 }

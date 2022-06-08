@@ -4,11 +4,11 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-class HandymanRepoR2ImplEMTest {
+class HandymanRepoImplEMTest {
 
     @Test
     void getAllConfig() {
-        var info = new HandymanRepoR2Impl();
+        var info = new HandymanRepoImpl();
         final Map<String, String> restApiActionTest = info.getAllConfig("RestApiActionTest");
         assert restApiActionTest != null && !restApiActionTest.isEmpty();
     }

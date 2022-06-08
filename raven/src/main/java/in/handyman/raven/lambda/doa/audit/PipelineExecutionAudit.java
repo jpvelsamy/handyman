@@ -25,9 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PipelineExecutionAudit extends AbstractAudit implements IPipeline {
 
-    public static final String SCHEMA_NAME = "handyman_audit";
-    public static final String TABLE_NAME = "pipeline_execution_audit";
-
     @Builder.Default
     private Long pipelineId = UniqueID.getId();
 

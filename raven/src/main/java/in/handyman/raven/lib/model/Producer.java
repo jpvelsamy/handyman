@@ -36,7 +36,9 @@ public class Producer implements IActionContext {
     private String push;
 
     @JsonIgnore
+    @Builder.Default
     private List<RavenParser.ActionContext> actions = new ArrayList<>();
+    @Builder.Default
     private Boolean condition = true;
 
     private String threadCount;

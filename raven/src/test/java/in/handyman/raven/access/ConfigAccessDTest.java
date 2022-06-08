@@ -5,14 +5,16 @@ import in.handyman.raven.lambda.doa.config.SpwResourceConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
 @Slf4j
 class ConfigAccessDTest {
 
     @Test
     void getResourceConfig() {
-        final SpwResourceConfig connection = ConfigAccess.getResourceConfig("dsad");
-        assert connection != null;
-        log.info(connection.toString());
+        final Map<String, String> commonConfig = ConfigAccess.getCommonConfig();
+        assert commonConfig != null;
+        log.info(commonConfig.toString());
     }
 
 

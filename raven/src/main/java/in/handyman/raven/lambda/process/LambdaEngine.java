@@ -8,7 +8,7 @@ import in.handyman.raven.compiler.RavenParser;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ConfigAccess;
 import in.handyman.raven.lambda.access.repo.HandymanRepo;
-import in.handyman.raven.lambda.access.repo.HandymanRepoR2Impl;
+import in.handyman.raven.lambda.access.repo.HandymanRepoImpl;
 import in.handyman.raven.lambda.action.IActionContext;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.AbstractAudit;
@@ -38,7 +38,7 @@ import java.util.Objects;
 public class LambdaEngine {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
-    private static final HandymanRepo REPO = new HandymanRepoR2Impl();
+    private static final HandymanRepo REPO = new HandymanRepoImpl();
     private static final String RAVEN_VM = "RavenVM";
 
     static {

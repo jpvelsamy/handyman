@@ -36,11 +36,15 @@ public class Consumer implements IActionContext {
     private String limit;
     private String pop;
 
+    @Builder.Default
     private Boolean completed = false;
+    @Builder.Default
     private Boolean standalone = false;
 
+    @Builder.Default
     @JsonIgnore
     private List<RavenParser.ActionContext> actions = new ArrayList<>();
+    @Builder.Default
     private Boolean condition = true;
 
     private String threadCount;

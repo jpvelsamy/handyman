@@ -34,9 +34,12 @@ public class ProducerConsumerModel implements IActionContext {
     private String consumeThreadCount;
 
     @JsonIgnore
+    @Builder.Default
     private List<RavenParser.ProducerContext> produce = new ArrayList<>();
     @JsonIgnore
+    @Builder.Default
     private List<RavenParser.ConsumerContext> consume = new ArrayList<>();
 
+    @Builder.Default
     private Boolean condition = true;
 }
