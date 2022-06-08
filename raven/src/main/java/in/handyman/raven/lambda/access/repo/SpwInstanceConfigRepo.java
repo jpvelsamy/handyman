@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface SpwInstanceConfigRepo {
 
-    String COLUMNS = " id, `instance`, process, variable, value, active, created_by, created_date, last_modified_by, last_modified_date, version ";
+    String COLUMNS = " id, instance, process, variable, value, active, created_by, created_date, last_modified_by, last_modified_date, version ";
 
     @SqlUpdate("insert into " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SIC_TABLE_NAME + " (instance,process, variable, value, active, created_by, created_date, last_modified_by, last_modified_date, version) " +
             "VALUES (:instance, :process, :variable, :value,:active,:createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :version)")
