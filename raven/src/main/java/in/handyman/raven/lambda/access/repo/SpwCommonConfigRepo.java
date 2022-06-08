@@ -23,7 +23,7 @@ public interface SpwCommonConfigRepo {
             " last_modified_by= :lastModifiedBy, last_modified_date= :lastModifiedDate ,  variable= :variable , value= :value WHERE id = :id ")
     void update(@BindBean final SpwCommonConfig spwCommonConfig);
 
-    @SqlQuery("SELECT " + COLUMNS + " FROM  " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SCC_TABLE_NAME + " where active=1 ; ")
+    @SqlQuery("SELECT " + COLUMNS + " FROM  " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SCC_TABLE_NAME + " where active=true ; ")
     @RegisterBeanMapper(value = SpwCommonConfig.class)
     List<SpwCommonConfig> findAll();
 
@@ -31,7 +31,7 @@ public interface SpwCommonConfigRepo {
     @RegisterBeanMapper(value = SpwCommonConfig.class)
     Long getNextVersion(@BindBean final SpwCommonConfig spwCommonConfig);
 
-    @SqlQuery("SELECT " + COLUMNS + " FROM  " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SCC_TABLE_NAME + " where variable= :variable  and active=1 order by version desc limit 1; ")
+    @SqlQuery("SELECT " + COLUMNS + " FROM  " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SCC_TABLE_NAME + " where variable= :variable  and active=true order by version desc limit 1; ")
     @RegisterBeanMapper(value = SpwCommonConfig.class)
     Optional<SpwCommonConfig> findOne(@Bind("variable") final String variable);
 

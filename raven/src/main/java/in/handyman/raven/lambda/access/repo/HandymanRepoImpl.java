@@ -37,10 +37,11 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
     private static final Jdbi jdbi;
     public static final String DOT = ".";
 
-    static {
-        final String getenv = Optional.ofNullable(System.getProperty("handyman.config.location")).orElse("config.props");
-        final File file = new File(getenv);
+    public static final String HANDYMAN_CONFIG_LOCATION = "handyman.config.location";
 
+    static {
+        var filePath = Optional.ofNullable(System.getProperty(HANDYMAN_CONFIG_LOCATION)).orElse("src/main/resources/config.props");
+        var file = new File(filePath);
         if (!file.exists()) {
             throw new HandymanException("Config file not found");
         }

@@ -23,11 +23,11 @@ public interface SpwProcessConfigRepo {
             " last_modified_by= :lastModifiedBy, last_modified_date= :lastModifiedDate ,  process= :process , variable= :variable , value= :value WHERE id = :id ")
     void update(@BindBean final SpwProcessConfig spwProcessConfig);
 
-    @SqlQuery("SELECT " + COLUMNS + " FROM  " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SPC_TABLE_NAME + " where active=1 ; ")
+    @SqlQuery("SELECT " + COLUMNS + " FROM  " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SPC_TABLE_NAME + " where active=true ; ")
     @RegisterBeanMapper(value = SpwProcessConfig.class)
     List<SpwProcessConfig> findAll();
 
-    @SqlQuery("SELECT " + COLUMNS + " FROM  " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SPC_TABLE_NAME + " where process= :process and active=1 ; ")
+    @SqlQuery("SELECT " + COLUMNS + " FROM  " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SPC_TABLE_NAME + " where process= :process and active=true ; ")
     @RegisterBeanMapper(value = SpwProcessConfig.class)
     List<SpwProcessConfig> findAllByProcess(@Bind("process") final String process);
 
@@ -35,7 +35,7 @@ public interface SpwProcessConfigRepo {
     @RegisterBeanMapper(value = SpwProcessConfig.class)
     Long getNextVersion(@BindBean final SpwProcessConfig spwProcessConfig);
 
-    @SqlQuery("SELECT " + COLUMNS + " FROM  " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SPC_TABLE_NAME + " where process= :process and variable= :variable  and active=1 order by version desc limit 1; ")
+    @SqlQuery("SELECT " + COLUMNS + " FROM  " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SPC_TABLE_NAME + " where process= :process and variable= :variable  and active=true order by version desc limit 1; ")
     @RegisterBeanMapper(value = SpwProcessConfig.class)
     Optional<SpwProcessConfig> findOne(@Bind("process") final String process, @Bind("variable") final String variable);
 
