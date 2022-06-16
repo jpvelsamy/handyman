@@ -1,24 +1,24 @@
-process "cub.test"
+process "test.restapi"
 {
 	try {
 
 	 multitude as "test audit entry with multitude" on "PARALLEL" using {
 
-            restapi as "test audit entry with none"  source "${cub_eval}" using url "https://vada-chennai.free.beeceptor.com"
+            restapi as "test audit entry with none"  source "${test.resource}" using url "https://vada-chennai.free.beeceptor.com"
               method "POST" with body type {"NONE"}
               {}
 
-           restapi as "test audit entry with JSON"  source "${cub_eval}" using url "https://vada-chennai.free.beeceptor.com"
+           restapi as "test audit entry with JSON"  source "${test.resource}" using url "https://vada-chennai.free.beeceptor.com"
              method "POST" with body type {"JSON"}
              {
              { part as "attribute1" with "select 1"}
              }
 
-             restapi as "test audit entry with FORM"  source "${cub_eval}" using url "https://vada-chennai.free.beeceptor.com"
+             restapi as "test audit entry with FORM"  source "${test.resource}" using url "https://vada-chennai.free.beeceptor.com"
               method "POST" with body type {"FORM"}
              {
              { part as "attribute1" with "select 1" type as "TEXT" }
-             { part as "attribute2" with "select 'src/main/resources/init.sql'" type as "FILE" }
+             { part as "attribute2" with "select 'src/test/resources/test-file/init.sql'" type as "FILE" }
              }
 
      } fielding 2

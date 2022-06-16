@@ -10,7 +10,7 @@ class RestApiActionTestExecutionAudit {
     @Test
     void execute() {
         LambdaEngine.start(LContext.builder()
-                .pipelineName("cub.test.loadcsv")
+                .pipelineName("test.restapi")
                 .processLoadType(HRequestResolver.LoadType.FILE.name())
                 .build());
     }

@@ -2,7 +2,6 @@ package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.zaxxer.hikari.HikariDataSource;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
@@ -17,6 +16,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -64,7 +64,7 @@ public class RestApiAction implements IActionExecution {
         var payload = restApi.getValue();
         var id = actionExecutionAudit.getActionId();
         var header = restApi.getHeaders();
-        final HikariDataSource hikariDataSource = ResourceAccess.rdbmsConn(source);
+        final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(source);
         log.info(aMarker, " id#{}, name#{}, url#{}, payload#{}", id, name, url, payload);
         final OkHttpClient client = new OkHttpClient();
         final Request request;
@@ -73,10 +73,10 @@ public class RestApiAction implements IActionExecution {
             final List<String> paramList = new ArrayList<>();
             if (params.isArray()) {
                 params.forEach(jsonNode -> jsonNode.fields()
-                        .forEachRemaining(stringJsonNodeEntry -> addParam(hikariDataSource, paramList, stringJsonNodeEntry)));
+                        .forEachRemaining(stringJsonNodeEntry -> addParam(jdbi, paramList, stringJsonNodeEntry)));
             } else {
                 params.fields()
-                        .forEachRemaining(stringJsonNodeEntry -> addParam(hikariDataSource, paramList, stringJsonNodeEntry));
+                        .forEachRemaining(stringJsonNodeEntry -> addParam(jdbi, paramList, stringJsonNodeEntry));
             }
             if (!paramList.isEmpty()) {
                 url.append("?");
@@ -88,26 +88,26 @@ public class RestApiAction implements IActionExecution {
         if (Objects.nonNull(header)) {
             if (header.isArray()) {
                 header.forEach(jsonNode -> jsonNode.fields()
-                        .forEachRemaining(stringJsonNodeEntry -> addHeader(hikariDataSource, builder, stringJsonNodeEntry)));
+                        .forEachRemaining(stringJsonNodeEntry -> addHeader(jdbi, builder, stringJsonNodeEntry)));
             } else {
                 header.fields()
-                        .forEachRemaining(stringJsonNodeEntry -> addHeader(hikariDataSource, builder, stringJsonNodeEntry));
+                        .forEachRemaining(stringJsonNodeEntry -> addHeader(jdbi, builder, stringJsonNodeEntry));
             }
         }
 
         final RequestBody body;
         if (Objects.equals(Constants.BODY_TYPE_JSON, restApi.getBodyType())) {
             var bodyNode = JsonNodeFactory.instance.objectNode();
-            payload.forEach(restPart -> bodyNode.put(restPart.getPartName(), getResult(hikariDataSource, restPart.getPartData())));
+            payload.forEach(restPart -> bodyNode.put(restPart.getPartName(), getResult(jdbi, restPart.getPartData())));
             body = RequestBody.create(bodyNode.toString(), MediaType.get(APPLICATION_JSON_CHARSET_UTF_8));
         } else if (Objects.equals(Constants.BODY_TYPE_FORM, restApi.getBodyType())) {
             final MultipartBody.Builder formBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM);
             restApi.getValue().forEach(restPart -> {
                 if (Objects.equals(restPart.getType(), Constants.PART_TYPE_TEXT)) {
-                    formBody.addFormDataPart(restPart.getPartName(), getResult(hikariDataSource, restPart.getPartData()));
+                    formBody.addFormDataPart(restPart.getPartName(), getResult(jdbi, restPart.getPartData()));
                 } else if (Objects.equals(restPart.getType(), Constants.PART_TYPE_FILE)) {
-                    final File multiPart = new File(getResult(hikariDataSource, restPart.getPartData()));
+                    final File multiPart = new File(getResult(jdbi, restPart.getPartData()));
                     final String multiPartName = multiPart.getName();
                     if (!multiPart.exists()) {
                         throw new HandymanException(String.format("File %s not found ", multiPartName));
@@ -145,22 +145,22 @@ public class RestApiAction implements IActionExecution {
         }
     }
 
-    private void addParam(final HikariDataSource hikariDataSource, final List<String> paramList, final Map.Entry<String, JsonNode> stringJsonNodeEntry) {
-        final String result = getResult(hikariDataSource, stringJsonNodeEntry.getValue().textValue());
+    private void addParam(final Jdbi jdbi, final List<String> paramList, final Map.Entry<String, JsonNode> stringJsonNodeEntry) {
+        final String result = getResult(jdbi, stringJsonNodeEntry.getValue().textValue());
         if (Objects.nonNull(result)) {
             paramList.add(String.format("%s=\"%s\"", stringJsonNodeEntry.getKey(), result));
         }
     }
 
-    private void addHeader(final HikariDataSource hikariDataSource, final Request.Builder builder, final Map.Entry<String, JsonNode> stringJsonNodeEntry) {
-        final String result = getResult(hikariDataSource, stringJsonNodeEntry.getValue().textValue());
+    private void addHeader(final Jdbi jdbi, final Request.Builder builder, final Map.Entry<String, JsonNode> stringJsonNodeEntry) {
+        final String result = getResult(jdbi, stringJsonNodeEntry.getValue().textValue());
         if (Objects.nonNull(result)) {
             builder.header(stringJsonNodeEntry.getKey(), result);
         }
     }
 
-    private String getResult(final HikariDataSource hikariDataSource, final String partData) {
-        return CommonQueryUtil.getResult(hikariDataSource, partData, log);
+    private String getResult(final Jdbi jdbi, final String partData) {
+        return CommonQueryUtil.getResult(jdbi, partData);
     }
 
     @Override

@@ -3,6 +3,7 @@ package in.handyman.raven.util;
 import com.zaxxer.hikari.HikariDataSource;
 import in.handyman.raven.exception.HandymanException;
 import lombok.extern.slf4j.Slf4j;
+import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
 
 import java.sql.Connection;
@@ -30,6 +31,14 @@ public class CommonQueryUtil {
                 logger.error("failed to set value", e);
                 throw new HandymanException("Fetch config failed", e);
             }
+        });
+    }
+
+
+    public static String getResult(final Jdbi jdbi, final String value) {
+        return jdbi.withHandle(handle -> {
+            final List<String> formattedQuery = getFormattedQuery(value);
+            return formattedQuery.stream().flatMap(s -> handle.createQuery(s).map((rs, ctx) -> rs.getString(1)).stream()).findFirst().orElse(null);
         });
     }
 
