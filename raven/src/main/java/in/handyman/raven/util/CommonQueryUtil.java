@@ -78,8 +78,8 @@ public class CommonQueryUtil {
     }
 
     public static List<String> getFormattedQuery(final String givenQuery) {
-        var sqlWithoutQuotes = givenQuery.replaceAll("\"", "");
-        var strings = List.of(sqlWithoutQuotes.split(";"));
+        //var sqlWithoutQuotes = givenQuery.replaceAll("\"", "");
+        var strings = List.of(givenQuery.split(";"));
         return strings.stream().map(String::trim)
                 .filter(s -> !s.isEmpty() && !s.isBlank())
                 .collect(Collectors.toUnmodifiableList());
