@@ -97,6 +97,6 @@ public class CreateFileAction implements IActionExecution {
 
     @Override
     public boolean executeIf() throws Exception {
-        return false;
+        return createFile.getCondition();
     }
 }
