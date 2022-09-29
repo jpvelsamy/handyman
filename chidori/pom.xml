@@ -12,7 +12,7 @@
 	<artifactId>chidori</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Chidori</name>
-	<description>Handyman App</description>
+	<description>Handyman REST App</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
