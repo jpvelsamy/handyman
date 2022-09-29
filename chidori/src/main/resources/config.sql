@@ -97,11 +97,3 @@ INSERT INTO config.spw_process_config
 (id, process, variable, value, active, created_by, created_date, last_modified_by, last_modified_date, "version")
 VALUES (1, 'SYS_PACKAGE', 'raven.java.lib', 'in.handyman.raven.lib', true, 1, '2022-01-01 00:00:00.000', 1,
         '2022-01-01 00:00:00.000', 1);
-INSERT INTO config.spw_process_config
-(id, process, variable, value, active, created_by, created_date, last_modified_by, last_modified_date, "version")
-VALUES (2, 'ZIO_CORE', 'zio.lambda.dir', 'src/main/lambda', true, 1, '2022-01-01 00:00:00.000', 1,
-        '2022-01-01 00:00:00.000', 1);
-INSERT INTO config.spw_process_config
-(id, process, variable, value, active, created_by, created_date, last_modified_by, last_modified_date, "version")
-VALUES (3, 'test.restapi', 'filepath', 'test-file/restapi.test.lmd', true, 1, '2022-01-01 00:00:00.000', 1,
-        '2022-01-01 00:00:00.000', 1);

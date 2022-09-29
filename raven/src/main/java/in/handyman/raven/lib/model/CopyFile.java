@@ -34,5 +34,6 @@ public class CopyFile implements IActionContext {
 
   private String value;
 
+  @Builder.Default
   private Boolean condition = true;
 }

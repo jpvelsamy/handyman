@@ -40,7 +40,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
     public static final String HANDYMAN_CONFIG_LOCATION = "handyman.config.location";
 
     static {
-        var filePath = Optional.ofNullable(System.getProperty(HANDYMAN_CONFIG_LOCATION)).orElse("src/main/resources/config.props");
+        var filePath = Optional.ofNullable(System.getenv(HANDYMAN_CONFIG_LOCATION)).orElse("src/main/resources/config.props");
         var file = new File(filePath);
         if (!file.exists()) {
             throw new HandymanException("Config file not found");
