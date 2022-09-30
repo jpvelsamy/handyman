@@ -32,7 +32,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <java.version>11</java.version>
-        <scala.version>2.13.6</scala.version>
+        <scala.version>2.13.9</scala.version>
         <slf4j.version>1.7.32</slf4j.version>
         <kafka.version>3.0.0</kafka.version>
         <logback-classic.version>1.2.10</logback-classic.version>
