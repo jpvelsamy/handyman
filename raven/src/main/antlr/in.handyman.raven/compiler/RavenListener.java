@@ -390,6 +390,26 @@ public interface RavenListener extends ParseTreeListener {
 	 */
 	void exitPaperItemization(RavenParser.PaperItemizationContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link RavenParser#autoRotation}.
+	 * @param ctx the parse tree
+	 */
+	void enterAutoRotation(RavenParser.AutoRotationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#autoRotation}.
+	 * @param ctx the parse tree
+	 */
+	void exitAutoRotation(RavenParser.AutoRotationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#blankPageRemover}.
+	 * @param ctx the parse tree
+	 */
+	void enterBlankPageRemover(RavenParser.BlankPageRemoverContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#blankPageRemover}.
+	 * @param ctx the parse tree
+	 */
+	void exitBlankPageRemover(RavenParser.BlankPageRemoverContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link RavenParser#resource}.
 	 * @param ctx the parse tree
 	 */

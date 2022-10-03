@@ -59,7 +59,9 @@ action:
     |mapJsonContext
     |sharePoint
     |downloadAsset
-    |paperItemization);
+    |paperItemization
+    |autoRotation
+    |blankPageRemover);
 
 multitude:
     'multitude' 'as' name=STRING ('on' on= STRING)* 'using'
@@ -225,7 +227,7 @@ pushJson :
 
 mapJsonContext :
       'map-json-into-context' 'as' name=STRING  'using'  '{'
-                                                      value=STRING
+                        autoRotation                              value=STRING
                                                    '}' ('on-condition' condition=expression)* ;
                                                    
 sharePoint:
@@ -249,6 +251,13 @@ downloadAsset:
 
 paperItemization:
     'paper-itemization' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
+
+autoRotation:
+    'autoRotation' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
+
+blankPageRemover:
+    'blankPageRemover' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
+
 
 resource : STRING;
 
