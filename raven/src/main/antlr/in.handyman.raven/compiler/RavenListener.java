@@ -410,6 +410,66 @@ public interface RavenListener extends ParseTreeListener {
 	 */
 	void exitBlankPageRemover(RavenParser.BlankPageRemoverContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link RavenParser#patientAttribution}.
+	 * @param ctx the parse tree
+	 */
+	void enterPatientAttribution(RavenParser.PatientAttributionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#patientAttribution}.
+	 * @param ctx the parse tree
+	 */
+	void exitPatientAttribution(RavenParser.PatientAttributionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#prescriberAttribution}.
+	 * @param ctx the parse tree
+	 */
+	void enterPrescriberAttribution(RavenParser.PrescriberAttributionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#prescriberAttribution}.
+	 * @param ctx the parse tree
+	 */
+	void exitPrescriberAttribution(RavenParser.PrescriberAttributionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#providerAttribution}.
+	 * @param ctx the parse tree
+	 */
+	void enterProviderAttribution(RavenParser.ProviderAttributionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#providerAttribution}.
+	 * @param ctx the parse tree
+	 */
+	void exitProviderAttribution(RavenParser.ProviderAttributionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#drugAttribution}.
+	 * @param ctx the parse tree
+	 */
+	void enterDrugAttribution(RavenParser.DrugAttributionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#drugAttribution}.
+	 * @param ctx the parse tree
+	 */
+	void exitDrugAttribution(RavenParser.DrugAttributionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#documentClassification}.
+	 * @param ctx the parse tree
+	 */
+	void enterDocumentClassification(RavenParser.DocumentClassificationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#documentClassification}.
+	 * @param ctx the parse tree
+	 */
+	void exitDocumentClassification(RavenParser.DocumentClassificationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#qrAttribution}.
+	 * @param ctx the parse tree
+	 */
+	void enterQrAttribution(RavenParser.QrAttributionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#qrAttribution}.
+	 * @param ctx the parse tree
+	 */
+	void exitQrAttribution(RavenParser.QrAttributionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link RavenParser#resource}.
 	 * @param ctx the parse tree
 	 */

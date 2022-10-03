@@ -61,7 +61,13 @@ action:
     |downloadAsset
     |paperItemization
     |autoRotation
-    |blankPageRemover);
+    |blankPageRemover
+    |patientAttribution
+    |prescriberAttribution
+    |providerAttribution
+    |drugAttribution
+    |documentClassification
+    |qrAttribution);
 
 multitude:
     'multitude' 'as' name=STRING ('on' on= STRING)* 'using'
@@ -258,7 +264,23 @@ autoRotation:
 blankPageRemover:
     'blankPageRemover' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
 
+patientAttribution:
+    'patientAttribution' 'as' name=STRING 'from-target-file' patientKeywords=STRING 'attribution-list' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
 
+prescriberAttribution:
+    'prescriberAttribution' 'as' name=STRING 'from-target-file' prescriberKeywords=STRING 'attribution-list' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
+
+providerAttribution:
+    'providerAttribution' 'as' name=STRING 'from-target-file' providerKeywords=STRING 'attribution-list' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
+
+drugAttribution:
+    'drugAttribution' 'as' name=STRING 'from-target-file' drugKeywords=STRING 'attribution-list' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
+
+documentClassification:
+    'documentClassification' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
+
+qrAttribution:
+    'qrAttribution' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
 resource : STRING;
 
 //rules
