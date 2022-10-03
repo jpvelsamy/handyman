@@ -1,27 +1,50 @@
 process "test.restapi"
 {
-	try {
 
-	 multitude as "test audit entry with multitude" on "PARALLEL" using {
+	 try {
 
-            restapi as "test audit entry with none"  source "${test.resource}" using url "https://vada-chennai.free.beeceptor.com"
-              method "POST" with body type {"NONE"}
-              {}
+             assign as "root" source "${intics_agadia}" using {
 
-           restapi as "test audit entry with JSON"  source "${test.resource}" using url "https://vada-chennai.free.beeceptor.com"
-             method "POST" with body type {"JSON"}
-             {
-             { part as "attribute1" with "select 1"}
+                 "SELECT process_id as process_id,
+                  batch_id as batch_id,
+                  intics_reference_id as intics_reference_id,
+                  fax_reference_id as fax_reference_id
+                  FROM intics_agadia.add_fax_pipeline_audit;"
+
              }
 
-             restapi as "test audit entry with FORM"  source "${test.resource}" using url "https://vada-chennai.free.beeceptor.com"
-              method "POST" with body type {"FORM"}
-             {
-             { part as "attribute1" with "select 1" type as "TEXT" }
-             { part as "attribute2" with "select 'src/test/resources/test-file/init.sql'" type as "FILE" }
+             assign as "root2" source "${intics_agadia}" using {
+
+                "SELECT concat_ws ('/','${parent_dir}','${root.process_id}','${root.batch_id}','${root.intics_reference_id}','${root.fax_reference_id}') as target_directory_path;"
+
              }
 
-     } fielding 2
+
+             createDirectory as "creating directory" using {
+
+                 "${root2.target_directory_path}"
+
+             }
+
+
+             checksum
+             as "generating checksum for sample"
+             file-path "/home/bharath.k@zucisystems.com/Documents/cub-lambdas-Icarus/1/12/123/1234"
+             file-name "a.zip" using {
+
+                 "SELECT 1"
+
+             }
+
+             fileSize
+             as "generating filesize for sample"
+             file-path "/home/bharath.k@zucisystems.com/Documents/cub-lambdas-Icarus/1/12/123/1234"
+             file-name "a.zip" using {
+
+                 "SELECT 1"
+
+             }
+
 
 	}
 	
