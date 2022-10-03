@@ -1,4 +1,4 @@
-// Generated from JSON.g4 by ANTLR 4.10.1
+// Generated from java-escape by ANTLR 4.11.1
 
 package in.handyman.raven.compiler;
 
@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
 
-@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
+@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class JSONParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.10.1", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -78,7 +78,7 @@ public class JSONParser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "JSON.g4"; }
+	public String getGrammarFileName() { return "java-escape"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -94,6 +94,7 @@ public class JSONParser extends Parser {
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class JsonContext extends ParserRuleContext {
 		public ObjContext obj() {
 			return getRuleContext(ObjContext.class,0);
@@ -151,6 +152,7 @@ public class JSONParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class ObjContext extends ParserRuleContext {
 		public List<PairContext> pair() {
 			return getRuleContexts(PairContext.class);
@@ -229,6 +231,7 @@ public class JSONParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class PairContext extends ParserRuleContext {
 		public TerminalNode STRING() { return getToken(JSONParser.STRING, 0); }
 		public JValueContext jValue() {
@@ -273,6 +276,7 @@ public class JSONParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class ArrContext extends ParserRuleContext {
 		public List<JValueContext> jValue() {
 			return getRuleContexts(JValueContext.class);
@@ -351,6 +355,7 @@ public class JSONParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
 	public static class JValueContext extends ParserRuleContext {
 		public TerminalNode STRING() { return getToken(JSONParser.STRING, 0); }
 		public TerminalNode NUMBER() { return getToken(JSONParser.NUMBER, 0); }

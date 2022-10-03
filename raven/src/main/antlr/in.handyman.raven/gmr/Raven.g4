@@ -57,7 +57,9 @@ action:
     |consumer
     |pushJson
     |mapJsonContext
-    |sharePoint);
+    |sharePoint
+    |downloadAsset
+    |paperItemization);
 
 multitude:
     'multitude' 'as' name=STRING ('on' on= STRING)* 'using'
@@ -241,6 +243,12 @@ log:
 
 exception:
     'raise exception' '{' message=STRING '}';
+
+downloadAsset:
+    'download-asset' 'as' name=STRING 'from-url' url=STRING 'at' location=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
+
+paperItemization:
+    'paper-itemization' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
 
 resource : STRING;
 

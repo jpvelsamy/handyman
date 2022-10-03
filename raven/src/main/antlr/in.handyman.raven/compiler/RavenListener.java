@@ -1,4 +1,4 @@
-// Generated from Raven.g4 by ANTLR 4.10.1
+// Generated from java-escape by ANTLR 4.11.1
 
 package in.handyman.raven.compiler;
 
@@ -369,6 +369,26 @@ public interface RavenListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitException(RavenParser.ExceptionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#downloadAsset}.
+	 * @param ctx the parse tree
+	 */
+	void enterDownloadAsset(RavenParser.DownloadAssetContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#downloadAsset}.
+	 * @param ctx the parse tree
+	 */
+	void exitDownloadAsset(RavenParser.DownloadAssetContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#paperItemization}.
+	 * @param ctx the parse tree
+	 */
+	void enterPaperItemization(RavenParser.PaperItemizationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#paperItemization}.
+	 * @param ctx the parse tree
+	 */
+	void exitPaperItemization(RavenParser.PaperItemizationContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link RavenParser#resource}.
 	 * @param ctx the parse tree

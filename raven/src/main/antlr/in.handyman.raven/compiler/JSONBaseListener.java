@@ -1,4 +1,4 @@
-// Generated from JSON.g4 by ANTLR 4.10.1
+// Generated from java-escape by ANTLR 4.11.1
 
 package in.handyman.raven.compiler;
 
@@ -12,6 +12,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  * which can be extended to create a listener which only needs to handle a subset
  * of the available methods.
  */
+@SuppressWarnings("CheckReturnValue")
 public class JSONBaseListener implements JSONListener {
 	/**
 	 * {@inheritDoc}
