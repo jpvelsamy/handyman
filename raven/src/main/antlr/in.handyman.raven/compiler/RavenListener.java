@@ -470,6 +470,16 @@ public interface RavenListener extends ParseTreeListener {
 	 */
 	void exitQrAttribution(RavenParser.QrAttributionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link RavenParser#incidentManagement}.
+	 * @param ctx the parse tree
+	 */
+	void enterIncidentManagement(RavenParser.IncidentManagementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#incidentManagement}.
+	 * @param ctx the parse tree
+	 */
+	void exitIncidentManagement(RavenParser.IncidentManagementContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link RavenParser#resource}.
 	 * @param ctx the parse tree
 	 */

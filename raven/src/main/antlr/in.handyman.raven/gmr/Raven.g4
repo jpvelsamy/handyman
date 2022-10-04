@@ -67,7 +67,8 @@ action:
     |providerAttribution
     |drugAttribution
     |documentClassification
-    |qrAttribution);
+    |qrAttribution
+    |incidentManagement);
 
 multitude:
     'multitude' 'as' name=STRING ('on' on= STRING)* 'using'
@@ -281,9 +282,14 @@ documentClassification:
 
 qrAttribution:
     'qrAttribution' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
+
+incidentManagement:
+    'incidentManagement' 'as'  name=STRING 'for-template-id' templateId=STRING 'and asset-id'assetId=STRING 'using'  '{'
+     payload=STRING
+     '}' ('on-condition' condition=expression)* ;
 resource : STRING;
 
-//rules
+//rulesSTRING
 
 fragment DIGIT : [0-9];
 fragment NON_Z_DIGIT : [1-9];

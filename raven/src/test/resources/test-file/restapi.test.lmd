@@ -1,30 +1,11 @@
 process "test.restapi"
 {
 	try {
+            documentClassification as "Classified asset" from-url "/home/dinesh.krishna@zucisystems.com/workspace/Healthwear/filled_form/Anthem_Form_6_urgent.pdf" at "/home/dinesh.krishna@zucisystems.com/workspace/output" using {
+            "SELECT 1"
+}
 
-	 multitude as "test audit entry with multitude" on "PARALLEL" using {
-
-            restapi as "test audit entry with none"  source "${test.resource}" using url "https://vada-chennai.free.beeceptor.com"
-              method "POST" with body type {"NONE"}
-              {}
-
-           restapi as "test audit entry with JSON"  source "${test.resource}" using url "https://vada-chennai.free.beeceptor.com"
-             method "POST" with body type {"JSON"}
-             {
-             { part as "attribute1" with "select 1"}
-             }
-
-             restapi as "test audit entry with FORM"  source "${test.resource}" using url "https://vada-chennai.free.beeceptor.com"
-              method "POST" with body type {"FORM"}
-             {
-             { part as "attribute1" with "select 1" type as "TEXT" }
-             { part as "attribute2" with "select 'src/test/resources/test-file/init.sql'" type as "FILE" }
-             }
-
-     } fielding 2
-
-	}
-	
+	 }
 	catch {
 
 	}
