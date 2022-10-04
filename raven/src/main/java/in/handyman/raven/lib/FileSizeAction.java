@@ -41,8 +41,7 @@ public class FileSizeAction implements IActionExecution {
         File file = new File(filePath);
         if (file.exists()) {
             BigInteger sizeBig = file.isDirectory() ? FileUtils.sizeOfDirectoryAsBigInteger(file) : FileUtils.sizeOfAsBigInteger(file);
-            String size = FileUtils.byteCountToDisplaySize(Long.parseLong(String.valueOf(sizeBig)));
-            action.getContext().put(fileSize.getName(), size);
+            action.getContext().put(fileSize.getName(), sizeBig.toString());
         }
     }
 

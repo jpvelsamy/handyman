@@ -439,13 +439,13 @@ public class RavenBaseListener implements RavenListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterException(RavenParser.ExceptionContext ctx) { }
+	@Override public void enterRavenVmException(RavenParser.RavenVmExceptionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitException(RavenParser.ExceptionContext ctx) { }
+	@Override public void exitRavenVmException(RavenParser.RavenVmExceptionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

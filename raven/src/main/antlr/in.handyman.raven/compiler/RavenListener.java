@@ -360,15 +360,15 @@ public interface RavenListener extends ParseTreeListener {
 	 */
 	void exitLog(RavenParser.LogContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link RavenParser#exception}.
+	 * Enter a parse tree produced by {@link RavenParser#ravenVmException}.
 	 * @param ctx the parse tree
 	 */
-	void enterException(RavenParser.ExceptionContext ctx);
+	void enterRavenVmException(RavenParser.RavenVmExceptionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link RavenParser#exception}.
+	 * Exit a parse tree produced by {@link RavenParser#ravenVmException}.
 	 * @param ctx the parse tree
 	 */
-	void exitException(RavenParser.ExceptionContext ctx);
+	void exitRavenVmException(RavenParser.RavenVmExceptionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link RavenParser#checksum}.
 	 * @param ctx the parse tree

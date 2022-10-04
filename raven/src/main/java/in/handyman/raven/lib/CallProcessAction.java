@@ -95,8 +95,12 @@ public class CallProcessAction implements IActionExecution {
         } else {
             runContext.forEach(lContext -> {
                 final LambdaCallable lambdaCallable = new LambdaCallable(lContext, null);
-                final PipelineExecutionAudit start = lambdaCallable.call();
-                context.putAll(start.getContext());
+                try {
+                    final PipelineExecutionAudit start = lambdaCallable.call();
+                    context.putAll(start.getContext());
+                } catch (Exception e) {
+                    log.trace(aMarker, "Failed process {}", lContext, e);
+                }
             });
         }
 
