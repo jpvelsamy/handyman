@@ -370,6 +370,26 @@ public interface RavenListener extends ParseTreeListener {
 	 */
 	void exitException(RavenParser.ExceptionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link RavenParser#checksum}.
+	 * @param ctx the parse tree
+	 */
+	void enterChecksum(RavenParser.ChecksumContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#checksum}.
+	 * @param ctx the parse tree
+	 */
+	void exitChecksum(RavenParser.ChecksumContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#fileSize}.
+	 * @param ctx the parse tree
+	 */
+	void enterFileSize(RavenParser.FileSizeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#fileSize}.
+	 * @param ctx the parse tree
+	 */
+	void exitFileSize(RavenParser.FileSizeContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link RavenParser#downloadAsset}.
 	 * @param ctx the parse tree
 	 */

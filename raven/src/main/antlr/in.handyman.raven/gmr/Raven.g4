@@ -67,7 +67,9 @@ action:
     |providerAttribution
     |drugAttribution
     |documentClassification
-    |qrAttribution);
+    |qrAttribution
+    |checksum
+    |fileSize);
 
 multitude:
     'multitude' 'as' name=STRING ('on' on= STRING)* 'using'
@@ -251,6 +253,12 @@ log:
 
 exception:
     'raise exception' '{' message=STRING '}';
+
+checksum:
+    'checksum' 'as' name=STRING 'using' '{' filePath=STRING '}' ('on-condition' condition=expression)* ;
+
+fileSize:
+    'fileSize' 'as' name=STRING 'using' '{' filePath=STRING '}' ('on-condition' condition=expression)* ;
 
 downloadAsset:
     'download-asset' 'as' name=STRING 'from-url' url=STRING 'at' location=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;

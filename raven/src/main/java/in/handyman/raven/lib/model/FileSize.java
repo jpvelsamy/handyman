@@ -26,7 +26,5 @@ public class FileSize implements IActionContext {
 
   private String filePath;
 
-  private String fileName;
-
   private Boolean condition = true;
 }

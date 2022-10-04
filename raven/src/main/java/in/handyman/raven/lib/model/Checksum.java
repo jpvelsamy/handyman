@@ -24,8 +24,6 @@ import lombok.NoArgsConstructor;
 public class Checksum implements IActionContext {
   private String name;
 
-  private String fileName;
-
   private String filePath;
 
   private Boolean condition = true;

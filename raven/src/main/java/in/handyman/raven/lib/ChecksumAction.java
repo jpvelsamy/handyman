@@ -45,12 +45,11 @@ public class ChecksumAction implements IActionExecution {
     @Override
     public void execute() throws Exception {
 
-        String fileName = checksum.getFileName();
         String filePath = checksum.getFilePath();
-        String fullyGeneratedPath = filePath+"/"+fileName;
-        try (InputStream is = Files.newInputStream(Paths.get(fullyGeneratedPath))) {
-            String md5 = org.apache.commons.codec.digest.DigestUtils.md5Hex(is);
-            log.info("MD5 CHECKSUM : "+md5);
+        try (InputStream is = Files.newInputStream(Paths.get(filePath))) {
+            String sha1Hex = org.apache.commons.codec.digest.DigestUtils.sha1Hex(is);
+            log.info("MD5 CHECKSUM : " + sha1Hex);
+            action.getContext().put(checksum.getName(), sha1Hex);
         }
     }
 
