@@ -12,6 +12,7 @@ import java.lang.Object;
 import java.lang.Override;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import okhttp3.*;
 import org.json.JSONObject;
@@ -64,7 +65,7 @@ public class DownloadAssetAction implements IActionExecution {
     log.info(aMarker, "The request got it successfully the url and outputDir {} {}",downloadAsset.getUrl(),downloadAsset.getLocation() );
 
     try (Response response = httpclient.newCall(request).execute()) {
-      String responseBody = response.body().string();
+      String responseBody = Objects.requireNonNull(response.body()).string();
       String name = downloadAsset.getName();
       if (response.isSuccessful()) {
           JSONObject json = new JSONObject(responseBody);
@@ -73,7 +74,9 @@ public class DownloadAssetAction implements IActionExecution {
         log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
       }else {
         log.info(aMarker, "The Response  {} {}", name, responseBody);
+          action.getContext().put(name+".errorMessage", responseBody);
       }
+        action.getContext().put(name+".isSuccessful", String.valueOf(response.isSuccessful()));
     }catch (Exception e){
       log.info(aMarker, "The Exception occurred ",e);
       throw new HandymanException("Failed to execute", e);
