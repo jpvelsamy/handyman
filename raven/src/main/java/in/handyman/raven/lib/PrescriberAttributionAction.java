@@ -10,6 +10,7 @@ import in.handyman.raven.lib.model.PrescriberAttribution;
 import java.lang.Exception;
 import java.lang.Object;
 import java.lang.Override;
+import java.util.Collections;
 
 import okhttp3.*;
 import org.slf4j.Logger;
@@ -49,7 +50,7 @@ public class PrescriberAttributionAction implements IActionExecution {
     final ObjectNode objectNode = mapper.createObjectNode();
     objectNode.put("inputFilePath",prescriberAttribution.getFilePath());
     objectNode.put("outputDir",prescriberAttribution.getOutputDir());
-    objectNode.put("attributes",prescriberAttribution.getPrescriberKeywords());
+    objectNode.putPOJO("attributes", Collections.singletonList(prescriberAttribution.getPrescriberKeywords()));
 // build a request
     Request request = new Request.Builder().url(URI)
             .post(RequestBody.create( objectNode.toString(),MediaTypeJSON)).build();

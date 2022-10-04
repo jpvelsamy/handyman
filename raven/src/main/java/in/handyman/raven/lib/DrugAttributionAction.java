@@ -10,6 +10,7 @@ import in.handyman.raven.lib.model.DrugAttribution;
 import java.lang.Exception;
 import java.lang.Object;
 import java.lang.Override;
+import java.util.Collections;
 
 import okhttp3.*;
 import org.slf4j.Logger;
@@ -49,7 +50,7 @@ public class DrugAttributionAction implements IActionExecution {
     final ObjectNode objectNode = mapper.createObjectNode();
     objectNode.put("inputFilePath",drugAttribution.getFilePath());
     objectNode.put("outputDir",drugAttribution.getOutputDir());
-    objectNode.put("attributes",drugAttribution.getDrugKeywords());
+    objectNode.putPOJO("attributes", Collections.singletonList(drugAttribution.getDrugKeywords()));
 // build a request
     Request request = new Request.Builder().url(URI)
             .post(RequestBody.create(objectNode.toString(),MediaTypeJSON)).build();

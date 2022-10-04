@@ -10,6 +10,7 @@ import in.handyman.raven.lib.model.PatientAttribution;
 import java.lang.Exception;
 import java.lang.Object;
 import java.lang.Override;
+import java.util.Collections;
 
 import okhttp3.*;
 import org.slf4j.Logger;
@@ -48,7 +49,7 @@ public class PatientAttributionAction implements IActionExecution {
     final ObjectNode objectNode = mapper.createObjectNode();
     objectNode.put("inputFilePath",patientAttribution.getFilePath());
     objectNode.put("outputDir",patientAttribution.getOutputDir());
-    objectNode.put("attributes",patientAttribution.getPatientKeywords());
+    objectNode.putPOJO("attributes", Collections.singletonList(patientAttribution.getPatientKeywords()));
 // build a request
     Request request = new Request.Builder().url(URI)
             .post(RequestBody.create( objectNode.toString(),MediaTypeJSON)).build();

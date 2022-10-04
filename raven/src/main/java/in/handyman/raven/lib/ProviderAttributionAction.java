@@ -10,6 +10,7 @@ import in.handyman.raven.lib.model.ProviderAttribution;
 import java.lang.Exception;
 import java.lang.Object;
 import java.lang.Override;
+import java.util.Collections;
 
 import okhttp3.*;
 import org.slf4j.Logger;
@@ -49,7 +50,7 @@ public class ProviderAttributionAction implements IActionExecution {
     final ObjectNode objectNode = mapper.createObjectNode();
     objectNode.put("inputFilePath",providerAttribution.getFilePath());
     objectNode.put("outputDir",providerAttribution.getOutputDir());
-    objectNode.put("attributes",providerAttribution.getProviderKeywords());
+    objectNode.putPOJO("attributes", Collections.singletonList(providerAttribution.getProviderKeywords()));
 // build a request
     Request request = new Request.Builder().url(URI)
             .post(RequestBody.create(objectNode.toString(),MediaTypeJSON)).build();
