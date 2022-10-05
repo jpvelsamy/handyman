@@ -1,27 +1,58 @@
 process "test.restapi"
 {
-	try {
+	try
+	{
+	    transform as "create DDL : DeNoising" on "${agadia}" using {
+            "   CREATE schema if not exists agadia;
+                CREATE TABLE if not exists agadia.preprocessing_payload_queue (
+                    producer_process_id int8 NOT NULL,
+                    consumer_process_id int8 NOT NULL,
+                    batch_id varchar NOT NULL,
+                    intics_reference_id varchar NOT NULL,
+                    fax_reference_id varchar NOT NULL,
+                    created_on timestamp NOT NULL,
+                    file_checksum varchar NULL,
+                    file_size float8 NULL,
+                    CONSTRAINT preprocessing_payload_queue_pk PRIMARY KEY (batch_id, intics_reference_id)
+                );
+            "
+	    }
 
-	 multitude as "test audit entry with multitude" on "PARALLEL" using {
 
-            restapi as "test audit entry with none"  source "${test.resource}" using url "https://vada-chennai.free.beeceptor.com"
-              method "POST" with body type {"NONE"}
-              {}
 
-           restapi as "test audit entry with JSON"  source "${test.resource}" using url "https://vada-chennai.free.beeceptor.com"
-             method "POST" with body type {"JSON"}
-             {
-             { part as "attribute1" with "select 1"}
-             }
 
-             restapi as "test audit entry with FORM"  source "${test.resource}" using url "https://vada-chennai.free.beeceptor.com"
-              method "POST" with body type {"FORM"}
-             {
-             { part as "attribute1" with "select 1" type as "TEXT" }
-             { part as "attribute2" with "select 'src/test/resources/test-file/init.sql'" type as "FILE" }
-             }
+        transform as "inserting the preprocess pipeline audit" on "${agadia}" using
+        {"
+            INSERT INTO agadia.preprocessing_payload_queue
+            (producer_process_id, consumer_process_id, batch_id, intics_reference_id, fax_reference_id, created_on, file_checksum, file_size)
+            VALUES
+            ('${producer_process_id}', ${process-id}, ${batch_id}, ${intics_reference_id}, ${fax_reference_id}, );
 
-     } fielding 2
+        "} on-condition if "true"=="true"
+
+        assign as "payloadqueuestatus" source "${agadia}" using {"
+                select status from payloadqueue.preprocessing_payload_queue WHERE status='PENDING';
+        "} on-condition if "true"=="true"
+
+        transform as "updating the payload queue status" on "${agadia}" using
+        {"
+            UPDATE payloadqueue.preprocessing_payload_queue SET status = 'IN_PROGRESS'
+            WHERE producer_process_id = 1 ;
+        "} on-condition if "${payloadqueuestatus.status}"=="PENDING"
+
+
+        blankPageRemover as "blank pageremoval" from-target-file "/home/pradeep.k@zucisystems.com/workspace_HFR/source_of_truth/modum_tech_sample.pdf"
+        using "/home/pradeep.k@zucisystems.com/Agadia/Output/${process-id}"  using
+         {
+         } on-condition if "true"=="true"
+
+
+        paper-itemization as "paperItemization" from-target-file "/home/pradeep.k@zucisystems.com/Desktop/tmpHFR/agadia_asis/input/modum_tech_sample_1.pdf"
+        using "/home/pradeep.k@zucisystems.com/Agadia/Output/${process-id}"  using
+         {
+         } on-condition if "true"=="true"
+
+
 
 	}
 	

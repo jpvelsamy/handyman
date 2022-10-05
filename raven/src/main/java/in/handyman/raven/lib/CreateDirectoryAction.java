@@ -40,7 +40,7 @@ public class CreateDirectoryAction implements IActionExecution {
         for (var fileName : createDirectory.getDirectoryPath()) {
             var path = Paths.get(fileName);
             if (!Files.exists(path)) {
-                Files.createDirectory(path);
+                Files.createDirectories(path);
                 log.info(aMarker, "{} Directory Created", path);
             } else {
                 log.info(aMarker, "{} Directory already exists", path);
