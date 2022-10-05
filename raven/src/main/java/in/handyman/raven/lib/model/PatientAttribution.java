@@ -24,11 +24,11 @@ import lombok.NoArgsConstructor;
 public class PatientAttribution implements IActionContext {
   private String name;
 
+  private String assetId;
+
   private String patientKeywords;
 
-  private String filePath;
-
-  private String outputDir;
+  private String token;
 
   private Boolean condition = true;
 }
