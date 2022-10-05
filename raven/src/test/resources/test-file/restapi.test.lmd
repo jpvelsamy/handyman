@@ -1,108 +1,58 @@
-process "agadia.taskAttribution.main.caller.lambda"
-
+process "test.restapi"
 {
 
-   try {
+	 try {
 
-            transform as "inserting the Document Classification pipeline audit" on "${agadia}" using
-            {"
-                    INSERT INTO truth_attribution_pipeline_audit (process_id, batch_id,intics_reference_id,fax_reference_id,created_on,stash_date,status,stage)
-                    VALUES (${process_id},${batch_id},${intics_reference_id},${fax_reference_id},NOW(),'','STARTED','attributionForPatient');
-           "} on-condition if "true"=="true"
+             assign as "root" source "${intics_agadia}" using {
 
+                 "SELECT process_id as process_id,
+                  batch_id as batch_id,
+                  intics_reference_id as intics_reference_id,
+                  fax_reference_id as fax_reference_id
+                  FROM intics_agadia.add_fax_pipeline_audit;"
 
+             }
 
-           assign as "payloadqueuestatus" source "${agadia}" using {"
-                    select producer_process_id from task_attribution_payload_queue WHERE status='PENDING';
-            "} on-condition if "true"=="true"
+             assign as "root2" source "${intics_agadia}" using {
 
+                "SELECT concat_ws ('/','${parent_dir}','${root.process_id}','${root.batch_id}','${root.intics_reference_id}','${root.fax_reference_id}') as target_directory_path;"
 
-
-           transform as "updating the payload queue status" on "${agadia}" using
-            {"
-                UPDATE task_attribution_payload_queue SET status = 'IN_PROGRESS' , consumer_process_id = ${process-id}
-                WHERE producer_process_id = ${producer_process_id} ;
-            "} on-condition if "${payloadqueuestatus.status}"=="PENDING"
+             }
 
 
+             createDirectory as "creating directory" using {
+
+                 "${root2.target_directory_path}"
+
+             }
 
 
-            callprocess as "documentClassification"
-            with-target "agadia.preprocess.blankpageremover.lambda"
-            from-file "/Preprocess/agadia.preprocess.blankpageremover.lambda.spw"
-            using "${agadia}" for-every {"
-                   SELECT copra_url,denoise_dest_path,paperitem_dest_path;
-           "} on-condition if "true"=="true"
+             checksum
+             as "generating checksum for sample"
+             file-path "/home/bharath.k@zucisystems.com/Documents/cub-lambdas-Icarus/1/12/123/1234"
+             file-name "a.zip" using {
 
-            //insert into patient attribution result table
+                 "SELECT 1"
 
-            transform as "updating the payload queue status" on "${agadia}" using
-            {"
-                UPDATE task_attribution_payload_queue SET status = 'COMPLETED' , consumer_end = NOW()
-                WHERE producer_process_id = ${producer_process_id} ;
-            "} on-condition if "true"=="true"
+             }
 
-            //insert into archieve as above
+             fileSize
+             as "generating filesize for sample"
+             file-path "/home/bharath.k@zucisystems.com/Documents/cub-lambdas-Icarus/1/12/123/1234"
+             file-name "a.zip" using {
 
+                 "SELECT 1"
 
-
-           transform as "updating the payload archive status" on "${agadia}" using
-            {"
-                UPDATE task_attribution_payload_archive SET status = 'COMPLETED' , consumer_end = NOW()
-                WHERE producer_process_id = ${producer_process_id} ;
-            "} on-condition if "true"=="true"
+             }
 
 
+	}
+	
+	catch {
 
+	}
 
-            callprocess as "RESPONSE  Builder"
-            with-target "agadia.preprocess.paperitemization.lambda"
-            from-file "/Preprocess/agadia.preprocess.paperitemization.lambda.spw"
-            using "${agadia}" for-every {"
+	finally {
 
-
-
-                   SELECT copra_url,denoise_dest_path,paperitem_dest_path;
-
-
-
-           "} on-condition if "true"=="true"
-
-
-
-       }
-
-
-
-   catch {
-
-
-
-               transform as "updating the payload queue status" on "${agadia}" using
-                {"
-                    UPDATE truth_attribution_pipeline_audit SET status = 'PENDING' , consumer_end = NOW()
-                    WHERE consumer_process_id = ${process-id} ;
-                "} on-condition if "true"=="true"
-
-
-
-         }
-
-
-
-   finally {
-
-       transform as "updating the payload queue status" on "${agadia}" using
-                {"
-                    UPDATE truth_attribution_pipeline_audit SET status = 'COMPLETED' , consumer_end = NOW()
-                    WHERE consumer_process_id = ${process-id} ;
-                "} on-condition if "true"=="true"
-
-
-
-           }
-
-
-
-
-}
+	}
+} 

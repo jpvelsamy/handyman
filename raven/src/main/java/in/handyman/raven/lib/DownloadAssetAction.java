@@ -10,8 +10,12 @@ import in.handyman.raven.lib.model.DownloadAsset;
 import java.lang.Exception;
 import java.lang.Object;
 import java.lang.Override;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 import okhttp3.*;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -52,23 +56,27 @@ public class DownloadAssetAction implements IActionExecution {
 
     final ObjectNode objectNode = mapper.createObjectNode();
 
-    objectNode.put("url",downloadAsset.getUrl());
+    objectNode.putPOJO("urls", Collections.singletonList(downloadAsset.getUrl()));
     objectNode.put("outputDir",downloadAsset.getLocation());
 
     // build a request
-    Request request = new Request.Builder().url(URI)
+    Request request = new Request.Builder().url(this.URI)
             .post(RequestBody.create( objectNode.toString(),MediaTypeJSON)).build();
     log.info(aMarker, "The request got it successfully the url and outputDir {} {}",downloadAsset.getUrl(),downloadAsset.getLocation() );
 
     try (Response response = httpclient.newCall(request).execute()) {
-      String responseBody = response.body().string();
-      String name = downloadAsset.getName() + "-download-response";
+      String responseBody = Objects.requireNonNull(response.body()).string();
+      String name = downloadAsset.getName();
       if (response.isSuccessful()) {
-        action.getContext().put(name, responseBody);
+          JSONObject json = new JSONObject(responseBody);
+          String path = json.get("paperPaths").toString();
+        action.getContext().put(name, path);
         log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
       }else {
         log.info(aMarker, "The Response  {} {}", name, responseBody);
+          action.getContext().put(name+".errorMessage", responseBody);
       }
+        action.getContext().put(name+".isSuccessful", String.valueOf(response.isSuccessful()));
     }catch (Exception e){
       log.info(aMarker, "The Exception occurred ",e);
       throw new HandymanException("Failed to execute", e);

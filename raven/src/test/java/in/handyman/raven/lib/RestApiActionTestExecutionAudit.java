@@ -6,9 +6,12 @@ import in.handyman.raven.lambda.process.HRequestResolver;
 import in.handyman.raven.lambda.process.LContext;
 import in.handyman.raven.lambda.process.LambdaEngine;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.maven.plugin.lifecycle.io.xpp3.LifecycleMappingsXpp3Reader;
 import org.junit.jupiter.api.Test;
+
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+
 @Slf4j
 class RestApiActionTestExecutionAudit {
 
@@ -16,26 +19,42 @@ class RestApiActionTestExecutionAudit {
 
     @Test
     void execute() {
-
         ObjectNode objectNode = objectMapper.createObjectNode();
+
         ObjectNode node = objectMapper.createObjectNode();
+        ObjectNode node2 = objectMapper.createObjectNode();
 
-        node.put("inputFile","/home/dinesh.krishna@zucisystems.com/workspace/output/pdf_to_image/bdb1824b-43d2-11ed-82c2-19466cac24ca/1.jpg");
-        node.put("urls","");
-        node.put("modelFilePath","/home/dinesh.krishna@zucisystems.com/workspace/Models/document_classification/document_classification_model.h5");
-        node.put("outputDir","/home/dinesh.krishna@zucisystems.com/workspace/output/");
-        node.put("labels","'urgent','non-urgent'");
+        node.put("faxReferenceId", "AGA-REF-ID-001");
+        node.put("callBackUrl", "AGA-REF-ID-001");
+        node.put("faxChecksum", "bccf7e4800b32ed0e272acd436bfa32c3f3ec393");
+        node.put("faxFileUri", "https://www.tutorialspoint.com/java/pdf/java_interfaces.pdf");
 
-        objectNode.putPOJO("documentClassification",node);
+        node2.put("faxReferenceId", "AGA-REF-ID-001");
+        node2.put("callBackUrl", "AGA-REF-ID-001");
+        node2.put("faxChecksum", "72acd436bfa32c3f3ec393");
+        node2.put("faxFileUri", "https://www.tutorialspoint.com/java/pdf/java_interfaces.pdf");
+
+        objectNode.putPOJO("faxDocument", List.of(node,node2));
 
         LContext request = LContext.builder()
-                .pipelineName("task.attribution.documentClassification")
+                .pipelineName("fax.processing.producer")
                 .processLoadType(HRequestResolver.LoadType.FILE.name())
-                .inheritedContext(Map.of("request",objectNode.toString()))
+                .inheritedContext(Map.of("request", objectNode.toString()))
                 .build();
 
         log.info(request.toString());
         LambdaEngine.start(request);
     }
 
+
+    @Test
+    public void testPreprocess(){
+        LContext request = LContext.builder()
+                .pipelineName("root.processing")
+                .processLoadType(HRequestResolver.LoadType.FILE.name())
+                .inheritedContext(Map.of("batch_id","INTICS-BATCH-535649"))
+                .build();
+        log.info(request.toString());
+        LambdaEngine.start(request);
+    }
 }

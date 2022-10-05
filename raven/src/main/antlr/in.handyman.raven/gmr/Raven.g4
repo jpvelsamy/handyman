@@ -68,7 +68,9 @@ action:
     |drugAttribution
     |documentClassification
     |qrAttribution
-    |incidentManagement);
+    |checksum
+    |fileSize
+    |ravenVmException);
 
 multitude:
     'multitude' 'as' name=STRING ('on' on= STRING)* 'using'
@@ -250,8 +252,14 @@ expression :'if' (lhs=STRING operator=Operator rhs=STRING);
 log:
    'log' 'as' 'level' level=STRING 'with' 'message' '{' message=STRING '}';
 
-exception:
-    'raise exception' '{' message=STRING '}';
+ravenVmException:
+    'raise exception' 'as' name=STRING 'using' '{' message=STRING '}'('on-condition' condition=expression)* ;
+
+checksum:
+    'checksum' 'as' name=STRING 'using' '{' filePath=STRING '}' ('on-condition' condition=expression)* ;
+
+fileSize:
+    'fileSize' 'as' name=STRING 'using' '{' filePath=STRING '}' ('on-condition' condition=expression)* ;
 
 downloadAsset:
     'download-asset' 'as' name=STRING 'from-url' url=STRING 'at' location=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
@@ -278,18 +286,13 @@ drugAttribution:
     'drugAttribution' 'as' name=STRING 'from-target-file' drugKeywords=STRING 'attribution-list' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
 
 documentClassification:
-    'documentClassification' 'as' name=STRING 'from-target-file' filePath=STRING 'model-path' modelFilePath=STRING 'labels' labels=STRING 'output-dest-file' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
+    'documentClassification' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
 
 qrAttribution:
     'qrAttribution' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
-
-incidentManagement:
-    'incidentManagement' 'as'  name=STRING 'for-template-id' templateId=STRING 'and asset-id'assetId=STRING 'using'  '{'
-     payload=STRING
-     '}' ('on-condition' condition=expression)* ;
 resource : STRING;
 
-//rulesSTRING
+//rules
 
 fragment DIGIT : [0-9];
 fragment NON_Z_DIGIT : [1-9];

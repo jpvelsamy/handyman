@@ -39,8 +39,8 @@ public class CreateDirectoryAction implements IActionExecution {
         log.info(aMarker, "Directory creation operation has been started for listed files {}", createDirectory.getDirectoryPath());
         for (var fileName : createDirectory.getDirectoryPath()) {
             var path = Paths.get(fileName);
-            if (!Files.exists(path)) {
-                Files.createDirectory(path);
+            if (!path.toFile().exists()) {
+                Files.createDirectories(Paths.get(path.toUri()));
                 log.info(aMarker, "{} Directory Created", path);
             } else {
                 log.info(aMarker, "{} Directory already exists", path);
