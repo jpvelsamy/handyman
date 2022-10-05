@@ -10,7 +10,7 @@ class SharePointTest {
     @Test
     void execute() {
         LambdaEngine.start(LContext.builder()
-                .pipelineName("com.test.sharepoint")
+                .pipelineName("patient.attribution.lambda")
                 .processLoadType(HRequestResolver.LoadType.FILE.name())
                 .build());
     }

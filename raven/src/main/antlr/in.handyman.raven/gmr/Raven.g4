@@ -70,7 +70,9 @@ action:
     |qrAttribution
     |checksum
     |fileSize
-    |ravenVmException);
+    |ravenVmException
+    |uploadAsset
+    |docnetAttribution);
 
 multitude:
     'multitude' 'as' name=STRING ('on' on= STRING)* 'using'
@@ -274,7 +276,10 @@ blankPageRemover:
     'blankPageRemover' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
 
 patientAttribution:
-    'patientAttribution' 'as' name=STRING 'from-target-file' patientKeywords=STRING 'attribution-list' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
+    'patientAttribution' 'as' name=STRING 'asset-id' assetId=STRING 'attribution-list' patientKeywords=STRING  'auth-token' token=STRING 'using'  '{' '}' ('on-condition' condition=expression)* ;
+
+docnetAttribution:
+    'docnetAttribution' 'as' name=STRING 'from-target-file' inputFilePath=STRING 'using'  '{' attributes=STRING '}' ('on-condition' condition=expression)* ;
 
 prescriberAttribution:
     'prescriberAttribution' 'as' name=STRING 'from-target-file' prescriberKeywords=STRING 'attribution-list' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
@@ -290,6 +295,9 @@ documentClassification:
 
 qrAttribution:
     'qrAttribution' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
+
+uploadAsset:
+    'uploadAsset' 'as' name=STRING 'from-target-file' filePath=STRING 'template-id' templateId=STRING  'auth-token' token=STRING 'using'  '{' '}' ('on-condition' condition=expression)* ;
 resource : STRING;
 
 //rules

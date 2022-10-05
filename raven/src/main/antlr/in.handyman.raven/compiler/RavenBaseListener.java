@@ -535,6 +535,18 @@ public class RavenBaseListener implements RavenListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterDocnetAttribution(RavenParser.DocnetAttributionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDocnetAttribution(RavenParser.DocnetAttributionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterPrescriberAttribution(RavenParser.PrescriberAttributionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -590,6 +602,18 @@ public class RavenBaseListener implements RavenListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitQrAttribution(RavenParser.QrAttributionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterUploadAsset(RavenParser.UploadAssetContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitUploadAsset(RavenParser.UploadAssetContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
