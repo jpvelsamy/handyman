@@ -278,7 +278,7 @@ drugAttribution:
     'drugAttribution' 'as' name=STRING 'from-target-file' drugKeywords=STRING 'attribution-list' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
 
 documentClassification:
-    'documentClassification' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
+    'documentClassification' 'as' name=STRING 'from-target-file' filePath=STRING 'model-path' modelFilePath=STRING 'labels' labels=STRING 'output-dest-file' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
 
 qrAttribution:
     'qrAttribution' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;

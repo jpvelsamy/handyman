@@ -26,6 +26,10 @@ public class DocumentClassification implements IActionContext {
 
   private String filePath;
 
+  private String modelFilePath;
+
+  private String labels;
+
   private String outputDir;
 
   private Boolean condition = true;
