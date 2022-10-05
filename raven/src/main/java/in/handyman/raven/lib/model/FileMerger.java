@@ -19,14 +19,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "QrAttribution"
+    actionName = "FileMerger"
 )
-public class QrAttribution implements IActionContext {
+public class FileMerger implements IActionContext {
   private String name;
 
-  private String filePath;
+  private String requestBody;
 
-  private String url;
+  private String outputDir;
 
   private Boolean condition = true;
 }
