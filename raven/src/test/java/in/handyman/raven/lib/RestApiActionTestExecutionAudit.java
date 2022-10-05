@@ -46,4 +46,15 @@ class RestApiActionTestExecutionAudit {
         LambdaEngine.start(request);
     }
 
+
+    @Test
+    public void testPreprocess(){
+        LContext request = LContext.builder()
+                .pipelineName("root.processing")
+                .processLoadType(HRequestResolver.LoadType.FILE.name())
+                .inheritedContext(Map.of("batch_id","INTICS-BATCH-535649"))
+                .build();
+        log.info(request.toString());
+        LambdaEngine.start(request);
+    }
 }

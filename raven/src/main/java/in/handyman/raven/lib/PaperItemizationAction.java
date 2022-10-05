@@ -1,5 +1,6 @@
 package in.handyman.raven.lib;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import in.handyman.raven.exception.HandymanException;
@@ -11,6 +12,7 @@ import in.handyman.raven.lib.model.PaperItemization;
 import java.lang.Exception;
 import java.lang.Object;
 import java.lang.Override;
+import java.util.Map;
 
 import okhttp3.*;
 import org.slf4j.Logger;
@@ -67,8 +69,9 @@ public class PaperItemizationAction implements IActionExecution {
       String responseBody = response.body().string();
       String name = paperItemization.getName() + "-Paper-itemized-response";
       if (response.isSuccessful()) {
-        action.getContext().put(name, responseBody);
-        log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
+        Map<String, String> responseMap = mapper.readValue(responseBody, new TypeReference<>() {
+        });
+        responseMap.forEach((s, s2) -> action.getContext().put(String.format("%s.%s", paperItemization.getName(), s), s2));        log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
       }else {
         log.info(aMarker, "The Failure Response  {} {}", name, responseBody);
       }
