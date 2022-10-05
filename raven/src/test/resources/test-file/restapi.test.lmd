@@ -1,57 +1,49 @@
 process "test.restapi"
 {
-	try
-	{
-	    transform as "create DDL : DeNoising" on "${agadia}" using {
-            "   CREATE schema if not exists agadia;
-                CREATE TABLE if not exists agadia.preprocessing_payload_queue (
-                    producer_process_id int8 NOT NULL,
-                    consumer_process_id int8 NOT NULL,
-                    batch_id varchar NOT NULL,
-                    intics_reference_id varchar NOT NULL,
-                    fax_reference_id varchar NOT NULL,
-                    created_on timestamp NOT NULL,
-                    file_checksum varchar NULL,
-                    file_size float8 NULL,
-                    CONSTRAINT preprocessing_payload_queue_pk PRIMARY KEY (batch_id, intics_reference_id)
-                );
-            "
-	    }
+
+	 try {
+
+             assign as "root" source "${intics_agadia}" using {
+
+                 "SELECT process_id as process_id,
+                  batch_id as batch_id,
+                  intics_reference_id as intics_reference_id,
+                  fax_reference_id as fax_reference_id
+                  FROM intics_agadia.add_fax_pipeline_audit;"
+
+             }
+
+             assign as "root2" source "${intics_agadia}" using {
+
+                "SELECT concat_ws ('/','${parent_dir}','${root.process_id}','${root.batch_id}','${root.intics_reference_id}','${root.fax_reference_id}') as target_directory_path;"
+
+             }
 
 
+             createDirectory as "creating directory" using {
+
+                 "${root2.target_directory_path}"
+
+             }
 
 
-        transform as "inserting the preprocess pipeline audit" on "${agadia}" using
-        {"
-            INSERT INTO agadia.preprocessing_payload_queue
-            (producer_process_id, consumer_process_id, batch_id, intics_reference_id, fax_reference_id, created_on, file_checksum, file_size)
-            VALUES
-            ('${producer_process_id}', ${process-id}, ${batch_id}, ${intics_reference_id}, ${fax_reference_id}, );
+             checksum
+             as "generating checksum for sample"
+             file-path "/home/bharath.k@zucisystems.com/Documents/cub-lambdas-Icarus/1/12/123/1234"
+             file-name "a.zip" using {
 
-        "} on-condition if "true"=="true"
+                 "SELECT 1"
 
-        assign as "payloadqueuestatus" source "${agadia}" using {"
-                select status from payloadqueue.preprocessing_payload_queue WHERE status='PENDING';
-        "} on-condition if "true"=="true"
+             }
 
-        transform as "updating the payload queue status" on "${agadia}" using
-        {"
-            UPDATE payloadqueue.preprocessing_payload_queue SET status = 'IN_PROGRESS'
-            WHERE producer_process_id = 1 ;
-        "} on-condition if "${payloadqueuestatus.status}"=="PENDING"
+             fileSize
+             as "generating filesize for sample"
+             file-path "/home/bharath.k@zucisystems.com/Documents/cub-lambdas-Icarus/1/12/123/1234"
+             file-name "a.zip" using {
 
+                 "SELECT 1"
 
-        blankPageRemover as "blank pageremoval" from-target-file "/home/pradeep.k@zucisystems.com/workspace_HFR/source_of_truth/modum_tech_sample.pdf"
-        using "/home/pradeep.k@zucisystems.com/Agadia/Output/${process-id}"  using
-         {
-         } on-condition if "true"=="true"
-
-
-        paper-itemization as "paperItemization" from-target-file "/home/pradeep.k@zucisystems.com/Desktop/tmpHFR/agadia_asis/input/modum_tech_sample_1.pdf"
-        using "/home/pradeep.k@zucisystems.com/Agadia/Output/${process-id}"  using
-         {
-         } on-condition if "true"=="true"
-
+             }
 
 
 	}

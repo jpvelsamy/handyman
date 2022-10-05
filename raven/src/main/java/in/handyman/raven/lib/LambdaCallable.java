@@ -23,7 +23,8 @@ public class LambdaCallable implements Callable<PipelineExecutionAudit> {
         try {
             return LambdaEngine.start(lContext);
         } catch (Exception e) {
-            throw new HandymanException("", e);
+            log.trace(e.getMessage(),e);
+            throw e;
         } finally {
             if (countDownLatch != null) {
                 countDownLatch.countDown();

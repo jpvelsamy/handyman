@@ -67,7 +67,10 @@ action:
     |providerAttribution
     |drugAttribution
     |documentClassification
-    |qrAttribution);
+    |qrAttribution
+    |checksum
+    |fileSize
+    |ravenVmException);
 
 multitude:
     'multitude' 'as' name=STRING ('on' on= STRING)* 'using'
@@ -249,8 +252,14 @@ expression :'if' (lhs=STRING operator=Operator rhs=STRING);
 log:
    'log' 'as' 'level' level=STRING 'with' 'message' '{' message=STRING '}';
 
-exception:
-    'raise exception' '{' message=STRING '}';
+ravenVmException:
+    'raise exception' 'as' name=STRING 'using' '{' message=STRING '}'('on-condition' condition=expression)* ;
+
+checksum:
+    'checksum' 'as' name=STRING 'using' '{' filePath=STRING '}' ('on-condition' condition=expression)* ;
+
+fileSize:
+    'fileSize' 'as' name=STRING 'using' '{' filePath=STRING '}' ('on-condition' condition=expression)* ;
 
 downloadAsset:
     'download-asset' 'as' name=STRING 'from-url' url=STRING 'at' location=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
