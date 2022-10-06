@@ -4,6 +4,7 @@ import in.handyman.raven.lambda.action.ActionContext;
 import in.handyman.raven.lambda.action.IActionContext;
 import java.lang.Boolean;
 import java.lang.String;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,16 +20,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "PatientAttribution"
+    actionName = "DocnetAttribution"
 )
-public class PatientAttribution implements IActionContext {
+public class DocnetAttribution implements IActionContext {
   private String name;
 
-  private String assetId;
+  private String inputFilePath;
 
-  private String patientKeywords;
+  private String STRING;
 
-  private String token;
+  private String attributes;
 
   private Boolean condition = true;
 }

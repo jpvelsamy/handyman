@@ -19,14 +19,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "PatientAttribution"
+    actionName = "UploadAsset"
 )
-public class PatientAttribution implements IActionContext {
+public class UploadAsset implements IActionContext {
   private String name;
 
-  private String assetId;
+  private String filePath;
 
-  private String patientKeywords;
+  private String templateId;
 
   private String token;
 
