@@ -68,6 +68,7 @@ action:
     |drugAttribution
     |documentClassification
     |qrAttribution
+    |fileMerger
     |checksum
     |fileSize
     |ravenVmException);
@@ -289,7 +290,11 @@ documentClassification:
     'documentClassification' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
 
 qrAttribution:
-    'qrAttribution' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
+    'qrAttribution' 'as' name=STRING 'using'  '{' filePath=STRING '}' ('on-condition' condition=expression)* ;
+
+fileMerger:
+    'fileMerger' 'as' name=STRING  'in' outputDir=STRING 'using'  '{' requestBody=STRING '}' ('on-condition' condition=expression)* ;
+
 resource : STRING;
 
 //rules

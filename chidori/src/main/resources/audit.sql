@@ -1,11 +1,11 @@
--- DROP SCHEMA audit;
+    -- DROP SCHEMA audit;
 
-CREATE SCHEMA audit AUTHORIZATION postgres;
--- audit.action_execution_audit definition
+    CREATE SCHEMA audit AUTHORIZATION postgres;
+    -- audit.action_execution_audit definition
 
--- Drop table
+    -- Drop table
 
--- DROP TABLE audit.action_execution_audit;
+    -- DROP TABLE audit.action_execution_audit;
 
 CREATE TABLE audit.action_execution_audit
 (

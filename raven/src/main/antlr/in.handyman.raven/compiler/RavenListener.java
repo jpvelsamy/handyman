@@ -490,6 +490,16 @@ public interface RavenListener extends ParseTreeListener {
 	 */
 	void exitQrAttribution(RavenParser.QrAttributionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link RavenParser#fileMerger}.
+	 * @param ctx the parse tree
+	 */
+	void enterFileMerger(RavenParser.FileMergerContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#fileMerger}.
+	 * @param ctx the parse tree
+	 */
+	void exitFileMerger(RavenParser.FileMergerContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link RavenParser#resource}.
 	 * @param ctx the parse tree
 	 */
