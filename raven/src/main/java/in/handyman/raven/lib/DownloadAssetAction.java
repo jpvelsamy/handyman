@@ -63,10 +63,10 @@ public class DownloadAssetAction implements IActionExecution {
     Request request = new Request.Builder().url(this.URI)
             .post(RequestBody.create( objectNode.toString(),MediaTypeJSON)).build();
     log.info(aMarker, "The request got it successfully the url and outputDir {} {}",downloadAsset.getUrl(),downloadAsset.getLocation() );
+      String name = downloadAsset.getName();
 
     try (Response response = httpclient.newCall(request).execute()) {
       String responseBody = Objects.requireNonNull(response.body()).string();
-      String name = downloadAsset.getName();
       if (response.isSuccessful()) {
           JSONObject json = new JSONObject(responseBody);
           String path = json.get("paperPaths").toString();
@@ -79,7 +79,8 @@ public class DownloadAssetAction implements IActionExecution {
         action.getContext().put(name+".isSuccessful", String.valueOf(response.isSuccessful()));
     }catch (Exception e){
       log.info(aMarker, "The Exception occurred ",e);
-      throw new HandymanException("Failed to execute", e);
+        action.getContext().put(name+".isSuccessful", "false");
+        throw new HandymanException("Failed to execute", e);
     }
 
   }

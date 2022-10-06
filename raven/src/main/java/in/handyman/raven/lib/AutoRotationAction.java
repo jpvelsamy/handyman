@@ -64,19 +64,21 @@ public class AutoRotationAction implements IActionExecution {
     Request request = new Request.Builder().url(URI)
             .post(RequestBody.create( objectNode.toString(),MediaTypeJSON)).build();
     log.info(aMarker, "The request got it successfully the File Path and outputDir {} {}",autoRotation.getFilePath(),autoRotation.getOutputDir());
+    String name = autoRotation.getName() + "-auto-rotation-response";
 
     try (Response response = httpclient.newCall(request).execute()) {
       String responseBody = response.body().string();
-      String name = autoRotation.getName() + "-auto-rotation-response";
       if (response.isSuccessful()) {
        action.getContext().put( autoRotation.getName()+".processedFilePaths",
                Optional.ofNullable(mapper.readTree(responseBody).get("processedFilePaths")).map(JsonNode::toString).orElse("[]"));
       log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
       }else {
-        log.info(aMarker, "The Failure Response  {} {}", name, responseBody);
+        action.getContext().put(name+".errorMessage", responseBody);
       }
+      action.getContext().put(name+".isSuccessful", String.valueOf(response.isSuccessful()));
     }catch (Exception e){
       log.info(aMarker, "The Exception occurred ",e);
+    action.getContext().put(name+".isSuccessful", "false");
       throw new HandymanException("Failed to execute", e);
     }
 

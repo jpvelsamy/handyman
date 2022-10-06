@@ -63,9 +63,9 @@ public class BlankPageRemoverAction implements IActionExecution {
             .post(RequestBody.create( objectNode.toString(),MediaTypeJSON)).build();
     log.info(aMarker, "The request got it successfully the File Path and outputDir {} {}",blankPageRemover.getFilePath(),blankPageRemover.getOutputDir());
 
+    String name = blankPageRemover.getName() + "-blank-page-remover-response";
     try (Response response = httpclient.newCall(request).execute()) {
       String responseBody = response.body().string();
-      String name = blankPageRemover.getName() + "-blank-page-remover-response";
       if (response.isSuccessful()) {
         Map<String, String> responseMap = mapper.readValue(responseBody, new TypeReference<>() {
         });
@@ -73,9 +73,12 @@ public class BlankPageRemoverAction implements IActionExecution {
         log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
       }else {
         log.info(aMarker, "The Failure Response  {} {}", name, responseBody);
+        action.getContext().put(name+".errorMessage", responseBody);
       }
+      action.getContext().put(name+".isSuccessful", String.valueOf(response.isSuccessful()));
     }catch (Exception e){
       log.info(aMarker, "The Exception occurred ",e);
+      action.getContext().put(name+".isSuccessful", "false");
       throw new HandymanException("Failed to execute", e);
     }
   }
