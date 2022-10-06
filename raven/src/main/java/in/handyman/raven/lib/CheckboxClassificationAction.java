@@ -63,7 +63,7 @@ public class CheckboxClassificationAction implements IActionExecution {
 
     try (Response response = httpclient.newCall(request).execute()) {
       String responseBody = response.body().string();
-      String name = checkboxClassification.getName();
+      String name = checkboxClassification.getName()+"_response";
       if (response.isSuccessful()) {
         action.getContext().put(name, responseBody);
         log.info(aMarker, "The Successful Response  {} {}", name, responseBody);

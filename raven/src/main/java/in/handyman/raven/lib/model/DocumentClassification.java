@@ -26,7 +26,7 @@ public class DocumentClassification implements IActionContext {
 
   private String filePath;
 
-  private String modelPath;
+  private String modelFilePath;
 
   private String labels;
 
