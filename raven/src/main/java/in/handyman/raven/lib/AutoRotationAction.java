@@ -1,6 +1,7 @@
 package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import in.handyman.raven.exception.HandymanException;
@@ -12,6 +13,7 @@ import java.lang.Exception;
 import java.lang.Object;
 import java.lang.Override;
 import java.util.Map;
+import java.util.Optional;
 
 import okhttp3.*;
 import org.slf4j.Logger;
@@ -67,9 +69,9 @@ public class AutoRotationAction implements IActionExecution {
       String responseBody = response.body().string();
       String name = autoRotation.getName() + "-auto-rotation-response";
       if (response.isSuccessful()) {
-        Map<String, String> responseMap = mapper.readValue(responseBody, new TypeReference<>() {
-        });
-        responseMap.forEach((s, s2) -> action.getContext().put(String.format("%s.%s", autoRotation.getName(), s), s2));        log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
+       action.getContext().put( autoRotation.getName()+".processedFilePaths",
+               Optional.ofNullable(mapper.readTree(responseBody).get("processedFilePaths")).map(JsonNode::toString).orElse("[]"));
+      log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
       }else {
         log.info(aMarker, "The Failure Response  {} {}", name, responseBody);
       }
