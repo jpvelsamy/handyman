@@ -19,16 +19,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "DocumentClassification"
+    actionName = "CheckboxClassification"
 )
-public class DocumentClassification implements IActionContext {
+public class CheckboxClassification implements IActionContext {
   private String name;
 
   private String filePath;
-
-  private String modelPath;
-
-  private String labels;
 
   private String outputDir;
 
