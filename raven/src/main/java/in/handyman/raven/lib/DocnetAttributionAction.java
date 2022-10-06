@@ -7,9 +7,12 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.DocnetAttribution;
+
+import java.io.File;
 import java.lang.Exception;
 import java.lang.Object;
 import java.lang.Override;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.*;
 import org.slf4j.Logger;
@@ -45,7 +48,11 @@ public class DocnetAttributionAction implements IActionExecution {
 
   @Override
   public void execute() throws Exception {
-    final OkHttpClient httpclient = new OkHttpClient();
+    final OkHttpClient httpclient = new OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.MINUTES)
+            .writeTimeout(10, TimeUnit.MINUTES)
+            .readTimeout(10, TimeUnit.MINUTES).build();
+
 
     log.info(aMarker, "The request got it successfully for Asset ID and Attribution List {} {}",
             docnetAttribution.getName(),docnetAttribution.getAttributes());
@@ -65,8 +72,11 @@ public class DocnetAttributionAction implements IActionExecution {
               responseBody);
       if (response.isSuccessful()) {
         action.getContext().put(name, responseBody);
+        action.getContext().put(name.concat(".error"), "false");
         log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
       }else {
+        action.getContext().put(name.concat(".error"), "true");
+        action.getContext().put(name.concat(".errorMessage"), responseBody);
         log.info(aMarker, "The Failure Response  {} {}", name, responseBody);
       }
     }catch (Exception e){

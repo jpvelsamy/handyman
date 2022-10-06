@@ -62,10 +62,6 @@ action:
     |paperItemization
     |autoRotation
     |blankPageRemover
-    |patientAttribution
-    |prescriberAttribution
-    |providerAttribution
-    |drugAttribution
     |documentClassification
     |qrAttribution
     |fileMerger
@@ -276,20 +272,8 @@ autoRotation:
 blankPageRemover:
     'blankPageRemover' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
 
-patientAttribution:
-    'patientAttribution' 'as' name=STRING 'asset-id' assetId=STRING 'attribution-list' patientKeywords=STRING  'auth-token' token=STRING 'using'  '{' '}' ('on-condition' condition=expression)* ;
-
 docnetAttribution:
     'docnetAttribution' 'as' name=STRING 'from-target-file' inputFilePath=STRING 'using'  '{' attributes=STRING '}' ('on-condition' condition=expression)* ;
-
-prescriberAttribution:
-    'prescriberAttribution' 'as' name=STRING 'from-target-file' prescriberKeywords=STRING 'attribution-list' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
-
-providerAttribution:
-    'providerAttribution' 'as' name=STRING 'from-target-file' providerKeywords=STRING 'attribution-list' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
-
-drugAttribution:
-    'drugAttribution' 'as' name=STRING 'from-target-file' drugKeywords=STRING 'attribution-list' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
 
 documentClassification:
     'documentClassification' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
