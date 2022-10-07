@@ -28,5 +28,7 @@ public class CheckboxClassification implements IActionContext {
 
   private String outputDir;
 
+  private String value;
+
   private Boolean condition = true;
 }

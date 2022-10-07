@@ -73,7 +73,8 @@ action:
     |fileSize
     |ravenVmException
     |uploadAsset
-    |docnetAttribution);
+    |docnetAttribution
+    |checkboxClassification);
 
 multitude:
     'multitude' 'as' name=STRING ('on' on= STRING)* 'using'
@@ -292,7 +293,7 @@ drugAttribution:
     'drugAttribution' 'as' name=STRING 'from-target-file' drugKeywords=STRING 'attribution-list' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
 
 documentClassification:
-    'documentClassification' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
+    'documentClassification' 'as' name=STRING 'from-target-file' filePath=STRING 'model-file' modelFilePath=STRING 'labels' labels=STRING 'outputDir' outputDir=STRING 'using'  '{' '}' ('on-condition' condition=expression)* ;
 
 qrAttribution:
     'qrAttribution' 'as' name=STRING 'using'  '{' filePath=STRING '}' ('on-condition' condition=expression)* ;
@@ -302,6 +303,12 @@ uploadAsset:
 
 fileMerger:
     'fileMerger' 'as' name=STRING  'in' outputDir=STRING 'using'  '{' requestBody=STRING '}' ('on-condition' condition=expression)* ;
+
+
+checkboxClassification:
+    'checkboxClassification' 'as' name=STRING 'from-target-file' filePath=STRING 'in' outputDir=STRING 'using' '{'
+     value=STRING
+     '}' ('on-condition' condition=expression)* ;
 
 resource : STRING;
 
