@@ -105,3 +105,4 @@ public class CheckboxClassificationAction implements IActionExecution {
     return checkboxClassification.getCondition();
   }
 }
+
