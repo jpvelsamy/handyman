@@ -430,16 +430,6 @@ public interface RavenListener extends ParseTreeListener {
 	 */
 	void exitBlankPageRemover(RavenParser.BlankPageRemoverContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link RavenParser#patientAttribution}.
-	 * @param ctx the parse tree
-	 */
-	void enterPatientAttribution(RavenParser.PatientAttributionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link RavenParser#patientAttribution}.
-	 * @param ctx the parse tree
-	 */
-	void exitPatientAttribution(RavenParser.PatientAttributionContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link RavenParser#docnetAttribution}.
 	 * @param ctx the parse tree
 	 */
@@ -449,36 +439,6 @@ public interface RavenListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDocnetAttribution(RavenParser.DocnetAttributionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link RavenParser#prescriberAttribution}.
-	 * @param ctx the parse tree
-	 */
-	void enterPrescriberAttribution(RavenParser.PrescriberAttributionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link RavenParser#prescriberAttribution}.
-	 * @param ctx the parse tree
-	 */
-	void exitPrescriberAttribution(RavenParser.PrescriberAttributionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link RavenParser#providerAttribution}.
-	 * @param ctx the parse tree
-	 */
-	void enterProviderAttribution(RavenParser.ProviderAttributionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link RavenParser#providerAttribution}.
-	 * @param ctx the parse tree
-	 */
-	void exitProviderAttribution(RavenParser.ProviderAttributionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link RavenParser#drugAttribution}.
-	 * @param ctx the parse tree
-	 */
-	void enterDrugAttribution(RavenParser.DrugAttributionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link RavenParser#drugAttribution}.
-	 * @param ctx the parse tree
-	 */
-	void exitDrugAttribution(RavenParser.DrugAttributionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link RavenParser#documentClassification}.
 	 * @param ctx the parse tree
@@ -509,6 +469,16 @@ public interface RavenListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitUploadAsset(RavenParser.UploadAssetContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#fileMerger}.
+	 * @param ctx the parse tree
+	 */
+	void enterFileMerger(RavenParser.FileMergerContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#fileMerger}.
+	 * @param ctx the parse tree
+	 */
+	void exitFileMerger(RavenParser.FileMergerContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link RavenParser#resource}.
 	 * @param ctx the parse tree
