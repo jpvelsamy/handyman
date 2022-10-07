@@ -34,3 +34,4 @@ public class DocumentClassification implements IActionContext {
 
   private Boolean condition = true;
 }
+
