@@ -20,15 +20,15 @@ import lombok.NoArgsConstructor;
         actionName = "CheckboxClassification"
 )
 public class CheckboxClassification implements IActionContext {
+
     private String name;
 
     private String filePath;
 
     private String outputDir;
 
-    private String value;
-
     private Boolean condition = true;
+
 }
 
 
