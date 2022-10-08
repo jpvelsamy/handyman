@@ -480,6 +480,16 @@ public interface RavenListener extends ParseTreeListener {
 	 */
 	void exitFileMerger(RavenParser.FileMergerContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link RavenParser#checkboxClassification}.
+	 * @param ctx the parse tree
+	 */
+	void enterCheckboxClassification(RavenParser.CheckboxClassificationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#checkboxClassification}.
+	 * @param ctx the parse tree
+	 */
+	void exitCheckboxClassification(RavenParser.CheckboxClassificationContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link RavenParser#resource}.
 	 * @param ctx the parse tree
 	 */

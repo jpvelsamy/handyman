@@ -583,6 +583,18 @@ public class RavenBaseListener implements RavenListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterCheckboxClassification(RavenParser.CheckboxClassificationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCheckboxClassification(RavenParser.CheckboxClassificationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterResource(RavenParser.ResourceContext ctx) { }
 	/**
 	 * {@inheritDoc}
