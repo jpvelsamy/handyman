@@ -17,7 +17,6 @@ import lombok.ToString;
 public class SpwProcessConfig extends Auditable {
 
 
-
     private Long id;
     private String process;
 

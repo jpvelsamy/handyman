@@ -1,6 +1,5 @@
 package in.handyman.raven.lib;
 
-import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.audit.PipelineExecutionAudit;
 import in.handyman.raven.lambda.process.LContext;
 import in.handyman.raven.lambda.process.LambdaEngine;
@@ -23,7 +22,7 @@ public class LambdaCallable implements Callable<PipelineExecutionAudit> {
         try {
             return LambdaEngine.start(lContext);
         } catch (Exception e) {
-            log.trace(e.getMessage(),e);
+            log.trace(e.getMessage(), e);
             throw e;
         } finally {
             if (countDownLatch != null) {

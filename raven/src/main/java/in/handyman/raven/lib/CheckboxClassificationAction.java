@@ -6,13 +6,13 @@ import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
-
-import java.lang.Exception;
-import java.lang.Object;
-import java.lang.Override;
-
 import in.handyman.raven.lib.model.CheckboxClassification;
-import okhttp3.*;
+import in.handyman.raven.util.InstanceUtil;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -25,84 +25,76 @@ import org.slf4j.MarkerFactory;
         actionName = "CheckboxClassification"
 )
 public class CheckboxClassificationAction implements IActionExecution {
-  private final ActionExecutionAudit action;
+    private static final MediaType MediaTypeJSON = MediaType
+            .parse("application/json; charset=utf-8");
+    private final ActionExecutionAudit action;
+    private final Logger log;
+    private final CheckboxClassification checkboxClassification;
+    private final Marker aMarker;
+    private final ObjectMapper mapper = new ObjectMapper();
+    private final String URI;
 
-  private final Logger log;
+    public CheckboxClassificationAction(final ActionExecutionAudit action, final Logger log,
+                                        final Object checkboxClassification) {
+        this.checkboxClassification = (CheckboxClassification) checkboxClassification;
+        this.action = action;
+        this.log = log;
+        this.aMarker = MarkerFactory.getMarker(" CheckboxClassification:" + this.checkboxClassification.getName());
+        this.URI = action.getContext().get("copro.checkbox.url");
 
-  private final CheckboxClassification checkboxClassification;
-
-  private final Marker aMarker;
-
-  private final ObjectMapper mapper = new ObjectMapper();
-  private static final MediaType MediaTypeJSON = MediaType
-          .parse("application/json; charset=utf-8");
-  private final String URI  ;
-
-  public CheckboxClassificationAction(final ActionExecutionAudit action, final Logger log,
-                                      final Object checkboxClassification) {
-    this.checkboxClassification = (CheckboxClassification) checkboxClassification;
-    this.action = action;
-    this.log = log;
-    this.aMarker = MarkerFactory.getMarker(" CheckboxClassification:"+this.checkboxClassification.getName());
-    this.URI=action.getContext().get("copro.checkbox.url");
-
-  }
-
-  @Override
-  public void execute() throws Exception {
-    OkHttpClient httpclient = new OkHttpClient();
-
-    String handwrittenLabelName = checkboxClassification.getValue().toLowerCase();
-    final ObjectNode objectNode = mapper.createObjectNode();
-
-    objectNode.put("inputFilePath",checkboxClassification.getFilePath());
-    objectNode.put("outputDir",checkboxClassification.getOutputDir());
-
-    Request request = new Request.Builder().url(URI)
-            .post(RequestBody.create( objectNode.toString(),MediaTypeJSON)).build();
-    log.info(aMarker, "The request got it successfully the File Path and outputDir {} {}",checkboxClassification.getFilePath(),checkboxClassification.getOutputDir());
-
-    try (Response response = httpclient.newCall(request).execute()) {
-      String responseBody = response.body().string();
-      String name = checkboxClassification.getName()+"_response";
-      String checkboxLabelName = checkboxClassification.getValue();
-      checkboxLabelName = checkboxLabelName.toLowerCase();
-      JSONObject jsonResult = new JSONObject(responseBody);
-      // check validation
-      final ObjectNode docJson = mapper.createObjectNode();
-      String response_output;
-      //String Concat_output = String.valueOf(checkboxLabelName.toLowerCase().equals(handwrittenLabelName.toLowerCase()));
-      if(handwrittenLabelName.equals("urgent") || checkboxLabelName.equals("urgent"))
-      {
-        response_output = "URGENT";
-      }
-      else
-      {
-        response_output = "NON URGENT";
-      }
-
-      // json for document classification
-
-      docJson.put("label",response_output);
-
-      if (response.isSuccessful()) {
-        String classifyName = checkboxClassification.getName()+"_classification";
-        action.getContext().put(name, responseBody);
-        action.getContext().put(classifyName, docJson.toString());
-        log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
-      }else {
-        log.info(aMarker, "The Failure Response  {} {}", name, responseBody);
-      }
     }
-    catch (Exception e){
-      log.info(aMarker, "The Exception occurred ",e);
-      throw new HandymanException("Failed to execute", e);
-    }
-  }
 
-  @Override
-  public boolean executeIf() throws Exception {
-    return checkboxClassification.getCondition();
-  }
+    @Override
+    public void execute() throws Exception {
+        final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
+
+        String handwrittenLabelName = checkboxClassification.getValue().toLowerCase();
+        final ObjectNode objectNode = mapper.createObjectNode();
+
+        objectNode.put("inputFilePath", checkboxClassification.getFilePath());
+        objectNode.put("outputDir", checkboxClassification.getOutputDir());
+
+        Request request = new Request.Builder().url(URI)
+                .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
+        log.info(aMarker, "The request got it successfully the File Path and outputDir {} {}", checkboxClassification.getFilePath(), checkboxClassification.getOutputDir());
+
+        try (Response response = httpclient.newCall(request).execute()) {
+            String responseBody = response.body().string();
+            String name = checkboxClassification.getName() + "_response";
+            String checkboxLabelName = checkboxClassification.getValue();
+            checkboxLabelName = checkboxLabelName.toLowerCase();
+            JSONObject jsonResult = new JSONObject(responseBody);
+            // check validation
+            final ObjectNode docJson = mapper.createObjectNode();
+            String response_output;
+            //String Concat_output = String.valueOf(checkboxLabelName.toLowerCase().equals(handwrittenLabelName.toLowerCase()));
+            if (handwrittenLabelName.equals("urgent") || checkboxLabelName.equals("urgent")) {
+                response_output = "URGENT";
+            } else {
+                response_output = "NON URGENT";
+            }
+
+            // json for document classification
+
+            docJson.put("label", response_output);
+
+            if (response.isSuccessful()) {
+                String classifyName = checkboxClassification.getName() + "_classification";
+                action.getContext().put(name, responseBody);
+                action.getContext().put(classifyName, docJson.toString());
+                log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
+            } else {
+                log.info(aMarker, "The Failure Response  {} {}", name, responseBody);
+            }
+        } catch (Exception e) {
+            log.info(aMarker, "The Exception occurred ", e);
+            throw new HandymanException("Failed to execute", e);
+        }
+    }
+
+    @Override
+    public boolean executeIf() throws Exception {
+        return checkboxClassification.getCondition();
+    }
 }
 

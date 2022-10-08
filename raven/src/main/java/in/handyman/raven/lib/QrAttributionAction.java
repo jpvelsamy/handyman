@@ -7,7 +7,12 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.QrAttribution;
-import okhttp3.*;
+import in.handyman.raven.util.InstanceUtil;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -21,13 +26,11 @@ import java.util.Objects;
         actionName = "QrAttribution"
 )
 public class QrAttributionAction implements IActionExecution {
+    private static final MediaType MediaTypeJSON = MediaType.parse("application/json; charset=utf-8");
     private final ActionExecutionAudit action;
-
     private final Logger log;
-
     private final QrAttribution qrAttribution;
     private final ObjectMapper mapper = new ObjectMapper();
-    private static final MediaType MediaTypeJSON = MediaType.parse("application/json; charset=utf-8");
     private final String URI;
 
     private final Marker aMarker;
@@ -44,7 +47,7 @@ public class QrAttributionAction implements IActionExecution {
     @Override
     public void execute() throws Exception {
         {
-            OkHttpClient httpclient = new OkHttpClient();
+            final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
             final ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("file_path", qrAttribution.getFilePath());
             objectNode.put("url", qrAttribution.getUrl());

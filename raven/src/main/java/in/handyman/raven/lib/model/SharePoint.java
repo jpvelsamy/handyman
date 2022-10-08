@@ -2,8 +2,6 @@ package in.handyman.raven.lib.model;
 
 import in.handyman.raven.lambda.action.ActionContext;
 import in.handyman.raven.lambda.action.IActionContext;
-import java.lang.Boolean;
-import java.lang.String;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,30 +17,30 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "SharePoint"
+        actionName = "SharePoint"
 )
 public class SharePoint implements IActionContext {
-  private String name;
+    private String name;
 
-  private String shpClientId;
+    private String shpClientId;
 
-  private String shpTenantId;
+    private String shpTenantId;
 
-  private String shpClientSecret;
+    private String shpClientSecret;
 
-  private String orgName;
+    private String orgName;
 
-  private String actionType;
+    private String actionType;
 
-  private String siteUrl;
+    private String siteUrl;
 
-  private String sourceRelativePath;
+    private String sourceRelativePath;
 
-  private String fileName;
+    private String fileName;
 
-  private String targetRelativePath;
+    private String targetRelativePath;
 
-  private String value;
+    private String value;
 
     @Builder.Default
     private Boolean condition = true;

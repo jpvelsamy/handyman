@@ -100,10 +100,10 @@ public class RestApiAction implements IActionExecution {
         final RequestBody body;
         if (Objects.equals(Constants.BODY_TYPE_JSON, restApi.getBodyType())) {
             var bodyNode = JsonNodeFactory.instance.objectNode();
-            payload.forEach(restPart ->{
-                if (Objects.equals(Constants.PART_TYPE_ARRAY,restPart.getType()))
+            payload.forEach(restPart -> {
+                if (Objects.equals(Constants.PART_TYPE_ARRAY, restPart.getType()))
                     bodyNode.putArray(restPart.getPartName()).addAll(getArrayNode(restPart.getPartData()));
-                else if (Objects.equals(Constants.PART_TYPE_TEXT,restPart.getType()))
+                else if (Objects.equals(Constants.PART_TYPE_TEXT, restPart.getType()))
                     bodyNode.put(restPart.getPartName(), getResult(jdbi, restPart.getPartData()));
             });
             body = RequestBody.create(bodyNode.toString(), MediaType.get(APPLICATION_JSON_CHARSET_UTF_8));
@@ -147,9 +147,9 @@ public class RestApiAction implements IActionExecution {
             final Response execute = client.newCall(request).execute();
             var t = execute.body();
             assert t != null;
-            actionExecutionAudit.getContext().put(name,t.string());
+            actionExecutionAudit.getContext().put(name, t.string());
             log.info("Rest Api Response Content: " + execute.body() + " for URL: " + url);
-            log.info("Rest Api Response Content for " + name + " has been added to context : "+ t.string());
+            log.info("Rest Api Response Content for " + name + " has been added to context : " + t.string());
         } catch (Exception e) {
             log.error(aMarker, "Stopping execution, {}", url, e);
             log.error("Exception {}", ExceptionUtil.toString(e));
@@ -175,11 +175,12 @@ public class RestApiAction implements IActionExecution {
     }
 
     private ArrayNode getArrayNode(String value) {
-        var withoutBraces = value.replaceAll("\\[","").replaceAll("]","")
-                .replaceAll("\"","");
+        var withoutBraces = value.replaceAll("\\[", "").replaceAll("]", "")
+                .replaceAll("\"", "");
         final List<String> values = List.of(withoutBraces.split(","));
         return new ObjectMapper().valueToTree(values);
     }
+
     @Override
     public boolean executeIf() throws Exception {
         return restApi.getCondition();

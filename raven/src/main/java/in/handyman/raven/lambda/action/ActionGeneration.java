@@ -43,6 +43,13 @@ public class ActionGeneration {
     private static final String MAIN_JAVA = "src/main/java/";
     private static final String ACTION_IMPL = "Action";
 
+    private static String createVariableName(final String className) {
+        if (className != null) {
+            return className.substring(0, 1).toLowerCase() + className.substring(1);
+        }
+        return null;
+    }
+
     public void generate(final List<Class<?>> classes, final String modelTargetPackage, final String executionTargetPackage) {
         final Set<String> actions = Arrays.stream(RavenParser.ActionContext.class.getDeclaredMethods())
                 .map(Method::getReturnType).map(Class::getSimpleName)
@@ -163,13 +170,6 @@ public class ActionGeneration {
 
     private String getLambdaExecution(final String s) {
         return s.replace(CONTEXT, ACTION_IMPL);
-    }
-
-    private static String createVariableName(final String className) {
-        if (className != null) {
-            return className.substring(0, 1).toLowerCase() + className.substring(1);
-        }
-        return null;
     }
 
     private void addFieldMember(final Class<?> contextClass, final TypeSpec.Builder builder) {

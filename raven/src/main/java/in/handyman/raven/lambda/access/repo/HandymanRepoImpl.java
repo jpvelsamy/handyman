@@ -29,15 +29,13 @@ import java.util.stream.Collectors;
 @Slf4j
 public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
+    public static final String DOT = ".";
+    public static final String HANDYMAN_CONFIG_LOCATION = "handyman.config.location";
     protected static final String CONFIG_URL = "config.url";
     private static final String CONFIG_PASSWORD = "config.password";
     private static final String CONFIG_USER = "config.user";
     private static final Config CONFIG;
-
     private static final Jdbi jdbi;
-    public static final String DOT = ".";
-
-    public static final String HANDYMAN_CONFIG_LOCATION = "handyman.config.location";
 
     static {
         var filePath = Optional.ofNullable(System.getenv(HANDYMAN_CONFIG_LOCATION)).orElse("src/main/resources/config.props");

@@ -11,7 +11,6 @@ import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.ExportCsv;
 import in.handyman.raven.util.ExceptionUtil;
 import org.apache.commons.text.StringEscapeUtils;
-import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -75,10 +74,10 @@ public class ExportCsvAction implements IActionExecution {
                 }
                 con.commit();
             } catch (SQLException ex) {
-                    log.error(aMarker, "Stopping execution, General Error executing sql for {} with for campaign {}", execStmt, ex);
-                    log.info(aMarker, execStmt + ".exception", ExceptionUtil.toString(ex));
-                    throw new HandymanException("Process failed", ex);
-                }
+                log.error(aMarker, "Stopping execution, General Error executing sql for {} with for campaign {}", execStmt, ex);
+                log.info(aMarker, execStmt + ".exception", ExceptionUtil.toString(ex));
+                throw new HandymanException("Process failed", ex);
+            }
 
         }
         if (!sql.isEmpty()) {
