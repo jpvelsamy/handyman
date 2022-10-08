@@ -4914,7 +4914,6 @@ public class RavenParser extends Parser {
 		public Token name;
 		public Token filePath;
 		public Token outputDir;
-		public Token value;
 		public ExpressionContext condition;
 		public List<TerminalNode> STRING() { return getTokens(RavenParser.STRING); }
 		public TerminalNode STRING(int i) {
@@ -4966,22 +4965,20 @@ public class RavenParser extends Parser {
 			setState(1073);
 			match(T__1);
 			setState(1074);
-			((CheckboxClassificationContext)_localctx).value = match(STRING);
-			setState(1075);
 			match(T__2);
-			setState(1080);
+			setState(1079);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__10) {
 				{
 				{
-				setState(1076);
+				setState(1075);
 				match(T__10);
-				setState(1077);
+				setState(1076);
 				((CheckboxClassificationContext)_localctx).condition = expression();
 				}
 				}
-				setState(1082);
+				setState(1081);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -5021,7 +5018,7 @@ public class RavenParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(1083);
+			setState(1082);
 			match(STRING);
 			}
 		}
@@ -5062,20 +5059,20 @@ public class RavenParser extends Parser {
 		JsonContext _localctx = new JsonContext(_ctx, getState());
 		enterRule(_localctx, 98, RULE_json);
 		try {
-			setState(1087);
+			setState(1086);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(1085);
+				setState(1084);
 				obj();
 				}
 				break;
 			case T__119:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(1086);
+				setState(1085);
 				arr();
 				}
 				break;
@@ -5121,42 +5118,42 @@ public class RavenParser extends Parser {
 		enterRule(_localctx, 100, RULE_obj);
 		int _la;
 		try {
-			setState(1102);
+			setState(1101);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,73,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(1089);
+				setState(1088);
 				match(T__1);
-				setState(1090);
+				setState(1089);
 				pair();
-				setState(1095);
+				setState(1094);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while (_la==T__117) {
 					{
 					{
-					setState(1091);
+					setState(1090);
 					match(T__117);
-					setState(1092);
+					setState(1091);
 					pair();
 					}
 					}
-					setState(1097);
+					setState(1096);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
-				setState(1098);
+				setState(1097);
 				match(T__2);
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(1100);
+				setState(1099);
 				match(T__1);
-				setState(1101);
+				setState(1100);
 				match(T__2);
 				}
 				break;
@@ -5199,11 +5196,11 @@ public class RavenParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(1104);
+			setState(1103);
 			match(STRING);
-			setState(1105);
+			setState(1104);
 			match(T__118);
-			setState(1106);
+			setState(1105);
 			jValue();
 			}
 		}
@@ -5245,42 +5242,42 @@ public class RavenParser extends Parser {
 		enterRule(_localctx, 104, RULE_arr);
 		int _la;
 		try {
-			setState(1121);
+			setState(1120);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,75,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(1108);
+				setState(1107);
 				match(T__119);
-				setState(1109);
+				setState(1108);
 				jValue();
-				setState(1114);
+				setState(1113);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while (_la==T__117) {
 					{
 					{
-					setState(1110);
+					setState(1109);
 					match(T__117);
-					setState(1111);
+					setState(1110);
 					jValue();
 					}
 					}
-					setState(1116);
+					setState(1115);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
-				setState(1117);
+				setState(1116);
 				match(T__120);
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(1119);
+				setState(1118);
 				match(T__119);
-				setState(1120);
+				setState(1119);
 				match(T__120);
 				}
 				break;
@@ -5325,55 +5322,55 @@ public class RavenParser extends Parser {
 		JValueContext _localctx = new JValueContext(_ctx, getState());
 		enterRule(_localctx, 106, RULE_jValue);
 		try {
-			setState(1130);
+			setState(1129);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case STRING:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(1123);
+				setState(1122);
 				match(STRING);
 				}
 				break;
 			case NUMBER:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(1124);
+				setState(1123);
 				match(NUMBER);
 				}
 				break;
 			case T__1:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(1125);
+				setState(1124);
 				obj();
 				}
 				break;
 			case T__119:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(1126);
+				setState(1125);
 				arr();
 				}
 				break;
 			case T__121:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(1127);
+				setState(1126);
 				match(T__121);
 				}
 				break;
 			case T__122:
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(1128);
+				setState(1127);
 				match(T__122);
 				}
 				break;
 			case T__123:
 				enterOuterAlt(_localctx, 7);
 				{
-				setState(1129);
+				setState(1128);
 				match(T__123);
 				}
 				break;
@@ -5393,7 +5390,7 @@ public class RavenParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\u0084\u046d\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001"+
+		"\u0004\u0001\u0084\u046c\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001"+
 		"\u0002\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004"+
 		"\u0002\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007"+
 		"\u0002\b\u0007\b\u0002\t\u0007\t\u0002\n\u0007\n\u0002\u000b\u0007\u000b"+
@@ -5542,15 +5539,15 @@ public class RavenParser extends Parser {
 		"-\u0001-\u0001-\u0001-\u0001-\u0005-\u0415\b-\n-\f-\u0418\t-\u0001.\u0001"+
 		".\u0001.\u0001.\u0001.\u0001.\u0001.\u0001.\u0001.\u0001.\u0001.\u0005"+
 		".\u0425\b.\n.\f.\u0428\t.\u0001/\u0001/\u0001/\u0001/\u0001/\u0001/\u0001"+
-		"/\u0001/\u0001/\u0001/\u0001/\u0001/\u0001/\u0005/\u0437\b/\n/\f/\u043a"+
-		"\t/\u00010\u00010\u00011\u00011\u00031\u0440\b1\u00012\u00012\u00012\u0001"+
-		"2\u00052\u0446\b2\n2\f2\u0449\t2\u00012\u00012\u00012\u00012\u00032\u044f"+
-		"\b2\u00013\u00013\u00013\u00013\u00014\u00014\u00014\u00014\u00054\u0459"+
-		"\b4\n4\f4\u045c\t4\u00014\u00014\u00014\u00014\u00034\u0462\b4\u00015"+
-		"\u00015\u00015\u00015\u00015\u00015\u00015\u00035\u046b\b5\u00015\u0000"+
+		"/\u0001/\u0001/\u0001/\u0001/\u0001/\u0005/\u0436\b/\n/\f/\u0439\t/\u0001"+
+		"0\u00010\u00011\u00011\u00031\u043f\b1\u00012\u00012\u00012\u00012\u0005"+
+		"2\u0445\b2\n2\f2\u0448\t2\u00012\u00012\u00012\u00012\u00032\u044e\b2"+
+		"\u00013\u00013\u00013\u00013\u00014\u00014\u00014\u00014\u00054\u0458"+
+		"\b4\n4\f4\u045b\t4\u00014\u00014\u00014\u00014\u00034\u0461\b4\u00015"+
+		"\u00015\u00015\u00015\u00015\u00015\u00015\u00035\u046a\b5\u00015\u0000"+
 		"\u00006\u0000\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012\u0014\u0016\u0018"+
 		"\u001a\u001c\u001e \"$&(*,.02468:<>@BDFHJLNPRTVXZ\\^`bdfhj\u0000\u0000"+
-		"\u04ad\u0000l\u0001\u0000\u0000\u0000\u0002t\u0001\u0000\u0000\u0000\u0004"+
+		"\u04ac\u0000l\u0001\u0000\u0000\u0000\u0002t\u0001\u0000\u0000\u0000\u0004"+
 		"~\u0001\u0000\u0000\u0000\u0006\u0088\u0001\u0000\u0000\u0000\b\u00b9"+
 		"\u0001\u0000\u0000\u0000\n\u00bb\u0001\u0000\u0000\u0000\f\u00dc\u0001"+
 		"\u0000\u0000\u0000\u000e\u0103\u0001\u0000\u0000\u0000\u0010\u011a\u0001"+
@@ -5571,9 +5568,9 @@ public class RavenParser extends Parser {
 		"\u0000P\u03b1\u0001\u0000\u0000\u0000R\u03c2\u0001\u0000\u0000\u0000T"+
 		"\u03d3\u0001\u0000\u0000\u0000V\u03e3\u0001\u0000\u0000\u0000X\u03f8\u0001"+
 		"\u0000\u0000\u0000Z\u0406\u0001\u0000\u0000\u0000\\\u0419\u0001\u0000"+
-		"\u0000\u0000^\u0429\u0001\u0000\u0000\u0000`\u043b\u0001\u0000\u0000\u0000"+
-		"b\u043f\u0001\u0000\u0000\u0000d\u044e\u0001\u0000\u0000\u0000f\u0450"+
-		"\u0001\u0000\u0000\u0000h\u0461\u0001\u0000\u0000\u0000j\u046a\u0001\u0000"+
+		"\u0000\u0000^\u0429\u0001\u0000\u0000\u0000`\u043a\u0001\u0000\u0000\u0000"+
+		"b\u043e\u0001\u0000\u0000\u0000d\u044d\u0001\u0000\u0000\u0000f\u044f"+
+		"\u0001\u0000\u0000\u0000h\u0460\u0001\u0000\u0000\u0000j\u0469\u0001\u0000"+
 		"\u0000\u0000lm\u0005\u0001\u0000\u0000mn\u0005~\u0000\u0000no\u0005\u0002"+
 		"\u0000\u0000op\u0003\u0002\u0001\u0000pq\u0003\u0006\u0003\u0000qr\u0003"+
 		"\u0004\u0002\u0000rs\u0005\u0003\u0000\u0000s\u0001\u0001\u0000\u0000"+
@@ -6071,46 +6068,45 @@ public class RavenParser extends Parser {
 		"\u0005u\u0000\u0000\u042a\u042b\u0005\b\u0000\u0000\u042b\u042c\u0005"+
 		"~\u0000\u0000\u042c\u042d\u0005g\u0000\u0000\u042d\u042e\u0005~\u0000"+
 		"\u0000\u042e\u042f\u0005t\u0000\u0000\u042f\u0430\u0005~\u0000\u0000\u0430"+
-		"\u0431\u0005\n\u0000\u0000\u0431\u0432\u0005\u0002\u0000\u0000\u0432\u0433"+
-		"\u0005~\u0000\u0000\u0433\u0438\u0005\u0003\u0000\u0000\u0434\u0435\u0005"+
-		"\u000b\u0000\u0000\u0435\u0437\u0003B!\u0000\u0436\u0434\u0001\u0000\u0000"+
-		"\u0000\u0437\u043a\u0001\u0000\u0000\u0000\u0438\u0436\u0001\u0000\u0000"+
-		"\u0000\u0438\u0439\u0001\u0000\u0000\u0000\u0439_\u0001\u0000\u0000\u0000"+
-		"\u043a\u0438\u0001\u0000\u0000\u0000\u043b\u043c\u0005~\u0000\u0000\u043c"+
-		"a\u0001\u0000\u0000\u0000\u043d\u0440\u0003d2\u0000\u043e\u0440\u0003"+
-		"h4\u0000\u043f\u043d\u0001\u0000\u0000\u0000\u043f\u043e\u0001\u0000\u0000"+
-		"\u0000\u0440c\u0001\u0000\u0000\u0000\u0441\u0442\u0005\u0002\u0000\u0000"+
-		"\u0442\u0447\u0003f3\u0000\u0443\u0444\u0005v\u0000\u0000\u0444\u0446"+
-		"\u0003f3\u0000\u0445\u0443\u0001\u0000\u0000\u0000\u0446\u0449\u0001\u0000"+
-		"\u0000\u0000\u0447\u0445\u0001\u0000\u0000\u0000\u0447\u0448\u0001\u0000"+
-		"\u0000\u0000\u0448\u044a\u0001\u0000\u0000\u0000\u0449\u0447\u0001\u0000"+
-		"\u0000\u0000\u044a\u044b\u0005\u0003\u0000\u0000\u044b\u044f\u0001\u0000"+
-		"\u0000\u0000\u044c\u044d\u0005\u0002\u0000\u0000\u044d\u044f\u0005\u0003"+
-		"\u0000\u0000\u044e\u0441\u0001\u0000\u0000\u0000\u044e\u044c\u0001\u0000"+
-		"\u0000\u0000\u044fe\u0001\u0000\u0000\u0000\u0450\u0451\u0005~\u0000\u0000"+
-		"\u0451\u0452\u0005w\u0000\u0000\u0452\u0453\u0003j5\u0000\u0453g\u0001"+
-		"\u0000\u0000\u0000\u0454\u0455\u0005x\u0000\u0000\u0455\u045a\u0003j5"+
-		"\u0000\u0456\u0457\u0005v\u0000\u0000\u0457\u0459\u0003j5\u0000\u0458"+
-		"\u0456\u0001\u0000\u0000\u0000\u0459\u045c\u0001\u0000\u0000\u0000\u045a"+
-		"\u0458\u0001\u0000\u0000\u0000\u045a\u045b\u0001\u0000\u0000\u0000\u045b"+
-		"\u045d\u0001\u0000\u0000\u0000\u045c\u045a\u0001\u0000\u0000\u0000\u045d"+
-		"\u045e\u0005y\u0000\u0000\u045e\u0462\u0001\u0000\u0000\u0000\u045f\u0460"+
-		"\u0005x\u0000\u0000\u0460\u0462\u0005y\u0000\u0000\u0461\u0454\u0001\u0000"+
-		"\u0000\u0000\u0461\u045f\u0001\u0000\u0000\u0000\u0462i\u0001\u0000\u0000"+
-		"\u0000\u0463\u046b\u0005~\u0000\u0000\u0464\u046b\u0005\u0084\u0000\u0000"+
-		"\u0465\u046b\u0003d2\u0000\u0466\u046b\u0003h4\u0000\u0467\u046b\u0005"+
-		"z\u0000\u0000\u0468\u046b\u0005{\u0000\u0000\u0469\u046b\u0005|\u0000"+
-		"\u0000\u046a\u0463\u0001\u0000\u0000\u0000\u046a\u0464\u0001\u0000\u0000"+
-		"\u0000\u046a\u0465\u0001\u0000\u0000\u0000\u046a\u0466\u0001\u0000\u0000"+
-		"\u0000\u046a\u0467\u0001\u0000\u0000\u0000\u046a\u0468\u0001\u0000\u0000"+
-		"\u0000\u046a\u0469\u0001\u0000\u0000\u0000\u046bk\u0001\u0000\u0000\u0000"+
-		"My\u0083\u008d\u00b9\u00c2\u00ca\u00d2\u00d9\u00eb\u00f2\u00f9\u0100\u0110"+
-		"\u0117\u012f\u013c\u0150\u0157\u016b\u0172\u0180\u0190\u01a5\u01b1\u01c2"+
-		"\u01c9\u01d5\u01dd\u01e9\u01f9\u0205\u020c\u021e\u0225\u022c\u023d\u0250"+
-		"\u025e\u0272\u0280\u0293\u02a3\u02ae\u02b5\u02bf\u02c6\u02d2\u02da\u02e1"+
-		"\u02ed\u02f6\u02fe\u0306\u030d\u0314\u0324\u0333\u0353\u0370\u037e\u038c"+
-		"\u039d\u03ae\u03bf\u03d0\u03e0\u03f5\u0403\u0416\u0426\u0438\u043f\u0447"+
-		"\u044e\u045a\u0461\u046a";
+		"\u0431\u0005\n\u0000\u0000\u0431\u0432\u0005\u0002\u0000\u0000\u0432\u0437"+
+		"\u0005\u0003\u0000\u0000\u0433\u0434\u0005\u000b\u0000\u0000\u0434\u0436"+
+		"\u0003B!\u0000\u0435\u0433\u0001\u0000\u0000\u0000\u0436\u0439\u0001\u0000"+
+		"\u0000\u0000\u0437\u0435\u0001\u0000\u0000\u0000\u0437\u0438\u0001\u0000"+
+		"\u0000\u0000\u0438_\u0001\u0000\u0000\u0000\u0439\u0437\u0001\u0000\u0000"+
+		"\u0000\u043a\u043b\u0005~\u0000\u0000\u043ba\u0001\u0000\u0000\u0000\u043c"+
+		"\u043f\u0003d2\u0000\u043d\u043f\u0003h4\u0000\u043e\u043c\u0001\u0000"+
+		"\u0000\u0000\u043e\u043d\u0001\u0000\u0000\u0000\u043fc\u0001\u0000\u0000"+
+		"\u0000\u0440\u0441\u0005\u0002\u0000\u0000\u0441\u0446\u0003f3\u0000\u0442"+
+		"\u0443\u0005v\u0000\u0000\u0443\u0445\u0003f3\u0000\u0444\u0442\u0001"+
+		"\u0000\u0000\u0000\u0445\u0448\u0001\u0000\u0000\u0000\u0446\u0444\u0001"+
+		"\u0000\u0000\u0000\u0446\u0447\u0001\u0000\u0000\u0000\u0447\u0449\u0001"+
+		"\u0000\u0000\u0000\u0448\u0446\u0001\u0000\u0000\u0000\u0449\u044a\u0005"+
+		"\u0003\u0000\u0000\u044a\u044e\u0001\u0000\u0000\u0000\u044b\u044c\u0005"+
+		"\u0002\u0000\u0000\u044c\u044e\u0005\u0003\u0000\u0000\u044d\u0440\u0001"+
+		"\u0000\u0000\u0000\u044d\u044b\u0001\u0000\u0000\u0000\u044ee\u0001\u0000"+
+		"\u0000\u0000\u044f\u0450\u0005~\u0000\u0000\u0450\u0451\u0005w\u0000\u0000"+
+		"\u0451\u0452\u0003j5\u0000\u0452g\u0001\u0000\u0000\u0000\u0453\u0454"+
+		"\u0005x\u0000\u0000\u0454\u0459\u0003j5\u0000\u0455\u0456\u0005v\u0000"+
+		"\u0000\u0456\u0458\u0003j5\u0000\u0457\u0455\u0001\u0000\u0000\u0000\u0458"+
+		"\u045b\u0001\u0000\u0000\u0000\u0459\u0457\u0001\u0000\u0000\u0000\u0459"+
+		"\u045a\u0001\u0000\u0000\u0000\u045a\u045c\u0001\u0000\u0000\u0000\u045b"+
+		"\u0459\u0001\u0000\u0000\u0000\u045c\u045d\u0005y\u0000\u0000\u045d\u0461"+
+		"\u0001\u0000\u0000\u0000\u045e\u045f\u0005x\u0000\u0000\u045f\u0461\u0005"+
+		"y\u0000\u0000\u0460\u0453\u0001\u0000\u0000\u0000\u0460\u045e\u0001\u0000"+
+		"\u0000\u0000\u0461i\u0001\u0000\u0000\u0000\u0462\u046a\u0005~\u0000\u0000"+
+		"\u0463\u046a\u0005\u0084\u0000\u0000\u0464\u046a\u0003d2\u0000\u0465\u046a"+
+		"\u0003h4\u0000\u0466\u046a\u0005z\u0000\u0000\u0467\u046a\u0005{\u0000"+
+		"\u0000\u0468\u046a\u0005|\u0000\u0000\u0469\u0462\u0001\u0000\u0000\u0000"+
+		"\u0469\u0463\u0001\u0000\u0000\u0000\u0469\u0464\u0001\u0000\u0000\u0000"+
+		"\u0469\u0465\u0001\u0000\u0000\u0000\u0469\u0466\u0001\u0000\u0000\u0000"+
+		"\u0469\u0467\u0001\u0000\u0000\u0000\u0469\u0468\u0001\u0000\u0000\u0000"+
+		"\u046ak\u0001\u0000\u0000\u0000My\u0083\u008d\u00b9\u00c2\u00ca\u00d2"+
+		"\u00d9\u00eb\u00f2\u00f9\u0100\u0110\u0117\u012f\u013c\u0150\u0157\u016b"+
+		"\u0172\u0180\u0190\u01a5\u01b1\u01c2\u01c9\u01d5\u01dd\u01e9\u01f9\u0205"+
+		"\u020c\u021e\u0225\u022c\u023d\u0250\u025e\u0272\u0280\u0293\u02a3\u02ae"+
+		"\u02b5\u02bf\u02c6\u02d2\u02da\u02e1\u02ed\u02f6\u02fe\u0306\u030d\u0314"+
+		"\u0324\u0333\u0353\u0370\u037e\u038c\u039d\u03ae\u03bf\u03d0\u03e0\u03f5"+
+		"\u0403\u0416\u0426\u0437\u043e\u0446\u044d\u0459\u0460\u0469";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
