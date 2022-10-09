@@ -256,7 +256,7 @@ public class LambdaEngine {
                 stringBuilder.append(" ");
                 append(stringBuilder, event.getLevel());
                 stringBuilder.append(" ");
-                append(stringBuilder, event.getMarkers());
+                append(stringBuilder, event.getMarker());
                 stringBuilder.append(" ");
                 append(stringBuilder, MessageFormatter.arrayFormat(event.getMessage(), event.getArgumentArray()).getMessage());
                 if (event.getThrowable() != null) {

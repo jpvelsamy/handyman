@@ -13,12 +13,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.apache.commons.compress.utils.FileNameUtils;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
-import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -75,13 +73,11 @@ public class DocumentClassificationAction implements IActionExecution {
             log.info(aMarker, "The response received successfully for Asset ID and Attribution List {}", responseBody);
             String labelName = documentClassification.getName() + "_label";
             if (response.isSuccessful()) {
-                log.info(aMarker, "DocNet Attribution Action has completed its execution");
                 action.getContext().put(name, responseBody);
                 action.getContext().put(labelName, Optional.ofNullable(mapper.readTree(responseBody).get("label")).map(JsonNode::asText).map(String::toLowerCase).orElseThrow());
                 action.getContext().put(name.concat(".error"), "false");
                 log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
             } else {
-                log.info(aMarker, "DocNet Attribution Action has failed with bad response");
                 action.getContext().put(name.concat(".error"), "true");
                 action.getContext().put(name.concat(".errorMessage"), responseBody);
                 log.info(aMarker, "The Failure Response  {} {}", name, responseBody);

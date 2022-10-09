@@ -23,7 +23,7 @@
         <java.version>11</java.version>
         <slf4j.version>1.7.32</slf4j.version>
         <kafka.version>3.1.0</kafka.version>
-            <logback-classic.version>1.4.3</logback-classic.version>
+        <logback-classic.version>1.4.3</logback-classic.version>
         <poi.version>5.2.2</poi.version>
     </properties>
     <dependencies>
@@ -169,7 +169,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>2.0.3</version>
+            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>

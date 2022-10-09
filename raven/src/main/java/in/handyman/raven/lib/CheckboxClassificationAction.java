@@ -77,7 +77,6 @@ public class CheckboxClassificationAction implements IActionExecution {
             } else {
                 log.info(aMarker, "CheckBox Classification has failed with bad response");
                 action.getContext().put(name.concat(".error"), "true");
-                action.getContext().put(name.concat(".errorMessage"), responseBody);
                 log.info(aMarker, "The Failure Response  {} {}", name, responseBody);
             }
         } catch (Exception e) {

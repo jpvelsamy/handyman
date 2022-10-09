@@ -11,12 +11,14 @@ import in.handyman.raven.lambda.process.HRequestResolver;
 import in.handyman.raven.lambda.process.LContext;
 import in.handyman.raven.lib.model.CallProcess;
 import in.handyman.raven.util.CommonQueryUtil;
+import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
@@ -48,33 +50,36 @@ public class CallProcessAction implements IActionExecution {
         var dbSrc = callProcess.getDatasource();
         var sql = callProcess.getValue().replaceAll("\"", "");
         log.info(aMarker, " id#{}, name#{}, calledProcess#{}, calledFile#{}, db=#{}", actionExecutionAudit.getActionId(), callProcess.getName(), targetProcess, fileRelativePath, dbSrc);
-        final HikariDataSource source = ResourceAccess.rdbmsConn(dbSrc);
+
+        final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(dbSrc);
         var runContext = new ArrayList<LContext>();
         final Map<String, String> context = actionExecutionAudit.getContext();
-        try (var conn = source.getConnection()) {
-            try (var stmt = conn.createStatement()) {
-                try (var rs = stmt.executeQuery(sql)) {
-                    var columnCount = rs.getMetaData().getColumnCount();
-                    while (rs.next()) {
-                        CommonQueryUtil.addKeyConfig(context, log,
-                                rs, columnCount, "");
-                        final LContext lContext = LContext.builder()
-                                .inheritedContext(new HashMap<>(context))
-                                .lambdaName(actionExecutionAudit.getLambdaName())
-                                .parentActionId(actionExecutionAudit.getActionId())
-                                .parentActionName(actionExecutionAudit.getActionName())
-                                .relativePath(fileRelativePath)
-                                .processLoadType(HRequestResolver.LoadType.FILE.name())
-                                .pipelineName(callProcess.getTarget())
-                                .parentPipelineId(actionExecutionAudit.getPipelineId())
-                                .parentPipelineName(actionExecutionAudit.getPipelineName())
-                                .rootPipelineId(actionExecutionAudit.getRootPipelineId())
-                                .build();
-                        runContext.add(lContext);
-                    }
-                }
-            }
-        }
+        jdbi.useTransaction(handle -> {
+            final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(sql);
+            formattedQuery.forEach(sqlToExecute -> {
+                log.info(aMarker, "Execution query sql#{} on db=#{}", sqlToExecute, dbSrc);
+                handle.createQuery(sqlToExecute).mapToMap().forEach(stringObjectMap -> {
+                    stringObjectMap.forEach((s, o) -> {
+                        context.put( s , String.valueOf(o));
+                        log.info("Value " + o + " has been added for " + s);
+                    });
+                    final LContext lContext = LContext.builder()
+                            .inheritedContext(new HashMap<>(context))
+                            .lambdaName(actionExecutionAudit.getLambdaName())
+                            .parentActionId(actionExecutionAudit.getActionId())
+                            .parentActionName(actionExecutionAudit.getActionName())
+                            .relativePath(fileRelativePath)
+                            .processLoadType(HRequestResolver.LoadType.FILE.name())
+                            .pipelineName(callProcess.getTarget())
+                            .parentPipelineId(actionExecutionAudit.getPipelineId())
+                            .parentPipelineName(actionExecutionAudit.getPipelineName())
+                            .rootPipelineId(actionExecutionAudit.getRootPipelineId())
+                            .build();
+                    runContext.add(lContext);
+                });
+            });
+        });
+
         log.info(aMarker, "Completed name#{}, calledProcess#{}, calledFile#{}, db=#{}", callProcess.getName(), targetProcess, fileRelativePath, dbSrc);
 
         final int forkBatchSize = Optional.ofNullable(callProcess.getForkBatchSize()).map(Integer::valueOf).orElse(0);
