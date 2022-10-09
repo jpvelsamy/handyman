@@ -13,10 +13,12 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.apache.commons.compress.utils.FileNameUtils;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -60,20 +62,26 @@ public class DocumentClassificationAction implements IActionExecution {
         objectNode.put("modelFilePath", documentClassification.getModelFilePath());
         objectNode.put("labels", documentClassification.getLabels());
 
+        log.info(aMarker, " input variables id : {}, name : {}", action.getActionId(), documentClassification.getName());
+        log.info(aMarker, "Document Classification Action for filename : {}, from filepath : {}", Paths.get(documentClassification.getFilePath()).getFileName().toString(), FileNameUtils.getBaseName(documentClassification.getFilePath()));
 
         Request request = new Request.Builder().url(URI)
                 .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-        log.info(aMarker, "The request got it successfully the File Path and outputDir {} {}", documentClassification.getFilePath(), documentClassification.getOutputDir(), documentClassification.getModelFilePath(), documentClassification.getLabels());
+
+        log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n Input-File-Path : {} \n Output-Directory : {} \n Model-Path : {} \n Path-Labels : {}", URI, documentClassification.getFilePath(), documentClassification.getOutputDir(), documentClassification.getModelFilePath(), documentClassification.getLabels());
         String name = documentClassification.getName() + "_response";
         try (Response response = httpclient.newCall(request).execute()) {
             String responseBody = response.body().string();
+            log.info(aMarker, "The response received successfully for Asset ID and Attribution List {}", responseBody);
             String labelName = documentClassification.getName() + "_label";
             if (response.isSuccessful()) {
+                log.info(aMarker, "DocNet Attribution Action has completed its execution");
                 action.getContext().put(name, responseBody);
                 action.getContext().put(labelName, Optional.ofNullable(mapper.readTree(responseBody).get("label")).map(JsonNode::asText).map(String::toLowerCase).orElseThrow());
                 action.getContext().put(name.concat(".error"), "false");
                 log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
             } else {
+                log.info(aMarker, "DocNet Attribution Action has failed with bad response");
                 action.getContext().put(name.concat(".error"), "true");
                 action.getContext().put(name.concat(".errorMessage"), responseBody);
                 log.info(aMarker, "The Failure Response  {} {}", name, responseBody);

@@ -14,10 +14,12 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.apache.commons.compress.utils.FileNameUtils;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
+import java.nio.file.Paths;
 import java.util.Map;
 
 
@@ -56,21 +58,28 @@ public class PaperItemizationAction implements IActionExecution {
 
         objectNode.put("inputFilePath", paperItemization.getFilePath());
         objectNode.put("outputDir", paperItemization.getOutputDir());
-
+        log.info(aMarker, " input variables id : {}, name : {}", action.getActionId(), paperItemization.getName());
         // build a request
+        log.info(aMarker, "Paper Itemization Action for filename : {}, from filepath : {}", Paths.get(paperItemization.getFilePath()).getFileName().toString(), FileNameUtils.getBaseName(paperItemization.getFilePath()));
         Request request = new Request.Builder().url(URI)
                 .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-        log.info(aMarker, "The request got it successfully the File Path and outputDir {} {}", paperItemization.getFilePath(), paperItemization.getOutputDir());
+        log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n Input-File-Path : {} \n Output-Directory : {}", URI, paperItemization.getFilePath(), paperItemization.getOutputDir());
 
         try (Response response = httpclient.newCall(request).execute()) {
             String responseBody = response.body().string();
+            log.info(aMarker, "The response received successfully for Asset ID and Attribution List {}", responseBody);
             String name = paperItemization.getName() + "-Paper-itemized-response";
             if (response.isSuccessful()) {
+                log.info(aMarker, "Paper Itemization Action has completed its execution");
                 Map<String, String> responseMap = mapper.readValue(responseBody, new TypeReference<>() {
                 });
                 responseMap.forEach((s, s2) -> action.getContext().put(String.format("%s.%s", paperItemization.getName(), s), s2));
+                action.getContext().put(name.concat(".error"), "false");
                 log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
             } else {
+                log.info(aMarker, "Paper Itemization has failed with bad response");
+                action.getContext().put(name.concat(".error"), "true");
+                action.getContext().put(name.concat(".errorMessage"), responseBody);
                 log.info(aMarker, "The Failure Response  {} {}", name, responseBody);
             }
         } catch (Exception e) {

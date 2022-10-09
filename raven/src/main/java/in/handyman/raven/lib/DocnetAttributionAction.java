@@ -12,10 +12,12 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.apache.commons.compress.utils.FileNameUtils;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
+import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -50,27 +52,30 @@ public class DocnetAttributionAction implements IActionExecution {
                 .readTimeout(10, TimeUnit.MINUTES).build();
 
 
-        log.info(aMarker, "The request got it successfully for Asset ID and Attribution List {} {}",
-                docnetAttribution.getName(), docnetAttribution.getAttributes());
-
         final ObjectNode objectNode = mapper.createObjectNode();
 
         objectNode.put("inputFilePath", docnetAttribution.getInputFilePath());
         objectNode.set("attributes", mapper.readTree(docnetAttribution.getAttributes()));
 
+        log.info(aMarker, " input variables id : {}, name : {}", action.getActionId(), docnetAttribution.getName());
+        // build a request
+        log.info(aMarker, "Checkbox Classification Action for filename : {}, from filepath : {}", Paths.get(docnetAttribution.getInputFilePath()).getFileName().toString(), FileNameUtils.getBaseName(docnetAttribution.getInputFilePath()));log.info(aMarker, "Checkbox Classification Action for filename : {}, from filepath : {}", Paths.get(docnetAttribution.getInputFilePath()).getFileName().toString(), FileNameUtils.getBaseName(docnetAttribution.getInputFilePath()));
+
+
         Request request = new Request.Builder().url(URI)
                 .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-
+        log.debug(aMarker, "Request has been build with the parameters \n URI : {}, \n filename : {}, \n filepath : {} \n attributes : {} ", URI, Paths.get(docnetAttribution.getInputFilePath()).getFileName().toString(), FileNameUtils.getBaseName(docnetAttribution.getInputFilePath()), docnetAttribution.getAttributes());
         try (Response response = httpclient.newCall(request).execute()) {
             String responseBody = response.body().string();
             String name = docnetAttribution.getName() + "_response";
-            log.info(aMarker, "The response got it successfully for Asset ID and Attribution List {}",
-                    responseBody);
+            log.info(aMarker, "The response received successfully for Asset ID and Attribution List {}", responseBody);
             if (response.isSuccessful()) {
+                log.info(aMarker, "DocNet Attribution Action has completed its execution");
                 action.getContext().put(name, responseBody);
                 action.getContext().put(name.concat(".error"), "false");
                 log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
             } else {
+                log.info(aMarker, "DocNet Attribution Action has failed with bad response");
                 action.getContext().put(name.concat(".error"), "true");
                 action.getContext().put(name.concat(".errorMessage"), responseBody);
                 log.info(aMarker, "The Failure Response  {} {}", name, responseBody);

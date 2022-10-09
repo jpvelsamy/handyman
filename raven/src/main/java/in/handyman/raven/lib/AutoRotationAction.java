@@ -14,10 +14,12 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.apache.commons.compress.utils.FileNameUtils;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
+import java.nio.file.Paths;
 import java.util.Optional;
 
 /**
@@ -48,6 +50,7 @@ public class AutoRotationAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
+
         final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
 
         final ObjectNode objectNode = mapper.createObjectNode();
@@ -55,20 +58,30 @@ public class AutoRotationAction implements IActionExecution {
         objectNode.put("inputFilePath", autoRotation.getFilePath());
         objectNode.put("outputDir", autoRotation.getOutputDir());
 
+        log.info(aMarker, " input variables id : {}, name : {}", action.getActionId(), autoRotation.getName());
         // build a request
+        log.info(aMarker, "Auto Rotation Action for filename : {}, from filepath : {}", Paths.get(autoRotation.getFilePath()).getFileName().toString(), FileNameUtils.getBaseName(autoRotation.getFilePath()));
+
         Request request = new Request.Builder().url(URI)
                 .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-        log.info(aMarker, "The request got it successfully the File Path and outputDir {} {}", autoRotation.getFilePath(), autoRotation.getOutputDir());
+
+        log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n Input-File-Path : {} \n Output-Directory : {} \n",URI, autoRotation.getFilePath(), autoRotation.getOutputDir());
+
         String name = autoRotation.getName();
 
         try (Response response = httpclient.newCall(request).execute()) {
             String responseBody = response.body().string();
+
             if (response.isSuccessful()) {
+                log.info(aMarker, "Auto Rotation Action has completed its execution");
                 action.getContext().put(autoRotation.getName() + ".processedFilePaths",
                         Optional.ofNullable(mapper.readTree(responseBody).get("processedFilePaths")).map(JsonNode::toString).orElse("[]"));
-                log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
+                log.info(aMarker, "The Successful Response  {} : {}", name, responseBody);
             } else {
-                log.info(aMarker, name + ".errorMessage {}", responseBody);
+                log.info(aMarker, "Auto Rotation has failed with bad response");
+                action.getContext().put(name.concat(".error"), "true");
+                action.getContext().put(name.concat(".errorMessage"), responseBody);
+                log.info(aMarker, "The Failure Response  {} {}", name, responseBody);
             }
             action.getContext().put(name + ".isSuccessful", String.valueOf(response.isSuccessful()));
         } catch (Exception e) {

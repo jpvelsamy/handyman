@@ -14,10 +14,12 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.apache.commons.compress.utils.FileNameUtils;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
+import java.nio.file.Paths;
 import java.util.Map;
 
 /**
@@ -55,23 +57,30 @@ public class BlankPageRemoverAction implements IActionExecution {
 
         objectNode.put("inputFilePath", blankPageRemover.getFilePath());
         objectNode.put("outputDir", blankPageRemover.getOutputDir());
+        log.info(aMarker, " input variables id : {}, name : {}", action.getActionId(), blankPageRemover.getName());
+        log.info(aMarker, "Blank Page Removal Action for filename : {}, from filepath : {}", Paths.get(blankPageRemover.getFilePath()).getFileName().toString(), FileNameUtils.getBaseName(blankPageRemover.getFilePath()));
 
         // build a request
         Request request = new Request.Builder().url(URI)
                 .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-        log.info(aMarker, "The request got it successfully the File Path and outputDir {} {}", blankPageRemover.getFilePath(), blankPageRemover.getOutputDir());
+
+        log.debug(aMarker, "Request has been build with the parameters \n URI : {}, \n filename : {}, \n filepath : {}", URI, Paths.get(blankPageRemover.getFilePath()).getFileName().toString(), FileNameUtils.getBaseName(blankPageRemover.getFilePath()));
 
         String name = blankPageRemover.getName();
         try (Response response = httpclient.newCall(request).execute()) {
             String responseBody = response.body().string();
             if (response.isSuccessful()) {
+                log.info(aMarker, "Blank Page Remover Action has completed its execution");
                 Map<String, String> responseMap = mapper.readValue(responseBody, new TypeReference<>() {
                 });
                 responseMap.forEach((s, s2) -> action.getContext().put(String.format("%s.%s", blankPageRemover.getName(), s), s2));
                 log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
             } else {
+                log.info(aMarker, "Blank Page Remover Action has failed with bad response");
+                action.getContext().put(name.concat(".error"), "true");
+                action.getContext().put(name.concat(".errorMessage"), responseBody);
                 log.info(aMarker, "The Failure Response  {} {}", name, responseBody);
-                log.info(aMarker, name + ".errorMessage {}", responseBody);
+
             }
             action.getContext().put(name + ".isSuccessful", String.valueOf(response.isSuccessful()));
         } catch (Exception e) {
