@@ -13,10 +13,12 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.apache.commons.compress.utils.FileNameUtils;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -35,6 +37,7 @@ public class DocumentClassificationAction implements IActionExecution {
     private final Marker aMarker;
     private final ObjectMapper mapper = new ObjectMapper();
     private final String URI;
+
 
     public DocumentClassificationAction(final ActionExecutionAudit action, final Logger log,
                                         final Object documentClassification) {
