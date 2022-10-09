@@ -1,8 +1,5 @@
 package in.handyman.raven.lambda.access.repo;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.DoaConstant;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionStatusAudit;
@@ -13,11 +10,11 @@ import in.handyman.raven.lambda.doa.config.SpwCommonConfig;
 import in.handyman.raven.lambda.doa.config.SpwInstanceConfig;
 import in.handyman.raven.lambda.doa.config.SpwProcessConfig;
 import in.handyman.raven.lambda.doa.config.SpwResourceConfig;
+import in.handyman.raven.util.PropertyHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 
-import java.io.File;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -30,27 +27,17 @@ import java.util.stream.Collectors;
 public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     public static final String DOT = ".";
-    public static final String HANDYMAN_CONFIG_LOCATION = "handyman.config.location";
-    protected static final String CONFIG_URL = "config.url";
-    private static final String CONFIG_PASSWORD = "config.password";
-    private static final String CONFIG_USER = "config.user";
-    private static final Config CONFIG;
-    private static final Jdbi jdbi;
+    protected static final String CONFIG_URL = "raven.db.url";
+    private static final String CONFIG_PASSWORD = "raven.db.password";
+    private static final String CONFIG_USER = "raven.db.user";
+    private static final Jdbi JDBI;
 
     static {
-        var filePath = Optional.ofNullable(System.getenv(HANDYMAN_CONFIG_LOCATION)).orElse("src/main/resources/config.props");
-        var file = new File(filePath);
-        if (!file.exists()) {
-            throw new HandymanException("Config file not found");
-        }
-
-        CONFIG = ConfigFactory.parseFile(file);
-        log.info("Initializing the config store from config file {}", CONFIG.origin().url());
-        final String username = CONFIG.getString(CONFIG_USER);
-        final String password = CONFIG.getString(CONFIG_PASSWORD);
-        final String url = CONFIG.getString(CONFIG_URL);
-        jdbi = Jdbi.create(url, username, password);
-        jdbi.installPlugin(new SqlObjectPlugin());
+        final String username = PropertyHandler.get(CONFIG_USER);
+        final String password = PropertyHandler.get(CONFIG_PASSWORD);
+        final String url = PropertyHandler.get(CONFIG_URL);
+        JDBI = Jdbi.create(url, username, password);
+        JDBI.installPlugin(new SqlObjectPlugin());
 
     }
 
@@ -80,7 +67,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public List<SpwInstanceConfig> findAllByInstance(final String instance) {
-        return jdbi.withHandle(handle -> {
+        return JDBI.withHandle(handle -> {
             var repo = handle.attach(SpwInstanceConfigRepo.class);
             return repo.findAllByInstance(instance);
         });
@@ -88,7 +75,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public List<SpwProcessConfig> findAllByProcess(final String process) {
-        return jdbi.withHandle(handle -> {
+        return JDBI.withHandle(handle -> {
             var repo = handle.attach(SpwProcessConfigRepo.class);
             return repo.findAllByProcess(process);
         });
@@ -105,7 +92,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public List<SpwCommonConfig> findAllCommonConfigs() {
-        return jdbi.withHandle(handle -> {
+        return JDBI.withHandle(handle -> {
             var repo = handle.attach(SpwCommonConfigRepo.class);
             return repo.findAll();
         });
@@ -118,7 +105,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public Optional<SpwResourceConfig> findOneResourceConfig(final String configName) {
-        return jdbi.withHandle(handle -> {
+        return JDBI.withHandle(handle -> {
             var repo = handle.attach(SpwResourceConfigRepo.class);
             return repo.findOne(configName);
         });
@@ -131,7 +118,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public void insertPipeline(final PipelineExecutionAudit audit) {
-        jdbi.useHandle(handle -> {
+        JDBI.useHandle(handle -> {
             audit.setLastModifiedDate(LocalDateTime.now());
             var repo = handle.attach(PipelineExecutionAuditRepo.class);
             repo.insert(audit);
@@ -141,7 +128,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
     @Override
     public void insertAction(final ActionExecutionAudit audit) {
 
-        jdbi.useHandle(handle -> {
+        JDBI.useHandle(handle -> {
             audit.setLastModifiedDate(LocalDateTime.now());
             var repo = handle.attach(ActionExecutionAuditRepo.class);
             repo.insert(audit);
@@ -153,7 +140,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
     @Override
     public void update(final ActionExecutionAudit audit) {
 
-        jdbi.useHandle(handle -> {
+        JDBI.useHandle(handle -> {
             audit.setLastModifiedDate(LocalDateTime.now());
             var repo = handle.attach(ActionExecutionAuditRepo.class);
             repo.update(audit);
@@ -163,7 +150,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public List<ActionExecutionAudit> findActions(final Long pipelineId) {
-        return jdbi.withHandle(handle -> {
+        return JDBI.withHandle(handle -> {
             var repo = handle.attach(ActionExecutionAuditRepo.class);
             return repo.findAllActionsByPipelineId(pipelineId);
         });
@@ -171,7 +158,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public List<ActionExecutionAudit> findAllActionsByRootPipelineId(final Long rootPipelineId) {
-        return jdbi.withHandle(handle -> {
+        return JDBI.withHandle(handle -> {
             var repo = handle.attach(ActionExecutionAuditRepo.class);
             return repo.findAllActionsByRootPipelineId(rootPipelineId);
         });
@@ -180,27 +167,27 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
     @Override
     public void insertStatement(final StatementExecutionAudit audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
-        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO " + DoaConstant.AUDIT_SCHEMA_NAME + DOT + DoaConstant.SEA_TABLE_NAME + " (statement_id, created_by, created_date, last_modified_by, last_modified_date, action_id, rows_processed, rows_read, rows_written, statement_content, time_taken,root_pipeline_id) VALUES(:statementId, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :actionId, :rowsProcessed, :rowsRead, :rowsWritten, :statementContent, :timeTaken,:rootPipelineId);")
+        JDBI.useHandle(handle -> handle.createUpdate("INSERT INTO " + DoaConstant.AUDIT_SCHEMA_NAME + DOT + DoaConstant.SEA_TABLE_NAME + " (statement_id, created_by, created_date, last_modified_by, last_modified_date, action_id, rows_processed, rows_read, rows_written, statement_content, time_taken,root_pipeline_id) VALUES(:statementId, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :actionId, :rowsProcessed, :rowsRead, :rowsWritten, :statementContent, :timeTaken,:rootPipelineId);")
                 .bindBean(audit).execute());
     }
 
     @Override
     public void save(final PipelineExecutionStatusAudit audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
-        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO " + DoaConstant.AUDIT_SCHEMA_NAME + DOT + DoaConstant.PESA_TABLE_NAME + " (id, created_by, created_date, last_modified_by, last_modified_date, execution_status_id, pipeline_id,root_pipeline_id) VALUES(:id, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :executionStatusId, :pipelineId,:rootPipelineId);")
+        JDBI.useHandle(handle -> handle.createUpdate("INSERT INTO " + DoaConstant.AUDIT_SCHEMA_NAME + DOT + DoaConstant.PESA_TABLE_NAME + " (id, created_by, created_date, last_modified_by, last_modified_date, execution_status_id, pipeline_id,root_pipeline_id) VALUES(:id, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :executionStatusId, :pipelineId,:rootPipelineId);")
                 .bindBean(audit).execute());
     }
 
     @Override
     public void save(final ActionExecutionStatusAudit audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
-        jdbi.useHandle(handle -> handle.createUpdate("INSERT INTO " + DoaConstant.AUDIT_SCHEMA_NAME + DOT + DoaConstant.AESA_TABLE_NAME + " (id, created_by, created_date, last_modified_by, last_modified_date, action_id, execution_status_id, pipeline_id,root_pipeline_id) VALUES(:id, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :actionId, :executionStatusId, :pipelineId,:rootPipelineId);")
+        JDBI.useHandle(handle -> handle.createUpdate("INSERT INTO " + DoaConstant.AUDIT_SCHEMA_NAME + DOT + DoaConstant.AESA_TABLE_NAME + " (id, created_by, created_date, last_modified_by, last_modified_date, action_id, execution_status_id, pipeline_id,root_pipeline_id) VALUES(:id, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :actionId, :executionStatusId, :pipelineId,:rootPipelineId);")
                 .bindBean(audit).execute());
     }
 
     @Override
     public void update(final PipelineExecutionAudit audit) {
-        jdbi.useHandle(handle -> {
+        JDBI.useHandle(handle -> {
             audit.setLastModifiedDate(LocalDateTime.now());
             var repo = handle.attach(PipelineExecutionAuditRepo.class);
             repo.update(audit);
@@ -210,7 +197,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public Optional<PipelineExecutionAudit> findPipeline(final Long pipelineId) {
-        return jdbi.withHandle(handle -> {
+        return JDBI.withHandle(handle -> {
             var repo = handle.attach(PipelineExecutionAuditRepo.class);
             return repo.findOneByPipelineId(pipelineId);
         });
@@ -219,7 +206,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public List<PipelineExecutionAudit> findAllPipelinesByRootPipelineId(final Long rootPipelineId) {
-        return jdbi.withHandle(handle -> {
+        return JDBI.withHandle(handle -> {
             var repo = handle.attach(PipelineExecutionAuditRepo.class);
             return repo.findAllPipelinesByRootPipelineId(rootPipelineId);
         });
@@ -228,7 +215,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public List<PipelineExecutionAudit> findAllPipelinesByParentActionId(final Long parentActionId) {
-        return jdbi.withHandle(handle -> {
+        return JDBI.withHandle(handle -> {
             var repo = handle.attach(PipelineExecutionAuditRepo.class);
             return repo.findAllPipelinesByParentActionId(parentActionId);
         });
@@ -236,7 +223,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public List<PipelineExecutionAudit> findAllPipelines() {
-        return jdbi.withHandle(handle -> {
+        return JDBI.withHandle(handle -> {
             var repo = handle.attach(PipelineExecutionAuditRepo.class);
             return repo.findAllPipelines();
         });
@@ -244,7 +231,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public List<PipelineExecutionAudit> findAllByPipelineName(final String pipelineName) {
-        return jdbi.withHandle(handle -> {
+        return JDBI.withHandle(handle -> {
             var repo = handle.attach(PipelineExecutionAuditRepo.class);
             return repo.findAllByPipelineName(pipelineName);
         });
@@ -254,7 +241,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public void insert(final SpwInstanceConfig spwInstanceConfig) {
-        jdbi.useHandle(handle -> {
+        JDBI.useHandle(handle -> {
             var repo = handle.attach(SpwInstanceConfigRepo.class);
             final Long nextVersion = repo.getNextVersion(spwInstanceConfig);
             spwInstanceConfig.setVersion(nextVersion.intValue());
@@ -264,7 +251,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public void update(final SpwInstanceConfig spwInstanceConfig) {
-        jdbi.useHandle(handle -> {
+        JDBI.useHandle(handle -> {
             var repo = handle.attach(SpwInstanceConfigRepo.class);
             repo.update(spwInstanceConfig);
         });
@@ -272,7 +259,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public List<SpwInstanceConfig> findAllInstances() {
-        return jdbi.withHandle(handle -> {
+        return JDBI.withHandle(handle -> {
             var repo = handle.attach(SpwInstanceConfigRepo.class);
             return repo.findAll();
         });
@@ -280,7 +267,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public List<SpwInstanceConfig> findAllByInstanceVariable(final String variable) {
-        return jdbi.withHandle(handle -> {
+        return JDBI.withHandle(handle -> {
             var repo = handle.attach(SpwInstanceConfigRepo.class);
             return repo.findAllByInstanceVariable(variable);
         });
@@ -288,7 +275,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public Optional<SpwInstanceConfig> findOneInstance(final String instance, final String variable) {
-        return jdbi.withHandle(handle -> {
+        return JDBI.withHandle(handle -> {
             var repo = handle.attach(SpwInstanceConfigRepo.class);
             return repo.findOne(instance, variable);
         });
@@ -296,7 +283,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public void insert(final SpwProcessConfig spwProcessConfig) {
-        jdbi.useHandle(handle -> {
+        JDBI.useHandle(handle -> {
             var repo = handle.attach(SpwProcessConfigRepo.class);
             final Long nextVersion = repo.getNextVersion(spwProcessConfig);
             spwProcessConfig.setVersion(nextVersion.intValue());
@@ -306,7 +293,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public void update(final SpwProcessConfig spwProcessConfig) {
-        jdbi.useHandle(handle -> {
+        JDBI.useHandle(handle -> {
             var repo = handle.attach(SpwProcessConfigRepo.class);
             repo.update(spwProcessConfig);
         });
@@ -314,7 +301,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public List<SpwProcessConfig> findAllProcesses() {
-        return jdbi.withHandle(handle -> {
+        return JDBI.withHandle(handle -> {
             var repo = handle.attach(SpwProcessConfigRepo.class);
             return repo.findAll();
         });
@@ -322,7 +309,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public Optional<SpwProcessConfig> findOneProcess(final String process, final String variable) {
-        return jdbi.withHandle(handle -> {
+        return JDBI.withHandle(handle -> {
             var repo = handle.attach(SpwProcessConfigRepo.class);
             return repo.findOne(process, variable);
         });
@@ -330,7 +317,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public void insert(final SpwCommonConfig spwCommonConfig) {
-        jdbi.useHandle(handle -> {
+        JDBI.useHandle(handle -> {
             var repo = handle.attach(SpwCommonConfigRepo.class);
             final Long nextVersion = repo.getNextVersion(spwCommonConfig);
             spwCommonConfig.setVersion(nextVersion.intValue());
@@ -340,7 +327,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public void update(final SpwCommonConfig spwCommonConfig) {
-        jdbi.useHandle(handle -> {
+        JDBI.useHandle(handle -> {
             var repo = handle.attach(SpwCommonConfigRepo.class);
             repo.update(spwCommonConfig);
         });
@@ -348,7 +335,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public Optional<SpwCommonConfig> findOneCommonConfig(final String variable) {
-        return jdbi.withHandle(handle -> {
+        return JDBI.withHandle(handle -> {
             var repo = handle.attach(SpwCommonConfigRepo.class);
             return repo.findOne(variable);
         });
@@ -356,7 +343,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public void insert(final SpwResourceConfig spwResourceConfig) {
-        jdbi.useHandle(handle -> {
+        JDBI.useHandle(handle -> {
             var repo = handle.attach(SpwResourceConfigRepo.class);
             final Long nextVersion = repo.getNextVersion(spwResourceConfig);
             spwResourceConfig.setVersion(nextVersion.intValue());
@@ -366,7 +353,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public void update(final SpwResourceConfig spwResourceConfig) {
-        jdbi.useHandle(handle -> {
+        JDBI.useHandle(handle -> {
             var repo = handle.attach(SpwResourceConfigRepo.class);
             repo.update(spwResourceConfig);
         });
@@ -374,7 +361,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
 
     @Override
     public List<SpwResourceConfig> findAllResourceConfigs() {
-        return jdbi.withHandle(handle -> {
+        return JDBI.withHandle(handle -> {
             var repo = handle.attach(SpwResourceConfigRepo.class);
             return repo.findAll();
         });

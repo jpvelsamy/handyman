@@ -1,8 +1,0 @@
-config= {
-
-    driver = org.postgresql.Driver
-    url ="jdbc:postgresql://localhost:5432/handyman"
-    user=postgres
-    password=postgres
-
-}
