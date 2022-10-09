@@ -21,7 +21,7 @@ public class ResourceAccess {
         return getHikariDataSource(resource);
     }
 
-    public static HikariDataSource getHikariDataSource(final SpwResourceConfig resource) {
+    private static HikariDataSource getHikariDataSource(final SpwResourceConfig resource) {
         if (Objects.isNull(resource)) {
             log.warn("not found in Resource connections");
             throw new HandymanException("Resource not found");
@@ -34,7 +34,7 @@ public class ResourceAccess {
         }
     }
 
-    protected static HikariDataSource createHP(final String url, final String driver, final String user, final String password)
+    private static HikariDataSource createHP(final String url, final String driver, final String user, final String password)
             throws ClassNotFoundException {
         Class.forName(driver);
         final HikariConfig config = new HikariConfig();

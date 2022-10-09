@@ -70,7 +70,6 @@ public class CheckboxClassificationAction implements IActionExecution {
                 log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
             } else {
                 action.getContext().put(name.concat(".error"), "true");
-                action.getContext().put(name.concat(".errorMessage"), responseBody);
                 log.info(aMarker, "The Failure Response  {} {}", name, responseBody);
             }
         } catch (Exception e) {

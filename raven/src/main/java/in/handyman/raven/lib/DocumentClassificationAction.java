@@ -60,7 +60,6 @@ public class DocumentClassificationAction implements IActionExecution {
         objectNode.put("modelFilePath", documentClassification.getModelFilePath());
         objectNode.put("labels", documentClassification.getLabels());
 
-
         Request request = new Request.Builder().url(URI)
                 .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
         log.info(aMarker, "The request got it successfully the File Path and outputDir {} {}", documentClassification.getFilePath(), documentClassification.getOutputDir(), documentClassification.getModelFilePath(), documentClassification.getLabels());
@@ -75,7 +74,6 @@ public class DocumentClassificationAction implements IActionExecution {
                 log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
             } else {
                 action.getContext().put(name.concat(".error"), "true");
-                action.getContext().put(name.concat(".errorMessage"), responseBody);
                 log.info(aMarker, "The Failure Response  {} {}", name, responseBody);
             }
         } catch (Exception e) {
