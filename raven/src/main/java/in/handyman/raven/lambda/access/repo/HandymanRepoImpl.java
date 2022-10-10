@@ -37,6 +37,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
         final String username = PropertyHandler.get(CONFIG_USER);
         final String password = PropertyHandler.get(CONFIG_PASSWORD);
         final String url = PropertyHandler.get(CONFIG_URL);
+        log.info("Connected {} {} {}", url, username, password);
         JDBI = Jdbi.create(url, username, password);
         JDBI.installPlugin(new SqlObjectPlugin());
 
