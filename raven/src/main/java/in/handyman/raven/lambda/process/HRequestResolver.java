@@ -61,7 +61,7 @@ public class HRequestResolver {
         } else if (finalPathInHost.exists()) {
             return finalPathInHost.getAbsolutePath();
         } else {
-            throw new HandymanException("Process definition for " + fileRelativePath + " is absent");
+            throw new HandymanException("Process definition for " + fullPath + " is absent");
         }
     }
 

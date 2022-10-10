@@ -33,6 +33,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
     private static final Jdbi JDBI;
 
     static {
+
         final String username = PropertyHandler.get(CONFIG_USER);
         final String password = PropertyHandler.get(CONFIG_PASSWORD);
         final String url = PropertyHandler.get(CONFIG_URL);
