@@ -1,5 +1,6 @@
 package in.handyman.raven.lambda.process;
 
+import com.google.common.io.Resources;
 import in.handyman.raven.exception.HandymanException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
@@ -43,23 +45,22 @@ public class HRequestResolver {
     }
 
     protected static String readFile(final String filePath, final String basePath) {
-        final String resolvePath = doPathResolve(filePath, basePath);
         try {
-            return Files.readString(Path.of(resolvePath));
+            return doPathResolve(filePath, basePath);
         } catch (IOException e) {
-            throw new HandymanException("Read process definition for " + resolvePath + " is failed", e);
+            throw new HandymanException("Read process definition is failed", e);
         }
     }
 
-    private static String doPathResolve(final String fileRelativePath, final String basePath) {
+    private static String doPathResolve(final String fileRelativePath, final String basePath) throws IOException {
         final String fullPath = (Objects.nonNull(basePath) && !basePath.isEmpty() ? (basePath + "/") : "") + fileRelativePath;
         log.info("Trying to find the process file {}", fullPath);
         final URL finalPathUrl = HRequestResolver.class.getClassLoader().getResource(fullPath);
         final File finalPathInHost = new File(fullPath);
         if (finalPathUrl != null) {
-            return finalPathUrl.getPath();
+            return Resources.toString(finalPathUrl, StandardCharsets.UTF_8);
         } else if (finalPathInHost.exists()) {
-            return finalPathInHost.getAbsolutePath();
+            return Files.readString(Path.of(finalPathInHost.getAbsolutePath()));
         } else {
             throw new HandymanException("Process definition for " + fullPath + " is absent");
         }
