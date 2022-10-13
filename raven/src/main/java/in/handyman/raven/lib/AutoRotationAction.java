@@ -14,12 +14,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.apache.commons.compress.utils.FileNameUtils;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
-import java.nio.file.Paths;
 import java.util.Optional;
 
 /**
@@ -60,12 +58,11 @@ public class AutoRotationAction implements IActionExecution {
 
         log.info(aMarker, " input variables id : {}, name : {}", action.getActionId(), autoRotation.getName());
         // build a request
-        log.info(aMarker, "Auto Rotation Action for filename : {}, from filepath : {}", Paths.get(autoRotation.getFilePath()).getFileName().toString(), FileNameUtils.getBaseName(autoRotation.getFilePath()));
 
         Request request = new Request.Builder().url(URI)
                 .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
 
-        log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n Input-File-Path : {} \n Output-Directory : {} \n",URI, autoRotation.getFilePath(), autoRotation.getOutputDir());
+        log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n Input-File-Path : {} \n Output-Directory : {} \n", URI, autoRotation.getFilePath(), autoRotation.getOutputDir());
 
         String name = autoRotation.getName();
 

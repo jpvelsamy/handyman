@@ -13,12 +13,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.apache.commons.compress.utils.FileNameUtils;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
-import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -64,7 +62,6 @@ public class DocumentClassificationAction implements IActionExecution {
         objectNode.put("labels", documentClassification.getLabels());
 
         log.info(aMarker, " input variables id : {}, name : {}", action.getActionId(), documentClassification.getName());
-        log.info(aMarker, "Document Classification Action for filename : {}, from filepath : {}", Paths.get(documentClassification.getFilePath()).getFileName().toString(), FileNameUtils.getBaseName(documentClassification.getFilePath()));
 
         Request request = new Request.Builder().url(URI)
                 .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();

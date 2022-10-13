@@ -39,6 +39,11 @@ public class ChecksumAction implements IActionExecution {
     public void execute() throws Exception {
 
         String filePath = checksum.getFilePath();
+        log.info(aMarker, filePath);
+
+        Thread.sleep(5000);
+        log.info(aMarker, "wake from executing  {}", checksum);
+
         try (InputStream is = Files.newInputStream(Paths.get(filePath))) {
             String sha1Hex = org.apache.commons.codec.digest.DigestUtils.sha1Hex(is);
             log.info("MD5 CHECKSUM : " + sha1Hex);

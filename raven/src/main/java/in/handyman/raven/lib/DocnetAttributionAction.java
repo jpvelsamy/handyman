@@ -12,7 +12,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.apache.commons.compress.utils.FileNameUtils;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -59,12 +58,9 @@ public class DocnetAttributionAction implements IActionExecution {
 
         log.info(aMarker, " input variables id : {}, name : {}", action.getActionId(), docnetAttribution.getName());
         // build a request
-        log.info(aMarker, "Checkbox Classification Action for filename : {}, from filepath : {}", Paths.get(docnetAttribution.getInputFilePath()).getFileName().toString(), FileNameUtils.getBaseName(docnetAttribution.getInputFilePath()));log.info(aMarker, "Checkbox Classification Action for filename : {}, from filepath : {}", Paths.get(docnetAttribution.getInputFilePath()).getFileName().toString(), FileNameUtils.getBaseName(docnetAttribution.getInputFilePath()));
-
 
         Request request = new Request.Builder().url(URI)
                 .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-        log.debug(aMarker, "Request has been build with the parameters \n URI : {}, \n filename : {}, \n filepath : {} \n attributes : {} ", URI, Paths.get(docnetAttribution.getInputFilePath()).getFileName().toString(), FileNameUtils.getBaseName(docnetAttribution.getInputFilePath()), docnetAttribution.getAttributes());
         try (Response response = httpclient.newCall(request).execute()) {
             String responseBody = response.body().string();
             String name = docnetAttribution.getName() + "_response";

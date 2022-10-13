@@ -1,6 +1,7 @@
 package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
@@ -12,7 +13,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -46,7 +46,8 @@ public class FileMergerAction implements IActionExecution {
     @Override
     public void execute() throws Exception {
         final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
-        JSONObject inputJSON = new JSONObject(fileMerger.getRequestBody());
+        ObjectNode inputJSON = (ObjectNode) mapper.readTree(fileMerger.getRequestBody());
+
         inputJSON.put("outputDir", fileMerger.getOutputDir());
         // BUILD A REQUEST
         Request request = new Request.Builder().url(URI)

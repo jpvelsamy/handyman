@@ -13,7 +13,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -67,8 +66,8 @@ public class DownloadAssetAction implements IActionExecution {
         try (Response response = httpclient.newCall(request).execute()) {
             String responseBody = Objects.requireNonNull(response.body()).string();
             if (response.isSuccessful()) {
-                JSONObject json = new JSONObject(responseBody);
-                String path = json.get("paperPaths").toString();
+                log.debug(aMarker, responseBody);
+                String path = mapper.readTree(responseBody).get("paperPath").asText();
                 action.getContext().put(name, path);
                 log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
             } else {

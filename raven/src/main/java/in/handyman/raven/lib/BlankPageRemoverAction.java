@@ -14,12 +14,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.apache.commons.compress.utils.FileNameUtils;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
-import java.nio.file.Paths;
 import java.util.Map;
 
 /**
@@ -58,13 +56,10 @@ public class BlankPageRemoverAction implements IActionExecution {
         objectNode.put("inputFilePath", blankPageRemover.getFilePath());
         objectNode.put("outputDir", blankPageRemover.getOutputDir());
         log.info(aMarker, " input variables id : {}, name : {}", action.getActionId(), blankPageRemover.getName());
-        log.info(aMarker, "Blank Page Removal Action for filename : {}, from filepath : {}", Paths.get(blankPageRemover.getFilePath()).getFileName().toString(), FileNameUtils.getBaseName(blankPageRemover.getFilePath()));
 
         // build a request
         Request request = new Request.Builder().url(URI)
                 .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-
-        log.debug(aMarker, "Request has been build with the parameters \n URI : {}, \n filename : {}, \n filepath : {}", URI, Paths.get(blankPageRemover.getFilePath()).getFileName().toString(), FileNameUtils.getBaseName(blankPageRemover.getFilePath()));
 
         String name = blankPageRemover.getName();
         try (Response response = httpclient.newCall(request).execute()) {

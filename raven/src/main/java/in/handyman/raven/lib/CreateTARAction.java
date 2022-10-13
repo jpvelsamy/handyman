@@ -7,7 +7,6 @@ import in.handyman.raven.lib.model.CreateTAR;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
-import org.apache.commons.compress.utils.FileNameUtils;
 import org.apache.commons.compress.utils.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -23,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.UUID;
 
 
 /**
@@ -62,8 +62,7 @@ public class CreateTARAction implements IActionExecution {
         }
         var extension = createTAR.getExtension();
         var sourceFile = new File(source);
-        var fileNameWithOutExt = FileNameUtils.getBaseName(sourceFile.getName());
-        var destinationFile = new File(destination.concat("/" + fileNameWithOutExt));
+        var destinationFile = new File(destination.concat("/" + UUID.randomUUID().toString()));
         log.info(aMarker, "Destination {}", destinationFile);
         final String fileName = destinationFile.getAbsolutePath().concat("." + extension);
         try (var fileOutputStream = new FileOutputStream(fileName)) {

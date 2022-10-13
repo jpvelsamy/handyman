@@ -22,7 +22,7 @@ public class PropertyHandler {
 
     static {
         final String path = System.getenv(CONFIG_PROPERTIES);
-        LOGGER.info("load properties from {}",path);
+        LOGGER.info("load properties from {}", path);
         try (var input = new FileInputStream(path)) {
 
             var prop = new Properties();

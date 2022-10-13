@@ -1,6 +1,5 @@
 package in.handyman.raven.lib;
 
-import com.zaxxer.hikari.HikariDataSource;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
@@ -60,7 +59,7 @@ public class CallProcessAction implements IActionExecution {
                 log.info(aMarker, "Execution query sql#{} on db=#{}", sqlToExecute, dbSrc);
                 handle.createQuery(sqlToExecute).mapToMap().forEach(stringObjectMap -> {
                     stringObjectMap.forEach((s, o) -> {
-                        context.put( s , String.valueOf(o));
+                        context.put(s, String.valueOf(o));
                         log.info("Value " + o + " has been added for " + s);
                     });
                     final LContext lContext = LContext.builder()

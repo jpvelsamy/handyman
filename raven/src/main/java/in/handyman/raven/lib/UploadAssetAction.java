@@ -1,5 +1,6 @@
 package in.handyman.raven.lib;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.action.ActionExecution;
@@ -12,7 +13,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -65,12 +65,12 @@ public class UploadAssetAction implements IActionExecution {
                 uploadAsset.getFilePath());
         try (Response response = httpclient.newCall(request).execute()) {
             String responseBody = response.body().string();
-            JSONObject jsonResult = new JSONObject(responseBody);
+            JsonNode jsonResult = mapper.readTree(responseBody);
             String name = uploadAsset.getName();
             log.info(aMarker, "The response got it successfully for upload Asset as ==> {}",
                     responseBody);
             if (response.isSuccessful()) {
-                action.getContext().put(name, jsonResult.getJSONObject("asset").getString("assetId"));
+                action.getContext().put(name, jsonResult.get("asset").get("assetId").asText());
                 log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
             } else {
                 log.info(aMarker, "The Failure Response  {} {}", name, responseBody);
