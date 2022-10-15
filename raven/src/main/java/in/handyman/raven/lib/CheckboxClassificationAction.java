@@ -50,35 +50,31 @@ public class CheckboxClassificationAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
+        log.info(aMarker,"<-------Checkbox Classification Action for {} has been started------->"+checkboxClassification.getName());
         final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
 
         final ObjectNode objectNode = mapper.createObjectNode();
-
         objectNode.put("inputFilePath", checkboxClassification.getFilePath());
         objectNode.put("outputDir", checkboxClassification.getOutputDir());
 
-        log.info(aMarker, " input variables id : {}, name : {}", action.getActionId(), checkboxClassification.getName());
-        // build a request
-//        log.info(aMarker, "Checkbox Classification Action for filename : {}, from filepath : {}", Paths.get(checkboxClassification.getFilePath()).getFileName().toString(), FileNameUtils.getBaseName(checkboxClassification.getFilePath()));
-
+        log.info(aMarker, " Input variables id : {}", action.getActionId());
         Request request = new Request.Builder().url(URI)
                 .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-        log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n Input-File-Path : {} \n Output-Directory : {}", URI, checkboxClassification.getFilePath(), checkboxClassification.getOutputDir());
+        log.debug(aMarker, "The Request Details: ", request);
         String name = checkboxClassification.getName() + "_response";
         try (Response response = httpclient.newCall(request).execute()) {
             String responseBody = response.body().string();
             if (response.isSuccessful()) {
-                log.info(aMarker, "CheckBox Classification Action has completed its execution");
+                log.info(aMarker, "The Successful Response for {} --> {}", name, responseBody);
                 String classifyName = checkboxClassification.getName() + "_classification";
                 action.getContext().put(name, responseBody);
                 action.getContext().put(classifyName, Optional.ofNullable(mapper.readTree(responseBody).get("label")).map(JsonNode::asText).map(String::toLowerCase).orElseThrow());
                 action.getContext().put(name.concat(".error"), "false");
-                log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
             } else {
-                log.info(aMarker, "CheckBox Classification has failed with bad response");
+                log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
                 action.getContext().put(name.concat(".error"), "true");
-                log.info(aMarker, "The Failure Response  {} {}", name, responseBody);
             }
+            log.info(aMarker,"<-------Checkbox Classification Action for {} has been completed------->"+checkboxClassification.getName());
         } catch (Exception e) {
             action.getContext().put(name.concat(".error"), "true");
             action.getContext().put(name.concat(".errorMessage"), e.getMessage());
