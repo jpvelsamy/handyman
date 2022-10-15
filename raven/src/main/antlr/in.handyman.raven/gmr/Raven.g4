@@ -290,7 +290,7 @@ fileMerger:
 
 
 checkboxClassification:
-    'checkboxClassification' 'as' name=STRING 'from-target-file' filePath=STRING 'in' outputDir=STRING 'using' '{'     '}' ('on-condition' condition=expression)* ;
+    'checkboxClassification' 'as' name=STRING 'from-target-file' filePath=STRING 'model-file-path' modelFilePath=STRING 'in' outputDir=STRING 'using' '{'     '}' ('on-condition' condition=expression)* ;
 
 resource : STRING;
 
