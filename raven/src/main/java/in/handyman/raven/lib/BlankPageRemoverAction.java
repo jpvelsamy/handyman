@@ -49,40 +49,39 @@ public class BlankPageRemoverAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
+        log.info(aMarker,"<-------Blank Page Remover Action for {} has been started------->"+blankPageRemover.getName());
         final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
 
         final ObjectNode objectNode = mapper.createObjectNode();
-
         objectNode.put("inputFilePath", blankPageRemover.getFilePath());
         objectNode.put("outputDir", blankPageRemover.getOutputDir());
-        log.info(aMarker, " input variables id : {}, name : {}", action.getActionId(), blankPageRemover.getName());
+        log.info(aMarker, " Input variables id : {}", action.getActionId());
 
         // build a request
         Request request = new Request.Builder().url(URI)
                 .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
 
         String name = blankPageRemover.getName();
+        log.info(aMarker, "The Request Details : {}", request);
         try (Response response = httpclient.newCall(request).execute()) {
             String responseBody = response.body().string();
             if (response.isSuccessful()) {
-                log.info(aMarker, "Blank Page Remover Action has completed its execution");
+                log.info(aMarker, "The Successful Response for {} --> {}", name, responseBody);
                 Map<String, String> responseMap = mapper.readValue(responseBody, new TypeReference<>() {
                 });
                 responseMap.forEach((s, s2) -> action.getContext().put(String.format("%s.%s", blankPageRemover.getName(), s), s2));
-                log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
             } else {
-                log.info(aMarker, "Blank Page Remover Action has failed with bad response");
+                log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
                 action.getContext().put(name.concat(".error"), "true");
                 action.getContext().put(name.concat(".errorMessage"), responseBody);
-                log.info(aMarker, "The Failure Response  {} {}", name, responseBody);
-
             }
             action.getContext().put(name + ".isSuccessful", String.valueOf(response.isSuccessful()));
         } catch (Exception e) {
-            log.info(aMarker, "The Exception occurred ", e);
+            log.error(aMarker, "The Exception occurred ", e);
             action.getContext().put(name + ".isSuccessful", "false");
             throw new HandymanException("Failed to execute", e);
         }
+        log.info(aMarker,"<-------Blank Page Remover Action for {} has been completed------->"+blankPageRemover.getName());
     }
 
     @Override

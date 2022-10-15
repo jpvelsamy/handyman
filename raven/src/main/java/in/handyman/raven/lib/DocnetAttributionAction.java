@@ -48,34 +48,31 @@ public class DocnetAttributionAction implements IActionExecution {
 
   @Override
   public void execute() throws Exception {
+    log.info(aMarker,"<-------Docnet Attribution Action for {} has been started------->"+docnetAttribution.getName());
     final OkHttpClient httpclient = new OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.MINUTES)
             .writeTimeout(10, TimeUnit.MINUTES)
             .readTimeout(10, TimeUnit.MINUTES).build();
-
-
-    log.info(aMarker, "The request got it successfully for Asset ID and QA List {} {}",
-            docnetAttribution.getName(),docnetAttribution.getQuestionList());
-
-    final ObjectNode objectNode = mapper.createObjectNode();
+    log.info(aMarker, " Input variables id : {}", action.getActionId());
 
     JsonNode questionList=mapper.readTree(docnetAttribution.getQuestionList());
     JsonNode keyName = questionList.get("f1");
     String multipleQaList = questionList.get("f2").toString();
+    log.info(aMarker, "Question List for {} are {}", docnetAttribution.getQuestionList(), keyName);
+
+    final ObjectNode objectNode = mapper.createObjectNode();
     objectNode.put("inputFilePath",docnetAttribution.getInputFilePath());
     objectNode.set("attributes",mapper.readTree(multipleQaList));
 
     Request request = new Request.Builder().url(URI)
             .post(RequestBody.create(objectNode.toString(),MediaTypeJSON)).build();
 
+    log.info(aMarker, "The Request Details : {}", request);
     try (Response response = httpclient.newCall(request).execute()) {
       String responseBody = response.body().string();
+
       String name = docnetAttribution.getName() + "_response";
-      log.info(aMarker, "The response got it successfully for Asset ID and Attribution List {}",
-              responseBody);
-
       JsonNode actualObj = mapper.readTree(responseBody);
-
       JsonNode attributeKeys = questionList.get("f2");
       ArrayList<String> attributionResult = new ArrayList<String>();
       for (JsonNode fieldName : attributeKeys) {
@@ -86,13 +83,14 @@ public class DocnetAttributionAction implements IActionExecution {
       resultNode.put("key_name", keyName.asText());
       resultNode.put("attribution_result", attributionResult.toString());
       if (response.isSuccessful()) {
+        log.info(aMarker, "The Successful Response for {} --> {}", name, responseBody);
         action.getContext().put(name, resultNode.toString());
         action.getContext().put(name.concat(".error"), "false");
-        log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
       } else {
+        log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
         action.getContext().put(name.concat(".error"), "true");
-        log.info(aMarker, "The Failure Response  {} {}", name, responseBody);
       }
+      log.info(aMarker,"<-------Docnet Attribution Action for {} has been completed------->"+docnetAttribution.getName());
     }catch (Exception e){
       log.info(aMarker, "The Exception occurred ",e);
       throw new HandymanException("Failed to execute", e);

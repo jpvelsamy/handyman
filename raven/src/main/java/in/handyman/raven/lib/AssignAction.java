@@ -1,5 +1,6 @@
 package in.handyman.raven.lib;
 
+import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
@@ -37,23 +38,29 @@ public class AssignAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
+        log.info(aMarker,"<-------Assign Action for {} has been started------->"+assign.getName());
         final String dbSrc = assign.getSource();
         log.info(aMarker, " input variables id: {}, name: {}, source-database: {} ", actionExecutionAudit.getActionId(), assign.getName(), dbSrc);
-        log.info(aMarker, "Sql input post parameter ingestion \n {}", assign.getValue());
+        log.debug(aMarker, "Sql input post parameter ingestion \n {}", assign.getValue());
         final Map<String, String> context = actionExecutionAudit.getContext();
 
-        final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(dbSrc);
-        jdbi.useTransaction(handle -> {
-            final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(assign.getValue());
-            formattedQuery.forEach(sqlToExecute -> {
-                log.info(aMarker, "Execution query sql#{} on db=#{}", sqlToExecute, dbSrc);
-                handle.createQuery(sqlToExecute).mapToMap().forEach(stringObjectMap -> stringObjectMap.forEach((s, o) -> {
-                    context.put(assign.getName().isEmpty() ? s : String.format("%s.%s", assign.getName(), s), String.valueOf(o));
-                    log.info("Value " + o + " has been added for " + s);
-                }));
+        try{
+            final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(dbSrc);
+            jdbi.useTransaction(handle -> {
+                final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(assign.getValue());
+                formattedQuery.forEach(sqlToExecute -> {
+                    log.info(aMarker, "Execution query sql#{} on db=#{}", sqlToExecute, dbSrc);
+                    handle.createQuery(sqlToExecute).mapToMap().forEach(stringObjectMap -> stringObjectMap.forEach((s, o) -> {
+                        context.put(assign.getName().isEmpty() ? s : String.format("%s.%s", assign.getName(), s), String.valueOf(o));
+                        log.debug("Value " + o + " has been added for " + s);
+                    }));
+                });
             });
-        });
-
+            log.info(aMarker,"<-------Assign Action for {} has been Completed------->"+assign.getName());
+        } catch (Exception e){
+            log.error(aMarker, "The Exception occurred ",e);
+            throw new HandymanException("Failed to execute", e);
+        }
     }
 
     @Override

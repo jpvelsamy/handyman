@@ -44,6 +44,7 @@ public class CallProcessAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
+        log.info(aMarker,"<-------Call Process Action for {} has been started------->"+callProcess.getName());
         final String fileRelativePath = callProcess.getSource();
         var targetProcess = callProcess.getTarget();
         var dbSrc = callProcess.getDatasource();
@@ -53,62 +54,73 @@ public class CallProcessAction implements IActionExecution {
         final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(dbSrc);
         var runContext = new ArrayList<LContext>();
         final Map<String, String> context = actionExecutionAudit.getContext();
-        jdbi.useTransaction(handle -> {
-            final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(sql);
-            formattedQuery.forEach(sqlToExecute -> {
-                log.info(aMarker, "Execution query sql#{} on db=#{}", sqlToExecute, dbSrc);
-                handle.createQuery(sqlToExecute).mapToMap().forEach(stringObjectMap -> {
-                    stringObjectMap.forEach((s, o) -> {
-                        context.put(s, String.valueOf(o));
-                        log.info("Value " + o + " has been added for " + s);
+        try{
+            jdbi.useTransaction(handle -> {
+                final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(sql);
+                formattedQuery.forEach(sqlToExecute -> {
+                    log.info(aMarker, "Execution query sql#{} on db=#{}", sqlToExecute, dbSrc);
+                    handle.createQuery(sqlToExecute).mapToMap().forEach(stringObjectMap -> {
+                        stringObjectMap.forEach((s, o) -> {
+                            context.put(s, String.valueOf(o));
+                            log.debug("Value " + o + " has been added for " + s);
+                        });
+                        final LContext lContext = LContext.builder()
+                                .inheritedContext(new HashMap<>(context))
+                                .lambdaName(actionExecutionAudit.getLambdaName())
+                                .parentActionId(actionExecutionAudit.getActionId())
+                                .parentActionName(actionExecutionAudit.getActionName())
+                                .relativePath(fileRelativePath)
+                                .processLoadType(HRequestResolver.LoadType.FILE.name())
+                                .pipelineName(callProcess.getTarget())
+                                .parentPipelineId(actionExecutionAudit.getPipelineId())
+                                .parentPipelineName(actionExecutionAudit.getPipelineName())
+                                .rootPipelineId(actionExecutionAudit.getRootPipelineId())
+                                .build();
+                        runContext.add(lContext);
                     });
-                    final LContext lContext = LContext.builder()
-                            .inheritedContext(new HashMap<>(context))
-                            .lambdaName(actionExecutionAudit.getLambdaName())
-                            .parentActionId(actionExecutionAudit.getActionId())
-                            .parentActionName(actionExecutionAudit.getActionName())
-                            .relativePath(fileRelativePath)
-                            .processLoadType(HRequestResolver.LoadType.FILE.name())
-                            .pipelineName(callProcess.getTarget())
-                            .parentPipelineId(actionExecutionAudit.getPipelineId())
-                            .parentPipelineName(actionExecutionAudit.getPipelineName())
-                            .rootPipelineId(actionExecutionAudit.getRootPipelineId())
-                            .build();
-                    runContext.add(lContext);
                 });
             });
-        });
+        } catch (Exception e){
+            log.error(aMarker, "The Exception occurred ",e);
+            throw new HandymanException("Failed to execute", e);
+        }
 
         log.info(aMarker, "Completed name#{}, calledProcess#{}, calledFile#{}, db=#{}", callProcess.getName(), targetProcess, fileRelativePath, dbSrc);
 
-        final int forkBatchSize = Optional.ofNullable(callProcess.getForkBatchSize()).map(Integer::valueOf).orElse(0);
-        if (forkBatchSize != 0) {
-            var executor = Executors.newWorkStealingPool(forkBatchSize);
-            var counter = new CountDownLatch(runContext.size());
-            runContext.forEach(lContext -> {
-                final LambdaCallable lambdaCallable = new LambdaCallable(lContext, counter);
-                executor.submit(lambdaCallable);
-            });
+        try{
+            final int forkBatchSize = Optional.ofNullable(callProcess.getForkBatchSize()).map(Integer::valueOf).orElse(0);
+            if (forkBatchSize != 0) {
+                var executor = Executors.newWorkStealingPool(forkBatchSize);
+                var counter = new CountDownLatch(runContext.size());
+                runContext.forEach(lContext -> {
+                    final LambdaCallable lambdaCallable = new LambdaCallable(lContext, counter);
+                    executor.submit(lambdaCallable);
+                });
 
-            try {
-                counter.await();
-            } catch (InterruptedException e) {
-                throw new HandymanException("Call process parallel failed ", e);
-            }
-
-        } else {
-            runContext.forEach(lContext -> {
-                final LambdaCallable lambdaCallable = new LambdaCallable(lContext, null);
                 try {
-                    final PipelineExecutionAudit start = lambdaCallable.call();
-                    context.putAll(start.getContext());
-                } catch (Exception e) {
-                    log.trace(aMarker, "Failed process {}", lContext, e);
+                    counter.await();
+                } catch (InterruptedException e) {
+                    log.error(aMarker, "The Exception occurred ",e);
+                    throw new HandymanException("Call process parallel failed ", e);
                 }
-            });
+
+            } else {
+                runContext.forEach(lContext -> {
+                    final LambdaCallable lambdaCallable = new LambdaCallable(lContext, null);
+                    try {
+                        final PipelineExecutionAudit start = lambdaCallable.call();
+                        context.putAll(start.getContext());
+                    } catch (Exception e) {
+                        log.error(aMarker, "Failed process {}", lContext, e);
+                    }
+                });
+            }
+        } catch (Exception e){
+            log.error(aMarker, "The Exception occurred ",e);
+            throw new HandymanException("Failed to execute", e);
         }
 
-
+        log.info(aMarker,"<-------Call Process Action for {} has been Completed------->"+callProcess.getName());
     }
 
 

@@ -37,12 +37,16 @@ public class FileSizeAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
+        log.info(aMarker,"<-------Filesize Action for {} has been started------->"+fileSize.getName());
         String filePath = fileSize.getFilePath();
         File file = new File(filePath);
+
         if (file.exists()) {
             BigInteger sizeBig = file.isDirectory() ? FileUtils.sizeOfDirectoryAsBigInteger(file) : FileUtils.sizeOfAsBigInteger(file);
             action.getContext().put(fileSize.getName(), sizeBig.toString());
+            log.debug(aMarker,"File size {} for file {} ", fileSize, filePath);
         }
+        log.info(aMarker,"<-------Filesize Action for {} has been Completed------->"+fileSize.getName());
     }
 
     @Override

@@ -38,17 +38,17 @@ public class ChecksumAction implements IActionExecution {
     @Override
     public void execute() throws Exception {
 
+        log.info(aMarker,"<-------Checksum Action for {} has been started------->"+checksum.getName());
         String filePath = checksum.getFilePath();
-        log.info(aMarker, filePath);
-
         Thread.sleep(5000);
-        log.info(aMarker, "wake from executing  {}", checksum);
+        log.info(aMarker, "FilePath and Checksum details -> {} {}", filePath, checksum);
 
         try (InputStream is = Files.newInputStream(Paths.get(filePath))) {
             String sha1Hex = org.apache.commons.codec.digest.DigestUtils.sha1Hex(is);
-            log.info("MD5 CHECKSUM : " + sha1Hex);
+            log.debug("MD5 CHECKSUM details {} for file {} " , sha1Hex, filePath);
             action.getContext().put(checksum.getName(), sha1Hex);
         }
+        log.info(aMarker,"<-------Checksum Action for {} has been Completed------->"+checksum.getName());
     }
 
     @Override

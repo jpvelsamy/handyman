@@ -45,9 +45,10 @@ public class TransformAction implements IActionExecution {
 
     @Override
     public void execute() {
+        log.info(aMarker,"<-------Transform Action for {} has been started------->"+transform.getName());
         final String dbSrc = transform.getOn();
         log.info(aMarker, "Transform action input variables id: {}, name: {}, source-database: {} ", actionExecutionAudit.getActionId(), transform.getName(), dbSrc);
-        log.info(aMarker, "Sql input post parameter ingestion \n {}", transform.getValue());
+        log.debug(aMarker, "Sql input post parameter ingestion \n {}", transform.getValue());
         final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(dbSrc);
         jdbi.useTransaction(handle -> {
             try {
@@ -62,9 +63,9 @@ public class TransformAction implements IActionExecution {
                         try (final Statement stmt = connection.createStatement()) {
                             var rowCount = stmt.executeUpdate(sqlToExecute);
                             var warnings = ExceptionUtil.completeSQLWarning(stmt.getWarnings());
-                            log.info(aMarker, sqlToExecute + ".count", rowCount);
-                            log.info(aMarker, sqlToExecute + ".stmtCount", stmt.getUpdateCount());
-                            log.info(aMarker, sqlToExecute + ".warnings", warnings);
+                            log.debug(aMarker, sqlToExecute + ".count", rowCount);
+                            log.debug(aMarker, sqlToExecute + ".stmtCount", stmt.getUpdateCount());
+                            log.debug(aMarker, sqlToExecute + ".warnings", warnings);
                             log.info(aMarker, "Transform id# {}, executed script {} rows returned {}", statementId, sqlToExecute, rowCount);
                             stmt.clearWarnings();
                         } catch (SQLSyntaxErrorException ex) {
@@ -82,9 +83,10 @@ public class TransformAction implements IActionExecution {
                         }
                     }
                     connection.commit();
-                    log.info(aMarker, "Completed Transform id#{}, name#{}, dbSrc#{}, sqlList#{}", actionExecutionAudit.getActionId(), transform.getName()
+                    log.debug(aMarker, "Completed Transform id#{}, name#{}, dbSrc#{}, sqlList#{}", actionExecutionAudit.getActionId(), transform.getName()
                             , dbSrc, sqlList);
                 }
+            log.info(aMarker,"<-------Transform Action for {} has been completed------->"+transform.getName());
             } catch (SQLException ex) {
                 log.error(aMarker, "Stopping execution, Fetching connection failed", ex);
                 log.info(aMarker, "connection.exception {}", ExceptionUtil.toString(ex));

@@ -49,18 +49,18 @@ public class DownloadAssetAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
+        log.info(aMarker,"<-------Download Action for {} has been started------->"+downloadAsset.getName());
         final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
+
         // convert the book to JSON by Jackson
-
         final ObjectNode objectNode = mapper.createObjectNode();
-
         objectNode.putPOJO("urls", Collections.singletonList(downloadAsset.getUrl()));
         objectNode.put("outputDir", downloadAsset.getLocation());
 
         // build a request
         Request request = new Request.Builder().url(this.URI)
                 .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-        log.info(aMarker, "The request got it successfully the url and outputDir {} {}", downloadAsset.getUrl(), downloadAsset.getLocation());
+        log.info(aMarker, "The request details: {} ", request);
         String name = downloadAsset.getName();
 
         try (Response response = httpclient.newCall(request).execute()) {
@@ -69,18 +69,18 @@ public class DownloadAssetAction implements IActionExecution {
                 log.debug(aMarker, responseBody);
                 String path = mapper.readTree(responseBody).get("paperPath").asText();
                 action.getContext().put(name, path);
-                log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
+                log.info(aMarker, "Successful Response Details {} {}", name, responseBody);
             } else {
-                log.info(aMarker, "The Response  {} {}", name, responseBody);
+                log.info(aMarker, "Failure Response Details {} {}", name, responseBody);
                 log.info(aMarker, name + ".errorMessage {}", responseBody);
             }
             action.getContext().put(name + ".isSuccessful", String.valueOf(response.isSuccessful()));
         } catch (Exception e) {
-            log.info(aMarker, "The Exception occurred ", e);
+            log.error(aMarker, "The Exception occurred ", e);
             action.getContext().put(name + ".isSuccessful", "false");
             throw new HandymanException("Failed to execute", e);
         }
-
+        log.info(aMarker,"<-------Download Action for {} has been Completed------->"+downloadAsset.getName());
     }
 
     @Override

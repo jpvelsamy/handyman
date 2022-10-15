@@ -48,45 +48,39 @@ public class AutoRotationAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-
+        log.info(aMarker,"<-------Auto Rotation Action for {} has been started------->"+autoRotation.getName());
         final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
 
         final ObjectNode objectNode = mapper.createObjectNode();
-
         objectNode.put("inputFilePath", autoRotation.getFilePath());
         objectNode.put("outputDir", autoRotation.getOutputDir());
+        log.info(aMarker, " Input variables id : {}", action.getActionId());
 
-        log.info(aMarker, " input variables id : {}, name : {}", action.getActionId(), autoRotation.getName());
         // build a request
-
         Request request = new Request.Builder().url(URI)
                 .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-
         log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n Input-File-Path : {} \n Output-Directory : {} \n", URI, autoRotation.getFilePath(), autoRotation.getOutputDir());
-
         String name = autoRotation.getName();
 
+        log.info(aMarker, "The Request Details : {}", request);
         try (Response response = httpclient.newCall(request).execute()) {
             String responseBody = response.body().string();
-
             if (response.isSuccessful()) {
-                log.info(aMarker, "Auto Rotation Action has completed its execution");
+                log.info(aMarker, "The Successful Response for {} --> {}", name, responseBody);
                 action.getContext().put(autoRotation.getName() + ".processedFilePaths",
                         Optional.ofNullable(mapper.readTree(responseBody).get("processedFilePaths")).map(JsonNode::toString).orElse("[]"));
-                log.info(aMarker, "The Successful Response  {} : {}", name, responseBody);
             } else {
-                log.info(aMarker, "Auto Rotation has failed with bad response");
+                log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
                 action.getContext().put(name.concat(".error"), "true");
                 action.getContext().put(name.concat(".errorMessage"), responseBody);
-                log.info(aMarker, "The Failure Response  {} {}", name, responseBody);
             }
             action.getContext().put(name + ".isSuccessful", String.valueOf(response.isSuccessful()));
         } catch (Exception e) {
-            log.info(aMarker, "The Exception occurred ", e);
+            log.error(aMarker, "The Exception occurred ", e);
             action.getContext().put(name + ".isSuccessful", "false");
             throw new HandymanException("Failed to execute", e);
         }
-
+        log.info(aMarker,"<-------Auto Rotation Action for {} has been completed------->"+autoRotation.getName());
     }
 
     @Override
