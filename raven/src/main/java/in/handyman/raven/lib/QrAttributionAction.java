@@ -49,13 +49,11 @@ public class QrAttributionAction implements IActionExecution {
         {
             final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
             final ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("file_path", qrAttribution.getFilePath());
-            objectNode.put("url", qrAttribution.getUrl());
+            objectNode.put("inputFilePath", qrAttribution.getFilePath());
             // build a request
             Request request = new Request.Builder().url(URI)
                     .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-            log.info(aMarker, "The request got it successfully the File Path and url {} {}", qrAttribution.getFilePath()
-                    , qrAttribution.getUrl());
+            log.info(aMarker, "The request got it successfully the File Path {}", qrAttribution.getFilePath());
             try (Response response = httpclient.newCall(request).execute()) {
                 String responseBody = Objects.requireNonNull(response.body()).string();
                 String name = "qr-attribution-response";

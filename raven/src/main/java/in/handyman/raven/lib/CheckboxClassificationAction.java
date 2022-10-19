@@ -67,9 +67,7 @@ public class CheckboxClassificationAction implements IActionExecution {
       String responseBody = response.body().string();
       if (response.isSuccessful()) {
         log.info(aMarker, "The Successful Response for {} --> {}", name, responseBody);
-        String classifyName = checkboxClassification.getName() + "_classification";
         action.getContext().put(name, responseBody);
-        action.getContext().put(classifyName, Optional.ofNullable(mapper.readTree(responseBody).get("label")).map(JsonNode::asText).map(String::toLowerCase).orElseThrow());
         action.getContext().put(name.concat(".error"), "false");
       } else {
         log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);

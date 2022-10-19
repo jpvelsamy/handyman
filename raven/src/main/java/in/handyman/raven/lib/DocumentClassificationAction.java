@@ -43,12 +43,12 @@ public class DocumentClassificationAction implements IActionExecution {
         this.action = action;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker(" DocumentClassification:" + this.documentClassification.getName());
-        this.URI = action.getContext().get("copro.classification-document.url");
+        this.URI = action.getContext().get("copro.hwd-extraction.url");
     }
 
     @Override
     public void execute() throws Exception {
-        log.info(aMarker,"<-------Document Classification Action for {} has been started------->"+documentClassification.getName());
+        log.info(aMarker, "<-------Document Classification Action for {} has been started------->" + documentClassification.getName());
         final OkHttpClient httpclient = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.MINUTES)
                 .writeTimeout(10, TimeUnit.MINUTES)
@@ -60,7 +60,7 @@ public class DocumentClassificationAction implements IActionExecution {
         objectNode.put("inputFilePath", documentClassification.getFilePath());
         objectNode.put("outputDir", documentClassification.getOutputDir());
         objectNode.put("modelFilePath", documentClassification.getModelFilePath());
-        objectNode.put("labels", documentClassification.getLabels());
+        objectNode.set("labels", mapper.readTree(documentClassification.getLabels()));
 
         log.info(aMarker, " Input variables id : {}", action.getActionId());
         Request request = new Request.Builder().url(URI)
@@ -82,7 +82,7 @@ public class DocumentClassificationAction implements IActionExecution {
                 action.getContext().put(name.concat(".errorMessage"), responseBody);
                 log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
             }
-           log.info(aMarker,"<-------Document Classification Action for {} has been completed------->"+documentClassification.getName());
+            log.info(aMarker, "<-------Document Classification Action for {} has been completed------->" + documentClassification.getName());
         } catch (Exception e) {
             action.getContext().put(name.concat(".error"), "true");
             action.getContext().put(name.concat(".errorMessage"), e.getMessage());
