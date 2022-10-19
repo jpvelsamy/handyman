@@ -1,5 +1,6 @@
 package in.handyman.raven.lib;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -11,7 +12,7 @@ import in.handyman.raven.lib.model.DocnetAttribution;
 import java.lang.Exception;
 import java.lang.Object;
 import java.lang.Override;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.*;
@@ -57,12 +58,11 @@ public class DocnetAttributionAction implements IActionExecution {
 
     JsonNode questionList=mapper.readTree(docnetAttribution.getQuestionList());
     JsonNode keyName = questionList.get("f1");
-    String multipleQaList = questionList.get("f2").toString();
     log.info(aMarker, "Question List for {} are {}", docnetAttribution.getQuestionList(), keyName);
 
     final ObjectNode objectNode = mapper.createObjectNode();
     objectNode.put("inputFilePath",docnetAttribution.getInputFilePath());
-    objectNode.set("attributes",mapper.readTree(multipleQaList));
+    objectNode.set("attributes",questionList.get("f2"));
 
     Request request = new Request.Builder().url(URI)
             .post(RequestBody.create(objectNode.toString(),MediaTypeJSON)).build();
@@ -70,18 +70,17 @@ public class DocnetAttributionAction implements IActionExecution {
     log.info(aMarker, "The Request Details : {}", request);
     try (Response response = httpclient.newCall(request).execute()) {
       String responseBody = response.body().string();
-
       String name = docnetAttribution.getName() + "_response";
       JsonNode actualObj = mapper.readTree(responseBody);
-      JsonNode attributeKeys = questionList.get("f2");
-      ArrayList<String> attributionResult = new ArrayList<String>();
-      for (JsonNode fieldName : attributeKeys) {
+      List<String> attributionResult=new ArrayList<String>();
+      for (JsonNode fieldName : questionList.get("f2")) {
         JsonNode value = actualObj.get("attributionValue").get(fieldName.asText());
-        attributionResult.add(value.toString());
+        attributionResult.add(value.asText());
       }
+
       ObjectNode resultNode = mapper.createObjectNode();
-      resultNode.put("key_name", keyName.asText());
-      resultNode.put("attribution_result", attributionResult.toString());
+      resultNode.put("keyName", keyName.asText());
+      resultNode.putPOJO("attributionResult",  attributionResult);
       if (response.isSuccessful()) {
         log.info(aMarker, "The Successful Response for {} --> {}", name, responseBody);
         action.getContext().put(name, resultNode.toString());
