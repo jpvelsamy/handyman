@@ -26,7 +26,7 @@
         <google.people.version>v1-rev20210903-1.32.1</google.people.version>
         <google.cal.version>v3-rev20211026-1.32.1</google.cal.version>
         <junit.version>5.8.2</junit.version>
-        <jackson.version>2.13.1</jackson.version>
+        <jackson.version>2.13.4.1</jackson.version>
         <jdbi.version>3.27.0</jdbi.version>
         <elastic.version>7.16.2</elastic.version>
         <maven.compiler.source>11</maven.compiler.source>
