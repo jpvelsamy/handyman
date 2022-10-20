@@ -1,9 +1,9 @@
 package in.handyman.raven.util;
 
+import in.handyman.raven.lambda.process.HRequestResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Collections;
@@ -21,9 +21,8 @@ public class PropertyHandler {
     private static final Map<String, String> PROPS;
 
     static {
-        final String path = System.getenv(CONFIG_PROPERTIES);
-        LOGGER.info("load properties from {}", path);
-        try (var input = new FileInputStream(path)) {
+
+        try (var input = HRequestResolver.class.getClassLoader().getResourceAsStream("config.properties");) {
 
             var prop = new Properties();
             //load a properties file from class path, inside static method
