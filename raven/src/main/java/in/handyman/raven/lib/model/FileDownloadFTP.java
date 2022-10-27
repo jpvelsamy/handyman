@@ -33,9 +33,7 @@ public class FileDownloadFTP implements IActionContext {
   private String password;
 
   private String sessionTimeOut;
-
-  private String channelTimeOut;
-
+  
   private String sourceFile;
 
   private String destDir;

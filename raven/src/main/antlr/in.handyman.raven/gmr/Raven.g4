@@ -294,8 +294,11 @@ checkboxClassification:
     'checkboxClassification' 'as' name=STRING 'from-target-file' filePath=STRING 'model-file-path' modelFilePath=STRING 'in' outputDir=STRING 'using' '{'     '}' ('on-condition' condition=expression)* ;
 
 fileDownloadFTP:
-       'ftp' 'as' name=STRING 'with-remote-host' host=STRING 'port' port=STRING 'user-name' userName=STRING 'password' password=STRING 'session-timeout' sessionTimeOut=STRING 'channel-timeout' channelTimeOut=STRING 'source-file-to-download' sourceFile=STRING 'in-destination-to-save' destDir=STRING
+       'ftp' 'as' name=STRING 'with-remote-host' host=STRING 'port' port=STRING 'user-name' userName=STRING 'password' password=STRING 'session-timeout' sessionTimeOut=STRING 'source-file-to-download' sourceFile=STRING 'in-destination-to-save' destDir=STRING
        'using' '{'     '}' ('on-condition' condition=expression)* ;
+
+//fileUnzip:
+//    'unzip' 'as' name=STRING;
 
 resource : STRING;
 
