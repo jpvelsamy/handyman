@@ -54,7 +54,7 @@ public class DownloadAssetAction implements IActionExecution {
 
         // convert the book to JSON by Jackson
         final ObjectNode objectNode = mapper.createObjectNode();
-        objectNode.putPOJO("urls", Collections.singletonList(downloadAsset.getUrl()));
+        objectNode.putPOJO("inputFileUri", downloadAsset.getUrl());
         objectNode.put("outputDir", downloadAsset.getLocation());
 
         // build a request
