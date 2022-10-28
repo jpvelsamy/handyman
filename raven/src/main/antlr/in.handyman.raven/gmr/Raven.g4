@@ -71,7 +71,8 @@ action:
     |uploadAsset
     |docnetAttribution
     |checkboxClassification
-    |fileDownloadFTP);
+    |fileDownloadFTP
+    |createZip);
 
 multitude:
     'multitude' 'as' name=STRING ('on' on= STRING)* 'using'
@@ -297,6 +298,9 @@ fileDownloadFTP:
        'ftp' 'as' name=STRING 'with-remote-host' host=STRING 'port' port=STRING 'user-name' userName=STRING 'password' password=STRING 'session-timeout' sessionTimeOut=STRING 'source-file-to-download' sourceFile=STRING 'in-destination-to-save' destDir=STRING
        'using' '{'     '}' ('on-condition' condition=expression)* ;
 
+createZip:
+       'create-zip' name = STRING 'file-name' fileName = STRING 'from' source = STRING 'destination' destination=STRING 'using'
+        '{' '}' ('on-condition' condition=expression)*;
 //fileUnzip:
 //    'unzip' 'as' name=STRING;
 
