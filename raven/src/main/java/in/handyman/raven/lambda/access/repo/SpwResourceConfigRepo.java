@@ -15,12 +15,12 @@ public interface SpwResourceConfigRepo {
 
     String COLUMNS = " id, config_name, resource_url, active, user_name, password, driver_class, host, port, database_name, created_by, created_date, last_modified_by, last_modified_date, version ";
 
-    @SqlUpdate("insert into " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SRC_TABLE_NAME + " (  config_name, resource_url, active, user_name, password, driver_class, host, port, database_name, created_by, created_date, last_modified_by, last_modified_date, version) " +
-            "VALUES ( :configName, :resourceUrl, :active, :userName, :password, :driverClass, :host, :port, :databaseName,:createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :version)")
+    @SqlUpdate("insert into " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SRC_TABLE_NAME + " (id, config_name, resource_url, active, user_name, password, driver_class, host, port, database_name, created_by, created_date, last_modified_by, last_modified_date, version) " +
+            "VALUES ( :id, :configName, :resourceUrl, :active, :userName, :password, :driverClass, :host, :port, :databaseName,:createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :version) RETURNING id")
     void insert(@BindBean final SpwResourceConfig spwResourceConfig);
 
     @SqlUpdate("UPDATE " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SRC_TABLE_NAME + " SET active=:active, created_by= :createdBy , created_date= :createdDate," +
-            " last_modified_by= :lastModifiedBy, last_modified_date= :lastModifiedDate ,  config_name= :configName, resource_url= :resourceUrl, active= :active," +
+            " last_modified_by= :lastModifiedBy, last_modified_date= :lastModifiedDate ,  config_name= :configName, resource_url= :resourceUrl, " +
             " user_name= :userName, password= :password, driver_class= :driverClass, host= :host, port= :port, database_name= :databaseName WHERE id = :id ")
     void update(@BindBean final SpwResourceConfig spwResourceConfig);
 
@@ -36,4 +36,7 @@ public interface SpwResourceConfigRepo {
     @RegisterBeanMapper(value = SpwResourceConfig.class)
     Optional<SpwResourceConfig> findOne(@Bind("configName") final String variable);
 
+    @SqlQuery("SELECT max(id)+1 FROM  " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SRC_TABLE_NAME + "; ")
+    @RegisterBeanMapper(value = SpwResourceConfig.class)
+    Long getId();
 }

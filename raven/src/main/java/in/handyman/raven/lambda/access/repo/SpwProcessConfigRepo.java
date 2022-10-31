@@ -15,8 +15,8 @@ public interface SpwProcessConfigRepo {
 
     String COLUMNS = " id, process, variable, value, active, created_by, created_date, last_modified_by, last_modified_date, version ";
 
-    @SqlUpdate("insert into " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SPC_TABLE_NAME + " (process, variable, value, active, created_by, created_date, last_modified_by, last_modified_date, version) " +
-            "VALUES ( :process, :variable, :value,:active,:createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :version)")
+    @SqlUpdate("insert into " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SPC_TABLE_NAME + " (id, process, variable, value, active, created_by, created_date, last_modified_by, last_modified_date, version) " +
+            "VALUES (:id, :process, :variable, :value,:active,:createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :version)")
     void insert(@BindBean final SpwProcessConfig spwProcessConfig);
 
     @SqlUpdate("UPDATE " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SPC_TABLE_NAME + " SET active=:active, created_by= :createdBy , created_date= :createdDate," +
@@ -38,5 +38,9 @@ public interface SpwProcessConfigRepo {
     @SqlQuery("SELECT " + COLUMNS + " FROM  " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SPC_TABLE_NAME + " where process= :process and variable= :variable  and active=true order by version desc limit 1; ")
     @RegisterBeanMapper(value = SpwProcessConfig.class)
     Optional<SpwProcessConfig> findOne(@Bind("process") final String process, @Bind("variable") final String variable);
+
+    @SqlQuery("SELECT max(id)+1 FROM  " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SPC_TABLE_NAME + "; ")
+    @RegisterBeanMapper(value = SpwProcessConfig.class)
+    Long getId();
 
 }
