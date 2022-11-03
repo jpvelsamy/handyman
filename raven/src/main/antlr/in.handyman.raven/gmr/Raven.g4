@@ -71,10 +71,12 @@ action:
     |uploadAsset
     |docnetAttribution
     |checkboxClassification
-    |fileDownloadFTP
     |createZip
+    |extractZip
     |sorGroupDetails
-  );
+    |ftpsConnector
+    |sftpConnector);
+
 
 multitude:
     'multitude' 'as' name=STRING ('on' on= STRING)* 'using'
@@ -133,7 +135,7 @@ spawnProcess:
 
 dogLeg:
 	'dogleg' 'as' name=STRING 'use-parent-context' inheritContext=STRING 'using'
-	'{'
+	'{'ftpsConnector
 		processList+=startProcess
 	'}'   ('on-condition' condition=expression)*;
 
@@ -296,15 +298,23 @@ fileMerger:
 checkboxClassification:
     'checkboxClassification' 'as' name=STRING 'from-target-file' filePath=STRING 'model-file-path' modelFilePath=STRING 'in' outputDir=STRING 'using' '{'     '}' ('on-condition' condition=expression)* ;
 
-fileDownloadFTP:
+ftpsConnector:
+       'ftps' 'as' name=STRING 'with-remote-host' host=STRING 'port' port=STRING 'user-name' userName=STRING 'password' password=STRING 'session-timeout' sessionTimeOut=STRING 'source-file-to-download' sourceFile=STRING 'in-destination-to-save' destDir=STRING
+       'using' '{'     '}' ('on-condition' condition=expression)* ;
+
+sftpConnector:
+       'sftp' 'as' name=STRING 'with-remote-host' host=STRING 'port' port=STRING 'user-name' userName=STRING 'password' password=STRING 'session-timeout' sessionTimeOut=STRING 'channel-timeout' channelTimeOut=STRING 'source-file-to-download' sourceFile=STRING 'in-destination-to-save' destDir=STRING
        'ftp' 'as' name=STRING 'with-remote-host' host=STRING 'port' port=STRING 'user-name' userName=STRING 'password' password=STRING 'session-timeout' sessionTimeOut=STRING 'source-file-to-download' sourceFile=STRING 'in-destination-to-save' destDir=STRING
        'using' '{'     '}' ('on-condition' condition=expression)* ;
+
 
 createZip:
        'create-zip' name = STRING 'file-name' fileName = STRING 'from' source = STRING 'destination' destination=STRING 'using'
         '{' '}' ('on-condition' condition=expression)*;
-//fileUnzip:
-//    'unzip' 'as' name=STRING;
+
+extractZip:
+        'extract-zip' name = STRING 'from' source = STRING 'destination' destination=STRING 'using'
+        '{' '}' ('on-condition' condition=expression)*;
 
 sorGroupDetails:
     'sorGroupDetails' 'as' name=STRING 'on' on=STRING 'keyfields' keyfields=STRING  'searchfields' searchfields=STRING
@@ -312,6 +322,8 @@ sorGroupDetails:
 	'{'
 	    value=STRING
 	'}' ('on-condition' condition=expression)*;
+
+
 
 resource : STRING;
 

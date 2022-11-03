@@ -19,9 +19,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "FileDownloadFTP"
+    actionName = "FtpsConnector"
 )
-public class FileDownloadFTP implements IActionContext {
+public class FtpsConnector implements IActionContext {
   private String name;
 
   private String host;
@@ -33,7 +33,7 @@ public class FileDownloadFTP implements IActionContext {
   private String password;
 
   private String sessionTimeOut;
-  
+
   private String sourceFile;
 
   private String destDir;
