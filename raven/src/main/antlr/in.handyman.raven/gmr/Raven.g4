@@ -72,7 +72,9 @@ action:
     |docnetAttribution
     |checkboxClassification
     |fileDownloadFTP
-    |createZip);
+    |createZip
+    |sorGroupDetails
+  );
 
 multitude:
     'multitude' 'as' name=STRING ('on' on= STRING)* 'using'
@@ -303,6 +305,13 @@ createZip:
         '{' '}' ('on-condition' condition=expression)*;
 //fileUnzip:
 //    'unzip' 'as' name=STRING;
+
+sorGroupDetails:
+    'sorGroupDetails' 'as' name=STRING 'on' on=STRING 'keyfields' keyfields=STRING  'searchfields' searchfields=STRING
+    'groupbyfields' groupbyfields=STRING  'targettable' targettable=STRING 'using'
+	'{'
+	    value=STRING
+	'}' ('on-condition' condition=expression)*;
 
 resource : STRING;
 
