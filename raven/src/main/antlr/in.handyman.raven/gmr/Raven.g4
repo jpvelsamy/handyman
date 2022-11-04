@@ -71,8 +71,14 @@ action:
     |uploadAsset
     |docnetAttribution
     |checkboxClassification
-    |fileDownloadFTP
-    |createZip);
+    |createZip
+    |extractZip
+    |sorGroupDetails
+    |ftpsConnector
+    |sftpConnector
+    |zeroShotClassifier
+    |pixelClassifier);
+
 
 multitude:
     'multitude' 'as' name=STRING ('on' on= STRING)* 'using'
@@ -187,7 +193,7 @@ createDirectory:
 	'createDirectory' 'as' name= STRING 'using'
 	 '{'
 		directoryPath+=STRING
-	'}' ('on-condition' condition=expression)*;
+	 '}' ('on-condition' condition=expression)*;
 
 createFile:
 	'createFile' 'as' name= STRING 'location' location=STRING 'fileName' fileName=STRING 'extension' extension=STRING 'using'
@@ -294,15 +300,43 @@ fileMerger:
 checkboxClassification:
     'checkboxClassification' 'as' name=STRING 'from-target-file' filePath=STRING 'model-file-path' modelFilePath=STRING 'in' outputDir=STRING 'using' '{'     '}' ('on-condition' condition=expression)* ;
 
-fileDownloadFTP:
+ftpsConnector:
+       'ftps' 'as' name=STRING 'with-remote-host' host=STRING 'port' port=STRING 'user-name' userName=STRING 'password' password=STRING 'session-timeout' sessionTimeOut=STRING 'source-file-to-download' sourceFile=STRING 'in-destination-to-save' destDir=STRING
+       'using' '{'     '}' ('on-condition' condition=expression)* ;
+
+sftpConnector:
+       'sftp' 'as' name=STRING 'with-remote-host' host=STRING 'port' port=STRING 'user-name' userName=STRING 'password' password=STRING 'session-timeout' sessionTimeOut=STRING 'channel-timeout' channelTimeOut=STRING 'source-file-to-download' sourceFile=STRING 'in-destination-to-save' destDir=STRING
        'ftp' 'as' name=STRING 'with-remote-host' host=STRING 'port' port=STRING 'user-name' userName=STRING 'password' password=STRING 'session-timeout' sessionTimeOut=STRING 'source-file-to-download' sourceFile=STRING 'in-destination-to-save' destDir=STRING
        'using' '{'     '}' ('on-condition' condition=expression)* ;
+
 
 createZip:
        'create-zip' name = STRING 'file-name' fileName = STRING 'from' source = STRING 'destination' destination=STRING 'using'
         '{' '}' ('on-condition' condition=expression)*;
-//fileUnzip:
-//    'unzip' 'as' name=STRING;
+
+extractZip:
+        'extract-zip' name = STRING 'from' source = STRING 'destination' destination=STRING 'using'
+        '{' '}' ('on-condition' condition=expression)*;
+
+sorGroupDetails:
+    'sorGroupDetails' 'as' name=STRING 'on' on=STRING 'keyfields' keyfields=STRING  'searchfields' searchfields=STRING
+    'groupbyfields' groupbyfields=STRING  'targettable' targettable=STRING 'using'
+	'{'
+	    value=STRING
+	'}' ('on-condition' condition=expression)*;
+
+
+zeroShotClassifier:
+    'zeroShotClassifier' 'as' name=STRING
+    'with-candidate-labels' candidateLabels=STRING 'using'
+    '{'  content=STRING  '}' ('on-condition' condition=expression)*;
+
+pixelClassifier:
+    'pixelClassifier' 'as' name=STRING
+    'with-labels' labels=STRING
+    'on-output-directory' outputDir=STRING
+    'model-file' modelFilePath=STRING  'using'
+    '{'  inputFilePath=STRING  '}' ('on-condition' condition=expression)*;
 
 resource : STRING;
 
