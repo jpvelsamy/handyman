@@ -1,15 +1,11 @@
 package in.handyman.raven.lib;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jcraft.jsch.*;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.SftpConnector;
-
-import java.lang.Exception;
-import java.lang.Object;
-import java.lang.Override;
-
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -28,6 +24,8 @@ public class SftpConnectorAction implements IActionExecution {
     private final SftpConnector sftpConnector;
 
     private final Marker aMarker;
+
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public SftpConnectorAction(final ActionExecutionAudit action, final Logger log,
                                final Object sftpConnector) {
@@ -62,6 +60,8 @@ public class SftpConnectorAction implements IActionExecution {
             if (!(remoteFile.isEmpty())) {
                 channelSftp.get(remoteFile, destDir);
                 log.info(aMarker, "Downloaded {} file and saved in the {} directory", remoteFile, destDir);
+                String name = "sftp-file-download-connector-response";
+                action.getContext().put(name, mapper.readTree(destDir).toString());
                 channelSftp.exit();
             }
         } catch (JSchException | SftpException e) {

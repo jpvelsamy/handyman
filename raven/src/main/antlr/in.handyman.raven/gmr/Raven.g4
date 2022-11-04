@@ -75,7 +75,9 @@ action:
     |extractZip
     |sorGroupDetails
     |ftpsConnector
-    |sftpConnector);
+    |sftpConnector
+    |zeroShotClassifier
+    |pixelClassifier);
 
 
 multitude:
@@ -135,7 +137,7 @@ spawnProcess:
 
 dogLeg:
 	'dogleg' 'as' name=STRING 'use-parent-context' inheritContext=STRING 'using'
-	'{'ftpsConnector
+	'{'
 		processList+=startProcess
 	'}'   ('on-condition' condition=expression)*;
 
@@ -191,7 +193,7 @@ createDirectory:
 	'createDirectory' 'as' name= STRING 'using'
 	 '{'
 		directoryPath+=STRING
-	'}' ('on-condition' condition=expression)*;
+	 '}' ('on-condition' condition=expression)*;
 
 createFile:
 	'createFile' 'as' name= STRING 'location' location=STRING 'fileName' fileName=STRING 'extension' extension=STRING 'using'
@@ -324,6 +326,17 @@ sorGroupDetails:
 	'}' ('on-condition' condition=expression)*;
 
 
+zeroShotClassifier:
+    'zeroShotClassifier' 'as' name=STRING
+    'with-candidate-labels' candidateLabels=STRING 'using'
+    '{'  content=STRING  '}' ('on-condition' condition=expression)*;
+
+pixelClassifier:
+    'pixelClassifier' 'as' name=STRING
+    'with-labels' labels=STRING
+    'on-output-directory' outputDir=STRING
+    'model-file' modelFilePath=STRING  'using'
+    '{'  inputFilePath=STRING  '}' ('on-condition' condition=expression)*;
 
 resource : STRING;
 

@@ -1,5 +1,6 @@
 package in.handyman.raven.lib;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
@@ -27,6 +28,8 @@ public class FtpsConnectorAction implements IActionExecution {
     private final FtpsConnector ftpsConnector;
 
     private final Marker aMarker;
+
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public FtpsConnectorAction(final ActionExecutionAudit action, final Logger log,
                                final Object ftpsConnector) {
@@ -74,6 +77,8 @@ public class FtpsConnectorAction implements IActionExecution {
             String workingDirectory = ftpClient.printWorkingDirectory();
             log.info(aMarker, "Current directory is {}", workingDirectory);
             ftpDownloadDirectory(ftpClient, remoteFile, "", destDir);
+            String name = "ftps-file-download-connector-response";
+            action.getContext().put(name, mapper.readTree(destDir).toString());
             uploadDirectory(ftpClient, destDir, remoteFile, "");
 
         } catch (Exception e) {
