@@ -239,6 +239,14 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
         });
     }
 
+    @Override
+    public List<PipelineExecutionAudit> findAllProcessName(final String processName) {
+        return JDBI.withHandle(handle -> {
+            var repo = handle.attach(PipelineExecutionAuditRepo.class);
+            return repo.findAllByProcessName(processName);
+        });
+    }
+
     // Spw Instance
 
     @Override

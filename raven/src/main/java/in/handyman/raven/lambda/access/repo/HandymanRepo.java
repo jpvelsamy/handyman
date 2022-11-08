@@ -105,4 +105,6 @@ public interface HandymanRepo {
     List<PipelineExecutionAudit> findAllPipelines();
 
     List<PipelineExecutionAudit> findAllByPipelineName(final String pipelineName);
+
+    List<PipelineExecutionAudit> findAllProcessName(final String processName);
 }

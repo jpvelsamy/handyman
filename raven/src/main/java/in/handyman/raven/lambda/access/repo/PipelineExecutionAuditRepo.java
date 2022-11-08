@@ -44,4 +44,9 @@ public interface PipelineExecutionAuditRepo {
     @SqlQuery("SELECT " + COLUMNS + " FROM  " + DoaConstant.AUDIT_SCHEMA_NAME + DOT + DoaConstant.PEA_TABLE_NAME + " where pipeline_id= :pipelineId ; ")
     @RegisterBeanMapper(value = PipelineExecutionAudit.class)
     Optional<PipelineExecutionAudit> findOneByPipelineId(@Bind("pipelineId") final Long pipelineId);
+
+    @SqlQuery("SELECT DISTINCT" + COLUMNS + " FROM " + DoaConstant.AUDIT_SCHEMA_NAME + DOT + DoaConstant.PEA_TABLE_NAME + " where process_name= :process_name ;")
+    @RegisterBeanMapper(value = PipelineExecutionAudit.class)
+    List<PipelineExecutionAudit> findAllByProcessName(@Bind("process_name") final String process_name);
+
 }
