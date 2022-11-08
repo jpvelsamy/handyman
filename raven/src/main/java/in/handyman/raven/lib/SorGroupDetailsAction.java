@@ -152,7 +152,6 @@ public class SorGroupDetailsAction implements IActionExecution {
                 .append(jarray.toString().replace("[", "{").replace("]", "}")).append("','")
                 .append(groupElmentObject).append("'")
                 .append(Constants.INSERT_STMT_VALUE_END).append(";");
-        System.out.println("----"+ dataFrameBuilder);
         writeBuffer.add(dataFrameBuilder.toString());
 
         dataFrameBuilder.setLength(0);
