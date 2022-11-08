@@ -284,7 +284,7 @@ blankPageRemover:
     'blankPageRemover' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
 
 docnetAttribution:
-    'docnetAttribution' 'as' name=STRING 'from-target-file' inputFilePath=STRING 'question-list' questionList=STRING 'using'  '{' '}' ('on-condition' condition=expression)* ;
+    'docnetAttribution' 'as' name=STRING 'from-target-file' inputFilePath=STRING 'question-list' questionList=STRING 'outputDir' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
 
 documentClassification:
     'documentClassification' 'as' name=STRING 'from-target-file' filePath=STRING 'model-file' modelFilePath=STRING 'labels' labels=STRING 'outputDir' outputDir=STRING 'using'  '{' '}' ('on-condition' condition=expression)* ;
