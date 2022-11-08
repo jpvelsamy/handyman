@@ -77,7 +77,8 @@ action:
     |ftpsConnector
     |sftpConnector
     |zeroShotClassifier
-    |pixelClassifier);
+    |pixelClassifier
+    |classificationType);
 
 
 multitude:
@@ -333,6 +334,13 @@ zeroShotClassifier:
 
 pixelClassifier:
     'pixelClassifier' 'as' name=STRING
+    'with-labels' labels=STRING
+    'on-output-directory' outputDir=STRING
+    'model-file' modelFilePath=STRING  'using'
+    '{'  inputFilePath=STRING  '}' ('on-condition' condition=expression)*;
+
+classificationType:
+    'documentClassifierType' 'as' name=STRING
     'with-labels' labels=STRING
     'on-output-directory' outputDir=STRING
     'model-file' modelFilePath=STRING  'using'
