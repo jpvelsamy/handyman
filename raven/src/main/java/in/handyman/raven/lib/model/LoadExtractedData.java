@@ -19,18 +19,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "DocnetAttribution"
+    actionName = "LoadExtractedData"
 )
-public class DocnetAttribution implements IActionContext {
+public class LoadExtractedData implements IActionContext {
   private String name;
 
-  private String inputFilePath;
+  private String filePath;
 
-  private String questionList;
+  private String paperNo;
 
-  private String absentKeyFilterList;
+  private String inticsReferenceId;
 
-  private String outputDir;
+  private String batchId;
+
+  private String targetDir;
 
   private Boolean condition = true;
 }

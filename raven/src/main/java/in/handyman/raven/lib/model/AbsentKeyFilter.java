@@ -19,18 +19,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "DocnetAttribution"
+    actionName = "AbsentKeyFilter"
 )
-public class DocnetAttribution implements IActionContext {
+public class AbsentKeyFilter implements IActionContext {
   private String name;
 
-  private String inputFilePath;
+  private String filePath;
 
-  private String questionList;
+  private String paperNo;
 
-  private String absentKeyFilterList;
+  private String inticsReferenceId;
 
-  private String outputDir;
+  private String batchId;
+
+  private String sorList;
 
   private Boolean condition = true;
 }

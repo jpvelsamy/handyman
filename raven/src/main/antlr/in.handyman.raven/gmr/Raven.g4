@@ -79,7 +79,10 @@ action:
     |zeroShotClassifier
     |pixelClassifier
     |classificationType
-    |docClassifier);
+    |docClassifier
+    |pixelClassifier
+    |loadExtractedData)
+    |absentKeyFilter;
 
 
 multitude:
@@ -284,7 +287,7 @@ blankPageRemover:
     'blankPageRemover' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
 
 docnetAttribution:
-    'docnetAttribution' 'as' name=STRING 'from-target-file' inputFilePath=STRING 'question-list' questionList=STRING 'outputDir' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
+      'docnetAttribution' 'as' name=STRING 'from-target-file' inputFilePath=STRING 'question-list' questionList=STRING 'absent-key-filter-list' absentKeyFilterList=STRING 'outputDir' outputDir=STRING 'using'  '{' '}' ('on-condition' condition=expression)* ;
 
 documentClassification:
     'documentClassification' 'as' name=STRING 'from-target-file' filePath=STRING 'model-file' modelFilePath=STRING 'labels' labels=STRING 'outputDir' outputDir=STRING 'using'  '{' '}' ('on-condition' condition=expression)* ;
@@ -358,6 +361,24 @@ docClassifier:
     'using'
     '{'  inputFilePath=STRING  '}' ('on-condition' condition=expression)*;
 
+
+loadExtractedData:
+    'loadExtractedData' 'as' name=STRING
+    'file-path' filePath=STRING
+    'paper-no' paperNo=STRING
+    'intics-reference-id' inticsReferenceId=STRING
+    'batch-id' batchId=STRING
+    'target-dir' targetDir=STRING  'using'
+    '{' '}' ('on-condition' condition=expression)*;
+
+absentKeyFilter:
+    'absentKeyFilter' 'as' name=STRING
+    'file-path' filePath=STRING
+    'paper-no' paperNo=STRING
+    'intics-reference-id' inticsReferenceId=STRING
+    'batch-id' batchId=STRING
+    'sor-list' sorList=STRING  'using'
+    '{' '}' ('on-condition' condition=expression)*;
 
 resource : STRING;
 
