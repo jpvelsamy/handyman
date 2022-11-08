@@ -117,14 +117,16 @@ public class SorGroupDetailsAction implements IActionExecution {
         action.getContext().put(sorGroupDetails.getName(), writeBuffer.toString());
         writeToDb(writeBuffer);
     }
-    public static JSONObject mergeJSONObjects(JSONObject json1, JSONObject json2) {
+    public static JSONObject mergeJSONObjects(JSONObject... jsonObjects) {
         JSONObject mergedJSON = new JSONObject();
         try {
-            // getNames(): Get an array of field names from a JSONObject.
-            mergedJSON = new JSONObject(json1, JSONObject.getNames(json1));
-            for (String crunchifyKey : JSONObject.getNames(json2)) {
-                // get(): Get the value object associated with a key.
-                mergedJSON.put(crunchifyKey, json2.get(crunchifyKey));
+            for(JSONObject temp : jsonObjects){
+                Iterator<String> keys = temp.keys();
+                while(keys.hasNext()){
+                    String key = keys.next();
+                    mergedJSON.put(key, temp.get(key));
+                }
+
             }
         } catch (JSONException e) {
             throw new RuntimeException("JSON Exception" + e);
