@@ -78,7 +78,8 @@ action:
     |sftpConnector
     |zeroShotClassifier
     |pixelClassifier
-    |classificationType);
+    |classificationType
+    |docClassifier);
 
 
 multitude:
@@ -345,6 +346,18 @@ classificationType:
     'on-output-directory' outputDir=STRING
     'model-file' modelFilePath=STRING  'using'
     '{'  inputFilePath=STRING  '}' ('on-condition' condition=expression)*;
+
+docClassifier:
+    'doc-classifier' 'as' name=STRING
+    'label-data-model-file-path' labelModelFilePath=STRING
+    'handwritten-model-file-path' handwrittenModelFilePath=STRING
+    'checkbox-model-file-path' checkboxModelFilePath=STRING
+    'with-labels' labels=STRING 'synonyms' synonyms=STRING
+    'and-vilt-config-label' viltConfigLabel=STRING
+    'on-output-directory' outputDir=STRING
+    'using'
+    '{'  inputFilePath=STRING  '}' ('on-condition' condition=expression)*;
+
 
 resource : STRING;
 
