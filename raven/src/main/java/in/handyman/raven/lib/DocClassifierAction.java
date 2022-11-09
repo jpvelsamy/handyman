@@ -7,7 +7,11 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.DocClassifier;
-import okhttp3.*;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -21,19 +25,13 @@ import java.util.concurrent.TimeUnit;
         actionName = "DocClassifier"
 )
 public class DocClassifierAction implements IActionExecution {
-    private final ActionExecutionAudit action;
-
-    private final Logger log;
-
-    private final DocClassifier docClassifier;
-
-    private final Marker aMarker;
-
-    private final ObjectMapper mapper = new ObjectMapper();
-
     private static final MediaType MediaTypeJSON = MediaType
             .parse("application/json; charset=utf-8");
-
+    private final ActionExecutionAudit action;
+    private final Logger log;
+    private final DocClassifier docClassifier;
+    private final Marker aMarker;
+    private final ObjectMapper mapper = new ObjectMapper();
     private final String URI;
 
     public DocClassifierAction(final ActionExecutionAudit action, final Logger log,
@@ -70,7 +68,7 @@ public class DocClassifierAction implements IActionExecution {
         Request request = new Request.Builder().url(URI)
                 .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
 
-        log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n Input-File-Path : {} \n Output-Directory : {} \n Label-Data-Model-Path : {} \n Handwritten-Model-Path : {} \n Checkbox-Model-Path : {} ", URI, docClassifier.getInputFilePath(), docClassifier.getOutputDir(), docClassifier.getLabelModelFilePath(),docClassifier.getHandwrittenModelFilePath(),docClassifier.getCheckboxModelFilePath());
+        log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n Input-File-Path : {} \n Output-Directory : {} \n Label-Data-Model-Path : {} \n Handwritten-Model-Path : {} \n Checkbox-Model-Path : {} ", URI, docClassifier.getInputFilePath(), docClassifier.getOutputDir(), docClassifier.getLabelModelFilePath(), docClassifier.getHandwrittenModelFilePath(), docClassifier.getCheckboxModelFilePath());
         log.debug(aMarker, "Request has been build with the parameters \n Classifier-Labels : {} \n Synonyms : {} ", docClassifier.getLabels(), docClassifier.getSynonyms());
 
         String name = docClassifier.getName() + "_response";

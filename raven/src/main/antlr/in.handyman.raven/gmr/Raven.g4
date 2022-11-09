@@ -62,7 +62,6 @@ action:
     |paperItemization
     |autoRotation
     |blankPageRemover
-    |documentClassification
     |qrAttribution
     |fileMerger
     |checksum
@@ -70,19 +69,15 @@ action:
     |ravenVmException
     |uploadAsset
     |docnetAttribution
-    |checkboxClassification
     |createZip
     |extractZip
     |sorGroupDetails
     |ftpsConnector
     |sftpConnector
     |zeroShotClassifier
-    |pixelClassifier
-    |classificationType
-    |docClassifier
-    |pixelClassifier
-    |loadExtractedData)
-    |absentKeyFilter;
+    |loadExtractedData
+    |absentKeyFilter
+    |triageAttribution);
 
 
 multitude:
@@ -289,9 +284,6 @@ blankPageRemover:
 docnetAttribution:
       'docnetAttribution' 'as' name=STRING 'from-target-file' inputFilePath=STRING 'question-list' questionList=STRING 'absent-key-filter-list' absentKeyFilterList=STRING 'outputDir' outputDir=STRING 'using'  '{' '}' ('on-condition' condition=expression)* ;
 
-documentClassification:
-    'documentClassification' 'as' name=STRING 'from-target-file' filePath=STRING 'model-file' modelFilePath=STRING 'labels' labels=STRING 'outputDir' outputDir=STRING 'using'  '{' '}' ('on-condition' condition=expression)* ;
-
 qrAttribution:
     'qrAttribution' 'as' name=STRING 'using'  '{' filePath=STRING '}' ('on-condition' condition=expression)* ;
 
@@ -300,10 +292,6 @@ uploadAsset:
 
 fileMerger:
     'fileMerger' 'as' name=STRING  'in' outputDir=STRING 'using'  '{' requestBody=STRING '}' ('on-condition' condition=expression)* ;
-
-
-checkboxClassification:
-    'checkboxClassification' 'as' name=STRING 'from-target-file' filePath=STRING 'model-file-path' modelFilePath=STRING 'in' outputDir=STRING 'using' '{'     '}' ('on-condition' condition=expression)* ;
 
 ftpsConnector:
        'ftps' 'as' name=STRING 'with-remote-host' host=STRING 'port' port=STRING 'user-name' userName=STRING 'password' password=STRING 'session-timeout' sessionTimeOut=STRING 'source-file-to-download' sourceFile=STRING 'in-destination-to-save' destDir=STRING
@@ -336,31 +324,6 @@ zeroShotClassifier:
     'with-candidate-labels' candidateLabels=STRING 'using'
     '{'  content=STRING  '}' ('on-condition' condition=expression)*;
 
-pixelClassifier:
-    'pixelClassifier' 'as' name=STRING
-    'with-labels' labels=STRING
-    'on-output-directory' outputDir=STRING
-    'model-file' modelFilePath=STRING  'using'
-    '{'  inputFilePath=STRING  '}' ('on-condition' condition=expression)*;
-
-classificationType:
-    'documentClassifierType' 'as' name=STRING
-    'with-labels' labels=STRING
-    'on-output-directory' outputDir=STRING
-    'model-file' modelFilePath=STRING  'using'
-    '{'  inputFilePath=STRING  '}' ('on-condition' condition=expression)*;
-
-docClassifier:
-    'doc-classifier' 'as' name=STRING
-    'label-data-model-file-path' labelModelFilePath=STRING
-    'handwritten-model-file-path' handwrittenModelFilePath=STRING
-    'checkbox-model-file-path' checkboxModelFilePath=STRING
-    'with-labels' labels=STRING 'synonyms' synonyms=STRING
-    'and-vilt-config-label' viltConfigLabel=STRING
-    'on-output-directory' outputDir=STRING
-    'using'
-    '{'  inputFilePath=STRING  '}' ('on-condition' condition=expression)*;
-
 
 loadExtractedData:
     'loadExtractedData' 'as' name=STRING
@@ -379,6 +342,21 @@ absentKeyFilter:
     'batch-id' batchId=STRING
     'sor-list' sorList=STRING  'using'
     '{' '}' ('on-condition' condition=expression)*;
+
+triageAttribution:
+    'triage' 'as' name=STRING
+    'in-output-dir' outputDir=STRING
+    'with-labelled-classifier-model-path' labelledClassifierModelFilePath=STRING
+    'with-handwritten-extractor-model-path' handwrittenClassifierModelFilePath=STRING
+    'with-checkbox-extractor-model-path' checkboxClassifierModelFilePath=STRING
+    'using-synonyms' synonyms=STRING
+    'using-labelled-classifier-labels' labelledClassifierLabels=STRING
+    'using-vilt-coco-labels' viltCocoLabels=STRING
+    'add-vilt-question-config' viltConfigLabel=STRING
+    'add-vilt-coco-overide-config' isViltCocoOverride=STRING
+    'add-vilt-coco-threshold-config' viltCocoThreshold=STRING
+    'save-response-as'  triageAttributionResponseName=STRING
+    '{'  inputFilePath=STRING  '}' ('on-condition' condition=expression)*;
 
 resource : STRING;
 

@@ -19,7 +19,12 @@ import org.slf4j.MarkerFactory;
 
 import java.sql.Connection;
 import java.sql.Statement;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -45,6 +50,23 @@ public class SorGroupDetailsAction implements IActionExecution {
         this.action = action;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker(" SorGroupDetails:" + this.sorGroupDetails.getName());
+    }
+
+    public static JSONObject mergeJSONObjects(JSONObject... jsonObjects) {
+        JSONObject mergedJSON = new JSONObject();
+        try {
+            for (JSONObject temp : jsonObjects) {
+                Iterator<String> keys = temp.keys();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    mergedJSON.put(key, temp.get(key));
+                }
+
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException("JSON Exception" + e);
+        }
+        return mergedJSON;
     }
 
     @Override
@@ -90,12 +112,12 @@ public class SorGroupDetailsAction implements IActionExecution {
                             for (Map.Entry<String, String> pentry : stringMap.entrySet()) {
                                 if (preValue.containsValue(pentry.getValue()) && !isfound) {
                                     groupElmentArray.put(rs.getInt(groupbyfields));
-                                    groupElmentObject = mergeJSONObjects(groupElmentObject, new JSONObject(rs.getString(1)) );
+                                    groupElmentObject = mergeJSONObjects(groupElmentObject, new JSONObject(rs.getString(1)));
                                     isfound = true;
                                 }
                             }
                             if (!isfound) {
-                                if(groupElmentArray != null) {
+                                if (groupElmentArray != null) {
                                     generateDataFrame(prevkey, groupElmentArray, groupElmentObject);
                                 }
                                 groupElmentArray = new JSONArray();
@@ -108,7 +130,7 @@ public class SorGroupDetailsAction implements IActionExecution {
                             preValue.putAll(stringMap);
                             stringMap.clear();
                         }
-                        if(groupElmentArray != null)
+                        if (groupElmentArray != null)
                             generateDataFrame(key, groupElmentArray, groupElmentObject);
                     }
                 }
@@ -117,33 +139,17 @@ public class SorGroupDetailsAction implements IActionExecution {
         action.getContext().put(sorGroupDetails.getName(), writeBuffer.toString());
         writeToDb(writeBuffer);
     }
-    public static JSONObject mergeJSONObjects(JSONObject... jsonObjects) {
-        JSONObject mergedJSON = new JSONObject();
-        try {
-            for(JSONObject temp : jsonObjects){
-                Iterator<String> keys = temp.keys();
-                while(keys.hasNext()){
-                    String key = keys.next();
-                    mergedJSON.put(key, temp.get(key));
-                }
 
-            }
-        } catch (JSONException e) {
-            throw new RuntimeException("JSON Exception" + e);
-        }
-        return mergedJSON;
-    }
     private void generateDataFrame(String key, JSONArray jarray, JSONObject groupElmentObject) {
         String targetTable = sorGroupDetails.getTargettable();
         var keyfields = sorGroupDetails.getKeyfields();
         var groupbyfields = sorGroupDetails.getGroupbyfields();
 
-        var qryFrameBuilder = new StringBuilder();
-        qryFrameBuilder.append("INSERT INTO ").append(targetTable).append(" (").
-                append(keyfields).append(",")
-                .append(groupbyfields).append(",")
-                .append("combinedvalue")
-                .append(") VALUES").append(Constants.INSERT_STMT_VALUE_START);
+        final String qryFrameBuilder = "INSERT INTO " + targetTable + " (" +
+                keyfields + "," +
+                groupbyfields + "," +
+                "combinedvalue" +
+                ") VALUES" + Constants.INSERT_STMT_VALUE_START;
 
         var dataFrameBuilder = new StringBuilder();
         dataFrameBuilder.append(qryFrameBuilder).append("'")

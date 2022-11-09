@@ -36,7 +36,7 @@ public class CreateDirectoryAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-        log.info(aMarker,"<-------Create Directory Action for {} has been started------->"+createDirectory.getName());
+        log.info(aMarker, "<-------Create Directory Action for {} has been started------->" + createDirectory.getName());
         log.debug(aMarker, "Directory creation operation has been started for listed files {}", createDirectory.getDirectoryPath());
         for (var fileName : createDirectory.getDirectoryPath()) {
             var path = Paths.get(fileName);
@@ -47,7 +47,7 @@ public class CreateDirectoryAction implements IActionExecution {
                 log.info(aMarker, "{} Directory already exists", path);
             }
         }
-        log.info(aMarker,"<-------Create Directory Action for {} has been completed------->"+createDirectory.getName());
+        log.info(aMarker, "<-------Create Directory Action for {} has been completed------->" + createDirectory.getName());
     }
 
     @Override

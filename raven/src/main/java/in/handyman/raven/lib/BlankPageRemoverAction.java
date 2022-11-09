@@ -49,7 +49,7 @@ public class BlankPageRemoverAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-        log.info(aMarker,"<-------Blank Page Remover Action for {} has been started------->"+blankPageRemover.getName());
+        log.info(aMarker, "<-------Blank Page Remover Action for {} has been started------->" + blankPageRemover.getName());
         final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
 
         final ObjectNode objectNode = mapper.createObjectNode();
@@ -81,7 +81,7 @@ public class BlankPageRemoverAction implements IActionExecution {
             action.getContext().put(name + ".isSuccessful", "false");
             throw new HandymanException("Failed to execute", e);
         }
-        log.info(aMarker,"<-------Blank Page Remover Action for {} has been completed------->"+blankPageRemover.getName());
+        log.info(aMarker, "<-------Blank Page Remover Action for {} has been completed------->" + blankPageRemover.getName());
     }
 
     @Override

@@ -62,7 +62,7 @@ public class CreateTARAction implements IActionExecution {
         }
         var extension = createTAR.getExtension();
         var sourceFile = new File(source);
-        var destinationFile = new File(destination.concat("/" + UUID.randomUUID().toString()));
+        var destinationFile = new File(destination.concat("/" + UUID.randomUUID()));
         log.info(aMarker, "Destination {}", destinationFile);
         final String fileName = destinationFile.getAbsolutePath().concat("." + extension);
         try (var fileOutputStream = new FileOutputStream(fileName)) {

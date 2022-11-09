@@ -48,7 +48,7 @@ public class AutoRotationAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-        log.info(aMarker,"<-------Auto Rotation Action for {} has been started------->"+autoRotation.getName());
+        log.info(aMarker, "<-------Auto Rotation Action for {} has been started------->" + autoRotation.getName());
         final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
 
         final ObjectNode objectNode = mapper.createObjectNode();
@@ -80,7 +80,7 @@ public class AutoRotationAction implements IActionExecution {
             action.getContext().put(name + ".isSuccessful", "false");
             throw new HandymanException("Failed to execute", e);
         }
-        log.info(aMarker,"<-------Auto Rotation Action for {} has been completed------->"+autoRotation.getName());
+        log.info(aMarker, "<-------Auto Rotation Action for {} has been completed------->" + autoRotation.getName());
     }
 
     @Override

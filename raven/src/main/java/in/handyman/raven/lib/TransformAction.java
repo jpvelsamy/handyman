@@ -45,7 +45,7 @@ public class TransformAction implements IActionExecution {
 
     @Override
     public void execute() {
-        log.info(aMarker,"<-------Transform Action for {} has been started------->"+transform.getName());
+        log.info(aMarker, "<-------Transform Action for {} has been started------->" + transform.getName());
         final String dbSrc = transform.getOn();
         log.info(aMarker, "Transform action input variables id: {}, name: {}, source-database: {} ", actionExecutionAudit.getActionId(), transform.getName(), dbSrc);
         log.debug(aMarker, "Sql input post parameter ingestion \n {}", transform.getValue());
@@ -86,7 +86,7 @@ public class TransformAction implements IActionExecution {
                     log.debug(aMarker, "Completed Transform id#{}, name#{}, dbSrc#{}, sqlList#{}", actionExecutionAudit.getActionId(), transform.getName()
                             , dbSrc, sqlList);
                 }
-            log.info(aMarker,"<-------Transform Action for {} has been completed------->"+transform.getName());
+                log.info(aMarker, "<-------Transform Action for {} has been completed------->" + transform.getName());
             } catch (SQLException ex) {
                 log.error(aMarker, "Stopping execution, Fetching connection failed", ex);
                 log.info(aMarker, "connection.exception {}", ExceptionUtil.toString(ex));

@@ -22,7 +22,7 @@ public class PropertyHandler {
 
     static {
 
-        try (var input = HRequestResolver.class.getClassLoader().getResourceAsStream("config.properties");) {
+        try (var input = HRequestResolver.class.getClassLoader().getResourceAsStream("config.properties")) {
 
             var prop = new Properties();
             //load a properties file from class path, inside static method

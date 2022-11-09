@@ -84,7 +84,7 @@ public class CreateZipAction implements IActionExecution {
                 zipOut.write(bytes, 0, length);
             }
             fis.close();
-            log.info(aMarker, "Created zip {} and saved in the {} directory",fileToZip.getName(), fileToZip.getAbsolutePath());
+            log.info(aMarker, "Created zip {} and saved in the {} directory", fileToZip.getName(), fileToZip.getAbsolutePath());
         } catch (Exception e) {
             e.printStackTrace();
         }

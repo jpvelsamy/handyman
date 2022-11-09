@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
-import java.util.Collections;
 import java.util.Objects;
 
 /**
@@ -49,7 +48,7 @@ public class DownloadAssetAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-        log.info(aMarker,"<-------Download Action for {} has been started------->"+downloadAsset.getName());
+        log.info(aMarker, "<-------Download Action for {} has been started------->" + downloadAsset.getName());
         final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
 
         // convert the book to JSON by Jackson
@@ -80,7 +79,7 @@ public class DownloadAssetAction implements IActionExecution {
             action.getContext().put(name + ".isSuccessful", "false");
             throw new HandymanException("Failed to execute", e);
         }
-        log.info(aMarker,"<-------Download Action for {} has been Completed------->"+downloadAsset.getName());
+        log.info(aMarker, "<-------Download Action for {} has been Completed------->" + downloadAsset.getName());
     }
 
     @Override

@@ -44,7 +44,7 @@ public class CallProcessAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-        log.info(aMarker,"<-------Call Process Action for {} has been started------->"+callProcess.getName());
+        log.info(aMarker, "<-------Call Process Action for {} has been started------->" + callProcess.getName());
         final String fileRelativePath = callProcess.getSource();
         var targetProcess = callProcess.getTarget();
         var dbSrc = callProcess.getDatasource();
@@ -54,7 +54,7 @@ public class CallProcessAction implements IActionExecution {
         final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(dbSrc);
         var runContext = new ArrayList<LContext>();
         final Map<String, String> context = actionExecutionAudit.getContext();
-        try{
+        try {
             jdbi.useTransaction(handle -> {
                 final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(sql);
                 formattedQuery.forEach(sqlToExecute -> {
@@ -80,14 +80,14 @@ public class CallProcessAction implements IActionExecution {
                     });
                 });
             });
-        } catch (Exception e){
-            log.error(aMarker, "The Exception occurred ",e);
+        } catch (Exception e) {
+            log.error(aMarker, "The Exception occurred ", e);
             throw new HandymanException("Failed to execute", e);
         }
 
         log.info(aMarker, "Completed name#{}, calledProcess#{}, calledFile#{}, db=#{}", callProcess.getName(), targetProcess, fileRelativePath, dbSrc);
 
-        try{
+        try {
             final int forkBatchSize = Optional.ofNullable(callProcess.getForkBatchSize()).map(Integer::valueOf).orElse(0);
             if (forkBatchSize != 0) {
                 var executor = Executors.newWorkStealingPool(forkBatchSize);
@@ -100,7 +100,7 @@ public class CallProcessAction implements IActionExecution {
                 try {
                     counter.await();
                 } catch (InterruptedException e) {
-                    log.error(aMarker, "The Exception occurred ",e);
+                    log.error(aMarker, "The Exception occurred ", e);
                     throw new HandymanException("Call process parallel failed ", e);
                 }
 
@@ -115,12 +115,12 @@ public class CallProcessAction implements IActionExecution {
                     }
                 });
             }
-        } catch (Exception e){
-            log.error(aMarker, "The Exception occurred ",e);
+        } catch (Exception e) {
+            log.error(aMarker, "The Exception occurred ", e);
             throw new HandymanException("Failed to execute", e);
         }
 
-        log.info(aMarker,"<-------Call Process Action for {} has been Completed------->"+callProcess.getName());
+        log.info(aMarker, "<-------Call Process Action for {} has been Completed------->" + callProcess.getName());
     }
 
 

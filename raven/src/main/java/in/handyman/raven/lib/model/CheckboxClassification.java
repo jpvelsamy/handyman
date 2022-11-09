@@ -2,8 +2,6 @@ package in.handyman.raven.lib.model;
 
 import in.handyman.raven.lambda.action.ActionContext;
 import in.handyman.raven.lambda.action.IActionContext;
-import java.lang.Boolean;
-import java.lang.String;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,16 +17,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "CheckboxClassification"
+        actionName = "CheckboxClassification"
 )
 public class CheckboxClassification implements IActionContext {
-  private String name;
+    private String name;
 
-  private String filePath;
+    private String filePath;
 
-  private String modelFilePath;
+    private String modelFilePath;
 
-  private String outputDir;
+    private String outputDir;
 
-  private Boolean condition = true;
+    private Boolean condition = true;
 }

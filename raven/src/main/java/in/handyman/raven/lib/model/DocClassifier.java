@@ -2,8 +2,6 @@ package in.handyman.raven.lib.model;
 
 import in.handyman.raven.lambda.action.ActionContext;
 import in.handyman.raven.lambda.action.IActionContext;
-import java.lang.Boolean;
-import java.lang.String;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,26 +17,26 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "DocClassifier"
+        actionName = "DocClassifier"
 )
 public class DocClassifier implements IActionContext {
-  private String name;
+    private String name;
 
-  private String inputFilePath;
+    private String inputFilePath;
 
-  private String labelModelFilePath;
+    private String labelModelFilePath;
 
-  private String handwrittenModelFilePath;
+    private String handwrittenModelFilePath;
 
-  private String checkboxModelFilePath;
+    private String checkboxModelFilePath;
 
-  private String labels;
+    private String labels;
 
-  private String synonyms;
+    private String synonyms;
 
-  private String viltConfigLabel;
+    private String viltConfigLabel;
 
-  private String outputDir;
+    private String outputDir;
 
-  private Boolean condition = true;
+    private Boolean condition = true;
 }
