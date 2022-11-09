@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -74,18 +75,18 @@ public class DocnetAttributionAction implements IActionExecution {
                             .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
                     log.info(aMarker, "The Request Details : {}", request);
                     try (Response response = httpclient.newCall(request).execute()) {
-                        String responseBody = response.body().string();
-                        JsonNode actualObj = mapper.readTree(responseBody);
+                        String responseBody = Objects.requireNonNull(response.body()).string();
                        /* List<String> attributionResult = new ArrayList<String>();
                         for (JsonNode fieldName : questionList.get("f2")) {
                             JsonNode value = actualObj.get("attributionValue").get(fieldName.asText());
                             attributionResult.add(value.asText());
                         }*/
 
-                        ObjectNode resultNode = mapper.createObjectNode();
-                        resultNode.put("keyName", keyName.asText());
-                        resultNode.putPOJO("attributionResult", actualObj);
                         if (response.isSuccessful()) {
+                            JsonNode actualObj = mapper.readTree(responseBody);
+                            ObjectNode resultNode = mapper.createObjectNode();
+                            resultNode.put("keyName", keyName.asText());
+                            resultNode.putPOJO("attributionResult", actualObj);
                             log.info(aMarker, "The Successful Response for {} --> {}", name, responseBody);
                             action.getContext().put(name, resultNode.toString());
                             action.getContext().put(name.concat(".error"), "false");
