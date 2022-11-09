@@ -67,6 +67,7 @@ public class DocnetAttributionAction implements IActionExecution {
         final ObjectNode objectNode = mapper.createObjectNode();
         objectNode.put("inputFilePath", docnetAttribution.getInputFilePath());
         objectNode.set("attributes", questionList.get("f2"));
+        objectNode.put("outputDir",docnetAttribution.getOutputDir());
 
         String name = docnetAttribution.getName() + "_response";
         for (JsonNode fieldList : absentKeyList) {
