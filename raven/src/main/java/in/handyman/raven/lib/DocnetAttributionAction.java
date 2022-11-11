@@ -34,6 +34,8 @@ public class DocnetAttributionAction implements IActionExecution {
     private final DocnetAttribution docnetAttribution;
     private final Marker aMarker;
     private final String URI;
+
+    private final boolean SOR_FLAG;
     private final ObjectMapper mapper = new ObjectMapper();
 
     public DocnetAttributionAction(final ActionExecutionAudit action, final Logger log,
@@ -43,6 +45,7 @@ public class DocnetAttributionAction implements IActionExecution {
         this.log = log;
         this.aMarker = MarkerFactory.getMarker(" DocnetAttribution:" + this.docnetAttribution.getName());
         this.URI = action.getContext().get("copro.docnet-attribution.url");
+        this.SOR_FLAG = Boolean.parseBoolean(action.getContext().get("sor-key-filtering-flag"));
     }
 
     @Override
@@ -54,22 +57,20 @@ public class DocnetAttributionAction implements IActionExecution {
                 .readTimeout(10, TimeUnit.MINUTES).build();
         log.info(aMarker, " Input variables id : {}", action.getActionId());
 
-        JsonNode absentKeyList = mapper.readTree(docnetAttribution.getAbsentKeyFilterList());
+//        JsonNode absentKeyList = mapper.readTree(docnetAttribution.getAbsentKeyFilterList());
         JsonNode questionList = mapper.readTree(docnetAttribution.getQuestionList());
         JsonNode keyName = questionList.get("f1");
-
         String name = docnetAttribution.getName() + "_response";
-        for (JsonNode fieldList : absentKeyList) {
-            JSONObject jsonValue = new JSONObject(fieldList.asText());
-            String sorName = jsonValue.getString("key_name");
-            if (keyName.asText().equalsIgnoreCase(sorName)) {
-                if (jsonValue.getBoolean("isFiltered")) {
-
+//        for (JsonNode fieldList : absentKeyList) {
+//            JSONObject jsonValue = new JSONObject(fieldList.asText());
+//            String sorName = jsonValue.getString("key_name");
+//            if (keyName.asText().equalsIgnoreCase(sorName)) {
+                if (SOR_FLAG) {
                     final ObjectNode objectNode = mapper.createObjectNode();
                     objectNode.put("inputFilePath", docnetAttribution.getInputFilePath());
-                    objectNode.put("attributes", jsonValue.getString("question_list"));
+                    objectNode.set("attributes", questionList.get("f2"));
                     objectNode.put("outputDir", docnetAttribution.getOutputDir());
-                    log.info(aMarker, "Question List for {} are {}", jsonValue.getString("question_list"), keyName);
+                    log.info(aMarker, "Question List for {} are {}", questionList.get("f2"), keyName);
 
                     Request request = new Request.Builder().url(URI)
                             .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
@@ -98,10 +99,10 @@ public class DocnetAttributionAction implements IActionExecution {
                 } else {
                     action.getContext().put(name.concat(".value"), "false");
                 }
-                break;
-            }
+//                break;
+//            }
         }
-    }
+//    }
 
     @Override
     public boolean executeIf() throws Exception {
