@@ -77,7 +77,10 @@ action:
     |zeroShotClassifier
     |loadExtractedData
     |absentKeyFilter
-    |triageAttribution);
+    |triageAttribution
+    |loadExtractedData
+    |absentKeyFilter
+    |sorFilter);
 
 
 multitude:
@@ -341,6 +344,13 @@ absentKeyFilter:
     'intics-reference-id' inticsReferenceId=STRING
     'batch-id' batchId=STRING
     'sor-list' sorList=STRING  'using'
+    '{' '}' ('on-condition' condition=expression)*;
+
+sorFilter:
+    'sorFilter' 'as' name=STRING
+    'file-path' filePath=STRING
+    'intics-reference-id' inticsReferenceId=STRING
+    'search-value' searchValue=STRING 'using'
     '{' '}' ('on-condition' condition=expression)*;
 
 triageAttribution:

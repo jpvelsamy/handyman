@@ -55,15 +55,8 @@ public class DocnetAttributionAction implements IActionExecution {
         log.info(aMarker, " Input variables id : {}", action.getActionId());
 
         JsonNode absentKeyList = mapper.readTree(docnetAttribution.getAbsentKeyFilterList());
-
         JsonNode questionList = mapper.readTree(docnetAttribution.getQuestionList());
         JsonNode keyName = questionList.get("f1");
-        log.info(aMarker, "Question List for {} are {}", docnetAttribution.getQuestionList(), keyName);
-
-        final ObjectNode objectNode = mapper.createObjectNode();
-        objectNode.put("inputFilePath", docnetAttribution.getInputFilePath());
-        objectNode.set("attributes", questionList.get("f2"));
-        objectNode.put("outputDir", docnetAttribution.getOutputDir());
 
         String name = docnetAttribution.getName() + "_response";
         for (JsonNode fieldList : absentKeyList) {
@@ -71,16 +64,18 @@ public class DocnetAttributionAction implements IActionExecution {
             String sorName = jsonValue.getString("key_name");
             if (keyName.asText().equalsIgnoreCase(sorName)) {
                 if (jsonValue.getBoolean("isFiltered")) {
+
+                    final ObjectNode objectNode = mapper.createObjectNode();
+                    objectNode.put("inputFilePath", docnetAttribution.getInputFilePath());
+                    objectNode.put("attributes", jsonValue.getString("question_list"));
+                    objectNode.put("outputDir", docnetAttribution.getOutputDir());
+                    log.info(aMarker, "Question List for {} are {}", jsonValue.getString("question_list"), keyName);
+
                     Request request = new Request.Builder().url(URI)
                             .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
                     log.info(aMarker, "The Request Details : {}", request);
                     try (Response response = httpclient.newCall(request).execute()) {
                         String responseBody = Objects.requireNonNull(response.body()).string();
-                       /* List<String> attributionResult = new ArrayList<String>();
-                        for (JsonNode fieldName : questionList.get("f2")) {
-                            JsonNode value = actualObj.get("attributionValue").get(fieldName.asText());
-                            attributionResult.add(value.asText());
-                        }*/
 
                         if (response.isSuccessful()) {
                             JsonNode actualObj = mapper.readTree(responseBody);
