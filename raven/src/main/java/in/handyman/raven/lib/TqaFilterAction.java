@@ -87,12 +87,11 @@ public class TqaFilterAction implements IActionExecution {
 
         final String threadCount = tqaFilter.getThreadCount();
 
-        if(threadCount !=null){
+        if (threadCount != null) {
             final ExecutorService executorService = Executors.newWorkStealingPool(Integer.parseInt(threadCount));
 
 
         }
-
 
 
         createTruePositive(jdbi, synonymsResult, inputPathResult);
@@ -122,6 +121,7 @@ public class TqaFilterAction implements IActionExecution {
                 final Long sqId = Optional.ofNullable(synonym.get("sq_id")).map(String::valueOf).map(Long::valueOf).orElse(null);
 
                 if (synonymName != null && inputFilePath != null) {
+
 
                     final SearchResponse<Object> filterList = elasticsearchClient
                             .search(s -> s.index("source_of_truth")
@@ -245,8 +245,7 @@ public class TqaFilterAction implements IActionExecution {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    static
-    class TruePositiveFilterResult {
+    public static class TruePositiveFilterResult {
 
         private String inputFilePath;
         private String synonymName;
@@ -263,8 +262,7 @@ public class TqaFilterAction implements IActionExecution {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    static
-    class FalsePositiveFilterResult {
+    public static class FalsePositiveFilterResult {
 
         private String inputFilePath;
         private String question;
@@ -291,8 +289,7 @@ public class TqaFilterAction implements IActionExecution {
     @NoArgsConstructor
     @Builder
     @JsonIgnoreProperties(ignoreUnknown = true)
-    static
-    class QaPair {
+    public static class QaPair {
 
         private Integer id;
         private List<Part> questionParts = new ArrayList<>();
@@ -306,8 +303,7 @@ public class TqaFilterAction implements IActionExecution {
     @NoArgsConstructor
     @Builder
     @JsonIgnoreProperties(ignoreUnknown = true)
-    static
-    class Part {
+    public static class Part {
 
         private String content;
         private PartPosition position;
@@ -319,8 +315,7 @@ public class TqaFilterAction implements IActionExecution {
     @NoArgsConstructor
     @Builder
     @JsonIgnoreProperties(ignoreUnknown = true)
-    static
-    class PartPosition {
+    public static class PartPosition {
 
         private Double left;
         private Double upper;
