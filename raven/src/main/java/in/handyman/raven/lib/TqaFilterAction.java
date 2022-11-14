@@ -1,11 +1,18 @@
 package in.handyman.raven.lib;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch.core.IndexRequest;
+import co.elastic.clients.elasticsearch.core.IndexResponse;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.TotalHits;
+import co.elastic.clients.elasticsearch.indices.Alias;
+import co.elastic.clients.elasticsearch.indices.CreateIndexRequest;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
+import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
@@ -23,18 +30,19 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.core.statement.PreparedBatch;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -46,6 +54,7 @@ import java.util.stream.Collectors;
         actionName = "TqaFilter"
 )
 public class TqaFilterAction implements IActionExecution {
+    public static final String INPUT_FILE_PATH = "input_file_path";
     private final ActionExecutionAudit action;
 
     private final Logger log;
@@ -85,33 +94,50 @@ public class TqaFilterAction implements IActionExecution {
             });
         });
 
-        final String threadCount = tqaFilter.getThreadCount();
-
-        if (threadCount != null) {
-            final ExecutorService executorService = Executors.newWorkStealingPool(Integer.parseInt(threadCount));
-
-
-        }
-
-
-        createTruePositive(jdbi, synonymsResult, inputPathResult);
-
-        createFalsePositive(jdbi, inputPathResult);
-
-    }
-
-    private void createTruePositive(final Jdbi jdbi, final List<Map<String, Object>> synonymsResult, final List<Map<String, Object>> inputPathResult) throws IOException {
-
         final String esUsername = action.getContext().get("es.username");
         final String esPassword = action.getContext().get("es.password");
         final String esHostname = action.getContext().get("es.hostname");
 
         var elasticsearchClient = InstanceUtil.createElasticsearchClient(esUsername, esPassword, esHostname);
+        final String indexName = "source_of_truth";
+        createIndex(elasticsearchClient, indexName);
+
+        final String threadCount = tqaFilter.getThreadCount();
+
+        if (threadCount != null) {
+            final ExecutorService executorService = Executors.newWorkStealingPool(Integer.parseInt(threadCount));
+        }
+
+
+        createTruePositive(jdbi, synonymsResult, inputPathResult, elasticsearchClient, indexName);
+
+        createFalsePositive(jdbi, inputPathResult);
+
+    }
+
+    private void createIndex(final ElasticsearchClient elasticsearchClient, final String indexName) throws IOException {
+        Set<String> alias = Collections.emptySet();
+
+        final boolean exists = elasticsearchClient.indices().exists(builder -> builder.index(indexName)).value();
+        if (!exists) {
+            var createIndexResponse = elasticsearchClient.indices()
+                    .create(new CreateIndexRequest.Builder().index(indexName)
+                            .aliases(alias.stream().collect(Collectors.toMap(o -> o, s ->
+                                    new Alias.Builder().isWriteIndex(true).build()))).build());
+            log.info(aMarker, "response status {} shard {}", createIndexResponse.acknowledged(),
+                    createIndexResponse.shardsAcknowledged());
+        }
+    }
+
+    private void createTruePositive(final Jdbi jdbi, final List<Map<String, Object>> synonymsResult, final List<Map<String, Object>> inputPathResult, final ElasticsearchClient elasticsearchClient, final String indexName) throws IOException {
+
+
         final List<TruePositiveFilterResult> truePositives = new ArrayList<>();
 
+        extractionApi(indexName, inputPathResult, tqaFilter.getOutputDir(), elasticsearchClient);
         for (var input : inputPathResult) {
 
-            final String inputFilePath = Optional.ofNullable(input.get("input_file_path")).map(String::valueOf).orElse(null);
+            final String inputFilePath = Optional.ofNullable(input.get(INPUT_FILE_PATH)).map(String::valueOf).orElse(null);
 
 
             for (var synonym : synonymsResult) {
@@ -124,7 +150,7 @@ public class TqaFilterAction implements IActionExecution {
 
 
                     final SearchResponse<Object> filterList = elasticsearchClient
-                            .search(s -> s.index("source_of_truth")
+                            .search(s -> s.index(indexName)
                                     .query(q -> q.bool(bool -> bool.must(query ->
                                                     query.matchPhrase(dd -> dd.field("page_content").query(synonymName)))
                                             .must(query ->
@@ -154,19 +180,64 @@ public class TqaFilterAction implements IActionExecution {
 
         smallerLists.forEach(truePositiveFilterResults -> {
             jdbi.useTransaction(handle -> {
-                final PreparedBatch insertBatch = handle.prepareBatch("INSERT INTO tqa.true_positive_filter_result (input_file_path, synonym_name, truth_synonym_id, synonym_question_id, true_positive_hit_count, root_pipeline_id)" +
-                        " VALUES( :inputFilePath , :synonymName , :truthSynonymId , :synonymQuestionId , :truePositiveHitCount , :rootPipelineId );");
+                ;
 
                 for (var tpfr : truePositiveFilterResults) {
-                    insertBatch.bindBean(tpfr).add();
+                    handle.createUpdate("INSERT INTO tqa.true_positive_filter_result (input_file_path, synonym_name, truth_synonym_id, synonym_question_id, true_positive_hit_count, root_pipeline_id)" +
+                                    " VALUES( :inputFilePath , :synonymName , :truthSynonymId , :synonymQuestionId , :truePositiveHitCount , :rootPipelineId );")
+                            .bindBean(tpfr).execute();
+                    log.debug(aMarker, "inserted {} into true positive result", tpfr);
                 }
 
-                int[] countArray = insertBatch.execute();
-                log.info(aMarker, "inserted {} into true positive result", countArray);
 
             });
 
         });
+
+    }
+
+    private void extractionApi(final String indexName, final List<Map<String, Object>> inputPathResult, final String outputDir, final ElasticsearchClient elasticsearchClient) {
+
+        final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
+
+        for (var input : inputPathResult) {
+
+            final String inputFilePath = Optional.ofNullable(input.get(INPUT_FILE_PATH)).map(String::valueOf).orElse(null);
+
+            final ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("inputFilePath", inputFilePath);
+            objectNode.put("outputDir", outputDir);
+            final String extractionUrl = action.getContext().get("copro.data-extraction.url");
+
+            Request request = new Request.Builder().url(extractionUrl)
+                    .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
+
+            try (Response response = httpclient.newCall(request).execute()) {
+                String responseBody = response.body().string();
+                JsonNode extractedResult = mapper.readTree(responseBody);
+                if (response.isSuccessful()) {
+                    String indexId = String.valueOf(System.currentTimeMillis());
+                    ObjectNode indexNode = mapper.createObjectNode();
+                    indexNode.put("type", "AGADIA_SOT");
+                    indexNode.put("created_at", String.valueOf(LocalDateTime.now()));
+                    indexNode.put("file_path", inputFilePath);
+                    indexNode.set("page_content", extractedResult.get("pageContent"));
+                    final IndexResponse indexResponse = elasticsearchClient.index(IndexRequest.of(indexReq -> indexReq
+                            .index(indexName)
+                            .id(indexId)
+                            .document(indexNode))
+                    );
+                    log.info(aMarker, "response status {} payloadID {}", indexResponse.index(), indexResponse.id());
+                } else {
+                    log.info(aMarker, "The Failure Response {} --> {}", inputFilePath, responseBody);
+                }
+
+
+            } catch (Exception e) {
+                log.info(aMarker, "The Exception occurred ", e);
+                throw new HandymanException("Failed to execute", e);
+            }
+        }
 
     }
 
@@ -175,7 +246,7 @@ public class TqaFilterAction implements IActionExecution {
 
         for (var input : inputPathResult) {
 
-            final String inputFilePath = Optional.ofNullable(input.get("input_file_path")).map(String::valueOf).orElse(null);
+            final String inputFilePath = Optional.ofNullable(input.get(INPUT_FILE_PATH)).map(String::valueOf).orElse(null);
             final ObjectNode objectNode = mapper.createObjectNode();
 
             objectNode.put("inputFilePath", inputFilePath);
@@ -211,15 +282,13 @@ public class TqaFilterAction implements IActionExecution {
                     smallerLists.forEach(truePositiveFilterResults -> {
 
                         jdbi.useTransaction(handle -> {
-                            final PreparedBatch insertBatch = handle.prepareBatch("INSERT INTO tqa.false_positive_filter_result (input_file_path, question, answer_count, root_pipeline_id)" +
-                                    " VALUES( :inputFilePath , :question , :answerCount ,:rootPipelineId );");
 
                             for (var tpfr : truePositiveFilterResults) {
-                                insertBatch.bindBean(tpfr).add();
+                                handle.createUpdate("INSERT INTO tqa.false_positive_filter_result (input_file_path, question, answer_count, root_pipeline_id)" +
+                                        " VALUES( :inputFilePath , :question , :answerCount ,:rootPipelineId );").bindBean(tpfr).execute();
+                                log.info(aMarker, "inserted {} into false positive result", tpfr);
                             }
 
-                            int[] countArray = insertBatch.execute();
-                            log.info(aMarker, "inserted {} into false positive result", countArray);
 
                         });
 
