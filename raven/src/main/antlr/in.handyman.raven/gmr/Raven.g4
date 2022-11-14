@@ -80,7 +80,8 @@ action:
     |triageAttribution
     |loadExtractedData
     |absentKeyFilter
-    |sorFilter);
+    |sorFilter
+    |tqaFilter);
 
 
 multitude:
@@ -367,6 +368,22 @@ triageAttribution:
     'add-vilt-coco-threshold-config' viltCocoThreshold=STRING
     'save-response-as'  triageAttributionResponseName=STRING
     '{'  inputFilePath=STRING  '}' ('on-condition' condition=expression)*;
+
+tqaFilter:
+   'tqa-filter' 'as' name=STRING
+   'in-output-dir' outputDir=STRING
+   'using-truth-extractor-url' truthExtractorUrl=STRING
+   'add-config-max-doctr-inner-join-diff' maxDoctrDiff=STRING
+   'add-config-max-question-spacing-diff' maxQuestionDiff=STRING
+   'save-response-as'  tqaFilterResponseAs=STRING
+   'on-resource-conn' resourceConn=STRING
+   'using-synonmys'
+    '{'  synonymSqlQuery=STRING  '}'
+     'using-input-files'
+    '{'  inputFilePathSqlQuery=STRING  '}'
+     ('on-condition' condition=expression)* ('fielding' threadCount=NON_ZERO_DIGIT)* ('with-fetch-batch-size' fetchBatchSize=NON_ZERO_DIGIT)* ('with-write-batch-size' writeBatchSize=NON_ZERO_DIGIT)*  ;
+
+
 
 resource : STRING;
 

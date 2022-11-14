@@ -82,25 +82,8 @@ public class CommonQueryUtil {
         var strings = List.of(givenQuery.split(";"));
         return strings.stream().map(String::trim)
                 .filter(s -> !s.isEmpty() && !s.isBlank())
-                .map(CommonQueryUtil::encodeSafeSqlStrForPostgresSQL)
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    private static String encodeSafeSqlStrForPostgresSQL(String str) {
-
-        //Replace all apostrophes with double apostrophes
-        String safeStr = str.replace("'", "''");
-
-        //Replace all backslashes with double backslashes
-        safeStr = safeStr.replace("\\", "\\\\");
-
-        //Replace all non-alphanumeric and punctuation characters (per ASCII only)
-        safeStr = safeStr.replaceAll("[^\\p{Alnum}\\p{Punct}]", "");
-
-        //Use PostgreSQL's special escape string modifier
-        safeStr = "E'" + safeStr + "'";
-
-        return safeStr;
-    }
 
 }
