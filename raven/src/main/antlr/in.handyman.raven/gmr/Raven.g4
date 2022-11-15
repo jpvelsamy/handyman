@@ -213,7 +213,7 @@ deleteFileDirectory:
 
 transferFileDirectory:
 	'transferFileDirectory' 'as' name= STRING 'from' source=STRING 'to' to=STRING 'operation' operation=STRING 'using'
-
+    '{'
 		value=STRING
 	'}' ('on-condition' condition=expression)*;
 

@@ -4,10 +4,12 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.TransferFileDirectory;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -41,7 +43,15 @@ public class TransferFileDirectoryAction implements IActionExecution {
         log.info("Copy file from {} to {}  operation has been started", transferFileDirectory.getSource(), transferFileDirectory.getTo());
         Path sourcePath = Paths.get(transferFileDirectory.getSource());
         Path destinationPath = Paths.get(transferFileDirectory.getTo());
-        if (Files.exists(sourcePath)) {
+        if(sourcePath.toFile().isFile()){
+            if(destinationPath.toFile().isFile()) {
+                FileUtils.copyFile(sourcePath.toFile(), destinationPath.toFile());
+            }else{
+                File destFile = new File(destinationPath + "/" + sourcePath.toFile().getName());
+                FileUtils.copyFile(sourcePath.toFile(), destFile);
+            }
+        }
+        else if (Files.exists(sourcePath)) {
             Files.copy(sourcePath, destinationPath);
             if (Files.exists(destinationPath)) {
                 Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
@@ -54,6 +64,6 @@ public class TransferFileDirectoryAction implements IActionExecution {
 
     @Override
     public boolean executeIf() throws Exception {
-        return false;
+        return transferFileDirectory.getCondition();
     }
 }
