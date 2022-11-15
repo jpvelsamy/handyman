@@ -59,6 +59,8 @@ public class FtpsConnectorAction implements IActionExecution {
         final int sessionTimeout = Integer.parseInt(ftpsConnector.getSessionTimeOut());
         final String destDir = ftpsConnector.getDestDir();
         final String remoteFile = ftpsConnector.getSourceFile();
+        final String ftpaction = ftpsConnector.getFileaction();
+
         log.info(aMarker, "Got the sftp details for the host {} and user {}", remoteHost, userName);
         FTPSClient ftpClient = new FTPSClient();
         try {
@@ -87,10 +89,13 @@ public class FtpsConnectorAction implements IActionExecution {
             log.info(aMarker, "Remote system is {} ", ftpClient.getSystemType());
             String workingDirectory = ftpClient.printWorkingDirectory();
             log.info(aMarker, "Current directory is {}", workingDirectory);
-            ftpDownloadDirectory(ftpClient, remoteFile, "", destDir);
-            String name = "ftps-file-download-connector-response";
-            action.getContext().put(name, mapper.readTree(destDir).toString());
-            uploadDirectory(ftpClient, destDir, remoteFile, "");
+            if("upload".equalsIgnoreCase(ftpaction)){
+                uploadDirectory(ftpClient, destDir, remoteFile, "");
+            }else {
+                ftpDownloadDirectory(ftpClient, remoteFile, "", destDir);
+                String name = "ftps-file-download-connector-response";
+                action.getContext().put(name, mapper.readTree(destDir).toString());
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

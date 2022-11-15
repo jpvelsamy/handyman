@@ -34,6 +34,8 @@ public class FtpsConnector implements IActionContext {
 
     private String sourceFile;
 
+    private String fileaction;
+
     private String destDir;
 
     private Boolean condition = true;

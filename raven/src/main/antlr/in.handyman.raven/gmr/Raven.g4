@@ -298,7 +298,9 @@ fileMerger:
     'fileMerger' 'as' name=STRING  'in' outputDir=STRING 'using'  '{' requestBody=STRING '}' ('on-condition' condition=expression)* ;
 
 ftpsConnector:
-       'ftps' 'as' name=STRING 'with-remote-host' host=STRING 'port' port=STRING 'user-name' userName=STRING 'password' password=STRING 'session-timeout' sessionTimeOut=STRING 'source-file-to-download' sourceFile=STRING 'in-destination-to-save' destDir=STRING
+       'ftps' 'as' name=STRING 'with-remote-host' host=STRING 'port' port=STRING 'user-name' userName=STRING
+       'password' password=STRING 'session-timeout' sessionTimeOut=STRING 'source-file-to-download' sourceFile=STRING
+       'in-destination-to-save' destDir=STRING 'fileaction' fileaction=STRING
        'using' '{'     '}' ('on-condition' condition=expression)* ;
 
 sftpConnector:
