@@ -397,7 +397,7 @@ tqaFilter:
 
 jsonToFile:
 	'jsonToFile' 'as' name= STRING
-	'file-path' filePath=STRING
+	'export-into' filePath=STRING
     'on-resource-conn' resourceConn=STRING
     'using'
 	 '{'

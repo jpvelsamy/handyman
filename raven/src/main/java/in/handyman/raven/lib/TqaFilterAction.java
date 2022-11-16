@@ -141,43 +141,49 @@ public class TqaFilterAction implements IActionExecution {
             final Integer paperNo = Optional.ofNullable(input.get("paper_no")).map(String::valueOf).map(Integer::parseInt).orElse(null);
             final String refId = Optional.ofNullable(input.get("ref_id")).map(String::valueOf).orElse(null);
 
+            final Map<Long, List<Map<String, Object>>> longListMap = synonymsResult.stream()
+                    .collect(Collectors.groupingBy(synonym -> Optional.ofNullable(synonym.get("sor_id")).map(String::valueOf).map(Long::valueOf).orElse(null)));
 
-            for (var synonym : synonymsResult) {
+            for (var sorId : longListMap.keySet()) {
 
-                final String synonymName = Optional.ofNullable(synonym.get("synonym_name")).map(String::valueOf).orElse(null);
-                final Long tsId = Optional.ofNullable(synonym.get("ts_id")).map(String::valueOf).map(Long::valueOf).orElse(null);
-                final Long sqId = Optional.ofNullable(synonym.get("sq_id")).map(String::valueOf).map(Long::valueOf).orElse(null);
-                final Long sorId = Optional.ofNullable(synonym.get("sor_id")).map(String::valueOf).map(Long::valueOf).orElse(null);
-                final String question = Optional.ofNullable(synonym.get("question")).map(String::valueOf).orElse(null);
+                for (var synonym : longListMap.get(sorId)) {
 
-                if (synonymName != null && inputFilePath != null) {
+                    final String synonymName = Optional.ofNullable(synonym.get("synonym_name")).map(String::valueOf).orElse(null);
+                    final Long tsId = Optional.ofNullable(synonym.get("ts_id")).map(String::valueOf).map(Long::valueOf).orElse(null);
+                    final Long sqId = Optional.ofNullable(synonym.get("sq_id")).map(String::valueOf).map(Long::valueOf).orElse(null);
+                    final String question = Optional.ofNullable(synonym.get("question")).map(String::valueOf).orElse(null);
+
+                    if (synonymName != null && inputFilePath != null) {
 
 
-                    final SearchResponse<Object> filterList = elasticsearchClient
-                            .search(s -> s.index(indexName)
-                                    .query(q -> q.bool(bool -> bool.must(query ->
-                                                    query.matchPhrase(dd -> dd.field("page_content").query(synonymName)))
-                                            .must(query ->
-                                                    query.matchPhrase(dd -> dd.field("file_path").query(inputFilePath))
-                                            )
-                                    )), Object.class);
+                        final SearchResponse<Object> filterList = elasticsearchClient
+                                .search(s -> s.index(indexName)
+                                        .query(q -> q.bool(bool -> bool.must(query ->
+                                                        query.matchPhrase(dd -> dd.field("page_content").query(synonymName)))
+                                                .must(query ->
+                                                        query.matchPhrase(dd -> dd.field("file_path").query(inputFilePath))
+                                                )
+                                        )), Object.class);
 
-                    log.debug(aMarker, filterList.toString());
+                        log.debug(aMarker, filterList.toString());
 
-                    assert filterList.hits().total() != null;
-                    final long hitsCount = Optional.of(filterList.hits().total()).map(TotalHits::value).orElse(0L);
-                    truePositives.add(TruePositiveFilterResult.builder()
-                            .inputFilePath(inputFilePath)
-                            .synonymName(synonymName)
-                            .rootPipelineId(action.getRootPipelineId())
-                            .truePositiveHitCount(hitsCount)
-                            .truthSynonymId(tsId)
-                            .synonymQuestionId(sqId)
-                            .sorId(sorId)
-                            .paperNo(paperNo)
-                            .refId(refId)
-                            .docnetQuestion(question)
-                            .build());
+                        final long hitsCount = Optional.ofNullable(filterList.hits().total()).map(TotalHits::value).orElse(0L);
+                        truePositives.add(TruePositiveFilterResult.builder()
+                                .inputFilePath(inputFilePath)
+                                .synonymName(synonymName)
+                                .rootPipelineId(action.getRootPipelineId())
+                                .truePositiveHitCount(hitsCount)
+                                .truthSynonymId(tsId)
+                                .synonymQuestionId(sqId)
+                                .sorId(sorId)
+                                .paperNo(paperNo)
+                                .refId(refId)
+                                .docnetQuestion(question)
+                                .build());
+                        if (hitsCount > 0) {
+                            break;
+                        }
+                    }
                 }
             }
         }
