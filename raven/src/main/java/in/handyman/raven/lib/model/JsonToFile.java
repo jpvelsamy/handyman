@@ -26,7 +26,9 @@ public class JsonToFile implements IActionContext {
 
   private String filePath;
 
-  private String jsonResult;
+  private String jsonSql;
+
+  private String resourceConn;
 
   private Boolean condition = true;
 }
