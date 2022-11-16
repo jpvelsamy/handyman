@@ -81,7 +81,8 @@ action:
     |loadExtractedData
     |absentKeyFilter
     |sorFilter
-    |tqaFilter);
+    |tqaFilter
+    |jsonToFile);
 
 
 multitude:
@@ -385,7 +386,13 @@ tqaFilter:
     '{'  inputFilePathSqlQuery=STRING  '}'
      ('on-condition' condition=expression)* ('fielding' threadCount=NON_ZERO_DIGIT)* ('with-fetch-batch-size' fetchBatchSize=NON_ZERO_DIGIT)* ('with-write-batch-size' writeBatchSize=NON_ZERO_DIGIT)*  ;
 
+jsonToFile:
+	'jsonToFile' 'as' name= STRING
+	'file-path' filePath=STRING
+    'json-result' jsonResult=STRING 'using'
+	 '{'
 
+	 '}' ('on-condition' condition=expression)*;
 
 resource : STRING;
 
