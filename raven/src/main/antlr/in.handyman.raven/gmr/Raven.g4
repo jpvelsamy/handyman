@@ -398,8 +398,8 @@ tqaFilter:
 jsonToFile:
 	'jsonToFile' 'as' name= STRING
 	'file-path' filePath=STRING
-     'on-resource-conn' resourceConn=STRING
-     'using'
+    'on-resource-conn' resourceConn=STRING
+    'using'
 	 '{'
        jsonSql=STRING
 	 '}' ('on-condition' condition=expression)*;
