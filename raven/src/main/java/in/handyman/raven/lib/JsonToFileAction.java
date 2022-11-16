@@ -55,7 +55,7 @@ public class JsonToFileAction implements IActionExecution {
         });
         final int size = results.size();
         if (size > 0) {
-            mapper.writeValue(new File(jsonToFile.getFilePath()), size > 1 ? results : results.get(1));
+            mapper.writeValue(new File(jsonToFile.getFilePath()), size > 1 ? results : results.get(0));
         }
         log.info(aMarker, "<-------Json toFile Action for {} has been completed------->" + jsonToFile.getName());
     }
