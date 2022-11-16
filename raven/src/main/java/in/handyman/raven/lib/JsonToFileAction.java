@@ -15,7 +15,6 @@ import org.slf4j.MarkerFactory;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -46,16 +45,16 @@ public class JsonToFileAction implements IActionExecution {
     public void execute() throws Exception {
         log.info(aMarker, "<-------Json toFile Action for {} has been started------->" + jsonToFile.getName());
         final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(jsonToFile.getResourceConn());
-        final List<Map<String, Object>> results = new ArrayList<>();
+        final List<String> results = new ArrayList<>();
         jdbi.useTransaction(handle -> {
             final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(jsonToFile.getJsonSql());
             formattedQuery.forEach(sqlToExecute -> {
-                results.addAll(handle.createQuery(sqlToExecute).mapToMap().stream().collect(Collectors.toList()));
+                results.addAll(handle.createQuery(sqlToExecute).mapTo(String.class).stream().collect(Collectors.toList()));
             });
         });
         final int size = results.size();
         if (size > 0) {
-            mapper.writeValue(new File(jsonToFile.getFilePath()), size > 1 ? results : results.get(0));
+            mapper.writeValue(new File(jsonToFile.getFilePath()), mapper.readTree(results.get(0)));
         }
         log.info(aMarker, "<-------Json toFile Action for {} has been completed------->" + jsonToFile.getName());
     }
