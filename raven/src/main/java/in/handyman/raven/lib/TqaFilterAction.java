@@ -180,9 +180,9 @@ public class TqaFilterAction implements IActionExecution {
                                 .refId(refId)
                                 .docnetQuestion(question)
                                 .build());
-                        if (hitsCount > 0) {
-                            break;
-                        }
+//                        if (hitsCount > 0) {
+//                            break;
+//                        }
                     }
                 }
             }
