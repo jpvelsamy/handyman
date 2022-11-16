@@ -20,16 +20,19 @@ import lombok.NoArgsConstructor;
         actionName = "DocnetAttribution"
 )
 public class DocnetAttribution implements IActionContext {
+
     private String name;
 
     private String inputFilePath;
 
-    private String questionList;
-
-    private String absentKeyFilterList;
+    private String attributeQuestionSql;
 
     private String outputDir;
 
+    private String resourceConn;
+
+    private String docnetAttributionAsResponse;
 
     private Boolean condition = true;
+
 }

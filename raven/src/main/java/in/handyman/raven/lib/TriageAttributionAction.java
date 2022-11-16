@@ -70,6 +70,8 @@ public class TriageAttributionAction implements IActionExecution {
         objectNode.put("isViltCocoOverride", triageAttribution.getIsViltCocoOverride());
         objectNode.put("viltCocoThreshold", triageAttribution.getViltCocoThreshold());
         objectNode.put("outputDir", triageAttribution.getOutputDir());
+        objectNode.put("vggImageWidth", triageAttribution.getVggImageWidth());
+        objectNode.put("vggImageHeight", triageAttribution.getVggImageHeight());
         objectNode.set("viltCocoLabels", mapper.readTree(triageAttribution.getViltCocoLabels()));
 
         final Request request = new Request.Builder().url(URI)

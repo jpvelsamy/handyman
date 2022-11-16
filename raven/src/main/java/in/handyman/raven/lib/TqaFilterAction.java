@@ -43,8 +43,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 /**
@@ -104,10 +102,12 @@ public class TqaFilterAction implements IActionExecution {
 
         final String threadCount = tqaFilter.getThreadCount();
 
-        if (threadCount != null) {
-            final ExecutorService executorService = Executors.newWorkStealingPool(Integer.parseInt(threadCount));
-        }
-
+//
+//
+//        if (threadCount != null) {
+//            final ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(threadCount));
+//        }
+//
 
         createTruePositive(jdbi, synonymsResult, inputPathResult, elasticsearchClient, indexName);
 
@@ -138,6 +138,8 @@ public class TqaFilterAction implements IActionExecution {
         for (var input : inputPathResult) {
 
             final String inputFilePath = Optional.ofNullable(input.get(INPUT_FILE_PATH)).map(String::valueOf).orElse(null);
+            final Integer paperNo = Optional.ofNullable(input.get("paper_no")).map(String::valueOf).map(Integer::parseInt).orElse(null);
+            final String refId = Optional.ofNullable(input.get("ref_id")).map(String::valueOf).orElse(null);
 
 
             for (var synonym : synonymsResult) {
@@ -145,6 +147,8 @@ public class TqaFilterAction implements IActionExecution {
                 final String synonymName = Optional.ofNullable(synonym.get("synonym_name")).map(String::valueOf).orElse(null);
                 final Long tsId = Optional.ofNullable(synonym.get("ts_id")).map(String::valueOf).map(Long::valueOf).orElse(null);
                 final Long sqId = Optional.ofNullable(synonym.get("sq_id")).map(String::valueOf).map(Long::valueOf).orElse(null);
+                final Long sorId = Optional.ofNullable(synonym.get("sor_id")).map(String::valueOf).map(Long::valueOf).orElse(null);
+                final String question = Optional.ofNullable(synonym.get("question")).map(String::valueOf).orElse(null);
 
                 if (synonymName != null && inputFilePath != null) {
 
@@ -169,6 +173,10 @@ public class TqaFilterAction implements IActionExecution {
                             .truePositiveHitCount(hitsCount)
                             .truthSynonymId(tsId)
                             .synonymQuestionId(sqId)
+                            .sorId(sorId)
+                            .paperNo(paperNo)
+                            .refId(refId)
+                            .docnetQuestion(question)
                             .build());
                 }
             }
@@ -183,8 +191,9 @@ public class TqaFilterAction implements IActionExecution {
                 ;
 
                 for (var tpfr : truePositiveFilterResults) {
-                    handle.createUpdate("INSERT INTO tqa.true_positive_filter_result (input_file_path, synonym_name, truth_synonym_id, synonym_question_id, true_positive_hit_count, root_pipeline_id)" +
-                                    " VALUES( :inputFilePath , :synonymName , :truthSynonymId , :synonymQuestionId , :truePositiveHitCount , :rootPipelineId );")
+                    handle.createUpdate("INSERT INTO tqa.true_positive_filter_result (input_file_path, synonym_name, truth_synonym_id," +
+                                    " synonym_question_id, true_positive_hit_count, root_pipeline_id,ref_id,paper_no,sor_id,docnet_question)" +
+                                    " VALUES( :inputFilePath , :synonymName , :truthSynonymId , :synonymQuestionId , :truePositiveHitCount , :rootPipelineId ,:refId,:paperNo,:sorId,:docnetQuestion);")
                             .bindBean(tpfr).execute();
                     log.debug(aMarker, "inserted {} into true positive result", tpfr);
                 }
@@ -229,12 +238,12 @@ public class TqaFilterAction implements IActionExecution {
                     );
                     log.info(aMarker, "response status {} payloadID {}", indexResponse.index(), indexResponse.id());
                 } else {
-                    log.info(aMarker, "The Failure Response {} --> {}", inputFilePath, responseBody);
+                    log.error(aMarker, "The Failure Response {} --> {}", inputFilePath, responseBody);
                 }
 
 
             } catch (Exception e) {
-                log.info(aMarker, "The Exception occurred ", e);
+                log.error(aMarker, "The Exception occurred ", e);
                 throw new HandymanException("Failed to execute", e);
             }
         }
@@ -243,10 +252,14 @@ public class TqaFilterAction implements IActionExecution {
 
     private void createFalsePositive(final Jdbi jdbi, final List<Map<String, Object>> inputPathResult) {
         final OkHttpClient okHttpClient = InstanceUtil.createOkHttpClient();
+        final Long processId = action.getProcessId();
 
         for (var input : inputPathResult) {
 
             final String inputFilePath = Optional.ofNullable(input.get(INPUT_FILE_PATH)).map(String::valueOf).orElse(null);
+            final Integer paperNo = Optional.ofNullable(input.get("paper_no")).map(String::valueOf).map(Integer::parseInt).orElse(null);
+            final String refId = Optional.ofNullable(input.get("ref_id")).map(String::valueOf).orElse(null);
+
             final ObjectNode objectNode = mapper.createObjectNode();
 
             objectNode.put("inputFilePath", inputFilePath);
@@ -260,20 +273,38 @@ public class TqaFilterAction implements IActionExecution {
                     .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
 
             log.debug(aMarker, "URL {} request body {}", truthExtractorUrl, objectNode);
-
             try (final Response response = okHttpClient.newCall(request).execute()) {
                 final String responseBody = Objects.requireNonNull(response.body()).string();
                 if (response.isSuccessful()) {
                     final TruthExtractionResponse truthExtractionResponse = mapper.readValue(responseBody, TruthExtractionResponse.class);
-                    final List<FalsePositiveFilterResult> falsePositiveFilterResults = truthExtractionResponse.getQuestionParts().stream()
+                    jdbi.useTransaction(handle -> {
+
+                        final QaPairResult qaPairResult = QaPairResult.builder()
+                                .inputFilePath(inputFilePath)
+                                .rootPipelineId(action.getRootPipelineId())
+                                .processId(processId)
+                                .response(responseBody)
+                                .paperNo(paperNo)
+                                .refId(refId)
+                                .build();
+                        handle.createUpdate("INSERT INTO truth_attribution.sot_qa_pairing_result (input_file_path,root_pipeline_id, process_id, response,intics_reference_id, paper_no  )" +
+                                        " select  :inputFilePath , :rootPipelineId , :processId ,cast(:response as json),:refId,:paperNo ;")
+                                .bindBean(qaPairResult)
+                                .execute();
+                        log.debug(aMarker, "inserted {} into QA pairing result", qaPairResult);
+                    });
+                    final List<FalsePositiveFilterResult> falsePositiveFilterResults = truthExtractionResponse.getQaPairs().stream()
                             .map(qaPair -> FalsePositiveFilterResult.builder()
                                     .question(qaPair.getQuestionParts()
                                             .stream().map(Part::getContent).collect(Collectors.joining(" ")))
                                     .answerCount(qaPair.getAnswerParts().size())
                                     .inputFilePath(inputFilePath)
                                     .rootPipelineId(action.getRootPipelineId())
+                                    .paperNo(paperNo)
+                                    .refId(refId)
                                     .build())
                             .collect(Collectors.toList());
+
 
                     List<List<FalsePositiveFilterResult>> smallerLists = tqaFilter.getWriteBatchSize() != null
                             ? Lists.partition(falsePositiveFilterResults, Integer.parseInt(tqaFilter.getWriteBatchSize()))
@@ -284,9 +315,9 @@ public class TqaFilterAction implements IActionExecution {
                         jdbi.useTransaction(handle -> {
 
                             for (var tpfr : truePositiveFilterResults) {
-                                handle.createUpdate("INSERT INTO tqa.false_positive_filter_result (input_file_path, question, answer_count, root_pipeline_id)" +
-                                        " VALUES( :inputFilePath , :question , :answerCount ,:rootPipelineId );").bindBean(tpfr).execute();
-                                log.info(aMarker, "inserted {} into false positive result", tpfr);
+                                handle.createUpdate("INSERT INTO tqa.false_positive_filter_result (input_file_path, question, answer_count, root_pipeline_id,ref_id,paper_no)" +
+                                        " VALUES( :inputFilePath , :question , :answerCount ,:rootPipelineId,:refId,:paperNo );").bindBean(tpfr).execute();
+                                log.debug(aMarker, "inserted {} into false positive result", tpfr);
                             }
 
 
@@ -318,6 +349,7 @@ public class TqaFilterAction implements IActionExecution {
 
         private String inputFilePath;
         private String synonymName;
+        private String docnetQuestion;
 
         private Long truthSynonymId;
         private Long synonymQuestionId;
@@ -325,6 +357,10 @@ public class TqaFilterAction implements IActionExecution {
         private long truePositiveHitCount;
 
         private Long rootPipelineId;
+
+        private String refId;
+        private Long sorId;
+        private Integer paperNo;
     }
 
     @Data
@@ -339,6 +375,22 @@ public class TqaFilterAction implements IActionExecution {
         private long answerCount;
 
         private Long rootPipelineId;
+        private String refId;
+        private Integer paperNo;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class QaPairResult {
+
+        private String inputFilePath;
+        private String response;
+        private Long rootPipelineId;
+        private String refId;
+        private Long processId;
+        private Integer paperNo;
     }
 
     @Data
@@ -349,7 +401,7 @@ public class TqaFilterAction implements IActionExecution {
     static
     class TruthExtractionResponse {
 
-        private List<QaPair> questionParts = new ArrayList<>();
+        private List<QaPair> qaPairs = new ArrayList<>();
 
     }
 

@@ -45,6 +45,9 @@ public class TriageAttribution implements IActionContext {
 
     private String inputFilePath;
 
+    private String vggImageWidth;
+    private String vggImageHeight;
+
     private Boolean condition = true;
 
     private String triageAttributionResponseName;

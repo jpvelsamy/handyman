@@ -286,9 +286,6 @@ autoRotation:
 blankPageRemover:
     'blankPageRemover' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
 
-docnetAttribution:
-      'docnetAttribution' 'as' name=STRING 'from-target-file' inputFilePath=STRING 'question-list' questionList=STRING 'absent-key-filter-list' absentKeyFilterList=STRING 'outputDir' outputDir=STRING 'using'  '{' '}' ('on-condition' condition=expression)* ;
-
 qrAttribution:
     'qrAttribution' 'as' name=STRING 'using'  '{' filePath=STRING '}' ('on-condition' condition=expression)* ;
 
@@ -369,8 +366,21 @@ triageAttribution:
     'add-vilt-question-config' viltConfigLabel=STRING
     'add-vilt-coco-overide-config' isViltCocoOverride=STRING
     'add-vilt-coco-threshold-config' viltCocoThreshold=STRING
+    'add-config-vgg-img-width' vggImageWidth=STRING
+    'add-config-vgg-img-height' vggImageHeight=STRING
     'save-response-as'  triageAttributionResponseName=STRING
     '{'  inputFilePath=STRING  '}' ('on-condition' condition=expression)*;
+
+docnetAttribution:
+      'docnetAttribution' 'as' name=STRING
+      'in-output-dir' outputDir=STRING
+      'save-response-as'  docnetAttributionAsResponse=STRING
+      'for-input-file'
+      '{' inputFilePath=STRING  '}'
+      'on-resource-conn' resourceConn=STRING
+      'using-attribute-questions'
+      '{' attributeQuestionSql=STRING  '}'
+       ('on-condition' condition=expression)* ;
 
 tqaFilter:
    'tqa-filter' 'as' name=STRING
@@ -378,7 +388,6 @@ tqaFilter:
    'using-truth-extractor-url' truthExtractorUrl=STRING
    'add-config-max-doctr-inner-join-diff' maxDoctrDiff=STRING
    'add-config-max-question-spacing-diff' maxQuestionDiff=STRING
-   'save-response-as'  tqaFilterResponseAs=STRING
    'on-resource-conn' resourceConn=STRING
    'using-synonmys'
     '{'  synonymSqlQuery=STRING  '}'
