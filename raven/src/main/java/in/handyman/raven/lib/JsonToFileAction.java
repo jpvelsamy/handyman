@@ -1,6 +1,7 @@
 package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
@@ -13,6 +14,7 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,7 +56,15 @@ public class JsonToFileAction implements IActionExecution {
         });
         final int size = results.size();
         if (size > 0) {
-            mapper.writeValue(new File(jsonToFile.getFilePath()), mapper.readTree(results.get(0)));
+            Object jsonObject = mapper.readValue(results.get(0), Object.class);
+            String prettyJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
+            try (FileWriter file = new FileWriter(jsonToFile.getFilePath())) {
+                file.write(prettyJson);
+            } catch (Exception e) {
+                log.info(aMarker, "The Exception occurred ", e);
+                throw new HandymanException("Failed to execute", e);
+            }
+            //mapper.writeValue(new File(jsonToFile.getFilePath()), mapper.readTree(results.get(0)));
         }
         log.info(aMarker, "<-------Json toFile Action for {} has been completed------->" + jsonToFile.getName());
     }
