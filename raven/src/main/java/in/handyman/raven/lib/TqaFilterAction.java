@@ -301,8 +301,9 @@ public class TqaFilterAction implements IActionExecution {
                     });
                     final List<FalsePositiveFilterResult> falsePositiveFilterResults = truthExtractionResponse.getQaPairs().stream()
                             .map(qaPair -> FalsePositiveFilterResult.builder()
-                                    .question(qaPair.getQuestionParts()
-                                            .stream().map(Part::getContent).collect(Collectors.joining(" ")))
+                                   // .question(qaPair.getQuestionParts()
+                                   //         .stream().map(Part::getContent).collect(Collectors.joining(" ")))
+                                    .question(qaPair.getQuestion())
                                     .answerCount(qaPair.getAnswerParts().size())
                                     .inputFilePath(inputFilePath)
                                     .rootPipelineId(action.getRootPipelineId())
@@ -420,6 +421,8 @@ public class TqaFilterAction implements IActionExecution {
 
         private Integer id;
         private List<Part> questionParts = new ArrayList<>();
+        private String question;
+        private String answer;
         private List<Part> answerParts = new ArrayList<>();
 
     }
