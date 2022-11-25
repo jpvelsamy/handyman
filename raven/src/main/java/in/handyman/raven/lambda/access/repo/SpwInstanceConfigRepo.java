@@ -15,8 +15,8 @@ public interface SpwInstanceConfigRepo {
 
     String COLUMNS = " id, instance, process, variable, value, active, created_by, created_date, last_modified_by, last_modified_date, version ";
 
-    @SqlUpdate("insert into " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SIC_TABLE_NAME + " (instance,process, variable, value, active, created_by, created_date, last_modified_by, last_modified_date, version) " +
-            "VALUES (:instance, :process, :variable, :value,:active,:createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :version)")
+    @SqlUpdate("insert into " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SIC_TABLE_NAME + " (id, instance,process, variable, value, active, created_by, created_date, last_modified_by, last_modified_date, version) " +
+            "VALUES (:id, :instance, :process, :variable, :value,:active,:createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :version)")
     void insert(@BindBean final SpwInstanceConfig spwInstanceConfig);
 
     @SqlUpdate("UPDATE " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SIC_TABLE_NAME + " SET active=:active, created_by= :createdBy , created_date= :createdDate," +
@@ -50,4 +50,8 @@ public interface SpwInstanceConfigRepo {
     @SqlQuery("SELECT " + COLUMNS + " FROM  " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SIC_TABLE_NAME + " where name = :name and variable= :variable and config_type_id= :configTypeId and active=true order by version desc limit 1; ")
     @RegisterBeanMapper(value = SpwInstanceConfig.class)
     Optional<SpwInstanceConfig> get(@Bind("name") final String name, @Bind("variable") final String variable, @Bind("configTypeId") final Integer configTypeId);
+
+    @SqlQuery("SELECT max(id)+1 FROM  " + DoaConstant.CONFIG_SCHEMA_NAME + "." + DoaConstant.SIC_TABLE_NAME + "; ")
+    @RegisterBeanMapper(value = SpwInstanceConfig.class)
+    Long getId();
 }
