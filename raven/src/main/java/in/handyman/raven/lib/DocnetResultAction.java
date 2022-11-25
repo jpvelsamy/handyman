@@ -1,5 +1,6 @@
 package in.handyman.raven.lib;
 
+import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
@@ -10,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.beanutils.converters.StringArrayConverter;
 import org.jdbi.v3.core.Jdbi;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -17,10 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -48,59 +48,58 @@ public class DocnetResultAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-
-        log.info(aMarker, "<-------questions from docnet json Action for {} has been started------->" + docnetResult.getName());
-        final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(docnetResult.getResourceConn());
-        final List<Map<String, Object>> results = new ArrayList<>();
-        jdbi.useTransaction(handle -> {
-            final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(docnetResult.getJsonSql());
-            formattedQuery.forEach(sqlToExecute -> {
-                results.addAll(handle.createQuery(sqlToExecute).mapToMap().stream().collect(Collectors.toList()));
-                final int size = results.size();
-
-                if (size > 0) {
-                    results.forEach(jsonData -> {
-                        final String groupId = Optional.ofNullable(jsonData.get("group_id")).map(String::valueOf).orElse(null);
-                        final Integer paperNo = Optional.ofNullable(jsonData.get("paper_no")).map(String::valueOf).map(Integer::parseInt).orElse(null);
-                        final String fileRefId = Optional.ofNullable(jsonData.get("file_ref_id")).map(String::valueOf).orElse(null);
-                        final Integer sorAttributionType = Optional.ofNullable(jsonData.get("sor_item_name")).map(String::valueOf).map(Integer::parseInt).orElse(null);
-                        final String createdUserId = Optional.ofNullable(jsonData.get("created_user_id")).map(String::valueOf).orElse(null);
-                        final String tenantId = Optional.ofNullable(jsonData.get("tenant_id")).map(String::valueOf).orElse(null);
-                        final String response = Optional.ofNullable(jsonData.get("response")).map(String::valueOf).orElse(null);
-
-                        JSONArray jObj = new JSONArray(response);
-
-                        jObj.forEach(resultObject -> {
-                            JSONObject obj = (JSONObject) resultObject;
-                            obj.getString("sorKey");
-                            obj.getString("sorId");
-                            JSONArray result = obj.getJSONArray("attributionResult");
-                            for (int i = 0; i < result.length(); i++) {
-                                JSONObject object = (JSONObject) result.get(i);
-                                final DocnetResultTable docnetResult = DocnetResultTable.builder()
-                                        .fileRefId(fileRefId)
-                                        .paperNo(paperNo)
-                                        .groupId(groupId)
-                                        .triageResultId(12345678)
-                                        .sorItemId(obj.getInt("sorId"))
-                                        .sorItemName(obj.getString("sorKey"))
-                                        .answer(object.getString("predictedAttributionValue"))
-                                        .question(object.getString("question"))
-                                        .createdUserId(createdUserId)
-                                        .tenantId(tenantId)
-                                        .confidenceScore(123456)
-                                        .build();
-                                insertDocnutResult(jdbi, docnetResult);
-
-                            }
-                        });
-                    });
-
-                }
+        try {
+            log.info(aMarker, "<-------Docnet Result Action for {} has been started------->" + docnetResult.getName());
+            final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(docnetResult.getResourceConn());
+            final List<Map<String, Object>> results = new ArrayList<>();
+            jdbi.useTransaction(handle -> {
+                final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(docnetResult.getCoproResultSqlQuery());
+                formattedQuery.forEach(sqlToExecute -> {
+                    results.addAll(handle.createQuery(sqlToExecute).mapToMap().stream().collect(Collectors.toList()));
+                });
             });
-        });
 
-        log.info(aMarker, "<-------questions from docnet json Action for {} has been completed------->" + docnetResult.getName());
+            if (results.size() > 0) {
+                results.forEach(jsonData -> {
+                    final String groupId = Optional.ofNullable(jsonData.get("group_id")).map(String::valueOf).orElse(null);
+                    final Integer paperNo = Optional.ofNullable(jsonData.get("paper_no")).map(String::valueOf).map(Integer::parseInt).orElse(null);
+                    final String fileRefId = Optional.ofNullable(jsonData.get("file_ref_id")).map(String::valueOf).orElse(null);
+                    final String sorAttributionType = Optional.ofNullable(jsonData.get("sor_item_name")).map(String::valueOf).orElse(null);
+                    final String createdUserId = Optional.ofNullable(jsonData.get("created_user_id")).map(String::valueOf).orElse(null);
+                    final String tenantId = Optional.ofNullable(jsonData.get("tenant_id")).map(String::valueOf).orElse(null);
+                    final String response = Optional.ofNullable(jsonData.get("response")).map(String::valueOf).orElse(null);
+
+                    JSONArray jObj = new JSONArray(response);
+
+                    jObj.forEach(resultObject -> {
+                        JSONObject obj = (JSONObject) resultObject;
+                        JSONArray result = obj.getJSONArray("attributionResult");
+                        for (int i = 0; i < result.length(); i++) {
+                            JSONObject object = (JSONObject) result.get(i);
+                            final DocnetResultTable docnetResult = DocnetResultTable.builder()
+                                    .fileRefId(fileRefId)
+                                    .paperNo(paperNo)
+                                    .groupId(groupId)
+                                    .triageResultId(12345678)
+                                    .sorItemId(obj.getInt("sorId"))
+                                    .sorItemName(obj.getString("sorKey"))
+                                    .answer(object.getString("predictedAttributionValue"))
+                                    .question(object.getString("question"))
+                                    .createdUserId(createdUserId)
+                                    .tenantId(tenantId)
+                                    .build();
+                            insertDocnutResult(jdbi, docnetResult);
+                        }
+                    });
+                });
+            }
+        } catch (Exception e) {
+            action.getContext().put(docnetResult.getName().concat(".error"), "true");
+            log.info(aMarker, "The Exception occurred ", e);
+            throw new HandymanException("Failed to execute", e);
+        }
+
+        log.info(aMarker, "<-------Docnut Result Action for {} has been completed------->" + docnetResult.getName());
 
     }
 
@@ -108,6 +107,84 @@ public class DocnetResultAction implements IActionExecution {
     @Override
     public boolean executeIf() throws Exception {
         return docnetResult.getCondition();
+    }
+
+
+    private void insertDocnutResult(final Jdbi jdbi, final DocnetResultTable docnetResultTable) {
+        final List<Map<String, Object>> sorConfigList = new ArrayList<>();
+
+        jdbi.useTransaction(handle -> {
+            final List<String> formattedQuery = CommonQueryUtil
+                    .getFormattedQuery(docnetResult.getWeightageSqlQuery() + " WHERE si.id= " + docnetResultTable.getSorItemId());
+            formattedQuery.forEach(sqlToExecute -> {
+                sorConfigList.addAll(handle.createQuery(sqlToExecute).mapToMap().stream().collect(Collectors.toList()));
+            });
+        });
+
+        if (sorConfigList.size() > 0) {
+            sorConfigList.forEach(jsonData -> {
+                Integer wordCount = Optional.ofNullable(jsonData.get("word_count")).map(String::valueOf).map(Integer::parseInt).orElse(null);
+                Integer characterCount = Optional.ofNullable(jsonData.get("character_count")).map(String::valueOf).map(Integer::parseInt).orElse(null);
+                String[] datatype_list = (String[]) Optional.ofNullable(jsonData.get("datatype_list")).orElse(null);
+                Integer threshold = Optional.ofNullable(jsonData.get("threshold")).map(String::valueOf).map(Integer::parseInt).orElse(null);
+                TCSConfiguration config = TCSConfiguration.builder()
+                        .wordCount(wordCount)
+                        .characterCount(characterCount)
+                        .datatypeList(datatype_list)
+                        .threshold(threshold)
+                        .build();
+                int confidenceScore = createConfidenceScore(config);
+                docnetResultTable.setConfidenceScore(confidenceScore);
+            });
+        }
+
+
+        jdbi.useTransaction(handle -> {
+            handle.createUpdate("INSERT INTO truth_attribution.docnet_result (file_ref_id,paper_no,group_id,triage_result_id,sor_item_id,sor_item_name,question,answer,created_user_id,tenant_id,confidence_score)" +
+                            " select  :fileRefId , :paperNo, :groupId, :triageResultId, :sorItemId, :sorItemName, :question, :answer, :createdUserId, :tenantId, :confidenceScore;")
+                    .bindBean(docnetResultTable)
+                    .execute();
+        });
+    }
+
+    private Integer createConfidenceScore(TCSConfiguration config) {
+        Integer confidenceScore = 100;
+        try {
+
+            Integer wordCount = config.wordCount;
+            Integer charactersCount = config.characterCount;
+            String[] datatypeList = config.datatypeList;
+            String answer = config.answer;
+            Integer threshold = config.threshold;
+            // Word count
+            int tokenizedCount = countWordsUsingStringTokenizer(answer);
+            confidenceScore = tokenizedCount >= wordCount ? confidenceScore : confidenceScore - threshold;
+            // Datatype Pattern
+            boolean datatypePattern = false;
+            for (String datatype : datatypeList) {
+                boolean pattern = Pattern.matches(datatype, answer);
+                if (pattern) {
+                    datatypePattern = true;
+                }
+            }
+            confidenceScore = datatypePattern ? confidenceScore : confidenceScore - threshold;
+            // Character count
+            int characterLength = answer.length();
+            confidenceScore = characterLength <= charactersCount ? confidenceScore : confidenceScore - threshold;
+
+            return confidenceScore;
+        } catch (Exception ex) {
+            log.info(aMarker, "The Exception occurred in Confidence score validation ", ex);
+            throw new HandymanException("Failed to execute", ex);
+        }
+    }
+
+    private int countWordsUsingStringTokenizer(String sentence) {
+        if (sentence == null || sentence.isEmpty()) {
+            return 0;
+        }
+        StringTokenizer tokens = new StringTokenizer(sentence);
+        return tokens.countTokens();
     }
 
     @Data
@@ -129,13 +206,15 @@ public class DocnetResultAction implements IActionExecution {
         private Integer confidenceScore;
     }
 
-    private void insertDocnutResult(final Jdbi jdbi, final DocnetResultTable docnetResultTable) {
-        jdbi.useTransaction(handle -> {
-
-            handle.createUpdate("INSERT INTO truth_attribution.docnet_result (file_ref_id,paper_no,group_id,triage_result_id,sor_item_id,sor_item_name,question,answer,created_user_id,tenant_id,confidence_score)" +
-                            " select  :fileRefId , :paperNo, :groupId, :triageResultId, :sorItemId, :sorItemName, :question, :answer, :createdUserId, :tenantId, :confidenceScore;")
-                    .bindBean(docnetResultTable)
-                    .execute();
-        });
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class TCSConfiguration {
+        private Integer wordCount;
+        private Integer characterCount;
+        private Integer threshold;
+        private String[] datatypeList;
+        private String answer;
     }
 }
