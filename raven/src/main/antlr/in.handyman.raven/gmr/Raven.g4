@@ -406,12 +406,12 @@ jsonToFile:
 	 '}' ('on-condition' condition=expression)*;
 
 docnetResult:
-          	'docnetResult' 'as' name=STRING
-          	'on-resource-conn' resourceConn=STRING
-          	'using'
-          	'{'
-          	        jsonSql=STRING
-          	'}' ('on-condition' condition=expression)*;
+    'docnetResult' 'as' name=STRING
+    'on-resource-conn' resourceConn=STRING
+    'using-copro'
+    '{' coproResultSqlQuery=STRING '}'
+    'using-weightage'
+    '{' weightageSqlQuery=STRING '}'('on-condition' condition=expression)*;
 
 
 resource : STRING;

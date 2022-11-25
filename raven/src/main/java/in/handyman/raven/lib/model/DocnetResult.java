@@ -26,7 +26,9 @@ public class DocnetResult implements IActionContext {
 
   private String resourceConn;
 
-  private String jsonSql;
+  private String coproResultSqlQuery;
+
+  private String weightageSqlQuery;
 
   private Boolean condition = true;
 }
