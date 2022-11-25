@@ -77,6 +77,7 @@ public class DocnetAttributionAction implements IActionExecution {
 
             final String questionsJsonString = Optional.ofNullable(question.get("questions")).map(String::valueOf).orElse("[]");
             final String sorKey = Optional.ofNullable(question.get("sor_key")).map(String::valueOf).orElse("[]");
+            final String sorId = Optional.ofNullable(question.get("sor_id")).map(String::valueOf).orElse("[]");
 
             final JsonNode questionNodes = mapper.readTree(questionsJsonString);
 
@@ -96,6 +97,7 @@ public class DocnetAttributionAction implements IActionExecution {
                         JsonNode actualObj = mapper.readTree(responseBody);
                         ObjectNode resultNode = mapper.createObjectNode();
                         resultNode.put("sorKey", sorKey);
+                        resultNode.put("sorId", sorId);
                         resultNode.putPOJO("attributionResult", actualObj);
                         finalRes.add(resultNode);
                         log.info(aMarker, "The Successful Response for {} --> {}", docnetAttributionAsResponse, responseBody);
