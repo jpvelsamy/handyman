@@ -83,7 +83,8 @@ action:
     |sorFilter
     |tqaFilter
     |jsonToFile
-    |docnetResult);
+    |docnetResult
+    |setContextValue);
 
 
 multitude:
@@ -412,6 +413,14 @@ docnetResult:
     '{' coproResultSqlQuery=STRING '}'
     'using-weightage'
     '{' weightageSqlQuery=STRING '}'('on-condition' condition=expression)*;
+
+setContextValue:
+    'setContextValue' 'as' name=STRING
+    'context-key' contextKey=STRING
+    'context-value' contextValue=STRING
+    'using'
+    '{'
+    '}' ('on-condition' condition=expression)*;
 
 
 resource : STRING;
