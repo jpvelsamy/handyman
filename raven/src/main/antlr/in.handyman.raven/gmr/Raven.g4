@@ -85,7 +85,6 @@ action:
     |jsonToFile
     |dirPath
     |fileDetails
-    |jsonToFile
     |docnetResult
     |setContextValue);
 

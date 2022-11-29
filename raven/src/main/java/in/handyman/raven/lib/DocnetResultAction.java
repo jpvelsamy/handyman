@@ -142,7 +142,7 @@ public class DocnetResultAction implements IActionExecution {
 
 
         jdbi.useTransaction(handle -> {
-            handle.createUpdate("INSERT INTO sor_transaction.docnet_result (file_ref_id,paper_no,group_id,sor_item_id,sor_item_name,question,answer,created_user_id,tenant_id,confidence_score)" +
+            handle.createUpdate("INSERT INTO macro.docnet_process(file_ref_id,paper_no,group_id,sor_item_id,sor_item_name,question,answer,created_user_id,tenant_id,confidence_score)" +
                             " select  :fileRefId , :paperNo, :groupId, :sorItemId, :sorItemName, :question, :answer, :createdUserId, :tenantId, :confidenceScore;")
                     .bindBean(docnetResultTable)
                     .execute();
