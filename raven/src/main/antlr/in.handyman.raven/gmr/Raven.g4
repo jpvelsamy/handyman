@@ -83,6 +83,9 @@ action:
     |sorFilter
     |tqaFilter
     |jsonToFile
+    |dirPath
+    |fileDetails
+    |jsonToFile
     |docnetResult
     |setContextValue);
 
@@ -422,6 +425,19 @@ setContextValue:
     '{'
     '}' ('on-condition' condition=expression)*;
 
+
+dirPath:
+        'dirPath' 'as' name=STRING
+        'on-resource-conn' resourceConn=STRING
+        'using' '{' filePath=STRING '}' ('on-condition' condition=expression)* ;
+
+fileDetails:
+        'fileDetails' 'as' name=STRING
+        'dirpath' dirpath=STRING
+        'groupId' group_id=STRING
+        'inboundId' inbound_id=STRING
+        'on-resource-conn' resourceConn=STRING
+        'using' '{' '}' ('on-condition' condition=expression)* ;
 
 resource : STRING;
 
