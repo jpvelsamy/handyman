@@ -1,7 +1,5 @@
 package in.handyman.raven.lib;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
@@ -13,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.commons.beanutils.converters.StringArrayConverter;
 import org.jdbi.v3.core.Jdbi;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -65,7 +62,7 @@ public class DocnetResultAction implements IActionExecution {
                 results.forEach(jsonData -> {
                     final String groupId = Optional.ofNullable(jsonData.get("group_id")).map(String::valueOf).orElse(null);
                     final Integer paperNo = Optional.ofNullable(jsonData.get("paper_no")).map(String::valueOf).map(Integer::parseInt).orElse(null);
-                    final String fileRefId = Optional.ofNullable(jsonData.get("intics_reference_id")).map(String::valueOf).orElse(null);
+                    final String fileRefId = Optional.ofNullable(jsonData.get("file_ref_id")).map(String::valueOf).orElse(null);
                     final String sorAttributionType = Optional.ofNullable(jsonData.get("sor_item_name")).map(String::valueOf).orElse(null);
                     final String createdUserId = Optional.ofNullable(jsonData.get("created_user_id")).map(String::valueOf).orElse(null);
                     final String tenantId = Optional.ofNullable(jsonData.get("tenant_id")).map(String::valueOf).orElse(null);
@@ -76,14 +73,14 @@ public class DocnetResultAction implements IActionExecution {
                     jObj.forEach(resultObject -> {
                         JSONObject obj = (JSONObject) resultObject;
                         JSONArray result = obj.getJSONArray("attributionResult");
+                        System.out.println("Attribution result " + result);
                         for (int i = 0; i < result.length(); i++) {
                             JSONObject object = (JSONObject) result.get(i);
                             final DocnetResultTable docnetResult = DocnetResultTable.builder()
                                     .fileRefId(fileRefId)
                                     .paperNo(paperNo)
                                     .groupId(groupId)
-                                    .triageResultId(12345678)
-                                    .sorId(obj.getInt("sorId"))
+                                    .sorItemId(obj.getInt("sorId"))
                                     .sorItemName(obj.getString("sorKey"))
                                     .answer(object.getString("predictedAttributionValue"))
                                     .question(object.getString("question"))
@@ -118,7 +115,7 @@ public class DocnetResultAction implements IActionExecution {
 
         jdbi.useTransaction(handle -> {
             final List<String> formattedQuery = CommonQueryUtil
-                    .getFormattedQuery(docnetResult.getWeightageSqlQuery() + " WHERE si.sor_key= '" + docnetResultTable.getSorItemName()+"'");
+                    .getFormattedQuery(docnetResult.getWeightageSqlQuery() + " WHERE si.sor_key= '" + docnetResultTable.getSorItemName() + "'");
             formattedQuery.forEach(sqlToExecute -> {
                 sorConfigList.addAll(handle.createQuery(sqlToExecute).mapToMap().stream().collect(Collectors.toList()));
             });
@@ -128,7 +125,7 @@ public class DocnetResultAction implements IActionExecution {
             sorConfigList.forEach(jsonData -> {
                 Integer wordCount = Optional.ofNullable(jsonData.get("word_count")).map(String::valueOf).map(Integer::parseInt).orElse(null);
                 Integer characterCount = Optional.ofNullable(jsonData.get("character_count")).map(String::valueOf).map(Integer::parseInt).orElse(null);
-                String datatypePattern =  Optional.ofNullable(jsonData.get("datatype_list")).map(String::valueOf).orElse(null);
+                String datatypePattern = Optional.ofNullable(jsonData.get("datatype_list")).map(String::valueOf).orElse(null);
                 Integer threshold = Optional.ofNullable(jsonData.get("threshold")).map(String::valueOf).map(Integer::parseInt).orElse(null);
 
                 TCSConfiguration config = TCSConfiguration.builder()
@@ -145,8 +142,8 @@ public class DocnetResultAction implements IActionExecution {
 
 
         jdbi.useTransaction(handle -> {
-            handle.createUpdate("INSERT INTO truth_attribution.docnet_result (intics_reference_id,paper_no,group_id,triage_result_id,sor_item_id,sor_item_name,question,answer,created_user_id,tenant_id,confidence_score)" +
-                            " select  :fileRefId , :paperNo, :groupId, :triageResultId, :sorId, :sorItemName, :question, :answer, :createdUserId, :tenantId, :confidenceScore;")
+            handle.createUpdate("INSERT INTO sor_transaction.docnet_result (file_ref_id,paper_no,group_id,sor_item_id,sor_item_name,question,answer,created_user_id,tenant_id,confidence_score)" +
+                            " select  :fileRefId , :paperNo, :groupId, :sorItemId, :sorItemName, :question, :answer, :createdUserId, :tenantId, :confidenceScore;")
                     .bindBean(docnetResultTable)
                     .execute();
         });
@@ -202,8 +199,7 @@ public class DocnetResultAction implements IActionExecution {
         private String fileRefId;
         private Integer paperNo;
         private String groupId;
-        private Integer triageResultId;
-        private Integer sorId;
+        private Integer sorItemId;
         private String sorItemName;
         private String question;
         private String answer;

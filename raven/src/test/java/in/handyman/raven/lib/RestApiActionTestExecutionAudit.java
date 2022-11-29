@@ -70,7 +70,7 @@ class RestApiActionTestExecutionAudit {
     @Test
     public void rootTest() {
         LContext request = LContext.builder()
-                .pipelineName("root.test")
+                .pipelineName("root.producer")
                 .processLoadType(HRequestResolver.LoadType.FILE.name())
                 .build();
         log.info(request.toString());
@@ -85,6 +85,7 @@ class RestApiActionTestExecutionAudit {
         log.info(request.toString());
         LambdaEngine.start(request);
     }
+
 
 
 
