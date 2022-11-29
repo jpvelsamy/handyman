@@ -84,7 +84,10 @@ action:
     |tqaFilter
     |jsonToFile
     |dirPath
-    |fileDetails);
+    |fileDetails
+    |jsonToFile
+    |docnetResult
+    |setContextValue);
 
 
 multitude:
@@ -405,6 +408,23 @@ jsonToFile:
 	 '{'
        jsonSql=STRING
 	 '}' ('on-condition' condition=expression)*;
+
+docnetResult:
+    'docnetResult' 'as' name=STRING
+    'on-resource-conn' resourceConn=STRING
+    'using-copro'
+    '{' coproResultSqlQuery=STRING '}'
+    'using-weightage'
+    '{' weightageSqlQuery=STRING '}'('on-condition' condition=expression)*;
+
+setContextValue:
+    'setContextValue' 'as' name=STRING
+    'context-key' contextKey=STRING
+    'context-value' contextValue=STRING
+    'using'
+    '{'
+    '}' ('on-condition' condition=expression)*;
+
 
 dirPath:
         'dirPath' 'as' name=STRING

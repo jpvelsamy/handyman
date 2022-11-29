@@ -47,15 +47,46 @@ class RestApiActionTestExecutionAudit {
 
 
     @Test
-    public void testPreprocess() {
+    public void testTruthAttributionDDL() {
         LContext request = LContext.builder()
-                .pipelineName("root.processing")
+                .pipelineName("db.test")
                 .processLoadType(HRequestResolver.LoadType.FILE.name())
-                .inheritedContext(Map.of("batch_id", "INTICS-BATCH-868301"))
                 .build();
         log.info(request.toString());
         LambdaEngine.start(request);
     }
+
+
+    @Test
+    public void denoiseMainCaller() {
+        LContext request = LContext.builder()
+                .pipelineName("denoise.main.caller")
+                .processLoadType(HRequestResolver.LoadType.FILE.name())
+                .build();
+        log.info(request.toString());
+        LambdaEngine.start(request);
+    }
+
+    @Test
+    public void rootTest() {
+        LContext request = LContext.builder()
+                .pipelineName("root.test")
+                .processLoadType(HRequestResolver.LoadType.FILE.name())
+                .build();
+        log.info(request.toString());
+        LambdaEngine.start(request);
+    }
+    @Test
+    public void testTruthAttributionSummoning() {
+        LContext request = LContext.builder()
+                .pipelineName("truth.attribution.summoning")
+                .processLoadType(HRequestResolver.LoadType.FILE.name())
+                .build();
+        log.info(request.toString());
+        LambdaEngine.start(request);
+    }
+
+
 
     @Test
     void executeQR() {

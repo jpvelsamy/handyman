@@ -29,10 +29,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 public class LambdaEngine {
@@ -40,6 +37,7 @@ public class LambdaEngine {
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final HandymanRepo REPO = new HandymanRepoImpl();
     private static final String RAVEN_VM = "RavenVM";
+    private static final String THROW_EXCEPTION = "throw_exception";
 
     static {
         MAPPER.registerModule(new JavaTimeModule());
@@ -114,7 +112,9 @@ public class LambdaEngine {
                 pipelineExecutionAudit.updateExecutionStatusId(ExecutionStatus.FAILED.getId());
                 log.error("try section failed", e);
                 log.error("Completed Execution catch block");
-                throw new HandymanException("Failed", e);
+                if (!Objects.equals("false", context.get(THROW_EXCEPTION))) {
+                    throw new HandymanException("Failed ", e);
+                }
             } finally {
                 log.info("Executing Finally Block");
                 run(pipelineExecutionAudit, ravenParserContext.getFinallyContext(), context, ExecutionGroup.FINALLY);

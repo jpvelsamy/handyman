@@ -58,62 +58,72 @@ public class DocnetAttributionAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-        final OkHttpClient httpclient = new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.MINUTES)
-                .writeTimeout(10, TimeUnit.MINUTES)
-                .readTimeout(10, TimeUnit.MINUTES).build();
-        final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(docnetAttribution.getResourceConn());
-        final List<Map<String, Object>> questions = new ArrayList<>();
+        try {
+            log.info(aMarker, "<-------Docnut Attribution Action for {} has been started------->" + docnetAttribution.getName());
+            final OkHttpClient httpclient = new OkHttpClient.Builder()
+                    .connectTimeout(10, TimeUnit.MINUTES)
+                    .writeTimeout(10, TimeUnit.MINUTES)
+                    .readTimeout(10, TimeUnit.MINUTES).build();
+            final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(docnetAttribution.getResourceConn());
+            final List<Map<String, Object>> questions = new ArrayList<>();
 
-        jdbi.useTransaction(handle -> {
-            final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(docnetAttribution.getAttributeQuestionSql());
-            formattedQuery.forEach(sqlToExecute -> {
-                questions.addAll(handle.createQuery(sqlToExecute).mapToMap().stream().collect(Collectors.toList()));
+            jdbi.useTransaction(handle -> {
+                final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(docnetAttribution.getAttributeQuestionSql());
+                formattedQuery.forEach(sqlToExecute -> {
+                    questions.addAll(handle.createQuery(sqlToExecute).mapToMap().stream().collect(Collectors.toList()));
+                });
             });
-        });
-        final String docnetAttributionAsResponse = docnetAttribution.getDocnetAttributionAsResponse();
-        final ArrayNode finalRes = mapper.createArrayNode();
-        for (var question : questions) {
+            final String docnetAttributionAsResponse = docnetAttribution.getDocnetAttributionAsResponse();
+            final ArrayNode finalRes = mapper.createArrayNode();
+            for (var question : questions) {
 
-            final String questionsJsonString = Optional.ofNullable(question.get("questions")).map(String::valueOf).orElse("[]");
-            final String sorKey = Optional.ofNullable(question.get("sor_key")).map(String::valueOf).orElse("[]");
+                final String questionsJsonString = Optional.ofNullable(question.get("questions")).map(String::valueOf).orElse("[]");
+                final String sorKey = Optional.ofNullable(question.get("sor_key")).map(String::valueOf).orElse("[]");
+                final String sorId = Optional.ofNullable(question.get("sor_id")).map(String::valueOf).orElse("[]");
 
-            final JsonNode questionNodes = mapper.readTree(questionsJsonString);
+                final JsonNode questionNodes = mapper.readTree(questionsJsonString);
 
-            if (!questionNodes.isEmpty()) {
-                final ObjectNode objectNode = mapper.createObjectNode();
-                objectNode.put("inputFilePath", docnetAttribution.getInputFilePath());
-                objectNode.set("attributes", questionNodes);
-                objectNode.put("outputDir", docnetAttribution.getOutputDir());
-                log.info(aMarker, "Question List for {} are {}", sorKey, questionNodes);
+                if (!questionNodes.isEmpty()) {
+                    final ObjectNode objectNode = mapper.createObjectNode();
+                    objectNode.put("inputFilePath", docnetAttribution.getInputFilePath());
+                    objectNode.set("attributes", questionNodes);
+                    objectNode.put("outputDir", docnetAttribution.getOutputDir());
+                    log.info(aMarker, "Question List for {} are {}", sorKey, questionNodes);
 
-                final Request request = new Request.Builder().url(URI)
-                        .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-                log.info(aMarker, "The Request Details : {}", request);
-                try (Response response = httpclient.newCall(request).execute()) {
-                    String responseBody = Objects.requireNonNull(response.body()).string();
-                    if (response.isSuccessful()) {
-                        JsonNode actualObj = mapper.readTree(responseBody);
-                        ObjectNode resultNode = mapper.createObjectNode();
-                        resultNode.put("sorKey", sorKey);
-                        resultNode.putPOJO("attributionResult", actualObj);
-                        finalRes.add(resultNode);
-                        log.info(aMarker, "The Successful Response for {} --> {}", docnetAttributionAsResponse, responseBody);
-                          } else {
-                        log.error(aMarker, "The Failure Response {} --> {}", docnetAttributionAsResponse, responseBody);
+                    final Request request = new Request.Builder().url(URI)
+                            .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
+                    log.info(aMarker, "The Request Details : {}", request);
+                    try (Response response = httpclient.newCall(request).execute()) {
+                        String responseBody = Objects.requireNonNull(response.body()).string();
+                        if (response.isSuccessful()) {
+                            JsonNode actualObj = mapper.readTree(responseBody);
+                            ObjectNode resultNode = mapper.createObjectNode();
+                            resultNode.put("sorKey", sorKey);
+                            resultNode.put("sorId", sorId);
+                            resultNode.putPOJO("attributionResult", actualObj);
+                            finalRes.add(resultNode);
+                            log.info(aMarker, "The Successful Response for {} --> {}", docnetAttributionAsResponse, responseBody);
+                        } else {
+                            log.error(aMarker, "The Failure Response {} --> {}", docnetAttributionAsResponse, responseBody);
+                            action.getContext().put(docnetAttributionAsResponse.concat(".error"), "true");
+                            throw new HandymanException(responseBody);
+                        }
+                    } catch (Exception e) {
+                        log.error(aMarker, "The Exception occurred ", e);
                         action.getContext().put(docnetAttributionAsResponse.concat(".error"), "true");
-                        throw new HandymanException(responseBody);
+                        throw new HandymanException("Failed to execute", e);
                     }
-                } catch (Exception e) {
-                    log.error(aMarker, "The Exception occurred ", e);
-                    action.getContext().put(docnetAttributionAsResponse.concat(".error"), "true");
-                    throw new HandymanException("Failed to execute", e);
                 }
-            }
 
+            }
+            action.getContext().put(docnetAttributionAsResponse.concat(".error"), "false");
+            action.getContext().put(docnetAttributionAsResponse.concat(".response"), finalRes.toString().replace("'", "''"));
+        } catch (Exception e) {
+            action.getContext().put(docnetAttribution.getName().concat(".error"), "true");
+            log.info(aMarker, "The Exception occurred ", e);
+            throw new HandymanException("Failed to execute", e);
         }
-        action.getContext().put(docnetAttributionAsResponse.concat(".error"), "false");
-        action.getContext().put(docnetAttributionAsResponse.concat(".response"), finalRes.toString().replace("'", "''"));
+        log.info(aMarker, "<-------Docnut Attribution Action for {} has been completed------->" + docnetAttribution.getName());
 
     }
 
