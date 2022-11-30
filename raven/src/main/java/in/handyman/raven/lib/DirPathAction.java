@@ -10,7 +10,6 @@ import java.io.File;
 import java.lang.Exception;
 import java.lang.Object;
 import java.lang.Override;
-import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,15 +50,13 @@ public class DirPathAction implements IActionExecution {
         DirectoryDetails input = DirectoryDetails.builder()
                 .given_file_path(dirPath.getFilePath())
                 .given_file_checksum(null)
-                .created_user_id(-1)
-                .tenant_id(-1)
                 .build();
 
         jdbi.useTransaction(handle -> {
 
-            handle.createUpdate("INSERT INTO ingestion.file_path_details" +
-                            "(given_file_path, given_file_checksum, created_user_id, tenant_id)" +
-                            " VALUES( :given_file_path, :given_file_checksum, :created_user_id ,:tenant_id);")
+            handle.createUpdate("INSERT INTO macro.file_path_details" +
+                            "(given_file_path, given_file_checksum)" +
+                            " VALUES( :given_file_path, :given_file_checksum);")
                     .bindBean(input).execute();
             log.debug(aMarker, "inserted {} into true positive result", input);
             log.info(aMarker, "<-------File Details Action for {} has been Completed------->" + dirPath.getName());
@@ -79,11 +76,6 @@ public class DirPathAction implements IActionExecution {
     public static class DirectoryDetails {
 
         private String given_file_path;
-        private Integer group_id;
-        private Integer inbound_id;
         private String given_file_checksum;
-        private LocalDateTime created_on;
-        private Integer created_user_id;
-        private Integer tenant_id;
     }
 }
