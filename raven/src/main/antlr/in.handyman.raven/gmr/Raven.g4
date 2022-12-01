@@ -86,7 +86,10 @@ action:
     |dirPath
     |fileDetails
     |docnetResult
-    |setContextValue);
+    |setContextValue
+    |evalPatientName
+    |evalMemberId
+    |evalDateOfBirth);
 
 
 multitude:
@@ -423,6 +426,43 @@ setContextValue:
     'using'
     '{'
     '}' ('on-condition' condition=expression)*;
+
+evalPatientName:
+    'evalPatientName' 'as' name=STRING
+    'patient-name' patientName=STRING
+    'word-count-limit' wordCountLimit=STRING
+    'char-count-limit' charCountLimit=STRING
+    'ner-api' nerCoproApi=STRING
+    'word-count-threshold' wordCountThreshold=STRING
+    'char-count-threshold' charCountThreshold=STRING
+    'ner-api-threshold' nerApiThreshold=STRING
+    'using'
+    '{' '}'('on-condition' condition=expression)*;
+
+evalMemberId:
+    'evalMemberId' 'as' name=STRING
+    'member-id' memberID=STRING
+    'word-count-limit' wordCountLimit=STRING
+    'char-count-limit' charCountLimit=STRING
+    'special-character' specialCharacter=STRING
+    'word-count-threshold' wordCountThreshold=STRING
+    'char-count-threshold' charCountThreshold=STRING
+    'validator-threshold' validatorThreshold=STRING
+    'using'
+    '{'  '}'('on-condition' condition=expression)*;
+
+evalDateOfBirth:
+    'evalDateOfBirth' 'as' name=STRING
+    'date-of-birth' dob=STRING
+    'word-count-limit' wordCountLimit=STRING
+    'char-count-limit' charCountLimit=STRING
+    'word-count-threshold' wordCountThreshold=STRING
+    'char-count-threshold' charCountThreshold=STRING
+    'comparable-year' comparableYear=STRING
+    'date-formats' dateFormats=STRING
+    'validator-threshold' validatorThreshold=STRING
+    'using'
+    '{'  '}'('on-condition' condition=expression)*;
 
 
 dirPath:
