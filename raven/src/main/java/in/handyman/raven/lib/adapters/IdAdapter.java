@@ -7,8 +7,7 @@ public class IdAdapter implements AdapterInterface {
     @Override
     public boolean getValidationModel(String memberId, String requiredFeature) throws Exception {
         memberId = validateSpecialCharacters(requiredFeature, memberId);
-        boolean idEvaluator = StringUtils.isAlphanumeric(memberId);
-        return idEvaluator;
+        return StringUtils.isAlphanumeric(memberId);
     }
 
     String validateSpecialCharacters(String specialCharacters, String input) {

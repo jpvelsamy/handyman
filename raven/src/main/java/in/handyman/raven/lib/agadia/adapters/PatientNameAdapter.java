@@ -6,6 +6,7 @@ import in.handyman.raven.lib.adapters.WordCountAdapter;
 import in.handyman.raven.lib.interfaces.AdapterInterface;
 import in.handyman.raven.lib.interfaces.ScalarEvaluationInterface;
 import in.handyman.raven.lib.model.AgadiaAdapter;
+import org.apache.commons.lang3.StringUtils;
 
 public class PatientNameAdapter implements ScalarEvaluationInterface {
     AdapterInterface wordCountAdapter = new WordCountAdapter();
@@ -22,16 +23,17 @@ public class PatientNameAdapter implements ScalarEvaluationInterface {
         int validatorThresold = adapter.getValidatorThreshold();
         String validatorFeature = adapter.getValidatorDetail();
 
-        String[] splitInput = patientName.split(  " ");
+        String[] splitInput = patientName.split(" ");
         for (String name : splitInput) {
             int wordCount = wordCountAdapter.getThresoldScore(name);
             confidenceScore = wordCount <= wcLimit ? confidenceScore + wcThresold : confidenceScore;
 
             int charCount = charCountAdapter.getThresoldScore(name);
-            confidenceScore = charCount <= charLimit ? confidenceScore +charThreshold : confidenceScore;
+            confidenceScore = charCount <= charLimit ? confidenceScore + charThreshold : confidenceScore;
 
-            boolean nameValidator = nameValidatorAdapter.getValidationModel(name,validatorFeature);
+            boolean nameValidator = nameValidatorAdapter.getValidationModel(name, validatorFeature);
             confidenceScore = nameValidator ? confidenceScore + validatorThresold : confidenceScore;
+
         }
         confidenceScore = confidenceScore / splitInput.length;
         return confidenceScore;

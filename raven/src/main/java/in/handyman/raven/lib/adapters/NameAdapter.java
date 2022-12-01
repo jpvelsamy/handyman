@@ -27,8 +27,7 @@ public class NameAdapter implements AdapterInterface {
             String responseBody = Objects.requireNonNull(response.body()).string();
             JsonNode actualObj = mapper.readTree(responseBody);
             if(actualObj.get("prediction").get(0)!=null){
-                boolean evaluator = actualObj.get("prediction").get(0).get("predictedLabel").asBoolean();
-                return evaluator;
+                return actualObj.get("prediction").get(0).get("predictedLabel").asBoolean();
             }else {
                 return false;
             }
