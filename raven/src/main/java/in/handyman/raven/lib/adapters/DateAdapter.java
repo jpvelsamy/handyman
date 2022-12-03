@@ -24,10 +24,17 @@ public class DateAdapter implements AdapterInterface {
                     Date date = dateFormat.parse(dateValue);
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTime(date);
-                    int year = calendar.get(Calendar.YEAR);
-                    boolean yearValidation = false;
-                    if (Integer.toString(year).length() >= 4) {
-                        yearValidation = year < comparableYear ? true : false;
+                    int validateYear = calendar.get(Calendar.YEAR);
+                    int currentYear = Integer.parseInt(new SimpleDateFormat("yy").format(new Date()));
+                    boolean yearValidation;
+                    if (Integer.toString(validateYear).length() >= 4) {
+                        yearValidation = validateYear < comparableYear;
+                    } else if (validateYear >= 00 && validateYear <= currentYear) {
+                        String temp = "20" + validateYear;
+                        yearValidation = Integer.parseInt(temp) < comparableYear;
+                    } else {
+                        String temp = "19" + validateYear;
+                        yearValidation = Integer.parseInt(temp) < comparableYear;
                     }
                     return yearValidation;
                 } catch (ParseException ex) {

@@ -6,6 +6,7 @@ import in.handyman.raven.lib.adapters.WordCountAdapter;
 import in.handyman.raven.lib.interfaces.AdapterInterface;
 import in.handyman.raven.lib.interfaces.ScalarEvaluationInterface;
 import in.handyman.raven.lib.model.AgadiaAdapter;
+import org.apache.commons.lang3.StringUtils;
 
 public class PatientNameAdapter implements ScalarEvaluationInterface {
     AdapterInterface wordCountAdapter = new WordCountAdapter();
@@ -22,18 +23,21 @@ public class PatientNameAdapter implements ScalarEvaluationInterface {
         int validatorThresold = adapter.getValidatorThreshold();
         String validatorFeature = adapter.getValidatorDetail();
 
-        String[] splitInput = patientName.split(  " ");
-        for (String name : splitInput) {
-            int wordCount = wordCountAdapter.getThresoldScore(name);
-            confidenceScore = wordCount <= wcLimit ? confidenceScore + wcThresold : confidenceScore;
+        boolean nameValidator = nameValidatorAdapter.getValidationModel(patientName, validatorFeature);
+        confidenceScore = nameValidator ? confidenceScore + validatorThresold : confidenceScore;
 
-            int charCount = charCountAdapter.getThresoldScore(name);
-            confidenceScore = charCount <= charLimit ? confidenceScore +charThreshold : confidenceScore;
-
-            boolean nameValidator = nameValidatorAdapter.getValidationModel(name,validatorFeature);
-            confidenceScore = nameValidator ? confidenceScore + validatorThresold : confidenceScore;
+        int formatScore = 0;
+        if (nameValidator) {
+            String[] splitInput = patientName.split(" ");
+            for (String name : splitInput) {
+                int wordCount = wordCountAdapter.getThresoldScore(name);
+                formatScore = wordCount <= wcLimit ? formatScore + wcThresold : formatScore;
+                int charCount = charCountAdapter.getThresoldScore(name);
+                formatScore = charCount <= charLimit ? formatScore + charThreshold : formatScore;
+            }
+            formatScore = formatScore / splitInput.length;
         }
-        confidenceScore = confidenceScore / splitInput.length;
+        confidenceScore = confidenceScore + formatScore ;
         return confidenceScore;
     }
 }
