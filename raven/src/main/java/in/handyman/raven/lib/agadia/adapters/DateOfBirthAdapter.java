@@ -24,15 +24,16 @@ public class DateOfBirthAdapter implements ScalarEvaluationInterface {
         int comparableYear = adapter.getComparableYear();
         String[] dateFormats=adapter.getDateFormats();
 
-        int wordCount = wordCountAdapter.getThresoldScore(dob);
-        confidenceScore = wordCount <= wcLimit ? confidenceScore + wcThresold : confidenceScore;
-
-        int charCount = charCountAdapter.getThresoldScore(dob);
-        confidenceScore = charCount <= charLimit ? confidenceScore + charThreshold : confidenceScore;
-
         boolean dobValidator = dobValidatorAdapter.getDateValidationModel(dob, comparableYear,dateFormats);
         confidenceScore = dobValidator ? confidenceScore + validatorThresold : confidenceScore;
 
+        if(dobValidator){
+            int wordCount = wordCountAdapter.getThresoldScore(dob);
+            confidenceScore = wordCount <= wcLimit ? confidenceScore + wcThresold : confidenceScore;
+
+            int charCount = charCountAdapter.getThresoldScore(dob);
+            confidenceScore = charCount <= charLimit ? confidenceScore + charThreshold : confidenceScore;
+        }
         return confidenceScore;
     }
 }
