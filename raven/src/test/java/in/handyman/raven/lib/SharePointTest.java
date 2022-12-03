@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import java.util.stream.IntStream;
 
 class SharePointTest {
-    // urgency trige
+    // urgency trige process
     @Test
     void execute() {
         LambdaEngine.start(LContext.builder()
