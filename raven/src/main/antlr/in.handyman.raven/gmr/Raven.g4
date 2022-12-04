@@ -72,7 +72,8 @@ action:
     |createZip
     |extractZip
     |sorGroupDetails
-    |ftpsConnector
+    |ftpsUpload
+    |ftpsDownload
     |sftpConnector
     |zeroShotClassifier
     |loadExtractedData
@@ -222,7 +223,6 @@ deleteFileDirectory:
 transferFileDirectory:
 	'transferFileDirectory' 'as' name= STRING 'from' source=STRING 'to' to=STRING 'operation' operation=STRING 'using'
     '{'
-		value=STRING
 	'}' ('on-condition' condition=expression)*;
 
 producerConsumerModel:
@@ -302,10 +302,16 @@ uploadAsset:
 fileMerger:
     'fileMerger' 'as' name=STRING  'in' outputDir=STRING 'using'  '{' requestBody=STRING '}' ('on-condition' condition=expression)* ;
 
-ftpsConnector:
-       'ftps' 'as' name=STRING 'with-remote-host' host=STRING 'port' port=STRING 'user-name' userName=STRING
+ftpsUpload:
+       'ftps_upload' 'as' name=STRING 'with-remote-host' host=STRING 'port' port=STRING 'user-name' userName=STRING
+       'password' password=STRING 'session-timeout' sessionTimeOut=STRING 'source-file-to-upload' sourceFile=STRING
+       'in-destination-to-save' destDir=STRING
+       'using' '{'     '}' ('on-condition' condition=expression)* ;
+
+ftpsDownload:
+       'ftps_download' 'as' name=STRING 'with-remote-host' host=STRING 'port' port=STRING 'user-name' userName=STRING
        'password' password=STRING 'session-timeout' sessionTimeOut=STRING 'source-file-to-download' sourceFile=STRING
-       'in-destination-to-save' destDir=STRING 'fileaction' fileaction=STRING
+       'in-destination-to-save' destDir=STRING
        'using' '{'     '}' ('on-condition' condition=expression)* ;
 
 sftpConnector:
