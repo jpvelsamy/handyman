@@ -15,12 +15,13 @@ public class NameAdapter implements AdapterInterface {
     public boolean getValidationModel(String sentence, String requiredFeature) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         MediaType MediaTypeJSON = MediaType.parse("application/json; charset=utf-8");
+        String[] patientName = new String[]{sentence};
         OkHttpClient httpclient = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.MINUTES)
                 .writeTimeout(10, TimeUnit.MINUTES)
                 .readTimeout(10, TimeUnit.MINUTES).build();
         ObjectNode objectNode = mapper.createObjectNode();
-        objectNode.putPOJO("inputString", sentence.split(" "));
+        objectNode.putPOJO("inputString", patientName);
         Request request = new Request.Builder().url(requiredFeature)
                 .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
         try(Response response = httpclient.newCall(request).execute()){
