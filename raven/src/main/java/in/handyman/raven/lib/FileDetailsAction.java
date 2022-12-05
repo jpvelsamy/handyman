@@ -82,15 +82,16 @@ public class FileDetailsAction implements IActionExecution {
                     .created_user_id(-1)
                     .tenant_id(-1)
                     .inbound_id(Integer.valueOf(fileDetails.getInbound_id()))
-                    .file_process_status("STAGED")
                     .build();
 
             jdbi.useTransaction(handle -> {
-                handle.createUpdate("INSERT INTO ingestion.source_of_origin (file_ref_id, file_path, file_name, file_checksum, file_size, file_extension, group_id, created_user_id, tenant_id, inbound_id,file_process_status) " +
-                                "VALUES( :file_ref_id, :file_path, :file_name, :file_checksum, :file_size, :file_extension, :group_id, :created_user_id, :tenant_id, :inbound_id , :file_process_status);")
+                handle.createUpdate("INSERT INTO ingestion.source_of_origin (file_ref_id, file_path, file_name, file_checksum, file_size, file_extension, group_id, created_user_id, tenant_id, inbound_id) " +
+                                "VALUES( :file_ref_id, :file_path, :file_name, :file_checksum, :file_size, :file_extension, :group_id, :created_user_id, :tenant_id, :inbound_id );")
                         .bindBean(fileInfo).execute();
                 log.debug(aMarker, "inserted {} into source of origin", fileInfo);
             });
+            action.getContext().put("group_id", fileDetails.getGroup_id());
+
         });
     }
 
