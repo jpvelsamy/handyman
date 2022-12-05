@@ -83,13 +83,16 @@ action:
     |sorFilter
     |tqaFilter
     |jsonToFile
+    |textFilter
+    |entityFilter
     |dirPath
     |fileDetails
     |docnetResult
     |setContextValue
     |evalPatientName
     |evalMemberId
-    |evalDateOfBirth);
+    |evalDateOfBirth
+    |thresholdCheck);
 
 
 multitude:
@@ -401,6 +404,28 @@ tqaFilter:
      'using-input-files'
     '{'  inputFilePathSqlQuery=STRING  '}'
      ('on-condition' condition=expression)* ('fielding' threadCount=NON_ZERO_DIGIT)* ('with-fetch-batch-size' fetchBatchSize=NON_ZERO_DIGIT)* ('with-write-batch-size' writeBatchSize=NON_ZERO_DIGIT)*  ;
+
+textFilter:
+      'text-filtering' 'as' name=STRING
+      'key-filtering'  filteringKeys =STRING
+      'for-input-file'
+      '{' inputFilePath=STRING  '}' ('on-condition' condition=expression)* ;
+
+
+entityFilter:
+      'text-filtering' 'as' name=STRING 'with-doc-id' docId=STRING
+      'for-paper' paperNo=STRING 'group-id' groupId = STRING
+      'on-resource-conn' resourceConn=STRING
+      'entity-key-filtering'  entityKeysToFilter =STRING
+      'with-mandatory-key-filtering' mandatoryKeysToFilter = STRING
+      'for-input-file'
+      '{' inputFilePath=STRING  '}' ('on-condition' condition=expression)* ;
+
+thresholdCheck:
+       'check-threshold' 'as' name=STRING
+       'threshold-value'  threshold=STRING
+       '{' input=STRING '}'
+       ('on-condition' condition=expression)* ;
 
 jsonToFile:
 	'jsonToFile' 'as' name= STRING
