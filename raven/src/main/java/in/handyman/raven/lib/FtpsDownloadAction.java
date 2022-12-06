@@ -5,7 +5,6 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.FtpsDownload;
-
 import org.apache.commons.net.PrintCommandListener;
 import org.apache.commons.net.ftp.*;
 import org.apache.commons.net.util.TrustManagerUtils;
@@ -52,45 +51,50 @@ public class FtpsDownloadAction implements IActionExecution {
         final int sessionTimeout = Integer.parseInt(ftpsDownload.getSessionTimeOut());
         final String destDir = ftpsDownload.getDestDir();
         final String remoteFile = ftpsDownload.getSourceFile();
-        log.info(aMarker, "Got the sftp details for the host {} and user {}", remoteHost, userName);
-        FTPSClient ftpClient = new FTPSClient();
-        try {
-            ftpClient.setEndpointCheckingEnabled(false);
-            ftpClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
-            int reply;
-            ftpClient.setConnectTimeout(sessionTimeout);
-            ftpClient.connect(remoteHost, remotePort);
-            log.info(aMarker, "FTP URL is: {} ", ftpClient.getDefaultPort());
-            reply = ftpClient.getReplyCode();
-            if (!FTPReply.isPositiveCompletion(reply)) {
-                ftpClient.disconnect();
-                log.error("Exception in connecting to FTP Server");
+        final String check = ftpsDownload.getUploadCheck();
+        if (Boolean.parseBoolean(check)) {
+            log.info(aMarker, "Got the sftp details for the host {} and user {}", remoteHost, userName);
+            FTPSClient ftpClient = new FTPSClient();
+            try {
+                ftpClient.setEndpointCheckingEnabled(false);
+                ftpClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
+                int reply;
+                ftpClient.setConnectTimeout(sessionTimeout);
+                ftpClient.connect(remoteHost, remotePort);
+                log.info(aMarker, "FTP URL is: {} ", ftpClient.getDefaultPort());
+                reply = ftpClient.getReplyCode();
+                if (!FTPReply.isPositiveCompletion(reply)) {
+                    ftpClient.disconnect();
+                    log.error("Exception in connecting to FTP Server");
+                }
+                ftpClient.login(userName, password);
+                ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+                ftpClient.enterLocalPassiveMode();
+                ftpClient.setUseEPSVwithIPv4(true);
+                ftpClient.execPBSZ(0);
+                ftpClient.execPROT("P");
+                System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
+                ftpClient.setTrustManager(TrustManagerUtils.getAcceptAllTrustManager());
+                ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+                log.info(aMarker, "Remote system is  {}", (Object) ftpClient.getEnabledCipherSuites());
+                log.info(aMarker, "SSL: {}", ftpClient.getEnableSessionCreation());
+                log.info(aMarker, "Remote system is {} ", ftpClient.getSystemType());
+                String workingDirectory = ftpClient.printWorkingDirectory();
+                log.info(aMarker, "Current directory is {}", workingDirectory);
+                ftpDownloadDirectory(ftpClient, remoteFile, destDir);
+                String name = "ftps-file-download-connector-response";
+                action.getContext().put(name, destDir);
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (ftpClient.isConnected()) {
+                    ftpClient.logout();
+                    ftpClient.disconnect();
+                }
             }
-            ftpClient.login(userName, password);
-            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-            ftpClient.enterLocalPassiveMode();
-            ftpClient.setUseEPSVwithIPv4(true);
-            ftpClient.execPBSZ(0);
-            ftpClient.execPROT("P");
-            System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
-            ftpClient.setTrustManager(TrustManagerUtils.getAcceptAllTrustManager());
-            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-            log.info(aMarker, "Remote system is  {}", (Object) ftpClient.getEnabledCipherSuites());
-            log.info(aMarker, "SSL: {}", ftpClient.getEnableSessionCreation());
-            log.info(aMarker, "Remote system is {} ", ftpClient.getSystemType());
-            String workingDirectory = ftpClient.printWorkingDirectory();
-            log.info(aMarker, "Current directory is {}", workingDirectory);
-            ftpDownloadDirectory(ftpClient, remoteFile, destDir);
-            String name = "ftps-file-download-connector-response";
-            action.getContext().put(name, destDir);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (ftpClient.isConnected()) {
-                ftpClient.logout();
-                ftpClient.disconnect();
-            }
-        }
+        } else
+            log.info(aMarker, "Download flag is set to {}", check);
+
     }
 
     public void ftpDownloadDirectory(FTPClient ftpClient, String srcFile, String saveDir) throws IOException {

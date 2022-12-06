@@ -309,12 +309,14 @@ ftpsUpload:
        'ftps_upload' 'as' name=STRING 'with-remote-host' host=STRING 'port' port=STRING 'user-name' userName=STRING
        'password' password=STRING 'session-timeout' sessionTimeOut=STRING 'source-file-to-upload' sourceFile=STRING
        'in-destination-to-save' destDir=STRING
+       'upload-check' uploadCheck=STRING
        'using' '{'     '}' ('on-condition' condition=expression)* ;
 
 ftpsDownload:
        'ftps_download' 'as' name=STRING 'with-remote-host' host=STRING 'port' port=STRING 'user-name' userName=STRING
        'password' password=STRING 'session-timeout' sessionTimeOut=STRING 'source-file-to-download' sourceFile=STRING
        'in-destination-to-save' destDir=STRING
+       'download-check' uploadCheck=STRING
        'using' '{'     '}' ('on-condition' condition=expression)* ;
 
 sftpConnector:

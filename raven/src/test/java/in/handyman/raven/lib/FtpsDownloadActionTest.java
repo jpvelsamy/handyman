@@ -14,9 +14,9 @@ class FtpsDownloadActionTest {
         ftpsDownloadAction = new FtpsDownloadAction(actionExecutionAudit,
                 LambdaEngine.getLogger(actionExecutionAudit),
                 FtpsDownload.builder()
-                        .host("18.117.16.124")
-                        .userName("zftpuser")
-                        .password("Test123!@#")
+                        .host("")
+                        .userName("")
+                        .password("")
                         .port("21")
                         .sessionTimeOut("1200")
                         .sourceFile("/home/ubuntu/zftp1/ftp_test/abcd")

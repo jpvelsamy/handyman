@@ -52,50 +52,55 @@ public class FtpsUploadAction implements IActionExecution {
         final int sessionTimeout = Integer.parseInt(ftpsUpload.getSessionTimeOut());
         final String destDir = ftpsUpload.getDestDir();
         final String remoteFile = ftpsUpload.getSourceFile();
-        log.info(aMarker, "Got the sftp details for the host {} and user {}", remoteHost, userName);
-        FTPSClient ftpClient = new FTPSClient();
-        try {
-            ftpClient.setEndpointCheckingEnabled(false);
-            ftpClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
-            int reply;
-            ftpClient.setConnectTimeout(sessionTimeout);
-            ftpClient.connect(remoteHost, remotePort);
-            log.info(aMarker, "FTP URL is: {} ", ftpClient.getDefaultPort());
-            reply = ftpClient.getReplyCode();
-            if (!FTPReply.isPositiveCompletion(reply)) {
-                ftpClient.disconnect();
-                log.error("Exception in connecting to FTP Server");
+        final String check = ftpsUpload.getUploadCheck();
+        if (Boolean.parseBoolean(check)) {
+            log.info(aMarker, "Got the sftp details for the host {} and user {}", remoteHost, userName);
+            FTPSClient ftpClient = new FTPSClient();
+            try {
+                ftpClient.setEndpointCheckingEnabled(false);
+                ftpClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
+                int reply;
+                ftpClient.setConnectTimeout(sessionTimeout);
+                ftpClient.connect(remoteHost, remotePort);
+                log.info(aMarker, "FTP URL is: {} ", ftpClient.getDefaultPort());
+                reply = ftpClient.getReplyCode();
+                if (!FTPReply.isPositiveCompletion(reply)) {
+                    ftpClient.disconnect();
+                    log.error("Exception in connecting to FTP Server");
+                }
+                ftpClient.login(userName, password);
+                ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+                ftpClient.enterLocalPassiveMode();
+                ftpClient.setUseEPSVwithIPv4(true);
+                ftpClient.execPBSZ(0);
+                ftpClient.execPROT("P");
+                System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
+                ftpClient.setTrustManager(TrustManagerUtils.getAcceptAllTrustManager());
+                ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+                log.info(aMarker, "Remote system is  {}", (Object) ftpClient.getEnabledCipherSuites());
+                log.info(aMarker, "SSL: {}", ftpClient.getEnableSessionCreation());
+                log.info(aMarker, "Remote system is {} ", ftpClient.getSystemType());
+                String workingDirectory = ftpClient.printWorkingDirectory();
+                log.info(aMarker, "Current directory is {}", workingDirectory);
+                uploadDirectory(ftpClient, destDir, remoteFile, "");
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (ftpClient.isConnected()) {
+                    ftpClient.logout();
+                    ftpClient.disconnect();
+                }
             }
-            ftpClient.login(userName, password);
-            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-            ftpClient.enterLocalPassiveMode();
-            ftpClient.setUseEPSVwithIPv4(true);
-            ftpClient.execPBSZ(0);
-            ftpClient.execPROT("P");
-            System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
-            ftpClient.setTrustManager(TrustManagerUtils.getAcceptAllTrustManager());
-            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-            log.info(aMarker, "Remote system is  {}", (Object) ftpClient.getEnabledCipherSuites());
-            log.info(aMarker, "SSL: {}", ftpClient.getEnableSessionCreation());
-            log.info(aMarker, "Remote system is {} ", ftpClient.getSystemType());
-            String workingDirectory = ftpClient.printWorkingDirectory();
-            log.info(aMarker, "Current directory is {}", workingDirectory);
-            uploadDirectory(ftpClient, destDir, remoteFile, "");
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (ftpClient.isConnected()) {
-                ftpClient.logout();
-                ftpClient.disconnect();
-            }
-        }
+        } else
+            log.info(aMarker, "Upload flag is set to {}", check);
+
 
     }
 
     public void uploadDirectory(FTPClient ftpClient, String remoteDirPath, String localParentDir, String remoteParentDir) throws IOException {
         log.info(aMarker, "Listing directory {} ", localParentDir);
         File localDir = new File(localParentDir);
-        File[] subFiles = localDir.isFile()? new File[]{localDir}:localDir.listFiles();
+        File[] subFiles = localDir.isFile() ? new File[]{localDir} : localDir.listFiles();
         if (subFiles != null && subFiles.length > 0) {
             for (File item : subFiles) {
                 String remoteFilePath = remoteDirPath + File.separator + remoteParentDir + File.separator + item.getName();

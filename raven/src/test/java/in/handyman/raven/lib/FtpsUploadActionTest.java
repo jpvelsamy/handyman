@@ -14,9 +14,9 @@ class FtpsUploadActionTest {
         ftpsUploadAction = new FtpsUploadAction(actionExecutionAudit,
                 LambdaEngine.getLogger(actionExecutionAudit),
                 FtpsUpload.builder()
-                        .host("18.117.16.124")
-                        .userName("zftpuser")
-                        .password("Test123!@#")
+                        .host("")
+                        .userName("")
+                        .password("")
                         .port("21")
                         .sessionTimeOut("1200")
                         .sourceFile("/home/manikandan.tm@zucisystems.com/Workspace/ftp_check/upload/source")

@@ -38,5 +38,7 @@ public class FtpsUpload implements IActionContext {
 
   private String destDir;
 
+  private String uploadCheck;
+
   private Boolean condition = true;
 }
