@@ -4,6 +4,7 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.ThresholdCheck;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -33,24 +34,21 @@ public class ThresholdCheckAction implements IActionExecution {
     public void execute() throws Exception {
         String name = thresholdCheck.getName() + "_response";
         JSONObject inputObject = new JSONObject(thresholdCheck.getInput());
-        JSONObject responseObject = new JSONObject();
-//        List<String> thresholdResponse = new ArrayList<>();
+        JSONArray filteredEntity = new JSONArray();
         inputObject.keys().forEachRemaining(entry -> {
             final double predictedValue = Double.parseDouble(String.valueOf(inputObject.get(entry)));
             final double thresholdValue = Double.parseDouble(thresholdCheck.getThreshold());
             if (predictedValue >= thresholdValue) {
-                responseObject.put(entry, inputObject.get(entry));
-//                thresholdResponse.add(entry);
+                JSONObject responseObject = new JSONObject();
+                responseObject.put("key_name", entry);
+                responseObject.put("score", inputObject.get(entry));
+                filteredEntity.put(responseObject);
+
             }
         });
-//        JSONObject response = new JSONObject();
-        if (responseObject.isEmpty()) action.getContext().put(name, "");
-//            response = null;
-        else action.getContext().put(name, String.valueOf(responseObject));
-
-
-        log.info(aMarker, "The Successful Response for {} --> {}", name, responseObject);
-
+        if (filteredEntity.isEmpty()) action.getContext().put(name, "");
+        else action.getContext().put(name, String.valueOf(filteredEntity));
+        log.info(aMarker, "The Successful Response for {} --> {}", name, filteredEntity);
     }
 
     @Override
