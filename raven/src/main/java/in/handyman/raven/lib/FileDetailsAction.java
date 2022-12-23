@@ -74,7 +74,7 @@ public class FileDetailsAction implements IActionExecution {
             FileInfo fileInfo = FileInfo.builder()
                     .file_ref_id(file.getName().toUpperCase() + " - " + (int) (900000 * random() + 100000))
                     .file_path(file.getPath())
-                    .file_name(file.getName())
+                    .file_name(FilenameUtils.removeExtension(file.getName()))
                     .file_checksum(sha1Hex)
                     .file_size(fileSize)
                     .file_extension(FilenameUtils.getExtension(file.getName()))
