@@ -3,13 +3,12 @@ package in.handyman.raven.lib.adapters;
 import in.handyman.raven.lib.interfaces.AdapterInterface;
 import org.apache.commons.lang3.StringUtils;
 
-public class IdAdapter implements AdapterInterface {
+public class NumericAdapter implements AdapterInterface {
     @Override
-    public boolean getValidationModel(String memberId, String requiredFeature) throws Exception {
-        memberId = validateSpecialCharacters(requiredFeature, memberId);
-        boolean isAlpha = StringUtils.isAlpha(memberId);
-        boolean isAlphaNumeric = StringUtils.isAlphanumeric(memberId);
-        return isAlphaNumeric && !isAlpha;
+    public boolean getValidationModel(String input, String allowedCharacters) throws Exception {
+        input = validateSpecialCharacters(allowedCharacters, input);
+        boolean isNumeric = StringUtils.isNumeric(input);
+        return isNumeric;
     }
 
     String validateSpecialCharacters(String specialCharacters, String input) {

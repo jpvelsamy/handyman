@@ -94,7 +94,14 @@ action:
     |evalPatientName
     |evalMemberId
     |evalDateOfBirth
-    |thresholdCheck);
+    |thresholdCheck
+    |wordcount
+    |charactercount
+    |datevalidator
+    |alphavalidator
+    |alphanumericvalidator
+    |numericvalidator
+    |nervalidator);
 
 
 multitude:
@@ -511,6 +518,55 @@ fileDetails:
         'inboundId' inbound_id=STRING
         'on-resource-conn' resourceConn=STRING
         'using' '{' '}' ('on-condition' condition=expression)* ;
+
+wordcount:
+        'wordcount' 'as' name=STRING
+        'word-threshold' thresholdValue=STRING
+        'input-value' inputValue=STRING
+        'word-limit' countLimit=STRING
+        'using' '{'  '}' ('on-condition' condition=expression)* ;
+
+charactercount:
+        'charactercount' 'as' name=STRING
+        'char-threshold' thresholdValue=STRING
+        'input-value' inputValue=STRING
+        'char-limit' countLimit=STRING
+        'using' '{'  '}' ('on-condition' condition=expression)* ;
+
+datevalidator:
+        'datevalidator' 'as' name=STRING
+        'validator-threshold' thresholdValue=STRING
+        'input-value' inputValue=STRING
+        'allowed-date-formats' allowedDateFormats=STRING
+        'comparable-date' comparableDate=STRING
+        'using' '{'  '}' ('on-condition' condition=expression)* ;
+
+alphavalidator:
+        'alphavalidator' 'as' name=STRING
+        'validator-threshold' thresholdValue=STRING
+        'input-value' inputValue=STRING
+        'allowed-special-characters' allowedSpecialCharacters=STRING
+        'using' '{'  '}' ('on-condition' condition=expression)* ;
+
+alphanumericvalidator:
+        'alphanumericvalidator' 'as' name=STRING
+        'validator-threshold' thresholdValue=STRING
+        'input-value' inputValue=STRING
+        'allowed-special-characters' allowedSpecialCharacters=STRING
+        'using' '{'  '}' ('on-condition' condition=expression)* ;
+
+numericvalidator:
+        'numericvalidator' 'as' name=STRING
+        'validator-threshold' thresholdValue=STRING
+        'input-value' inputValue=STRING
+        'allowed-special-characters' allowedSpecialCharacters=STRING
+        'using' '{'  '}' ('on-condition' condition=expression)* ;
+
+nervalidator:
+        'nervalidator' 'as' name=STRING
+        'ner-threshold' nerThreshold=STRING
+        'input-value' inputValue=STRING
+        'using' '{'  '}' ('on-condition' condition=expression)* ;
 
 urgencyTriage:
     'urgencyTriage' 'as' name=STRING

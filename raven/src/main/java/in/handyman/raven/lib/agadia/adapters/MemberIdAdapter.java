@@ -1,7 +1,7 @@
 package in.handyman.raven.lib.agadia.adapters;
 
 import in.handyman.raven.lib.adapters.CharacterCountAdapter;
-import in.handyman.raven.lib.adapters.IdAdapter;
+import in.handyman.raven.lib.adapters.AlphaAdapter;
 import in.handyman.raven.lib.adapters.WordCountAdapter;
 import in.handyman.raven.lib.interfaces.AdapterInterface;
 import in.handyman.raven.lib.interfaces.ScalarEvaluationInterface;
@@ -10,7 +10,7 @@ import in.handyman.raven.lib.model.AgadiaAdapter;
 public class MemberIdAdapter implements ScalarEvaluationInterface {
     AdapterInterface wordCountAdapter = new WordCountAdapter();
     AdapterInterface charCountAdapter = new CharacterCountAdapter();
-    AdapterInterface idValidatorAdapter = new IdAdapter();
+    AdapterInterface idValidatorAdapter = new AlphaAdapter();
 
     @Override
     public int getConfidenceScore(String memberId, AgadiaAdapter adapter) throws Exception {
