@@ -53,16 +53,13 @@ import java.util.stream.Collectors;
 )
 public class TqaFilterAction implements IActionExecution {
     public static final String INPUT_FILE_PATH = "input_file_path";
-    private final ActionExecutionAudit action;
-
-    private final Logger log;
-
-    private final TqaFilter tqaFilter;
-
-    private final Marker aMarker;
-    private final ObjectMapper mapper = new ObjectMapper();
     private static final MediaType MediaTypeJSON = MediaType
             .parse("application/json; charset=utf-8");
+    private final ActionExecutionAudit action;
+    private final Logger log;
+    private final TqaFilter tqaFilter;
+    private final Marker aMarker;
+    private final ObjectMapper mapper = new ObjectMapper();
 
 
     public TqaFilterAction(final ActionExecutionAudit action, final Logger log,
@@ -301,8 +298,8 @@ public class TqaFilterAction implements IActionExecution {
                     });
                     final List<FalsePositiveFilterResult> falsePositiveFilterResults = truthExtractionResponse.getQaPairs().stream()
                             .map(qaPair -> FalsePositiveFilterResult.builder()
-                                   // .question(qaPair.getQuestionParts()
-                                   //         .stream().map(Part::getContent).collect(Collectors.joining(" ")))
+                                    // .question(qaPair.getQuestionParts()
+                                    //         .stream().map(Part::getContent).collect(Collectors.joining(" ")))
                                     .question(qaPair.getQuestion())
                                     .answerCount(qaPair.getAnswerParts().size())
                                     .inputFilePath(inputFilePath)

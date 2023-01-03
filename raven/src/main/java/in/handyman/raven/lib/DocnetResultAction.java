@@ -1,7 +1,5 @@
 package in.handyman.raven.lib;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
@@ -13,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.commons.beanutils.converters.StringArrayConverter;
 import org.jdbi.v3.core.Jdbi;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,7 +18,11 @@ import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -118,7 +119,7 @@ public class DocnetResultAction implements IActionExecution {
 
         jdbi.useTransaction(handle -> {
             final List<String> formattedQuery = CommonQueryUtil
-                    .getFormattedQuery(docnetResult.getWeightageSqlQuery() + " WHERE si.sor_key= '" + docnetResultTable.getSorItemName()+"'");
+                    .getFormattedQuery(docnetResult.getWeightageSqlQuery() + " WHERE si.sor_key= '" + docnetResultTable.getSorItemName() + "'");
             formattedQuery.forEach(sqlToExecute -> {
                 sorConfigList.addAll(handle.createQuery(sqlToExecute).mapToMap().stream().collect(Collectors.toList()));
             });
@@ -128,7 +129,7 @@ public class DocnetResultAction implements IActionExecution {
             sorConfigList.forEach(jsonData -> {
                 Integer wordCount = Optional.ofNullable(jsonData.get("word_count")).map(String::valueOf).map(Integer::parseInt).orElse(null);
                 Integer characterCount = Optional.ofNullable(jsonData.get("character_count")).map(String::valueOf).map(Integer::parseInt).orElse(null);
-                String datatypePattern =  Optional.ofNullable(jsonData.get("datatype_list")).map(String::valueOf).orElse(null);
+                String datatypePattern = Optional.ofNullable(jsonData.get("datatype_list")).map(String::valueOf).orElse(null);
                 Integer threshold = Optional.ofNullable(jsonData.get("threshold")).map(String::valueOf).map(Integer::parseInt).orElse(null);
 
                 TCSConfiguration config = TCSConfiguration.builder()

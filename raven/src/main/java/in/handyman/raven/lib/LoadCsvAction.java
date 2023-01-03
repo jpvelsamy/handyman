@@ -1,6 +1,5 @@
 package in.handyman.raven.lib;
 
-import com.opencsv.CSVReader;
 import com.zaxxer.hikari.HikariDataSource;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
@@ -13,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
-import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -21,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.UnknownFormatConversionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -48,45 +45,45 @@ public class LoadCsvAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-        var csvFile = loadCsv.getSource();
-        var sqlList = loadCsv.getValue().replace("\"", "");
-        final String fileName;
-        if (csvFile.contains("\\")) {
-            var counter = csvFile.length() - csvFile.replace("\\\\", "").length();
-            var file = csvFile.split("\\\\", counter + 1);
-            fileName = file[counter];
-        } else {
-            var counter = csvFile.length() - csvFile.replace("\\/", "").length();
-            var file = csvFile.split("/", counter + 1);
-            fileName = file[counter];
-        }
-        log.info(aMarker, "id#{}, name#{}, from#{}, sqlList#{}", actionExecutionAudit.getActionId(), loadCsv.getName(), loadCsv.getSource(), sqlList);
-        final String csvExtension = ".csv";
-        final String tsvExtension = ".tsv";
-        try (final CSVReader csvReader = new CSVReader(new FileReader(csvFile))) {
-            final Iterator<String[]> iterator = csvReader.iterator();
-            final String[] firstLine = iterator.next();
-            final String ct = convertArrayToInsertLine(firstLine, "`VARCHAR(344),`");
-            if (fileName.contains(csvExtension)) {
-                var column = convertArrayToInsertLine(firstLine, "`,`");
-                perform(fileName,
-                        csvExtension,
-                        iterator, column, ct);
-            } else if (fileName.contains(tsvExtension)) {
-
-                final String atos = String.join("", firstLine).replace("\t", ",");
-                var tsvFirstLine = atos.split(",");
-                var column = convertArrayToInsertLine(tsvFirstLine, "`,`");
-
-                perform(fileName,
-                        tsvExtension,
-                        iterator, column, ct);
-            } else {
-                log.info("File format is invalid");
-                throw new UnknownFormatConversionException("File format is invalid");
-            }
-        }
-
+//        var csvFile = loadCsv.getSource();
+//        var sqlList = loadCsv.getValue().replace("\"", "");
+//        final String fileName;
+//        if (csvFile.contains("\\")) {
+//            var counter = csvFile.length() - csvFile.replace("\\\\", "").length();
+//            var file = csvFile.split("\\\\", counter + 1);
+//            fileName = file[counter];
+//        } else {
+//            var counter = csvFile.length() - csvFile.replace("\\/", "").length();
+//            var file = csvFile.split("/", counter + 1);
+//            fileName = file[counter];
+//        }
+//        log.info(aMarker, "id#{}, name#{}, from#{}, sqlList#{}", actionExecutionAudit.getActionId(), loadCsv.getName(), loadCsv.getSource(), sqlList);
+//        final String csvExtension = ".csv";
+//        final String tsvExtension = ".tsv";
+//        try (final CSVReader csvReader = new CSVReader(new FileReader(csvFile))) {
+//            final Iterator<String[]> iterator = csvReader.iterator();
+//            final String[] firstLine = iterator.next();
+//            final String ct = convertArrayToInsertLine(firstLine, "`VARCHAR(344),`");
+//            if (fileName.contains(csvExtension)) {
+//                var column = convertArrayToInsertLine(firstLine, "`,`");
+//                perform(fileName,
+//                        csvExtension,
+//                        iterator, column, ct);
+//            } else if (fileName.contains(tsvExtension)) {
+//
+//                final String atos = String.join("", firstLine).replace("\t", ",");
+//                var tsvFirstLine = atos.split(",");
+//                var column = convertArrayToInsertLine(tsvFirstLine, "`,`");
+//
+//                perform(fileName,
+//                        tsvExtension,
+//                        iterator, column, ct);
+//            } else {
+//                log.info("File format is invalid");
+//                throw new UnknownFormatConversionException("File format is invalid");
+//            }
+//        }
+//
 
     }
 

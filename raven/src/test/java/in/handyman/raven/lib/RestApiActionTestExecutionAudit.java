@@ -76,6 +76,7 @@ class RestApiActionTestExecutionAudit {
         log.info(request.toString());
         LambdaEngine.start(request);
     }
+
     @Test
     public void testTruthAttributionSummoning() {
         LContext request = LContext.builder()
@@ -85,7 +86,6 @@ class RestApiActionTestExecutionAudit {
         log.info(request.toString());
         LambdaEngine.start(request);
     }
-
 
 
     @Test

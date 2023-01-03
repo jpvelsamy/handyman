@@ -2,8 +2,6 @@ package in.handyman.raven.lib.model;
 
 import in.handyman.raven.lambda.action.ActionContext;
 import in.handyman.raven.lambda.action.IActionContext;
-import java.lang.Boolean;
-import java.lang.String;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,16 +17,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "DocnetResult"
+        actionName = "DocnetResult"
 )
 public class DocnetResult implements IActionContext {
-  private String name;
+    private String name;
 
-  private String resourceConn;
+    private String resourceConn;
 
-  private String coproResultSqlQuery;
+    private String coproResultSqlQuery;
 
-  private String weightageSqlQuery;
+    private String weightageSqlQuery;
 
-  private Boolean condition = true;
+    private Boolean condition = true;
 }

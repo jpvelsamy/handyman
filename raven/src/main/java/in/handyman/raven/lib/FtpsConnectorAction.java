@@ -89,9 +89,9 @@ public class FtpsConnectorAction implements IActionExecution {
             log.info(aMarker, "Remote system is {} ", ftpClient.getSystemType());
             String workingDirectory = ftpClient.printWorkingDirectory();
             log.info(aMarker, "Current directory is {}", workingDirectory);
-            if("upload".equalsIgnoreCase(ftpaction)){
+            if ("upload".equalsIgnoreCase(ftpaction)) {
                 uploadDirectory(ftpClient, destDir, remoteFile, "");
-            }else {
+            } else {
                 ftpDownloadDirectory(ftpClient, remoteFile, "", destDir);
                 String name = "ftps-file-download-connector-response";
                 action.getContext().put(name, mapper.readTree(destDir).toString());
