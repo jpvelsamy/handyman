@@ -27,7 +27,6 @@ import java.util.concurrent.TimeUnit;
         actionName = "UploadAsset"
 )
 public class UploadAssetAction implements IActionExecution {
-    private static final MediaType MediaTypeJSON = MediaType.parse("application/json; charset=utf-8");
     private final ActionExecutionAudit action;
     private final Logger log;
     private final UploadAsset uploadAsset;
@@ -54,7 +53,7 @@ public class UploadAssetAction implements IActionExecution {
 
         File file = new File(uploadAsset.getFilePath());
         RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                .addFormDataPart("multipartFile", file.getName(), RequestBody.create(MEDIA_TYPE_PNG, file))
+                .addFormDataPart("multipartFile", file.getName(), RequestBody.create(file, MEDIA_TYPE_PNG))
                 .addFormDataPart("templateId", uploadAsset.getTemplateId())
                 .build();
 
@@ -64,6 +63,7 @@ public class UploadAssetAction implements IActionExecution {
         log.info(aMarker, "The request got it successfully to upload Asset {}",
                 uploadAsset.getFilePath());
         try (Response response = httpclient.newCall(request).execute()) {
+            assert response.body() != null;
             String responseBody = response.body().string();
             JsonNode jsonResult = mapper.readTree(responseBody);
             String name = uploadAsset.getName();
