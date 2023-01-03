@@ -12,11 +12,11 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
 class SharePointTest {
-
+    // urgency trige
     @Test
     void execute() {
         LambdaEngine.start(LContext.builder()
-                .pipelineName("patient.attribution.producer")
+                .pipelineName("root.test")
                 .processLoadType(HRequestResolver.LoadType.FILE.name())
                 .build());
     }

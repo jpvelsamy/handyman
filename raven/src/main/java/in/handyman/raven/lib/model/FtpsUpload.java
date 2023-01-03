@@ -2,6 +2,8 @@ package in.handyman.raven.lib.model;
 
 import in.handyman.raven.lambda.action.ActionContext;
 import in.handyman.raven.lambda.action.IActionContext;
+import java.lang.Boolean;
+import java.lang.String;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,26 +19,26 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-        actionName = "FtpsConnector"
+    actionName = "FtpsUpload"
 )
-public class FtpsConnector implements IActionContext {
-    private String name;
+public class FtpsUpload implements IActionContext {
+  private String name;
 
-    private String host;
+  private String host;
 
-    private String port;
+  private String port;
 
-    private String userName;
+  private String userName;
 
-    private String password;
+  private String password;
 
-    private String sessionTimeOut;
+  private String sessionTimeOut;
 
-    private String sourceFile;
+  private String sourceFile;
 
-    private String fileaction;
+  private String destDir;
 
-    private String destDir;
+  private String uploadCheck;
 
-    private Boolean condition = true;
+  private Boolean condition = true;
 }

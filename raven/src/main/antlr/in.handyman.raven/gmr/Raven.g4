@@ -72,7 +72,8 @@ action:
     |createZip
     |extractZip
     |sorGroupDetails
-    |ftpsConnector
+    |ftpsUpload
+    |ftpsDownload
     |sftpConnector
     |zeroShotClassifier
     |loadExtractedData
@@ -83,8 +84,24 @@ action:
     |sorFilter
     |tqaFilter
     |jsonToFile
+    |textFilter
+    |entityFilter
+    |dirPath
+    |fileDetails
+    |urgencyTriage
     |docnetResult
-    |setContextValue);
+    |setContextValue
+    |evalPatientName
+    |evalMemberId
+    |evalDateOfBirth
+    |thresholdCheck
+    |wordcount
+    |charactercount
+    |datevalidator
+    |alphavalidator
+    |alphanumericvalidator
+    |numericvalidator
+    |nervalidator);
 
 
 multitude:
@@ -217,7 +234,6 @@ deleteFileDirectory:
 transferFileDirectory:
 	'transferFileDirectory' 'as' name= STRING 'from' source=STRING 'to' to=STRING 'operation' operation=STRING 'using'
     '{'
-		value=STRING
 	'}' ('on-condition' condition=expression)*;
 
 producerConsumerModel:
@@ -297,10 +313,18 @@ uploadAsset:
 fileMerger:
     'fileMerger' 'as' name=STRING  'in' outputDir=STRING 'using'  '{' requestBody=STRING '}' ('on-condition' condition=expression)* ;
 
-ftpsConnector:
-       'ftps' 'as' name=STRING 'with-remote-host' host=STRING 'port' port=STRING 'user-name' userName=STRING
+ftpsUpload:
+       'ftps_upload' 'as' name=STRING 'with-remote-host' host=STRING 'port' port=STRING 'user-name' userName=STRING
+       'password' password=STRING 'session-timeout' sessionTimeOut=STRING 'source-file-to-upload' sourceFile=STRING
+       'in-destination-to-save' destDir=STRING
+       'upload-check' uploadCheck=STRING
+       'using' '{'     '}' ('on-condition' condition=expression)* ;
+
+ftpsDownload:
+       'ftps_download' 'as' name=STRING 'with-remote-host' host=STRING 'port' port=STRING 'user-name' userName=STRING
        'password' password=STRING 'session-timeout' sessionTimeOut=STRING 'source-file-to-download' sourceFile=STRING
-       'in-destination-to-save' destDir=STRING 'fileaction' fileaction=STRING
+       'in-destination-to-save' destDir=STRING
+       'download-check' uploadCheck=STRING
        'using' '{'     '}' ('on-condition' condition=expression)* ;
 
 sftpConnector:
@@ -397,6 +421,28 @@ tqaFilter:
     '{'  inputFilePathSqlQuery=STRING  '}'
      ('on-condition' condition=expression)* ('fielding' threadCount=NON_ZERO_DIGIT)* ('with-fetch-batch-size' fetchBatchSize=NON_ZERO_DIGIT)* ('with-write-batch-size' writeBatchSize=NON_ZERO_DIGIT)*  ;
 
+textFilter:
+      'text-filtering' 'as' name=STRING
+      'key-filtering'  filteringKeys =STRING
+      'for-input-file'
+      '{' inputFilePath=STRING  '}' ('on-condition' condition=expression)* ;
+
+
+entityFilter:
+      'text-filtering' 'as' name=STRING 'with-doc-id' docId=STRING
+      'for-paper' paperNo=STRING 'group-id' groupId = STRING
+      'on-resource-conn' resourceConn=STRING
+      'entity-key-filtering'  entityKeysToFilter =STRING
+      'with-mandatory-key-filtering' mandatoryKeysToFilter = STRING
+      'for-input-file'
+      '{' inputFilePath=STRING  '}' ('on-condition' condition=expression)* ;
+
+thresholdCheck:
+       'check-threshold' 'as' name=STRING
+       'threshold-value'  threshold=STRING
+       '{' input=STRING '}'
+       ('on-condition' condition=expression)* ;
+
 jsonToFile:
 	'jsonToFile' 'as' name= STRING
 	'export-into' filePath=STRING
@@ -421,6 +467,125 @@ setContextValue:
     'using'
     '{'
     '}' ('on-condition' condition=expression)*;
+
+evalPatientName:
+    'evalPatientName' 'as' name=STRING
+    'patient-name' patientName=STRING
+    'word-count-limit' wordCountLimit=STRING
+    'char-count-limit' charCountLimit=STRING
+    'ner-api' nerCoproApi=STRING
+    'word-count-threshold' wordCountThreshold=STRING
+    'char-count-threshold' charCountThreshold=STRING
+    'ner-api-threshold' nerApiThreshold=STRING
+    'using'
+    '{' '}'('on-condition' condition=expression)*;
+
+evalMemberId:
+    'evalMemberId' 'as' name=STRING
+    'member-id' memberID=STRING
+    'word-count-limit' wordCountLimit=STRING
+    'char-count-limit' charCountLimit=STRING
+    'special-character' specialCharacter=STRING
+    'word-count-threshold' wordCountThreshold=STRING
+    'char-count-threshold' charCountThreshold=STRING
+    'validator-threshold' validatorThreshold=STRING
+    'using'
+    '{'  '}'('on-condition' condition=expression)*;
+
+evalDateOfBirth:
+    'evalDateOfBirth' 'as' name=STRING
+    'date-of-birth' dob=STRING
+    'word-count-limit' wordCountLimit=STRING
+    'char-count-limit' charCountLimit=STRING
+    'word-count-threshold' wordCountThreshold=STRING
+    'char-count-threshold' charCountThreshold=STRING
+    'comparable-year' comparableYear=STRING
+    'date-formats' dateFormats=STRING
+    'validator-threshold' validatorThreshold=STRING
+    'using'
+    '{'  '}'('on-condition' condition=expression)*;
+
+
+dirPath:
+        'dirPath' 'as' name=STRING
+        'on-resource-conn' resourceConn=STRING
+        'using' '{' filePath=STRING '}' ('on-condition' condition=expression)* ;
+
+fileDetails:
+        'fileDetails' 'as' name=STRING
+        'dirpath' dirpath=STRING
+        'groupId' group_id=STRING
+        'inboundId' inbound_id=STRING
+        'on-resource-conn' resourceConn=STRING
+        'using' '{' '}' ('on-condition' condition=expression)* ;
+
+wordcount:
+        'wordcount' 'as' name=STRING
+        'word-threshold' thresholdValue=STRING
+        'input-value' inputValue=STRING
+        'word-limit' countLimit=STRING
+        'using' '{'  '}' ('on-condition' condition=expression)* ;
+
+charactercount:
+        'charactercount' 'as' name=STRING
+        'char-threshold' thresholdValue=STRING
+        'input-value' inputValue=STRING
+        'char-limit' countLimit=STRING
+        'using' '{'  '}' ('on-condition' condition=expression)* ;
+
+datevalidator:
+        'datevalidator' 'as' name=STRING
+        'validator-threshold' thresholdValue=STRING
+        'input-value' inputValue=STRING
+        'allowed-date-formats' allowedDateFormats=STRING
+        'comparable-date' comparableDate=STRING
+        'using' '{'  '}' ('on-condition' condition=expression)* ;
+
+alphavalidator:
+        'alphavalidator' 'as' name=STRING
+        'validator-threshold' thresholdValue=STRING
+        'input-value' inputValue=STRING
+        'allowed-special-characters' allowedSpecialCharacters=STRING
+        'using' '{'  '}' ('on-condition' condition=expression)* ;
+
+alphanumericvalidator:
+        'alphanumericvalidator' 'as' name=STRING
+        'validator-threshold' thresholdValue=STRING
+        'input-value' inputValue=STRING
+        'allowed-special-characters' allowedSpecialCharacters=STRING
+        'using' '{'  '}' ('on-condition' condition=expression)* ;
+
+numericvalidator:
+        'numericvalidator' 'as' name=STRING
+        'validator-threshold' thresholdValue=STRING
+        'input-value' inputValue=STRING
+        'allowed-special-characters' allowedSpecialCharacters=STRING
+        'using' '{'  '}' ('on-condition' condition=expression)* ;
+
+nervalidator:
+        'nervalidator' 'as' name=STRING
+        'ner-threshold' nerThreshold=STRING
+        'input-value' inputValue=STRING
+        'using' '{'  '}' ('on-condition' condition=expression)* ;
+
+urgencyTriage:
+    'urgencyTriage' 'as' name=STRING
+    'input-file-path' inputFilePath=STRING
+    'binary-classifier-model-file-path' binaryClassifierModelFilePath=STRING
+    'multi-classifier-model-file-path' multiClassifierModelFilePath=STRING
+    'checkbox-classifier-model-file-path' checkboxClassifierModelFilePath=STRING
+    'synonyms' synonyms=STRING
+    'binary-classifier-labels' binaryClassifierLabels=STRING
+    'multi-classifier-labels' multiClassifierLabels=STRING
+    'checkbox-classifier-labels' checkboxClassifierLabels=STRING
+    'output-dir' outputDir=STRING
+    'binary-image-width' binaryImageWidth=STRING
+    'binary-image-height' binaryImageHeight=STRING
+    'multi-image-width' multiImageWidth=STRING
+    'multi-image-height' multiImageHeight=STRING
+    'checkbox-image-width' checkboxImageWidth=STRING
+    'checkbox-image-height' checkboxImageHeight=STRING
+    'using'  '{' '}' ('on-condition' condition=expression)* ;
 
 
 resource : STRING;

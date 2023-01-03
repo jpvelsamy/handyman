@@ -66,7 +66,7 @@ public class DocnetResultAction implements IActionExecution {
                 results.forEach(jsonData -> {
                     final String groupId = Optional.ofNullable(jsonData.get("group_id")).map(String::valueOf).orElse(null);
                     final Integer paperNo = Optional.ofNullable(jsonData.get("paper_no")).map(String::valueOf).map(Integer::parseInt).orElse(null);
-                    final String fileRefId = Optional.ofNullable(jsonData.get("intics_reference_id")).map(String::valueOf).orElse(null);
+                    final String fileRefId = Optional.ofNullable(jsonData.get("file_ref_id")).map(String::valueOf).orElse(null);
                     final String sorAttributionType = Optional.ofNullable(jsonData.get("sor_item_name")).map(String::valueOf).orElse(null);
                     final String createdUserId = Optional.ofNullable(jsonData.get("created_user_id")).map(String::valueOf).orElse(null);
                     final String tenantId = Optional.ofNullable(jsonData.get("tenant_id")).map(String::valueOf).orElse(null);
@@ -77,14 +77,14 @@ public class DocnetResultAction implements IActionExecution {
                     jObj.forEach(resultObject -> {
                         JSONObject obj = (JSONObject) resultObject;
                         JSONArray result = obj.getJSONArray("attributionResult");
+                        System.out.println("Attribution result " + result);
                         for (int i = 0; i < result.length(); i++) {
                             JSONObject object = (JSONObject) result.get(i);
                             final DocnetResultTable docnetResult = DocnetResultTable.builder()
                                     .fileRefId(fileRefId)
                                     .paperNo(paperNo)
                                     .groupId(groupId)
-                                    .triageResultId(12345678)
-                                    .sorId(obj.getInt("sorId"))
+                                    .sorItemId(obj.getInt("sorId"))
                                     .sorItemName(obj.getString("sorKey"))
                                     .answer(object.getString("predictedAttributionValue"))
                                     .question(object.getString("question"))
@@ -146,8 +146,8 @@ public class DocnetResultAction implements IActionExecution {
 
 
         jdbi.useTransaction(handle -> {
-            handle.createUpdate("INSERT INTO truth_attribution.docnet_result (intics_reference_id,paper_no,group_id,triage_result_id,sor_item_id,sor_item_name,question,answer,created_user_id,tenant_id,confidence_score)" +
-                            " select  :fileRefId , :paperNo, :groupId, :triageResultId, :sorId, :sorItemName, :question, :answer, :createdUserId, :tenantId, :confidenceScore;")
+            handle.createUpdate("INSERT INTO macro.docnet_process(file_ref_id,paper_no,group_id,sor_item_id,sor_item_name,question,answer,created_user_id,tenant_id,confidence_score)" +
+                            " select  :fileRefId , :paperNo, :groupId, :sorItemId, :sorItemName, :question, :answer, :createdUserId, :tenantId, :confidenceScore;")
                     .bindBean(docnetResultTable)
                     .execute();
         });
@@ -203,8 +203,7 @@ public class DocnetResultAction implements IActionExecution {
         private String fileRefId;
         private Integer paperNo;
         private String groupId;
-        private Integer triageResultId;
-        private Integer sorId;
+        private Integer sorItemId;
         private String sorItemName;
         private String question;
         private String answer;
