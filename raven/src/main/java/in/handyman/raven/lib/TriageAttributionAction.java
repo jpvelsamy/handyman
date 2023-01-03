@@ -26,18 +26,14 @@ import java.util.concurrent.TimeUnit;
         actionName = "TriageAttribution"
 )
 public class TriageAttributionAction implements IActionExecution {
-    private final ActionExecutionAudit action;
-
-    private final Logger log;
-
-    private final TriageAttribution triageAttribution;
-
-    private final Marker aMarker;
-
-    private final String URI;
-    private final ObjectMapper mapper = new ObjectMapper();
     private static final MediaType MediaTypeJSON = MediaType
             .parse("application/json; charset=utf-8");
+    private final ActionExecutionAudit action;
+    private final Logger log;
+    private final TriageAttribution triageAttribution;
+    private final Marker aMarker;
+    private final String URI;
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public TriageAttributionAction(final ActionExecutionAudit action, final Logger log,
                                    final Object triageAttribution) {

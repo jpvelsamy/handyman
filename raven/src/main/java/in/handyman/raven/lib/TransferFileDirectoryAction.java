@@ -43,15 +43,14 @@ public class TransferFileDirectoryAction implements IActionExecution {
         log.info("Copy file from {} to {}  operation has been started", transferFileDirectory.getSource(), transferFileDirectory.getTo());
         Path sourcePath = Paths.get(transferFileDirectory.getSource());
         Path destinationPath = Paths.get(transferFileDirectory.getTo());
-        if(sourcePath.toFile().isFile()){
-            if(destinationPath.toFile().isFile()) {
+        if (sourcePath.toFile().isFile()) {
+            if (destinationPath.toFile().isFile()) {
                 FileUtils.copyFile(sourcePath.toFile(), destinationPath.toFile());
-            }else{
+            } else {
                 File destFile = new File(destinationPath + "/" + sourcePath.toFile().getName());
                 FileUtils.copyFile(sourcePath.toFile(), destFile);
             }
-        }
-        else if (Files.exists(sourcePath)) {
+        } else if (Files.exists(sourcePath)) {
             Files.copy(sourcePath, destinationPath);
             if (Files.exists(destinationPath)) {
                 Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
