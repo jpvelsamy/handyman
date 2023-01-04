@@ -33,6 +33,8 @@ build/
 .vscode/
 /.jpb/
 
-log/
-*.log
 logs/
+*.log
+
+gen/
+/src/main/antlr/
