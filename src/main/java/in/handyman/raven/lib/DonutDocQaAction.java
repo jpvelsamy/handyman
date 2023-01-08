@@ -97,7 +97,7 @@ public class DonutDocQaAction implements IActionExecution {
         final int size = nodes.size();
         try {
             if (size > 0) {
-                if (parallelism > 1) {
+                if (parallelism > 1 && size > 1) {
                     final List<List<DonutLineItem>> donutLineItemPartitions = Lists.partition(donutLineItems, donutLineItems.size() / parallelism);
                     final CountDownLatch countDownLatch = new CountDownLatch(donutLineItemPartitions.size());
                     final ExecutorService executorService = Executors.newFixedThreadPool(parallelism);
