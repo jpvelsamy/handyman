@@ -73,19 +73,31 @@ public class DonutDocQaAction implements IActionExecution {
     public void execute() throws Exception {
         log.info(aMarker, "<-------Donut Attribution Action for {} has been started------->" + donutDocQa.getName());
         final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(donutDocQa.getResourceConn());
-        final List<DonutLineItem> donutLineItems = new ArrayList<>();
+        final List<DonutQueryResult> donutQueryResults = new ArrayList<>();
         jdbi.useTransaction(handle -> {
             final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(donutDocQa.getQuestionSql());
-            formattedQuery.forEach(sqlToExecute -> donutLineItems.addAll(handle.createQuery(sqlToExecute)
-                    .mapToBean(DonutLineItem.class)
+            formattedQuery.forEach(sqlToExecute -> donutQueryResults.addAll(handle.createQuery(sqlToExecute)
+                    .mapToBean(DonutQueryResult.class)
                     .stream().collect(Collectors.toList())));
         });
 
         // Create DDL
 
-        jdbi.useTransaction(handle -> handle.execute("create table if not exists macro.donut_docqa_action ( id bigserial not null, question text, predicted_attribution_value text, action_id bigint, root_pipeline_id bigint, created_date timestamp not null default now() );"));
+        jdbi.useTransaction(handle -> handle.execute("create table if not exists macro.donut_docqa_action ( id bigserial not null, file_path text,question text, predicted_attribution_value text, action_id bigint, root_pipeline_id bigint, created_date timestamp not null default now() );"));
+
+        final List<DonutLineItem> donutLineItems = new ArrayList<>();
+
+        donutQueryResults.stream().collect(Collectors.groupingBy(DonutQueryResult::getFilePath))
+                .forEach((s, donutQueryResults1) -> donutLineItems.add(DonutLineItem.builder()
+                        .filePath(s).questions(donutQueryResults1.stream().map(DonutQueryResult::getQuestion).collect(Collectors.toList()))
+                        .build()));
+
+        doProcess(donutLineItems);
 
 
+    }
+
+    private void doProcess(final List<DonutLineItem> donutLineItems) {
         final int parallelism;
         if (donutDocQa.getForkBatchSize() != null) {
             parallelism = Integer.parseInt(donutDocQa.getForkBatchSize());
@@ -97,8 +109,9 @@ public class DonutDocQaAction implements IActionExecution {
         final int size = nodes.size();
         try {
             if (size > 0) {
-                if (parallelism > 1 && size > 1) {
-                    final List<List<DonutLineItem>> donutLineItemPartitions = Lists.partition(donutLineItems, donutLineItems.size() / parallelism);
+                final int batchSize = donutLineItems.size() / parallelism;
+                if (parallelism > 1 && size > 1 && batchSize > 0) {
+                    final List<List<DonutLineItem>> donutLineItemPartitions = Lists.partition(donutLineItems, batchSize);
                     final CountDownLatch countDownLatch = new CountDownLatch(donutLineItemPartitions.size());
                     final ExecutorService executorService = Executors.newFixedThreadPool(parallelism);
                     donutLineItemPartitions.forEach(items -> executorService.submit(() -> {
@@ -122,31 +135,37 @@ public class DonutDocQaAction implements IActionExecution {
             log.error(aMarker, "The Failure Response {} --> {}", donutDocQa.getResponseAs(), e.getMessage(), e);
             action.getContext().put(donutDocQa.getResponseAs().concat(".error"), "true");
         }
-
-
     }
 
     private void computeProcess(final int nodeSize, final List<DonutLineItem> donutLineItems) {
         final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(donutDocQa.getResourceConn());
 
-        final List<String> questions = donutLineItems.stream().map(DonutLineItem::getQuestion).collect(Collectors.toList());
-        final String node = nodes.get(counter.incrementAndGet() % nodeSize);
+        donutLineItems.forEach(donutLineItem -> {
 
-        log.info(aMarker, "preparing {} for rest api call", questions.size());
-        final List<DonutLineItem> lineItems = new DonutApiCaller(node).compute(donutDocQa.getInputFilePath(), donutDocQa.getOutputDir(), questions);
-        log.info(aMarker, "completed {}", lineItems.size());
+            final List<String> questions = donutLineItem.getQuestions();
+            final String node = nodes.get(counter.incrementAndGet() % nodeSize);
 
-        jdbi.useTransaction(handle -> {
-            final PreparedBatch batch = handle.prepareBatch("INSERT INTO macro.donut_docqa_action (question, predicted_attribution_value, action_id, root_pipeline_id) VALUES(:question,:predictedAttributionValue, " + action.getActionId() + ", " + action.getRootPipelineId() + ");");
-            Lists.partition(lineItems, 100).forEach(donutLineItems2 -> {
-                log.info(aMarker, "inserting into donut_docqa_action {}", donutLineItems2.size());
-                donutLineItems2.forEach(donutLineItem -> {
-                    batch.bind("question", donutLineItem.question).bind("predictedAttributionValue", donutLineItem.predictedAttributionValue).add();
+            log.info(aMarker, "preparing {} for rest api call", questions.size());
+            final List<DonutResultLineItem> lineItems = new DonutApiCaller(node).compute(donutLineItem.getFilePath(), donutDocQa.getOutputDir(), questions);
+            log.info(aMarker, "completed {}", lineItems.size());
+
+            jdbi.useTransaction(handle -> {
+                final PreparedBatch batch = handle.prepareBatch("INSERT INTO macro.donut_docqa_action (file_path,question, predicted_attribution_value, action_id, root_pipeline_id) VALUES(:filePath,:question,:predictedAttributionValue, " + action.getActionId() + ", " + action.getRootPipelineId() + ");");
+                Lists.partition(lineItems, 100).forEach(resultLineItems -> {
+                    log.info(aMarker, "inserting into donut_docqa_action {}", resultLineItems.size());
+                    resultLineItems.forEach(resultLineItem -> {
+                        batch.bind("filePath", donutLineItem.getFilePath())
+                                .bind("question", resultLineItem.question)
+                                .bind("predictedAttributionValue", resultLineItem.predictedAttributionValue)
+                                .add();
+                    });
+                    int[] counts = batch.execute();
+                    log.info(aMarker, " persisted {} in donut_docqa_action", counts);
                 });
-                int[] counts = batch.execute();
-                log.info(aMarker, " persisted {} in donut_docqa_action", counts);
             });
+
         });
+
     }
 
     @Override
@@ -161,8 +180,31 @@ public class DonutDocQaAction implements IActionExecution {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class DonutLineItem {
 
-        private String predictedAttributionValue;
+        private String filePath;
+        private List<String> questions;
+
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    @Builder
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class DonutQueryResult {
+
+        private String filePath;
         private String question;
+
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    @Builder
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class DonutResultLineItem {
+        private String question;
+        private String predictedAttributionValue;
 
     }
 
@@ -180,7 +222,7 @@ public class DonutDocQaAction implements IActionExecution {
             this.node = node;
         }
 
-        protected List<DonutLineItem> compute(final String inputPath, final String outputDir, final List<String> questions) {
+        protected List<DonutResultLineItem> compute(final String inputPath, final String outputDir, final List<String> questions) {
             final ObjectNode objectNode = MAPPER.createObjectNode();
             objectNode.put("inputFilePath", inputPath);
             objectNode.putPOJO("attributes", questions);
@@ -191,7 +233,7 @@ public class DonutDocQaAction implements IActionExecution {
             try (Response response = httpclient.newCall(request).execute()) {
                 String responseBody = Objects.requireNonNull(response.body()).string();
                 if (response.isSuccessful()) {
-                    List<DonutLineItem> donutLineItems = MAPPER.readValue(responseBody, new TypeReference<>() {
+                    List<DonutResultLineItem> donutLineItems = MAPPER.readValue(responseBody, new TypeReference<>() {
                     });
                     log.info("DonutLineItem size {}", donutLineItems.size());
                     return donutLineItems;
