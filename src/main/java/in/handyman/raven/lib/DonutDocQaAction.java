@@ -1,5 +1,6 @@
 package in.handyman.raven.lib;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -94,18 +95,26 @@ public class DonutDocQaAction implements IActionExecution {
 
 
         final int size = nodes.size();
-        if (parallelism > 1) {
-            final CountDownLatch countDownLatch = new CountDownLatch(parallelism);
-            final ExecutorService executorService = Executors.newFixedThreadPool(parallelism);
-            final List<List<DonutLineItem>> donutLineItemPartitions = Lists.partition(donutLineItems, parallelism);
-            donutLineItemPartitions.forEach(donutLineItems1 -> executorService.submit(() -> computeProcess(jdbi, size, donutLineItems1)));
-            countDownLatch.await();
-        } else {
-            computeProcess(jdbi, size, donutLineItems);
+        if (size > 0) {
+            if (parallelism > 1) {
+                final List<List<DonutLineItem>> donutLineItemPartitions = Lists.partition(donutLineItems, donutLineItems.size() / parallelism);
+                final CountDownLatch countDownLatch = new CountDownLatch(donutLineItemPartitions.size());
+                final ExecutorService executorService = Executors.newFixedThreadPool(parallelism);
+                donutLineItemPartitions.forEach(donutLineItems1 -> executorService.submit(() -> {
+                    computeProcess(size, donutLineItems1);
+                    countDownLatch.countDown();
+                }));
+                countDownLatch.await();
+            } else {
+                computeProcess(size, donutLineItems);
+            }
         }
+
     }
 
-    private void computeProcess(final Jdbi jdbi, final int nodeSize, final List<DonutLineItem> donutLineItems) {
+    private void computeProcess(final int nodeSize, final List<DonutLineItem> donutLineItems) {
+        final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(donutDocQa.getResourceConn());
+
         final List<String> questions = donutLineItems.stream().map(DonutLineItem::getQuestion).collect(Collectors.toList());
         final String node = nodes.get(counter.incrementAndGet() % nodeSize);
 
@@ -117,7 +126,9 @@ public class DonutDocQaAction implements IActionExecution {
             final PreparedBatch batch = handle.prepareBatch("INSERT INTO macro.donut_docqa_action (question, predicted_attribution_value, action_id, root_pipeline_id) VALUES(:question,:predictedAttributionValue, " + action.getActionId() + ", " + action.getRootPipelineId() + ");");
             Lists.partition(lineItems, 100).forEach(donutLineItems2 -> {
                 log.info(aMarker, "inserting into donut_docqa_action {}", donutLineItems2.size());
-                donutLineItems2.forEach(batch::bindPojo);
+                donutLineItems2.forEach(donutLineItem -> {
+                    batch.bind("question", donutLineItem.question).bind("predictedAttributionValue", donutLineItem.predictedAttributionValue).add();
+                });
                 int[] counts = batch.execute();
                 log.info(aMarker, " persisted {} in donut_docqa_action", counts);
             });
@@ -133,6 +144,7 @@ public class DonutDocQaAction implements IActionExecution {
     @NoArgsConstructor
     @Data
     @Builder
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class DonutLineItem {
 
         private String predictedAttributionValue;
