@@ -95,20 +95,34 @@ public class DonutDocQaAction implements IActionExecution {
 
 
         final int size = nodes.size();
-        if (size > 0) {
-            if (parallelism > 1) {
-                final List<List<DonutLineItem>> donutLineItemPartitions = Lists.partition(donutLineItems, donutLineItems.size() / parallelism);
-                final CountDownLatch countDownLatch = new CountDownLatch(donutLineItemPartitions.size());
-                final ExecutorService executorService = Executors.newFixedThreadPool(parallelism);
-                donutLineItemPartitions.forEach(donutLineItems1 -> executorService.submit(() -> {
-                    computeProcess(size, donutLineItems1);
-                    countDownLatch.countDown();
-                }));
-                countDownLatch.await();
-            } else {
-                computeProcess(size, donutLineItems);
+        try {
+            if (size > 0) {
+                if (parallelism > 1) {
+                    final List<List<DonutLineItem>> donutLineItemPartitions = Lists.partition(donutLineItems, donutLineItems.size() / parallelism);
+                    final CountDownLatch countDownLatch = new CountDownLatch(donutLineItemPartitions.size());
+                    final ExecutorService executorService = Executors.newFixedThreadPool(parallelism);
+                    donutLineItemPartitions.forEach(items -> executorService.submit(() -> {
+
+                        try {
+                            computeProcess(size, items);
+                        } finally {
+                            countDownLatch.countDown();
+                        }
+
+                    }));
+                    countDownLatch.await();
+
+                } else {
+                    computeProcess(size, donutLineItems);
+                }
+
             }
+            action.getContext().put(donutDocQa.getResponseAs().concat(".error"), "false");
+        } catch (Exception e) {
+            log.error(aMarker, "The Failure Response {} --> {}", donutDocQa.getResponseAs(), e.getMessage(), e);
+            action.getContext().put(donutDocQa.getResponseAs().concat(".error"), "true");
         }
+
 
     }
 

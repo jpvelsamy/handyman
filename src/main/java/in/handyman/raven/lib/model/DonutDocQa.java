@@ -35,4 +35,6 @@ public class DonutDocQa implements IActionContext {
   private String forkBatchSize;
 
     private String outputDir;
+
+    private  String responseAs;
 }
