@@ -83,8 +83,8 @@ public class DonutDocQaAction implements IActionExecution {
 
         // Create DDL
 
-        jdbi.useTransaction(handle -> handle.execute("create table if not exists macro.donut_docqa_action ( id bigserial not null, file_path text,question text, predicted_attribution_value text, action_id bigint, root_pipeline_id bigint, created_date timestamp not null default now() );"));
-        jdbi.useTransaction(handle -> handle.execute("create table if not exists macro.donut_docqa_action_error ( id bigserial not null, file_path text,error_message text,  action_id bigint, root_pipeline_id bigint, created_date timestamp not null default now() );"));
+        jdbi.useTransaction(handle -> handle.execute("create table if not exists macro." + donutDocQa.getResponseAs() + " ( id bigserial not null, file_path text,question text, predicted_attribution_value text, action_id bigint, root_pipeline_id bigint,process_id bigint, created_date timestamp not null default now() );"));
+        jdbi.useTransaction(handle -> handle.execute("create table if not exists macro." + donutDocQa.getResponseAs() + "_error ( id bigserial not null, file_path text,error_message text,  action_id bigint, root_pipeline_id bigint,process_id bigint, created_date timestamp not null default now() );"));
 
         final List<DonutLineItem> donutLineItems = new ArrayList<>();
 
@@ -105,8 +105,6 @@ public class DonutDocQaAction implements IActionExecution {
         } else {
             parallelism = 1;
         }
-
-
         final int size = nodes.size();
         try {
             if (size > 0) {
@@ -153,7 +151,7 @@ public class DonutDocQaAction implements IActionExecution {
                 log.info(aMarker, "completed {}", lineItems.size());
 
                 jdbi.useTransaction(handle -> {
-                    final PreparedBatch batch = handle.prepareBatch("INSERT INTO macro.donut_docqa_action (file_path,question, predicted_attribution_value, action_id, root_pipeline_id) VALUES(:filePath,:question,:predictedAttributionValue, " + action.getActionId() + ", " + action.getRootPipelineId() + ");");
+                    final PreparedBatch batch = handle.prepareBatch("INSERT INTO macro." + donutDocQa.getResponseAs() + " (process_id,file_path,question, predicted_attribution_value, action_id, root_pipeline_id) VALUES(" + action.getPipelineId() + ",:filePath,:question,:predictedAttributionValue, " + action.getActionId() + ", " + action.getRootPipelineId() + ");");
                     Lists.partition(lineItems, 100).forEach(resultLineItems -> {
                         log.info(aMarker, "inserting into donut_docqa_action {}", resultLineItems.size());
                         resultLineItems.forEach(resultLineItem -> {
@@ -168,7 +166,7 @@ public class DonutDocQaAction implements IActionExecution {
                 });
             } catch (Exception e) {
                 jdbi.useTransaction(handle -> {
-                    handle.createUpdate("INSERT INTO macro.donut_docqa_action_error (file_path,error_message, action_id, root_pipeline_id) VALUES(:filePath,:errorMessage, " + action.getActionId() + ", " + action.getRootPipelineId() + ");")
+                    handle.createUpdate("INSERT INTO macro." + donutDocQa.getResponseAs() + "_error (file_path,error_message, action_id, root_pipeline_id,process_id) VALUES(:filePath,:errorMessage, " + action.getActionId() + ", " + action.getRootPipelineId() + "," + action.getPipelineId() + ");")
                             .bind("filePath", filePath)
                             .bind("errorMessage", e.getMessage())
                             .execute();
