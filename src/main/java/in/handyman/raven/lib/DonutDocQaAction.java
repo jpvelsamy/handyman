@@ -84,6 +84,7 @@ public class DonutDocQaAction implements IActionExecution {
         // Create DDL
 
         jdbi.useTransaction(handle -> handle.execute("create table if not exists macro.donut_docqa_action ( id bigserial not null, file_path text,question text, predicted_attribution_value text, action_id bigint, root_pipeline_id bigint, created_date timestamp not null default now() );"));
+        jdbi.useTransaction(handle -> handle.execute("create table if not exists macro.donut_docqa_action_error ( id bigserial not null, file_path text,error_message text,  action_id bigint, root_pipeline_id bigint, created_date timestamp not null default now() );"));
 
         final List<DonutLineItem> donutLineItems = new ArrayList<>();
 
@@ -141,28 +142,38 @@ public class DonutDocQaAction implements IActionExecution {
         final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(donutDocQa.getResourceConn());
 
         donutLineItems.forEach(donutLineItem -> {
+            final String filePath = donutLineItem.getFilePath();
 
-            final List<String> questions = donutLineItem.getQuestions();
-            final String node = nodes.get(counter.incrementAndGet() % nodeSize);
+            try {
+                final List<String> questions = donutLineItem.getQuestions();
+                final String node = nodes.get(counter.incrementAndGet() % nodeSize);
 
-            log.info(aMarker, "preparing {} for rest api call", questions.size());
-            final List<DonutResultLineItem> lineItems = new DonutApiCaller(node).compute(donutLineItem.getFilePath(), donutDocQa.getOutputDir(), questions);
-            log.info(aMarker, "completed {}", lineItems.size());
+                log.info(aMarker, "preparing {} for rest api call", questions.size());
+                final List<DonutResultLineItem> lineItems = new DonutApiCaller(node).compute(filePath, donutDocQa.getOutputDir(), questions);
+                log.info(aMarker, "completed {}", lineItems.size());
 
-            jdbi.useTransaction(handle -> {
-                final PreparedBatch batch = handle.prepareBatch("INSERT INTO macro.donut_docqa_action (file_path,question, predicted_attribution_value, action_id, root_pipeline_id) VALUES(:filePath,:question,:predictedAttributionValue, " + action.getActionId() + ", " + action.getRootPipelineId() + ");");
-                Lists.partition(lineItems, 100).forEach(resultLineItems -> {
-                    log.info(aMarker, "inserting into donut_docqa_action {}", resultLineItems.size());
-                    resultLineItems.forEach(resultLineItem -> {
-                        batch.bind("filePath", donutLineItem.getFilePath())
-                                .bind("question", resultLineItem.question)
-                                .bind("predictedAttributionValue", resultLineItem.predictedAttributionValue)
-                                .add();
+                jdbi.useTransaction(handle -> {
+                    final PreparedBatch batch = handle.prepareBatch("INSERT INTO macro.donut_docqa_action (file_path,question, predicted_attribution_value, action_id, root_pipeline_id) VALUES(:filePath,:question,:predictedAttributionValue, " + action.getActionId() + ", " + action.getRootPipelineId() + ");");
+                    Lists.partition(lineItems, 100).forEach(resultLineItems -> {
+                        log.info(aMarker, "inserting into donut_docqa_action {}", resultLineItems.size());
+                        resultLineItems.forEach(resultLineItem -> {
+                            batch.bind("filePath", filePath)
+                                    .bind("question", resultLineItem.question)
+                                    .bind("predictedAttributionValue", resultLineItem.predictedAttributionValue)
+                                    .add();
+                        });
+                        int[] counts = batch.execute();
+                        log.info(aMarker, " persisted {} in donut_docqa_action", counts);
                     });
-                    int[] counts = batch.execute();
-                    log.info(aMarker, " persisted {} in donut_docqa_action", counts);
                 });
-            });
+            } catch (Exception e) {
+                jdbi.useTransaction(handle -> {
+                    handle.createUpdate("INSERT INTO macro.donut_docqa_action_error (file_path,error_message, action_id, root_pipeline_id) VALUES(:filePath,:errorMessage, " + action.getActionId() + ", " + action.getRootPipelineId() + ");")
+                            .bind("filePath", filePath)
+                            .bind("errorMessage", e.getMessage())
+                            .execute();
+                });
+            }
 
         });
 
