@@ -19,9 +19,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "DonutDocqa"
+    actionName = "DonutDocQa"
 )
-public class DonutDocqa implements IActionContext {
+public class DonutDocQa implements IActionContext {
   private String name;
 
   private String inputFilePath;
@@ -33,4 +33,6 @@ public class DonutDocqa implements IActionContext {
   private Boolean condition = true;
 
   private String forkBatchSize;
+
+    private String outputDir;
 }
