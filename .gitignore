@@ -37,4 +37,3 @@ logs/
 *.log
 
 gen/
-/src/main/antlr/
