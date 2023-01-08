@@ -24,8 +24,6 @@ import lombok.NoArgsConstructor;
 public class DonutDocQa implements IActionContext {
   private String name;
 
-  private String inputFilePath;
-
   private String resourceConn;
 
   private String questionSql;
