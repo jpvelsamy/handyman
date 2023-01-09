@@ -262,9 +262,9 @@ public class LambdaEngine {
                 stringBuilder.append(" ");
                 append(stringBuilder, event.getLevel());
                 stringBuilder.append(" ");
-                final String markersName = Optional.ofNullable(event.getMarkers()).map(markers -> markers.stream().map(Marker::getName).collect(Collectors.joining(","))).orElse("");
-                append(stringBuilder, markersName);
-                stringBuilder.append(" ");
+//                final String markersName = Optional.ofNullable(event.getMarker()).map(markers -> markers.stream().map(Marker::getName).collect(Collectors.joining(","))).orElse("");
+//                append(stringBuilder, markersName);
+//                stringBuilder.append(" ");
                 append(stringBuilder, MessageFormatter.arrayFormat(event.getMessage(), event.getArgumentArray()).getMessage());
                 if (event.getThrowable() != null) {
                     var sw = new StringWriter();

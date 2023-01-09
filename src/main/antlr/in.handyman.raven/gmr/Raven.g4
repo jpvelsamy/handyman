@@ -102,7 +102,8 @@ action:
     |alphanumericvalidator
     |numericvalidator
     |nervalidator
-    |donutDocQa);
+    |donutDocQa
+    |scalarAdapter);
 
 
 multitude:
@@ -597,6 +598,12 @@ donutDocQa:
      ('on-condition' condition=expression)*
      ('on-parallel-fielding' forkBatchSize=NON_ZERO_DIGIT)*;
 
+scalarAdapter:
+      'scalarAdapter' 'as' name=STRING
+      'on-resource-conn' resourceConn=STRING
+      'using-docnut-result'
+      '{' resuletSet=STRING  '}'
+       ('on-condition' condition=expression)* ;
 
 resource : STRING;
 

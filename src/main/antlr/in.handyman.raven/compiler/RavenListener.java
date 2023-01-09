@@ -790,6 +790,16 @@ public interface RavenListener extends ParseTreeListener {
 	 */
 	void exitDonutDocQa(RavenParser.DonutDocQaContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link RavenParser#scalarAdapter}.
+	 * @param ctx the parse tree
+	 */
+	void enterScalarAdapter(RavenParser.ScalarAdapterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#scalarAdapter}.
+	 * @param ctx the parse tree
+	 */
+	void exitScalarAdapter(RavenParser.ScalarAdapterContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link RavenParser#resource}.
 	 * @param ctx the parse tree
 	 */
