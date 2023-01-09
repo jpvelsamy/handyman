@@ -8,7 +8,4 @@ public interface ScalarEvaluationInterface {
     int getConfidenceScore(String sentence, AgadiaAdapter adapter) throws Exception;
 
 
-
-
-
 }

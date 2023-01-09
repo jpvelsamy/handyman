@@ -2,8 +2,6 @@ package in.handyman.raven.lib.model;
 
 import in.handyman.raven.lambda.action.ActionContext;
 import in.handyman.raven.lambda.action.IActionContext;
-import java.lang.Boolean;
-import java.lang.String;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,18 +17,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "FileDetails"
+        actionName = "FileDetails"
 )
 public class FileDetails implements IActionContext {
-  private String name;
+    private String name;
 
-  private String dirpath;
+    private String dirpath;
 
-  private String group_id;
+    private String group_id;
 
-  private String inbound_id;
+    private String inbound_id;
 
-  private String resourceConn;
+    private String resourceConn;
 
-  private Boolean condition = true;
+    private Boolean condition = true;
 }

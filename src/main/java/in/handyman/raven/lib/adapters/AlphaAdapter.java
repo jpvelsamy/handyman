@@ -8,7 +8,7 @@ public class AlphaAdapter implements AdapterInterface {
     public boolean getValidationModel(String input, String allowedCharacters) throws Exception {
         input = validateSpecialCharacters(allowedCharacters, input);
         boolean isAlpha = StringUtils.isAlpha(input);
-        return isAlpha ;
+        return isAlpha;
     }
 
     String validateSpecialCharacters(String specialCharacters, String input) {

@@ -7,7 +7,11 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.TextFilter;
-import okhttp3.*;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -23,18 +27,14 @@ import java.util.concurrent.TimeUnit;
         actionName = "TextFilter"
 )
 public class TextFilterAction implements IActionExecution {
-    private final ActionExecutionAudit action;
-
-    private final Logger log;
-
-    private final TextFilter textFilter;
-
-    private final Marker aMarker;
-
-    private final ObjectMapper mapper = new ObjectMapper();
-    private final String URI;
     private static final MediaType MediaTypeJSON = MediaType
             .parse("application/json; charset=utf-8");
+    private final ActionExecutionAudit action;
+    private final Logger log;
+    private final TextFilter textFilter;
+    private final Marker aMarker;
+    private final ObjectMapper mapper = new ObjectMapper();
+    private final String URI;
 
     public TextFilterAction(final ActionExecutionAudit action, final Logger log,
                             final Object textFilter) {
@@ -48,7 +48,7 @@ public class TextFilterAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-        log.info(aMarker, "<-------Pixel Classifier Action for {} has been started------->",textFilter.getName());
+        log.info(aMarker, "<-------Pixel Classifier Action for {} has been started------->", textFilter.getName());
         final OkHttpClient httpclient = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.MINUTES)
                 .writeTimeout(10, TimeUnit.MINUTES)
@@ -72,7 +72,7 @@ public class TextFilterAction implements IActionExecution {
             String responseBody = Objects.requireNonNull(response.body()).string();
             if (response.isSuccessful()) {
                 JSONObject responseObject = new JSONObject(responseBody);
-                action.getContext().put(name,  responseObject.get("filterFlag").toString());
+                action.getContext().put(name, responseObject.get("filterFlag").toString());
                 action.getContext().put(name.concat(".error"), "false");
                 log.info(aMarker, "The Successful Response for {} --> {}", name, responseBody);
             } else {

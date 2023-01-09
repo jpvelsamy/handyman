@@ -7,11 +7,6 @@ import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.adapters.WordCountAdapter;
 import in.handyman.raven.lib.interfaces.AdapterInterface;
 import in.handyman.raven.lib.model.Wordcount;
-
-import java.lang.Exception;
-import java.lang.Object;
-import java.lang.Override;
-
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -39,6 +34,18 @@ public class WordcountAction implements IActionExecution {
         this.aMarker = MarkerFactory.getMarker(" Wordcount:" + this.wordcount.getName());
     }
 
+    public static int getWordCount(String input, int countLimit, int threshold) {
+        int confidenceScore = 0;
+        try {
+            AdapterInterface wordCountAdapter = new WordCountAdapter();
+            int wordCount = wordCountAdapter.getThresoldScore(input);
+            confidenceScore = wordCount <= countLimit ? threshold : 0;
+        } catch (Exception e) {
+            throw new HandymanException("Failed to execute", e);
+        }
+        return confidenceScore;
+    }
+
     @Override
     public void execute() throws Exception {
         try {
@@ -55,18 +62,6 @@ public class WordcountAction implements IActionExecution {
             log.info(aMarker, "The Exception occurred ", ex);
             throw new HandymanException("Failed to execute", ex);
         }
-    }
-
-    public static int getWordCount(String input, int countLimit, int threshold) {
-        int confidenceScore = 0;
-        try {
-            AdapterInterface wordCountAdapter = new WordCountAdapter();
-            int wordCount = wordCountAdapter.getThresoldScore(input);
-            confidenceScore = wordCount <= countLimit ? threshold : 0;
-        } catch (Exception e) {
-            throw new HandymanException("Failed to execute", e);
-        }
-        return confidenceScore;
     }
 
     @Override

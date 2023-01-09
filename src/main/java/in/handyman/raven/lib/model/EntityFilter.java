@@ -2,8 +2,6 @@ package in.handyman.raven.lib.model;
 
 import in.handyman.raven.lambda.action.ActionContext;
 import in.handyman.raven.lambda.action.IActionContext;
-import java.lang.Boolean;
-import java.lang.String;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,25 +17,25 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "EntityFilter"
+        actionName = "EntityFilter"
 )
 public class EntityFilter implements IActionContext {
-  private String name;
+    private String name;
 
-  private String entityKeysToFilter;
+    private String entityKeysToFilter;
 
-  private String mandatoryKeysToFilter;
+    private String mandatoryKeysToFilter;
 
-  private String inputFilePath;
+    private String inputFilePath;
 
-  private String docId;
+    private String docId;
 
-  private String paperNo;
+    private String paperNo;
 
-  private String groupId;
+    private String groupId;
 
-  private Boolean condition = true;
+    private Boolean condition = true;
 
-  private String resourceConn;
+    private String resourceConn;
 
 }

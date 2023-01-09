@@ -1,7 +1,7 @@
 package in.handyman.raven.lib.agadia.adapters;
 
-import in.handyman.raven.lib.adapters.CharacterCountAdapter;
 import in.handyman.raven.lib.adapters.AlphaAdapter;
+import in.handyman.raven.lib.adapters.CharacterCountAdapter;
 import in.handyman.raven.lib.adapters.WordCountAdapter;
 import in.handyman.raven.lib.interfaces.AdapterInterface;
 import in.handyman.raven.lib.interfaces.ScalarEvaluationInterface;

@@ -7,11 +7,6 @@ import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.adapters.DateAdapter;
 import in.handyman.raven.lib.interfaces.AdapterInterface;
 import in.handyman.raven.lib.model.Datevalidator;
-
-import java.lang.Exception;
-import java.lang.Object;
-import java.lang.Override;
-
 import in.handyman.raven.lib.model.Validator;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -40,6 +35,20 @@ public class DatevalidatorAction implements IActionExecution {
         this.aMarker = MarkerFactory.getMarker(" Datevalidator:" + this.datevalidator.getName());
     }
 
+    public static int getDateScore(Validator adapter) {
+        int confidenceScore = 0;
+        try {
+            AdapterInterface dobValidatorAdapter = new DateAdapter();
+            int comparableYear = Integer.parseInt(adapter.getComparableChar());
+            String[] dateFormats = adapter.getAllowedSpecialChar().split(",");
+            boolean dobValidator = dobValidatorAdapter.getDateValidationModel(adapter.getInputValue(), comparableYear, dateFormats);
+            confidenceScore = dobValidator ? adapter.getThreshold() : 0;
+        } catch (Exception ex) {
+            throw new HandymanException("Failed to execute", ex);
+        }
+        return confidenceScore;
+    }
+
     @Override
     public void execute() throws Exception {
         try {
@@ -64,19 +73,5 @@ public class DatevalidatorAction implements IActionExecution {
     @Override
     public boolean executeIf() throws Exception {
         return datevalidator.getCondition();
-    }
-
-    public static int getDateScore(Validator adapter) {
-        int confidenceScore = 0;
-        try {
-            AdapterInterface dobValidatorAdapter = new DateAdapter();
-            int comparableYear = Integer.parseInt(adapter.getComparableChar());
-            String[] dateFormats = adapter.getAllowedSpecialChar().split(",");
-            boolean dobValidator = dobValidatorAdapter.getDateValidationModel(adapter.getInputValue(), comparableYear, dateFormats);
-            confidenceScore = dobValidator ? adapter.getThreshold() : 0;
-        } catch (Exception ex) {
-            throw new HandymanException("Failed to execute", ex);
-        }
-        return confidenceScore;
     }
 }

@@ -7,11 +7,6 @@ import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.adapters.NumericAdapter;
 import in.handyman.raven.lib.interfaces.AdapterInterface;
 import in.handyman.raven.lib.model.Numericvalidator;
-
-import java.lang.Exception;
-import java.lang.Object;
-import java.lang.Override;
-
 import in.handyman.raven.lib.model.Validator;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -40,6 +35,21 @@ public class NumericvalidatorAction implements IActionExecution {
         this.aMarker = MarkerFactory.getMarker(" Numericvalidator:" + this.numericvalidator.getName());
     }
 
+    public static int getNumericScore(Validator adapter) {
+        int confidenceScore = 0;
+        try {
+
+            AdapterInterface numericAdapter = new NumericAdapter();
+            boolean validator = numericAdapter.getValidationModel(adapter.getInputValue(), adapter.getAllowedSpecialChar());
+            confidenceScore = validator ? adapter.getThreshold() : 0;
+
+        } catch (Exception ex) {
+
+            throw new HandymanException("Failed to execute", ex);
+        }
+        return confidenceScore;
+    }
+
     @Override
     public void execute() throws Exception {
         try {
@@ -61,20 +71,5 @@ public class NumericvalidatorAction implements IActionExecution {
     @Override
     public boolean executeIf() throws Exception {
         return numericvalidator.getCondition();
-    }
-
-    public static int getNumericScore(Validator adapter) {
-        int confidenceScore = 0;
-        try {
-
-            AdapterInterface numericAdapter = new NumericAdapter();
-            boolean validator = numericAdapter.getValidationModel(adapter.getInputValue(), adapter.getAllowedSpecialChar());
-            confidenceScore = validator ? adapter.getThreshold() : 0;
-
-        } catch (Exception ex) {
-
-            throw new HandymanException("Failed to execute", ex);
-        }
-        return confidenceScore;
     }
 }

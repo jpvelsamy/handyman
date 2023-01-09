@@ -15,6 +15,7 @@ public class CharacterCountAdapter implements AdapterInterface {
     public boolean getValidationModel(String sentence, String requiredFeature) throws Exception {
         return false;
     }
+
     @Override
     public boolean getDateValidationModel(String sentence, int comparableYear, String[] dateFormats) throws Exception {
         return false;

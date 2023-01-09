@@ -1,6 +1,5 @@
 package in.handyman.raven.lib.adapters;
 
-import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lib.interfaces.AdapterInterface;
 
 import java.text.ParseException;

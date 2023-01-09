@@ -6,7 +6,6 @@ import in.handyman.raven.lib.adapters.WordCountAdapter;
 import in.handyman.raven.lib.interfaces.AdapterInterface;
 import in.handyman.raven.lib.interfaces.ScalarEvaluationInterface;
 import in.handyman.raven.lib.model.AgadiaAdapter;
-import org.apache.commons.lang3.StringUtils;
 
 public class PatientNameAdapter implements ScalarEvaluationInterface {
     AdapterInterface wordCountAdapter = new WordCountAdapter();
@@ -37,7 +36,7 @@ public class PatientNameAdapter implements ScalarEvaluationInterface {
             }
             formatScore = formatScore / splitInput.length;
         }
-        confidenceScore = confidenceScore + formatScore ;
+        confidenceScore = confidenceScore + formatScore;
         return confidenceScore;
     }
 }

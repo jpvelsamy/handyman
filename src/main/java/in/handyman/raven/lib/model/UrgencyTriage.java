@@ -2,8 +2,6 @@ package in.handyman.raven.lib.model;
 
 import in.handyman.raven.lambda.action.ActionContext;
 import in.handyman.raven.lambda.action.IActionContext;
-import java.lang.Boolean;
-import java.lang.String;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,40 +17,40 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "UrgencyTriage"
+        actionName = "UrgencyTriage"
 )
 public class UrgencyTriage implements IActionContext {
-  private String name;
+    private String name;
 
-  private String inputFilePath;
+    private String inputFilePath;
 
-  private String binaryClassifierModelFilePath;
+    private String binaryClassifierModelFilePath;
 
-  private String multiClassifierModelFilePath;
+    private String multiClassifierModelFilePath;
 
-  private String checkboxClassifierModelFilePath;
+    private String checkboxClassifierModelFilePath;
 
-  private String synonyms;
+    private String synonyms;
 
-  private String binaryClassifierLabels;
+    private String binaryClassifierLabels;
 
-  private String multiClassifierLabels;
+    private String multiClassifierLabels;
 
-  private String checkboxClassifierLabels;
+    private String checkboxClassifierLabels;
 
-  private String outputDir;
+    private String outputDir;
 
-  private String binaryImageWidth;
+    private String binaryImageWidth;
 
-  private String binaryImageHeight;
+    private String binaryImageHeight;
 
-  private String multiImageWidth;
+    private String multiImageWidth;
 
-  private String multiImageHeight;
+    private String multiImageHeight;
 
-  private String checkboxImageWidth;
+    private String checkboxImageWidth;
 
-  private String checkboxImageHeight;
+    private String checkboxImageHeight;
 
-  private Boolean condition = true;
+    private Boolean condition = true;
 }

@@ -4,7 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import in.handyman.raven.lib.interfaces.AdapterInterface;
-import okhttp3.*;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -24,12 +28,12 @@ public class NameAdapter implements AdapterInterface {
         objectNode.putPOJO("inputString", patientName);
         Request request = new Request.Builder().url(requiredFeature)
                 .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-        try(Response response = httpclient.newCall(request).execute()){
+        try (Response response = httpclient.newCall(request).execute()) {
             String responseBody = Objects.requireNonNull(response.body()).string();
             JsonNode actualObj = mapper.readTree(responseBody);
-            if(actualObj.get("prediction").get(0)!=null){
+            if (actualObj.get("prediction").get(0) != null) {
                 return actualObj.get("prediction").get(0).get("predictedLabel").asBoolean();
-            }else {
+            } else {
                 return false;
             }
         }
