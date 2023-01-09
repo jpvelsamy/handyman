@@ -596,7 +596,7 @@ donutDocQa:
      'save-response-as' responseAs=STRING
      'using'  '{' questionSql=STRING '}'
      ('on-condition' condition=expression)*
-     ('on-parallel-fielding' forkBatchSize=NON_ZERO_DIGIT)*;
+     ('on-parallel-fielding' forkBatchSize=STRING)*;
 
 scalarAdapter:
       'scalarAdapter' 'as' name=STRING
@@ -604,7 +604,7 @@ scalarAdapter:
       'using-docnut-result'
       '{' resuletSet=STRING  '}'
        ('on-condition' condition=expression)*
-       ('on-parallel-fielding' forkBatchSize=NON_ZERO_DIGIT)*;
+       ('on-parallel-fielding' forkBatchSize=STRING)*;
 
 resource : STRING;
 
