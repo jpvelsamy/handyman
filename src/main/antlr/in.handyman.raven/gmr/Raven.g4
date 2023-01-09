@@ -590,7 +590,6 @@ urgencyTriage:
 
 donutDocQa:
      'donut-docqa' 'as' name=STRING
-     'with-input-file-path' inputFilePath=STRING
      'in-output-dir' outputDir=STRING
      'on-resource-conn' resourceConn=STRING
      'save-response-as' responseAs=STRING
