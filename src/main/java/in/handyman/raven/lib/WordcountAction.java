@@ -57,6 +57,18 @@ public class WordcountAction implements IActionExecution {
         }
     }
 
+    public static int getWordCount(String input, int countLimit, int threshold) {
+        int confidenceScore = 0;
+        try {
+            AdapterInterface wordCountAdapter = new WordCountAdapter();
+            int wordCount = wordCountAdapter.getThresoldScore(input);
+            confidenceScore = wordCount <= countLimit ? threshold : 0;
+        } catch (Exception e) {
+            throw new HandymanException("Failed to execute", e);
+        }
+        return confidenceScore;
+    }
+
     @Override
     public boolean executeIf() throws Exception {
         return wordcount.getCondition();

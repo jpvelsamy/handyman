@@ -12,6 +12,7 @@ import java.lang.Exception;
 import java.lang.Object;
 import java.lang.Override;
 
+import in.handyman.raven.lib.model.Validator;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -23,41 +24,53 @@ import org.slf4j.MarkerFactory;
         actionName = "Nervalidator"
 )
 public class NervalidatorAction implements IActionExecution {
-  private final ActionExecutionAudit action;
+    private final ActionExecutionAudit action;
 
-  private final Logger log;
-  private final String URI;
-  private final Nervalidator nervalidator;
-  private final Marker aMarker;
+    private final Logger log;
+    private final String URI;
+    private final Nervalidator nervalidator;
+    private final Marker aMarker;
 
-  public NervalidatorAction(final ActionExecutionAudit action, final Logger log,
-                            final Object nervalidator) {
-    this.nervalidator = (Nervalidator) nervalidator;
-    this.action = action;
-    this.log = log;
-    this.URI = action.getContext().get("copro.text-validation.url");
-    this.aMarker = MarkerFactory.getMarker(" Nervalidator:" + this.nervalidator.getName());
-  }
-
-  @Override
-  public void execute() throws Exception {
-    try {
-      log.info(aMarker, "<-------Ner Validator Count Action for {} has been started------->" + nervalidator.getName());
-      AdapterInterface nameAdapter = new NameAdapter();
-      boolean validator = nameAdapter.getValidationModel(nervalidator.getInputValue(), URI);
-      int confidenceScore = validator ? Integer.valueOf(nervalidator.getNerThreshold()) : 0;
-      action.getContext().put("validator.score", String.valueOf(confidenceScore));
-      log.info(aMarker, "<-------Ner Validator Action for {} has been completed------->" + nervalidator.getName());
-
-    } catch (Exception ex) {
-      action.getContext().put(nervalidator.getName().concat(".error"), "true");
-      log.info(aMarker, "The Exception occurred ", ex);
-      throw new HandymanException("Failed to execute", ex);
+    public NervalidatorAction(final ActionExecutionAudit action, final Logger log,
+                              final Object nervalidator) {
+        this.nervalidator = (Nervalidator) nervalidator;
+        this.action = action;
+        this.log = log;
+        this.URI = action.getContext().get("copro.text-validation.url");
+        this.aMarker = MarkerFactory.getMarker(" Nervalidator:" + this.nervalidator.getName());
     }
-  }
 
-  @Override
-  public boolean executeIf() throws Exception {
-    return nervalidator.getCondition();
-  }
+    @Override
+    public void execute() throws Exception {
+        try {
+            log.info(aMarker, "<-------Ner Validator Count Action for {} has been started------->" + nervalidator.getName());
+            AdapterInterface nameAdapter = new NameAdapter();
+            boolean validator = nameAdapter.getValidationModel(nervalidator.getInputValue(), URI);
+            int confidenceScore = validator ? Integer.valueOf(nervalidator.getNerThreshold()) : 0;
+            action.getContext().put("validator.score", String.valueOf(confidenceScore));
+            log.info(aMarker, "<-------Ner Validator Action for {} has been completed------->" + nervalidator.getName());
+
+        } catch (Exception ex) {
+            action.getContext().put(nervalidator.getName().concat(".error"), "true");
+            log.info(aMarker, "The Exception occurred ", ex);
+            throw new HandymanException("Failed to execute", ex);
+        }
+    }
+
+    @Override
+    public boolean executeIf() throws Exception {
+        return nervalidator.getCondition();
+    }
+
+    public static int getNerScore(Validator adapter, String uri) {
+        int confidenceScore = 0;
+        try {
+            AdapterInterface nameAdapter = new NameAdapter();
+            boolean validator = nameAdapter.getValidationModel(adapter.getInputValue(), uri);
+            confidenceScore = validator ? adapter.getThreshold() : 0;
+        } catch (Exception ex) {
+            throw new HandymanException("Failed to execute", ex);
+        }
+        return confidenceScore;
+    }
 }
