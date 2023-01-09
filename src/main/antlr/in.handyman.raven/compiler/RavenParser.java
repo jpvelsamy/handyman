@@ -8414,10 +8414,6 @@ public class RavenParser extends Parser {
 		public ExpressionContext expression(int i) {
 			return getRuleContext(ExpressionContext.class,i);
 		}
-		public List<TerminalNode> NON_ZERO_DIGIT() { return getTokens(RavenParser.NON_ZERO_DIGIT); }
-		public TerminalNode NON_ZERO_DIGIT(int i) {
-			return getToken(RavenParser.NON_ZERO_DIGIT, i);
-		}
 		public DonutDocQaContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -8490,7 +8486,7 @@ public class RavenParser extends Parser {
 				setState(1906);
 				match(T__28);
 				setState(1907);
-				((DonutDocQaContext)_localctx).forkBatchSize = match(NON_ZERO_DIGIT);
+				((DonutDocQaContext)_localctx).forkBatchSize = match(STRING);
 				}
 				}
 				setState(1912);
@@ -8526,10 +8522,6 @@ public class RavenParser extends Parser {
 		}
 		public ExpressionContext expression(int i) {
 			return getRuleContext(ExpressionContext.class,i);
-		}
-		public List<TerminalNode> NON_ZERO_DIGIT() { return getTokens(RavenParser.NON_ZERO_DIGIT); }
-		public TerminalNode NON_ZERO_DIGIT(int i) {
-			return getToken(RavenParser.NON_ZERO_DIGIT, i);
 		}
 		public ScalarAdapterContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -8595,7 +8587,7 @@ public class RavenParser extends Parser {
 				setState(1929);
 				match(T__28);
 				setState(1930);
-				((ScalarAdapterContext)_localctx).forkBatchSize = match(NON_ZERO_DIGIT);
+				((ScalarAdapterContext)_localctx).forkBatchSize = match(STRING);
 				}
 				}
 				setState(1935);
@@ -10202,7 +10194,7 @@ public class RavenParser extends Parser {
 		"B!\u0000\u076d\u076b\u0001\u0000\u0000\u0000\u076e\u0771\u0001\u0000\u0000"+
 		"\u0000\u076f\u076d\u0001\u0000\u0000\u0000\u076f\u0770\u0001\u0000\u0000"+
 		"\u0000\u0770\u0776\u0001\u0000\u0000\u0000\u0771\u076f\u0001\u0000\u0000"+
-		"\u0000\u0772\u0773\u0005\u001d\u0000\u0000\u0773\u0775\u0005\u00fa\u0000"+
+		"\u0000\u0772\u0773\u0005\u001d\u0000\u0000\u0773\u0775\u0005\u00fb\u0000"+
 		"\u0000\u0774\u0772\u0001\u0000\u0000\u0000\u0775\u0778\u0001\u0000\u0000"+
 		"\u0000\u0776\u0774\u0001\u0000\u0000\u0000\u0776\u0777\u0001\u0000\u0000"+
 		"\u0000\u0777\u009b\u0001\u0000\u0000\u0000\u0778\u0776\u0001\u0000\u0000"+
@@ -10215,7 +10207,7 @@ public class RavenParser extends Parser {
 		"\u0001\u0000\u0000\u0000\u0786\u0784\u0001\u0000\u0000\u0000\u0786\u0787"+
 		"\u0001\u0000\u0000\u0000\u0787\u078d\u0001\u0000\u0000\u0000\u0788\u0786"+
 		"\u0001\u0000\u0000\u0000\u0789\u078a\u0005\u001d\u0000\u0000\u078a\u078c"+
-		"\u0005\u00fa\u0000\u0000\u078b\u0789\u0001\u0000\u0000\u0000\u078c\u078f"+
+		"\u0005\u00fb\u0000\u0000\u078b\u0789\u0001\u0000\u0000\u0000\u078c\u078f"+
 		"\u0001\u0000\u0000\u0000\u078d\u078b\u0001\u0000\u0000\u0000\u078d\u078e"+
 		"\u0001\u0000\u0000\u0000\u078e\u009d\u0001\u0000\u0000\u0000\u078f\u078d"+
 		"\u0001\u0000\u0000\u0000\u0790\u0791\u0005\u00fb\u0000\u0000\u0791\u009f"+
