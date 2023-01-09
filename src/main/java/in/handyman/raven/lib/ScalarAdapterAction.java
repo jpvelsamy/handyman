@@ -84,6 +84,7 @@ public class ScalarAdapterAction implements IActionExecution {
         } else {
             parallelism = 1;
         }
+        log.info(aMarker, "total records to process {}", validatorConfigurationDetails.size());
         try {
             final int batchSize = validatorConfigurationDetails.size() / parallelism;
             if (parallelism > 1 && batchSize > 0) {
@@ -99,6 +100,7 @@ public class ScalarAdapterAction implements IActionExecution {
                             doCompute(jdbi, validatorConfigurationDetail);
 
                         });
+                        log.info(aMarker, "total records to processed {}", items.size());
                     } finally {
                         countDownLatch.countDown();
                         log.info(aMarker, " {} batch processed", countDownLatch.getCount());
@@ -133,11 +135,11 @@ public class ScalarAdapterAction implements IActionExecution {
                 .comparableChar(result.getComparableCharacters())
                 .threshold(result.getValidatorThreshold())
                 .build();
-        int validatorScore = getAdpterScore(configurationDetails);
+        int validatorScore = computeAdapterScore(configurationDetails);
         int validatorNegativeScore = 0;
         if (result.getRestrictedAdapterFlag() == 1 && validatorScore != 0) {
             configurationDetails.setAdapter(result.getRestrictedAdapter());
-            validatorNegativeScore = getAdpterScore(configurationDetails);
+            validatorNegativeScore = computeAdapterScore(configurationDetails);
         }
 
         double confidenceScore = wordScore + charScore + validatorScore - validatorNegativeScore;
@@ -153,7 +155,7 @@ public class ScalarAdapterAction implements IActionExecution {
     }
 
 
-    int getAdpterScore(Validator inputDetail) {
+    int computeAdapterScore(Validator inputDetail) {
         int confidenceScore = 0;
         switch (inputDetail.getAdapter()) {
             case "alpha":
@@ -166,7 +168,7 @@ public class ScalarAdapterAction implements IActionExecution {
                 confidenceScore = NumericvalidatorAction.getNumericScore(inputDetail);
                 break;
             case "ner":
-                String URI = action.getContext().get("copro.text-validation.url");
+                final String URI = action.getContext().get("copro.text-validation.url");
                 confidenceScore = NervalidatorAction.getNerScore(inputDetail, URI);
                 break;
             case "date":
