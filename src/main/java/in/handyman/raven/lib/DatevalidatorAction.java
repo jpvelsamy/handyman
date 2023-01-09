@@ -44,7 +44,7 @@ public class DatevalidatorAction implements IActionExecution {
             boolean dobValidator = dobValidatorAdapter.getDateValidationModel(adapter.getInputValue(), comparableYear, dateFormats);
             confidenceScore = dobValidator ? adapter.getThreshold() : 0;
         } catch (Exception ex) {
-            throw new HandymanException("Failed to execute", ex);
+            return 0;
         }
         return confidenceScore;
     }

@@ -87,22 +87,28 @@ public class ScalarAdapterAction implements IActionExecution {
         try {
             final int batchSize = validatorConfigurationDetails.size() / parallelism;
             if (parallelism > 1 && batchSize > 0) {
+                log.info(aMarker, "parallel processing has started" + scalarAdapter.getName());
+
                 final List<List<ValidatorConfigurationDetail>> donutLineItemPartitions = Lists.partition(validatorConfigurationDetails, batchSize);
                 final CountDownLatch countDownLatch = new CountDownLatch(donutLineItemPartitions.size());
                 final ExecutorService executorService = Executors.newFixedThreadPool(parallelism);
                 donutLineItemPartitions.forEach(items -> executorService.submit(() -> {
-                    items.forEach(validatorConfigurationDetail -> {
+                    try {
+                        items.forEach(validatorConfigurationDetail -> {
 
-                        doCompute(jdbi, validatorConfigurationDetail);
+                            doCompute(jdbi, validatorConfigurationDetail);
 
-                    });
-
-                    countDownLatch.countDown();
-
+                        });
+                    } finally {
+                        countDownLatch.countDown();
+                        log.info(aMarker, " {} batch processed", countDownLatch.getCount());
+                    }
                 }));
                 countDownLatch.await();
 
             } else {
+                log.info(aMarker, "sequential processing has started" + scalarAdapter.getName());
+
                 validatorConfigurationDetails.forEach(validatorConfigurationDetail -> {
 
                     doCompute(jdbi, validatorConfigurationDetail);
@@ -143,7 +149,6 @@ public class ScalarAdapterAction implements IActionExecution {
                             "( file_ref_id, paper_no, group_id, sor_id, sor_item_id, sor_item_name, question, answer, created_user_id, tenant_id, created_on, confidence_score) " +
                             "VALUES( :fileRefId, :paperNo, :groupId, :sorId, :sorItemId, :sorKey, :question, :inputValue, :createdUserId, :tenentId, NOW(), :confidenceScore);")
                     .bindBean(result).execute();
-            log.debug(aMarker, "inserted {} into docnet result", scalarAdapter);
         });
     }
 
