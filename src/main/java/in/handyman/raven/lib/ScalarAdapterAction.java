@@ -57,20 +57,18 @@ public class ScalarAdapterAction implements IActionExecution {
             log.info(aMarker, "scalar has started" + scalarAdapter.getName());
 
             final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(scalarAdapter.getResourceConn());
-            final List<ValidatorConfigurationDetail> docnutResult = new ArrayList<>();
+            final List<ValidatorConfigurationDetail> validatorConfigurationDetails = new ArrayList<>();
 
             jdbi.useTransaction(handle -> {
                 final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(scalarAdapter.getResuletSet());
                 formattedQuery.forEach(sqlToExecute -> {
-                    docnutResult.addAll(handle.createQuery(sqlToExecute).
+                    validatorConfigurationDetails.addAll(handle.createQuery(sqlToExecute).
                             mapToBean(ValidatorConfigurationDetail.class).stream().collect(Collectors.toList()));
                 });
             });
 
 
-            for (ValidatorConfigurationDetail result : docnutResult) {
-                doCompute(jdbi, result);
-            }
+            doProcess(jdbi, validatorConfigurationDetails);
             log.info(aMarker, "scalar has completed" + scalarAdapter.getName());
         } catch (Exception e) {
             action.getContext().put(scalarAdapter.getName().concat(".error"), "true");
