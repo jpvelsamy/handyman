@@ -2,8 +2,6 @@ package in.handyman.raven.lib.model;
 
 import in.handyman.raven.lambda.action.ActionContext;
 import in.handyman.raven.lambda.action.IActionContext;
-import java.lang.Boolean;
-import java.lang.String;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,22 +17,22 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "ThresholdCheck"
+        actionName = "ThresholdCheck"
 )
 public class ThresholdCheck implements IActionContext {
-  private String name;
+    private String name;
 
-  private String threshold;
+    private String threshold;
 
-  private String input;
+    private String input;
 
-  private Boolean condition = true;
+    private Boolean condition = true;
 
-  private String resourceConn;
+    private String resourceConn;
 
-  private String paperNo;
+    private String paperNo;
 
-  private String docId;
+    private String docId;
 
 
 }

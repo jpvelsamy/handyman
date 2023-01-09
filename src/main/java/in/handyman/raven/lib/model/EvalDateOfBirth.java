@@ -2,8 +2,6 @@ package in.handyman.raven.lib.model;
 
 import in.handyman.raven.lambda.action.ActionContext;
 import in.handyman.raven.lambda.action.IActionContext;
-import java.lang.Boolean;
-import java.lang.String;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,26 +17,26 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "EvalDateOfBirth"
+        actionName = "EvalDateOfBirth"
 )
 public class EvalDateOfBirth implements IActionContext {
-  private String name;
+    private String name;
 
-  private String dob;
+    private String dob;
 
-  private int wordCountLimit;
+    private int wordCountLimit;
 
-  private int charCountLimit;
+    private int charCountLimit;
 
-  private int wordCountThreshold;
+    private int wordCountThreshold;
 
-  private int charCountThreshold;
+    private int charCountThreshold;
 
-  private int comparableYear;
+    private int comparableYear;
 
-  private String dateFormats;
+    private String dateFormats;
 
-  private int validatorThreshold;
+    private int validatorThreshold;
 
-  private Boolean condition = true;
+    private Boolean condition = true;
 }

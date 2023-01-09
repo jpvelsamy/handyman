@@ -12,7 +12,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import okhttp3.*;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.jdbi.v3.core.Jdbi;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -30,20 +34,14 @@ import java.util.concurrent.TimeUnit;
         actionName = "EntityFilter"
 )
 public class EntityFilterAction implements IActionExecution {
-    private final ActionExecutionAudit action;
-
-    private final Logger log;
-
-    private final EntityFilter entityFilter;
-
-    private final Marker aMarker;
-
-    private final ObjectMapper mapper = new ObjectMapper();
-
-    private final String URI;
-
     private static final MediaType MediaTypeJSON = MediaType
             .parse("application/json; charset=utf-8");
+    private final ActionExecutionAudit action;
+    private final Logger log;
+    private final EntityFilter entityFilter;
+    private final Marker aMarker;
+    private final ObjectMapper mapper = new ObjectMapper();
+    private final String URI;
 
     public EntityFilterAction(final ActionExecutionAudit action, final Logger log,
                               final Object entityFilter) {
@@ -121,6 +119,11 @@ public class EntityFilterAction implements IActionExecution {
         }
     }
 
+    @Override
+    public boolean executeIf() throws Exception {
+        return entityFilter.getCondition();
+    }
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
@@ -139,10 +142,5 @@ public class EntityFilterAction implements IActionExecution {
         private String mandatoryConfidenceScore;
         private String createdUserId;
         private String tenantId;
-    }
-
-    @Override
-    public boolean executeIf() throws Exception {
-        return entityFilter.getCondition();
     }
 }

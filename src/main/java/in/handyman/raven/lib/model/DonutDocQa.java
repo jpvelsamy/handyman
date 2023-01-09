@@ -2,8 +2,6 @@ package in.handyman.raven.lib.model;
 
 import in.handyman.raven.lambda.action.ActionContext;
 import in.handyman.raven.lambda.action.IActionContext;
-import java.lang.Boolean;
-import java.lang.String;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,20 +17,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "DonutDocQa"
+        actionName = "DonutDocQa"
 )
 public class DonutDocQa implements IActionContext {
-  private String name;
+    private String name;
 
-  private String resourceConn;
+    private String resourceConn;
 
-  private String questionSql;
+    private String questionSql;
 
-  private Boolean condition = true;
+    private Boolean condition = true;
 
-  private String forkBatchSize;
+    private String forkBatchSize;
 
     private String outputDir;
 
-    private  String responseAs;
+    private String responseAs;
 }

@@ -101,7 +101,7 @@ public class DocnetAttributionAction implements IActionExecution {
                             ObjectNode resultNode = mapper.createObjectNode();
                             resultNode.put("sorKey", sorKey);
                             resultNode.put("sorId", sorId);
-                            resultNode.put("sorItemId",sorItemId);
+                            resultNode.put("sorItemId", sorItemId);
                             resultNode.putPOJO("attributionResult", actualObj);
                             finalRes.add(resultNode);
                             log.info(aMarker, "The Successful Response for {} --> {}", docnetAttributionAsResponse, responseBody);

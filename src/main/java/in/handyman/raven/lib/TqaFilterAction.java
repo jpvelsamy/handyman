@@ -191,7 +191,6 @@ public class TqaFilterAction implements IActionExecution {
 
         smallerLists.forEach(truePositiveFilterResults -> {
             jdbi.useTransaction(handle -> {
-                ;
 
                 for (var tpfr : truePositiveFilterResults) {
                     handle.createUpdate("INSERT INTO tqa.true_positive_filter_result (input_file_path, synonym_name, truth_synonym_id," +

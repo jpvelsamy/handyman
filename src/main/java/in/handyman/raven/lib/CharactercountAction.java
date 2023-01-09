@@ -7,11 +7,6 @@ import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.adapters.CharacterCountAdapter;
 import in.handyman.raven.lib.interfaces.AdapterInterface;
 import in.handyman.raven.lib.model.Charactercount;
-
-import java.lang.Exception;
-import java.lang.Object;
-import java.lang.Override;
-
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -39,6 +34,18 @@ public class CharactercountAction implements IActionExecution {
         this.aMarker = MarkerFactory.getMarker(" Charactercount:" + this.charactercount.getName());
     }
 
+    public static int getCharCount(String input, int countLimit, int threshold) {
+        int confidenceScore = 0;
+        try {
+            AdapterInterface charCountAdapter = new CharacterCountAdapter();
+            int wordCount = charCountAdapter.getThresoldScore(input);
+            confidenceScore = wordCount <= countLimit ? threshold : 0;
+        } catch (Exception ex) {
+            throw new HandymanException("Failed to execute char count", ex);
+        }
+        return confidenceScore;
+    }
+
     @Override
     public void execute() throws Exception {
         try {
@@ -60,17 +67,5 @@ public class CharactercountAction implements IActionExecution {
     @Override
     public boolean executeIf() throws Exception {
         return charactercount.getCondition();
-    }
-
-    public static int getCharCount(String input, int countLimit, int threshold) {
-        int confidenceScore = 0;
-        try {
-            AdapterInterface charCountAdapter = new CharacterCountAdapter();
-            int wordCount = charCountAdapter.getThresoldScore(input);
-            confidenceScore = wordCount <= countLimit ? threshold : 0;
-        } catch (Exception ex) {
-            throw new HandymanException("Failed to execute char count", ex);
-        }
-        return confidenceScore;
     }
 }

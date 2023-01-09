@@ -20,7 +20,6 @@ import in.handyman.raven.util.UniqueID;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.slf4j.Logger;
-import org.slf4j.Marker;
 import org.slf4j.helpers.MessageFormatter;
 import org.slf4j.helpers.SubstituteLogger;
 
@@ -34,8 +33,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class LambdaEngine {

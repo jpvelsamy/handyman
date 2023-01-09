@@ -7,11 +7,6 @@ import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.adapters.NameAdapter;
 import in.handyman.raven.lib.interfaces.AdapterInterface;
 import in.handyman.raven.lib.model.Nervalidator;
-
-import java.lang.Exception;
-import java.lang.Object;
-import java.lang.Override;
-
 import in.handyman.raven.lib.model.Validator;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -40,6 +35,18 @@ public class NervalidatorAction implements IActionExecution {
         this.aMarker = MarkerFactory.getMarker(" Nervalidator:" + this.nervalidator.getName());
     }
 
+    public static int getNerScore(Validator adapter, String uri) {
+        int confidenceScore = 0;
+        try {
+            AdapterInterface nameAdapter = new NameAdapter();
+            boolean validator = nameAdapter.getValidationModel(adapter.getInputValue(), uri);
+            confidenceScore = validator ? adapter.getThreshold() : 0;
+        } catch (Exception ex) {
+            throw new HandymanException("Failed to execute", ex);
+        }
+        return confidenceScore;
+    }
+
     @Override
     public void execute() throws Exception {
         try {
@@ -60,17 +67,5 @@ public class NervalidatorAction implements IActionExecution {
     @Override
     public boolean executeIf() throws Exception {
         return nervalidator.getCondition();
-    }
-
-    public static int getNerScore(Validator adapter, String uri) {
-        int confidenceScore = 0;
-        try {
-            AdapterInterface nameAdapter = new NameAdapter();
-            boolean validator = nameAdapter.getValidationModel(adapter.getInputValue(), uri);
-            confidenceScore = validator ? adapter.getThreshold() : 0;
-        } catch (Exception ex) {
-            throw new HandymanException("Failed to execute", ex);
-        }
-        return confidenceScore;
     }
 }

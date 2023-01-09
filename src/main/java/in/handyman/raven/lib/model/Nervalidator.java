@@ -2,8 +2,6 @@ package in.handyman.raven.lib.model;
 
 import in.handyman.raven.lambda.action.ActionContext;
 import in.handyman.raven.lambda.action.IActionContext;
-import java.lang.Boolean;
-import java.lang.String;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,14 +17,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "Nervalidator"
+        actionName = "Nervalidator"
 )
 public class Nervalidator implements IActionContext {
-  private String name;
+    private String name;
 
-  private String nerThreshold;
+    private String nerThreshold;
 
-  private String inputValue;
+    private String inputValue;
 
-  private Boolean condition = true;
+    private Boolean condition = true;
 }

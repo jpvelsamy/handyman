@@ -221,10 +221,9 @@ public class DonutDocQaAction implements IActionExecution {
     @Slf4j
     public static class DonutApiCaller {
 
-        private final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
         private static final MediaType MediaTypeJSON = MediaType.parse("application/json; charset=utf-8");
         private static final ObjectMapper MAPPER = new ObjectMapper();
-
+        private final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
         private final String node;
 
         public DonutApiCaller(final String node) {

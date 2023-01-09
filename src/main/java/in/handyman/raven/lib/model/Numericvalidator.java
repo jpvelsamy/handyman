@@ -2,8 +2,6 @@ package in.handyman.raven.lib.model;
 
 import in.handyman.raven.lambda.action.ActionContext;
 import in.handyman.raven.lambda.action.IActionContext;
-import java.lang.Boolean;
-import java.lang.String;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,16 +17,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "Numericvalidator"
+        actionName = "Numericvalidator"
 )
 public class Numericvalidator implements IActionContext {
-  private String name;
+    private String name;
 
-  private String thresholdValue;
+    private String thresholdValue;
 
-  private String inputValue;
+    private String inputValue;
 
-  private String allowedSpecialCharacters;
+    private String allowedSpecialCharacters;
 
-  private Boolean condition = true;
+    private Boolean condition = true;
 }

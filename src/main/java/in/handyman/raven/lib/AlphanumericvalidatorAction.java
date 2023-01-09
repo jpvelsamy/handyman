@@ -7,11 +7,6 @@ import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.adapters.AlphaNumericAdapter;
 import in.handyman.raven.lib.interfaces.AdapterInterface;
 import in.handyman.raven.lib.model.Alphanumericvalidator;
-
-import java.lang.Exception;
-import java.lang.Object;
-import java.lang.Override;
-
 import in.handyman.raven.lib.model.Validator;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -40,6 +35,20 @@ public class AlphanumericvalidatorAction implements IActionExecution {
         this.aMarker = MarkerFactory.getMarker(" Alphanumericvalidator:" + this.alphanumericvalidator.getName());
     }
 
+    public static int getAlphaNumericScore(Validator adapter) {
+        int confidenceScore = 0;
+
+        try {
+            AdapterInterface aplhaNumericAdapter = new AlphaNumericAdapter();
+            boolean validator = aplhaNumericAdapter.getValidationModel(adapter.getInputValue(), adapter.getAllowedSpecialChar());
+            confidenceScore = validator ? adapter.getThreshold() : 0;
+
+        } catch (Exception ex) {
+            throw new HandymanException("Failed to execute", ex);
+        }
+        return confidenceScore = 0;
+    }
+
     @Override
     public void execute() throws Exception {
 
@@ -61,19 +70,5 @@ public class AlphanumericvalidatorAction implements IActionExecution {
     @Override
     public boolean executeIf() throws Exception {
         return alphanumericvalidator.getCondition();
-    }
-
-    public static int getAlphaNumericScore(Validator adapter) {
-        int confidenceScore = 0;
-
-        try {
-            AdapterInterface aplhaNumericAdapter = new AlphaNumericAdapter();
-            boolean validator = aplhaNumericAdapter.getValidationModel(adapter.getInputValue(), adapter.getAllowedSpecialChar());
-            confidenceScore = validator ? adapter.getThreshold() : 0;
-
-        } catch (Exception ex) {
-            throw new HandymanException("Failed to execute", ex);
-        }
-        return confidenceScore = 0;
     }
 }

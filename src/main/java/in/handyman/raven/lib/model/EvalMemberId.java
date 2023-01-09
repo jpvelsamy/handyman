@@ -1,10 +1,7 @@
-
 package in.handyman.raven.lib.model;
 
 import in.handyman.raven.lambda.action.ActionContext;
 import in.handyman.raven.lambda.action.IActionContext;
-import java.lang.Boolean;
-import java.lang.String;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,23 +20,23 @@ import lombok.NoArgsConstructor;
         actionName = "EvalMemberId"
 )
 public class EvalMemberId implements IActionContext {
-  private String name;
+    private String name;
 
-  private String memberID;
+    private String memberID;
 
-  private int wordCountLimit;
+    private int wordCountLimit;
 
-  private int charCountLimit;
+    private int charCountLimit;
 
-  private String specialCharacter;
+    private String specialCharacter;
 
-  private int wordCountThreshold;
+    private int wordCountThreshold;
 
-  private int charCountThreshold;
+    private int charCountThreshold;
 
-  private int validatorThreshold;
+    private int validatorThreshold;
 
-  private String coproQuery;
+    private String coproQuery;
 
-  private Boolean condition = true;
+    private Boolean condition = true;
 }
