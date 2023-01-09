@@ -25,6 +25,7 @@ public class ScalarAdapter implements IActionContext {
     private String resourceConn;
 
     private String resuletSet;
+    private String forkBatchSize;
 
     private Boolean condition = true;
 }

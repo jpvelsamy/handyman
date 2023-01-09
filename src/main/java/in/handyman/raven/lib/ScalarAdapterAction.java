@@ -2,6 +2,7 @@ package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
@@ -14,7 +15,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import okhttp3.OkHttpClient;
 import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -22,7 +22,9 @@ import org.slf4j.MarkerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 /**
@@ -53,10 +55,7 @@ public class ScalarAdapterAction implements IActionExecution {
     public void execute() throws Exception {
         try {
             log.info(aMarker, "scalar has started" + scalarAdapter.getName());
-            final OkHttpClient httpclient = new OkHttpClient.Builder()
-                    .connectTimeout(10, TimeUnit.MINUTES)
-                    .writeTimeout(10, TimeUnit.MINUTES)
-                    .readTimeout(10, TimeUnit.MINUTES).build();
+
             final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(scalarAdapter.getResourceConn());
             final List<ValidatorConfigurationDetail> docnutResult = new ArrayList<>();
 
@@ -70,36 +69,7 @@ public class ScalarAdapterAction implements IActionExecution {
 
 
             for (ValidatorConfigurationDetail result : docnutResult) {
-                String inputValue = result.getInputValue();
-                int wordScore = WordcountAction.getWordCount(inputValue,
-                        result.getWordLimit(), result.getWordThreshold());
-                int charScore = CharactercountAction.getCharCount(inputValue,
-                        result.getCharLimit(), result.getCharThreshold());
-                Validator configurationDetails = Validator.builder()
-                        .inputValue(inputValue)
-                        .adapter(result.getAllowedAdapter())
-                        .allowedSpecialChar(result.getAllowedCharacters())
-                        .comparableChar(result.getComparableCharacters())
-                        .threshold(result.getValidatorThreshold())
-                        .build();
-                int validatorScore = getAdpterScore(configurationDetails);
-                int validatorNegativeScore = 0;
-                if (result.getRestrictedAdapterFlag() == 1 && validatorScore != 0) {
-                    configurationDetails.setAdapter(result.getRestrictedAdapter());
-                    validatorNegativeScore = getAdpterScore(configurationDetails);
-                }
-
-                double confidenceScore = wordScore + charScore + validatorScore - validatorNegativeScore;
-
-                result.setConfidenceScore(confidenceScore);
-
-                jdbi.useTransaction(handle -> {
-                    handle.createUpdate("INSERT INTO sor_transaction.docnet_result" +
-                                    "( file_ref_id, paper_no, group_id, sor_id, sor_item_id, sor_item_name, question, answer, created_user_id, tenant_id, created_on, confidence_score) " +
-                                    "VALUES( :fileRefId, :paperNo, :groupId, :sorId, :sorItemId, :sorKey, :question, :inputValue, :createdUserId, :tenentId, NOW(), :confidenceScore);")
-                            .bindBean(result).execute();
-                    log.debug(aMarker, "inserted {} into docnet result", scalarAdapter);
-                });
+                doCompute(jdbi, result);
             }
             log.info(aMarker, "scalar has completed" + scalarAdapter.getName());
         } catch (Exception e) {
@@ -107,6 +77,76 @@ public class ScalarAdapterAction implements IActionExecution {
             log.info(aMarker, "The Exception occurred ", e);
             throw new HandymanException("Failed to execute", e);
         }
+    }
+
+    private void doProcess(final Jdbi jdbi, final List<ValidatorConfigurationDetail> validatorConfigurationDetails) {
+        final int parallelism;
+        if (scalarAdapter.getForkBatchSize() != null) {
+            parallelism = Integer.parseInt(scalarAdapter.getForkBatchSize());
+        } else {
+            parallelism = 1;
+        }
+        try {
+            final int batchSize = validatorConfigurationDetails.size() / parallelism;
+            if (parallelism > 1 && batchSize > 0) {
+                final List<List<ValidatorConfigurationDetail>> donutLineItemPartitions = Lists.partition(validatorConfigurationDetails, batchSize);
+                final CountDownLatch countDownLatch = new CountDownLatch(donutLineItemPartitions.size());
+                final ExecutorService executorService = Executors.newFixedThreadPool(parallelism);
+                donutLineItemPartitions.forEach(items -> executorService.submit(() -> {
+                    items.forEach(validatorConfigurationDetail -> {
+
+                        doCompute(jdbi, validatorConfigurationDetail);
+
+                    });
+
+                    countDownLatch.countDown();
+
+                }));
+                countDownLatch.await();
+
+            } else {
+                validatorConfigurationDetails.forEach(validatorConfigurationDetail -> {
+
+                    doCompute(jdbi, validatorConfigurationDetail);
+
+                });
+            }
+        } catch (Exception e) {
+            log.error(aMarker, "The Failure Response {} --> {}", scalarAdapter.getName(), e.getMessage(), e);
+        }
+    }
+
+    private void doCompute(final Jdbi jdbi, final ValidatorConfigurationDetail result) {
+        String inputValue = result.getInputValue();
+        int wordScore = WordcountAction.getWordCount(inputValue,
+                result.getWordLimit(), result.getWordThreshold());
+        int charScore = CharactercountAction.getCharCount(inputValue,
+                result.getCharLimit(), result.getCharThreshold());
+        Validator configurationDetails = Validator.builder()
+                .inputValue(inputValue)
+                .adapter(result.getAllowedAdapter())
+                .allowedSpecialChar(result.getAllowedCharacters())
+                .comparableChar(result.getComparableCharacters())
+                .threshold(result.getValidatorThreshold())
+                .build();
+        int validatorScore = getAdpterScore(configurationDetails);
+        int validatorNegativeScore = 0;
+        if (result.getRestrictedAdapterFlag() == 1 && validatorScore != 0) {
+            configurationDetails.setAdapter(result.getRestrictedAdapter());
+            validatorNegativeScore = getAdpterScore(configurationDetails);
+        }
+
+        double confidenceScore = wordScore + charScore + validatorScore - validatorNegativeScore;
+
+        result.setConfidenceScore(confidenceScore);
+
+        jdbi.useTransaction(handle -> {
+            handle.createUpdate("INSERT INTO sor_transaction.docnet_result" +
+                            "( file_ref_id, paper_no, group_id, sor_id, sor_item_id, sor_item_name, question, answer, created_user_id, tenant_id, created_on, confidence_score) " +
+                            "VALUES( :fileRefId, :paperNo, :groupId, :sorId, :sorItemId, :sorKey, :question, :inputValue, :createdUserId, :tenentId, NOW(), :confidenceScore);")
+                    .bindBean(result).execute();
+            log.debug(aMarker, "inserted {} into docnet result", scalarAdapter);
+        });
     }
 
 
