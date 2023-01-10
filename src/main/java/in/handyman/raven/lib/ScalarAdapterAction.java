@@ -1,7 +1,6 @@
 package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
@@ -40,7 +39,6 @@ public class ScalarAdapterAction implements IActionExecution {
 
     private final ScalarAdapter scalarAdapter;
     private final Marker aMarker;
-    private final ObjectMapper mapper = new ObjectMapper();
 
 
     public ScalarAdapterAction(final ActionExecutionAudit action, final Logger log,
@@ -60,7 +58,7 @@ public class ScalarAdapterAction implements IActionExecution {
             final List<ValidatorConfigurationDetail> validatorConfigurationDetails = new ArrayList<>();
 
             jdbi.useTransaction(handle -> {
-                final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(scalarAdapter.getResuletSet());
+                final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(scalarAdapter.getResultSet());
                 formattedQuery.forEach(sqlToExecute -> {
                     validatorConfigurationDetails.addAll(handle.createQuery(sqlToExecute).
                             mapToBean(ValidatorConfigurationDetail.class).stream().collect(Collectors.toList()));
@@ -167,10 +165,10 @@ public class ScalarAdapterAction implements IActionExecution {
             case "numeric":
                 confidenceScore = NumericvalidatorAction.getNumericScore(inputDetail);
                 break;
-            case "ner":
-                final String URI = action.getContext().get("copro.text-validation.url");
-                confidenceScore = NervalidatorAction.getNerScore(inputDetail, URI);
-                break;
+//            case "ner":
+//                final String URI = action.getContext().get("copro.text-validation.url");
+//                confidenceScore = NervalidatorAction.getNerScore(inputDetail, URI);
+//                break;
             case "date":
                 confidenceScore = DatevalidatorAction.getDateScore(inputDetail);
                 break;

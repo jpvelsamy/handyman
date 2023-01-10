@@ -6,7 +6,7 @@ import java.util.StringTokenizer;
 
 public class WordCountAdapter implements AdapterInterface {
     @Override
-    public int getThresoldScore(String sentence) throws Exception {
+    public int getThresholdScore(String sentence) throws Exception {
         if (sentence == null || sentence.isEmpty()) {
             return 0;
         }

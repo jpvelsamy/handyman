@@ -1,7 +1,7 @@
 package in.handyman.raven.lib.interfaces;
 
 public interface AdapterInterface {
-    int getThresoldScore(String sentence) throws Exception;
+    int getThresholdScore(String sentence) throws Exception;
 
     boolean getValidationModel(String sentence, String requiredFeature) throws Exception;
 

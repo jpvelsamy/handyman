@@ -29,9 +29,9 @@ public class PatientNameAdapter implements ScalarEvaluationInterface {
         if (nameValidator) {
             String[] splitInput = patientName.split(" ");
             for (String name : splitInput) {
-                int wordCount = wordCountAdapter.getThresoldScore(name);
+                int wordCount = wordCountAdapter.getThresholdScore(name);
                 formatScore = wordCount <= wcLimit ? formatScore + wcThresold : formatScore;
-                int charCount = charCountAdapter.getThresoldScore(name);
+                int charCount = charCountAdapter.getThresholdScore(name);
                 formatScore = charCount <= charLimit ? formatScore + charThreshold : formatScore;
             }
             formatScore = formatScore / splitInput.length;

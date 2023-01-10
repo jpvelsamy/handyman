@@ -38,7 +38,7 @@ public class CharactercountAction implements IActionExecution {
         int confidenceScore = 0;
         try {
             AdapterInterface charCountAdapter = new CharacterCountAdapter();
-            int wordCount = charCountAdapter.getThresoldScore(input);
+            int wordCount = charCountAdapter.getThresholdScore(input);
             confidenceScore = wordCount <= countLimit ? threshold : 0;
         } catch (Exception ex) {
             throw new HandymanException("Failed to execute char count", ex);
@@ -51,7 +51,7 @@ public class CharactercountAction implements IActionExecution {
         try {
             log.info(aMarker, "<-------Character Count Action for {} has been started------->" + charactercount.getName());
             AdapterInterface charCountAdapter = new CharacterCountAdapter();
-            int wordCount = charCountAdapter.getThresoldScore(charactercount.getInputValue());
+            int wordCount = charCountAdapter.getThresholdScore(charactercount.getInputValue());
             int confidenceScore = wordCount <= Integer.parseInt(charactercount.getCountLimit())
                     ? Integer.parseInt(charactercount.getThresholdValue()) : 0;
             action.getContext().put(charactercount.getName().concat(".score"), String.valueOf(confidenceScore));
