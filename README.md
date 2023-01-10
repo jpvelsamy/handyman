@@ -12,9 +12,7 @@
  > git checkout {{branch}}
  
 ## To Clean, Compile and build, run the below maven commands 
-  1. Inside handyman/handyman.parent  
-     > mvn clean compile install package -Dmaven.test.skip=true
-  2. Inside handyman/handyman.parent/handyman 
-     > mvn clean compile install scala:compile install package -Dmaven.test.skip=true
-    
- ### Generated jar file available in handyman/handyman.parent/handyman/target folder as *handyman.server-<version>-SNAPSHOT.jar*
+  1. In the project root dir
+     > mvn clean antlr4:antlr4 test -Dtest=ActionGenerationTest#generate compile install
+  
+ ### Generated jar file available in target folder as *handyman-raven-vm-{{version}}.jar*
