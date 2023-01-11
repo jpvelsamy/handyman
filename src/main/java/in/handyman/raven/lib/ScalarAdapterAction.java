@@ -21,6 +21,7 @@ import org.slf4j.MarkerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
         actionName = "ScalarAdapter"
 )
 public class ScalarAdapterAction implements IActionExecution {
+    public static final String NER = "ner";
     private final ActionExecutionAudit action;
 
     private final Logger log;
@@ -87,11 +89,16 @@ public class ScalarAdapterAction implements IActionExecution {
             final int batchSize = validatorConfigurationDetails.size() / parallelism;
             if (parallelism > 1 && batchSize > 0) {
                 log.info(aMarker, "parallel processing has started" + scalarAdapter.getName());
+                final List<ValidatorConfigurationDetail> nerValidatorConfigurationDetails = validatorConfigurationDetails.stream().filter(validatorConfigurationDetail -> Objects.equals(validatorConfigurationDetail.getAllowedAdapter(), "")).collect(Collectors.toList());
 
-                final List<List<ValidatorConfigurationDetail>> donutLineItemPartitions = Lists.partition(validatorConfigurationDetails, batchSize);
-                final CountDownLatch countDownLatch = new CountDownLatch(donutLineItemPartitions.size());
+                validatorConfigurationDetails.removeAll(nerValidatorConfigurationDetails);
+
+                final List<List<ValidatorConfigurationDetail>> partition = Lists.partition(validatorConfigurationDetails, batchSize);
+
+                final CountDownLatch countDownLatch = new CountDownLatch(partition.size());
                 final ExecutorService executorService = Executors.newFixedThreadPool(parallelism);
-                donutLineItemPartitions.forEach(items -> executorService.submit(() -> {
+
+                partition.forEach(items -> executorService.submit(() -> {
                     try {
                         items.forEach(validatorConfigurationDetail -> {
 
@@ -104,6 +111,11 @@ public class ScalarAdapterAction implements IActionExecution {
                         log.info(aMarker, " {} batch processed", countDownLatch.getCount());
                     }
                 }));
+
+                if (!nerValidatorConfigurationDetails.isEmpty()) {
+                    doProcess(jdbi, nerValidatorConfigurationDetails);
+                }
+
                 countDownLatch.await();
 
             } else {
@@ -165,10 +177,10 @@ public class ScalarAdapterAction implements IActionExecution {
             case "numeric":
                 confidenceScore = NumericvalidatorAction.getNumericScore(inputDetail);
                 break;
-//            case "ner":
-//                final String URI = action.getContext().get("copro.text-validation.url");
-//                confidenceScore = NervalidatorAction.getNerScore(inputDetail, URI);
-//                break;
+            case NER:
+                final String URI = action.getContext().get("copro.text-validation.url");
+                confidenceScore = NervalidatorAction.getNerScore(inputDetail, URI);
+                break;
             case "date":
                 confidenceScore = DatevalidatorAction.getDateScore(inputDetail);
                 break;

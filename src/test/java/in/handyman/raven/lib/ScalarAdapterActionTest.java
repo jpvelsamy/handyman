@@ -23,7 +23,7 @@ class ScalarAdapterActionTest {
         final ActionExecutionAudit action = ActionExecutionAudit.builder()
                 .build();
         action.setRootPipelineId(11011L);
-        action.getContext().put(DonutDocQaAction.ATTRIBUTION_URL, "http://localhost:10189/copro/attribution/kvp-docnet");
+        action.getContext().put("copro.text-validation.url", "http://localhost:10189/copro/text-validation/patient");
         final ScalarAdapterAction scalarAdapterAction = new ScalarAdapterAction(action, log, build);
         scalarAdapterAction.execute();
 
