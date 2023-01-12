@@ -36,15 +36,13 @@ public class AlphavalidatorAction implements IActionExecution {
     }
 
     public static int getAlphaScore(Validator adapter) {
-        int confidenceScore = 0;
         try {
             AdapterInterface alphaAdapter = new AlphaAdapter();
             boolean validator = alphaAdapter.getValidationModel(adapter.getInputValue(), adapter.getAllowedSpecialChar());
-            confidenceScore = validator ? adapter.getThreshold() : 0;
+            return validator ? adapter.getThreshold() : 0;
         } catch (Exception ex) {
             throw new HandymanException("Failed to execute", ex);
         }
-        return confidenceScore;
     }
 
     @Override

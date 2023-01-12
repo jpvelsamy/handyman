@@ -36,17 +36,15 @@ public class DatevalidatorAction implements IActionExecution {
     }
 
     public static int getDateScore(Validator adapter) {
-        int confidenceScore = 0;
         try {
             AdapterInterface dobValidatorAdapter = new DateAdapter();
             int comparableYear = Integer.parseInt(adapter.getComparableChar());
             String[] dateFormats = adapter.getAllowedSpecialChar().split(",");
             boolean dobValidator = dobValidatorAdapter.getDateValidationModel(adapter.getInputValue(), comparableYear, dateFormats);
-            confidenceScore = dobValidator ? adapter.getThreshold() : 0;
+            return dobValidator ? adapter.getThreshold() : 0;
         } catch (Exception ex) {
-            return 0;
+            throw new HandymanException("Failed to execute", ex);
         }
-        return confidenceScore;
     }
 
     @Override
