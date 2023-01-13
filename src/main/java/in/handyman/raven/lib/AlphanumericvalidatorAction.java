@@ -40,10 +40,10 @@ public class AlphanumericvalidatorAction implements IActionExecution {
         try {
             AdapterInterface aplhaNumericAdapter = new AlphaNumericAdapter();
             boolean validator = aplhaNumericAdapter.getValidationModel(adapter.getInputValue(), adapter.getAllowedSpecialChar());
+            return validator ? adapter.getThreshold() : 0;
         } catch (Exception ex) {
             throw new HandymanException("Failed to execute", ex);
         }
-        return 0;
     }
 
     @Override

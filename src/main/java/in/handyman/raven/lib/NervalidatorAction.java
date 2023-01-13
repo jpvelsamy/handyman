@@ -36,15 +36,13 @@ public class NervalidatorAction implements IActionExecution {
     }
 
     public static int getNerScore(Validator adapter, String uri) {
-        int confidenceScore = 0;
         try {
             AdapterInterface nameAdapter = new NameAdapter();
             boolean validator = nameAdapter.getValidationModel(adapter.getInputValue(), uri);
-            confidenceScore = validator ? adapter.getThreshold() : 0;
+            return validator ? adapter.getThreshold() : 0;
         } catch (Exception ex) {
             throw new HandymanException("Failed to execute", ex);
         }
-        return confidenceScore;
     }
 
     @Override

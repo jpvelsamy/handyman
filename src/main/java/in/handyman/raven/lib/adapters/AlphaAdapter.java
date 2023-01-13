@@ -18,7 +18,7 @@ public class AlphaAdapter implements AdapterInterface {
     }
 
     protected static String replaceSplChars(final String specialCharacters, String input) {
-        final char targetChar = Character.MIN_VALUE;
+        /*final char targetChar = Character.MI
         final Set<Character> inputCharsSet = input.chars().mapToObj(c -> (char) c).collect(Collectors.toSet());
         final Set<Character> specialCharactersSet = specialCharacters.chars().mapToObj(c -> (char) c).collect(Collectors.toSet());
         final boolean retainAll = inputCharsSet.retainAll(specialCharactersSet);
@@ -26,8 +26,13 @@ public class AlphaAdapter implements AdapterInterface {
             for (final Character chars : inputCharsSet) {
                 input = input.replace(chars, targetChar);
             }
+        }*/
+        for (int i = 0; i < specialCharacters.length(); i++) {
+            if (input.contains(Character.toString(specialCharacters.charAt(i)))) {
+                input = input.replace(Character.toString(specialCharacters.charAt(i)), "");
+            }
         }
-        return input;
+            return input;
     }
 
     @Override
