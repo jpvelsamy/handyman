@@ -4,6 +4,7 @@ import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
+import in.handyman.raven.lib.adapters.AlphaAdapter;
 import in.handyman.raven.lib.adapters.NameAdapter;
 import in.handyman.raven.lib.interfaces.AdapterInterface;
 import in.handyman.raven.lib.model.Nervalidator;
@@ -40,6 +41,13 @@ public class NervalidatorAction implements IActionExecution {
             AdapterInterface nameAdapter = new NameAdapter();
             boolean validator = nameAdapter.getValidationModel(adapter.getInputValue(), uri);
             return validator ? adapter.getThreshold() : 0;
+            AdapterInterface alphaAdapter = new AlphaAdapter();
+            boolean alphaValidator = alphaAdapter.getValidationModel(adapter.getInputValue(), adapter.getAllowedSpecialChar());
+            if (alphaValidator) {
+                AdapterInterface nameAdapter = new NameAdapter();
+                boolean validator = nameAdapter.getValidationModel(adapter.getInputValue(), uri);
+                confidenceScore = validator ? adapter.getThreshold() : 0;
+            }
         } catch (Exception ex) {
             throw new HandymanException("Failed to execute", ex);
         }

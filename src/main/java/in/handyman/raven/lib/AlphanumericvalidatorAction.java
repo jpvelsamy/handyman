@@ -36,7 +36,6 @@ public class AlphanumericvalidatorAction implements IActionExecution {
     }
 
     public static int getAlphaNumericScore(Validator adapter) {
-
         try {
             AdapterInterface aplhaNumericAdapter = new AlphaNumericAdapter();
             boolean validator = aplhaNumericAdapter.getValidationModel(adapter.getInputValue(), adapter.getAllowedSpecialChar());
