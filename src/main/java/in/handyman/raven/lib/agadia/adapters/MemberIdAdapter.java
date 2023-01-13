@@ -23,10 +23,10 @@ public class MemberIdAdapter implements ScalarEvaluationInterface {
         int validatorThresold = adapter.getValidatorThreshold();
         String validatorFeature = adapter.getValidatorDetail();
 
-        int wordCount = wordCountAdapter.getThresoldScore(memberId);
+        int wordCount = wordCountAdapter.getThresholdScore(memberId);
         confidenceScore = wordCount <= wcLimit ? confidenceScore + wcThresold : confidenceScore;
 
-        int charCount = charCountAdapter.getThresoldScore(memberId);
+        int charCount = charCountAdapter.getThresholdScore(memberId);
         confidenceScore = charCount <= charLimit ? confidenceScore + charThreshold : confidenceScore;
 
         boolean idValidator = idValidatorAdapter.getValidationModel(memberId, validatorFeature);

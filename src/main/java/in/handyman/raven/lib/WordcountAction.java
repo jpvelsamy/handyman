@@ -38,7 +38,7 @@ public class WordcountAction implements IActionExecution {
         int confidenceScore = 0;
         try {
             AdapterInterface wordCountAdapter = new WordCountAdapter();
-            int wordCount = wordCountAdapter.getThresoldScore(input);
+            int wordCount = wordCountAdapter.getThresholdScore(input);
             confidenceScore = wordCount <= countLimit ? threshold : 0;
         } catch (Exception e) {
             throw new HandymanException("Failed to execute", e);
@@ -51,7 +51,7 @@ public class WordcountAction implements IActionExecution {
         try {
             log.info(aMarker, "<-------Word Count Action for {} has been started------->" + wordcount.getName());
             AdapterInterface wordCountAdapter = new WordCountAdapter();
-            int wordCount = wordCountAdapter.getThresoldScore(wordcount.getInputValue());
+            int wordCount = wordCountAdapter.getThresholdScore(wordcount.getInputValue());
             int confidenceScore = wordCount <= Integer.parseInt(wordcount.getCountLimit())
                     ? Integer.parseInt(wordcount.getThresholdValue()) : 0;
             action.getContext().put(wordcount.getName().concat(".score"), String.valueOf(confidenceScore));

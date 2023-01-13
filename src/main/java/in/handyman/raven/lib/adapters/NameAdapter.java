@@ -45,7 +45,7 @@ public class NameAdapter implements AdapterInterface {
     }
 
     @Override
-    public int getThresoldScore(String sentence) throws Exception {
+    public int getThresholdScore(String sentence) throws Exception {
         return 0;
     }
 }

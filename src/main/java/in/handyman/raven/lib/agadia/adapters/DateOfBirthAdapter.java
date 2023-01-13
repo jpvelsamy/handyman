@@ -28,10 +28,10 @@ public class DateOfBirthAdapter implements ScalarEvaluationInterface {
         confidenceScore = dobValidator ? confidenceScore + validatorThresold : confidenceScore;
 
         if (dobValidator) {
-            int wordCount = wordCountAdapter.getThresoldScore(dob);
+            int wordCount = wordCountAdapter.getThresholdScore(dob);
             confidenceScore = wordCount <= wcLimit ? confidenceScore + wcThresold : confidenceScore;
 
-            int charCount = charCountAdapter.getThresoldScore(dob);
+            int charCount = charCountAdapter.getThresholdScore(dob);
             confidenceScore = charCount <= charLimit ? confidenceScore + charThreshold : confidenceScore;
         }
         return confidenceScore;
