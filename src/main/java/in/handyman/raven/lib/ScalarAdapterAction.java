@@ -94,7 +94,6 @@ public class ScalarAdapterAction implements IActionExecution {
                 validatorConfigurationDetails.removeAll(nerValidatorConfigurationDetails);
 
                 final List<List<ValidatorConfigurationDetail>> partition = Lists.partition(validatorConfigurationDetails, batchSize);
-
                 final CountDownLatch countDownLatch = new CountDownLatch(partition.size());
                 final ExecutorService executorService = Executors.newFixedThreadPool(parallelism);
 
@@ -153,10 +152,19 @@ public class ScalarAdapterAction implements IActionExecution {
         }
 
         double confidenceScore = wordScore + charScore + validatorScore - validatorNegativeScore;
-
+        result.setWordScore(wordScore);
+        result.setCharScore(charScore);
+        result.setValidatorScore(validatorScore);
+        result.setValidatorNegativeScore(validatorNegativeScore);
         result.setConfidenceScore(confidenceScore);
+        result.setProcessId(String.valueOf(action.getProcessId()));
 
         jdbi.useTransaction(handle -> {
+            handle.createUpdate("  INSERT INTO sor_transaction.adapter_result\n" +
+                    " ( file_ref_id, paper_no, group_id, file_name, process_id, sor_id, sor_item_id, sor_item_name, answer, created_user_id, tenant_id, created_on, word_score, char_score, validator_score_allowed, validator_score_negative)\n" +
+                    " VALUES( :fileRefId, :paperNo, :groupId, split_part(:fileRefId,'_',1), :processId , :sorId, :sorItemId, :sorKey, :inputValue, :createdUserId, :tenentId, NOW(), :wordScore , :charScore , :validatorScore, :validatorNegativeScore);\n" +
+                    "   ").bindBean(result).execute();
+
             handle.createUpdate("INSERT INTO sor_transaction.docnet_result" +
                             "( file_ref_id, paper_no, group_id, sor_id, sor_item_id, sor_item_name, question, answer, created_user_id, tenant_id, created_on, confidence_score) " +
                             "VALUES( :fileRefId, :paperNo, :groupId, :sorId, :sorItemId, :sorKey, :question, :inputValue, :createdUserId, :tenentId, NOW(), :confidenceScore);")
@@ -200,6 +208,7 @@ public class ScalarAdapterAction implements IActionExecution {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ValidatorConfigurationDetail {
         private int sorId;
+        private String ProcessId;
         private String sorKey;
         private String question;
         private String inputValue;
@@ -219,8 +228,11 @@ public class ScalarAdapterAction implements IActionExecution {
         private int sorItemId;
         private String createdUserId;
         private String tenentId;
+        private double wordScore;
+        private double charScore;
+        private double validatorScore;
+        private double validatorNegativeScore;
         private double confidenceScore;
-
         private String sorItemName;
     }
 }
