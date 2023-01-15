@@ -67,8 +67,8 @@ public class ScalarAdapterAction implements IActionExecution {
                 });
             });
 
-
-            doProcess(jdbi, validatorConfigurationDetails);
+            doCompute(jdbi, validatorConfigurationDetails);
+            //doProcess(jdbi, validatorConfigurationDetails);
             log.info(aMarker, "scalar has completed" + scalarAdapter.getName());
         } catch (Exception e) {
             action.getContext().put(scalarAdapter.getName().concat(".error"), "true");
@@ -77,7 +77,7 @@ public class ScalarAdapterAction implements IActionExecution {
         }
     }
 
-    private void doProcess(final Jdbi jdbi, final List<ValidatorConfigurationDetail> validatorConfigurationDetails) {
+  /*  private void doProcess(final Jdbi jdbi, final List<ValidatorConfigurationDetail> validatorConfigurationDetails) {
         final int parallelism;
         if (scalarAdapter.getForkBatchSize() != null) {
             parallelism = Integer.parseInt(scalarAdapter.getForkBatchSize());
@@ -129,47 +129,60 @@ public class ScalarAdapterAction implements IActionExecution {
         } catch (Exception e) {
             log.error(aMarker, "The Failure Response {} --> {}", scalarAdapter.getName(), e.getMessage(), e);
         }
-    }
+    }*/
 
-    private void doCompute(final Jdbi jdbi, final ValidatorConfigurationDetail result) {
-        String inputValue = result.getInputValue();
-        int wordScore = WordcountAction.getWordCount(inputValue,
-                result.getWordLimit(), result.getWordThreshold());
-        int charScore = CharactercountAction.getCharCount(inputValue,
-                result.getCharLimit(), result.getCharThreshold());
-        Validator configurationDetails = Validator.builder()
-                .inputValue(inputValue)
-                .adapter(result.getAllowedAdapter())
-                .allowedSpecialChar(result.getAllowedCharacters())
-                .comparableChar(result.getComparableCharacters())
-                .threshold(result.getValidatorThreshold())
-                .build();
-        int validatorScore = computeAdapterScore(configurationDetails);
-        int validatorNegativeScore = 0;
-        if (result.getRestrictedAdapterFlag() == 1 && validatorScore != 0) {
-            configurationDetails.setAdapter(result.getRestrictedAdapter());
-            validatorNegativeScore = computeAdapterScore(configurationDetails);
+    private void doCompute(final Jdbi jdbi, List<ValidatorConfigurationDetail> listOfDetails) {
+        try {
+            for(ValidatorConfigurationDetail result: listOfDetails) {
+                String inputValue = result.getInputValue();
+                int wordScore = WordcountAction.getWordCount(inputValue,
+                        result.getWordLimit(), result.getWordThreshold());
+                int charScore = CharactercountAction.getCharCount(inputValue,
+                        result.getCharLimit(), result.getCharThreshold());
+                Validator configurationDetails = Validator.builder()
+                        .inputValue(inputValue)
+                        .adapter(result.getAllowedAdapter())
+                        .allowedSpecialChar(result.getAllowedCharacters())
+                        .comparableChar(result.getComparableCharacters())
+                        .threshold(result.getValidatorThreshold())
+                        .build();
+
+                if(inputValue.isEmpty()){
+                    int validatorScore = computeAdapterScore(configurationDetails);
+
+                }
+                int validatorScore = computeAdapterScore(configurationDetails);
+                int validatorNegativeScore = 0;
+                if (result.getRestrictedAdapterFlag() == 1 && validatorScore != 0) {
+                    configurationDetails.setAdapter(result.getRestrictedAdapter());
+                    validatorNegativeScore = computeAdapterScore(configurationDetails);
+                }
+
+                double confidenceScore = wordScore + charScore + validatorScore - validatorNegativeScore;
+                result.setWordScore(wordScore);
+                result.setCharScore(charScore);
+                result.setValidatorScore(validatorScore);
+                result.setValidatorNegativeScore(validatorNegativeScore);
+                result.setConfidenceScore(confidenceScore);
+                result.setProcessId(String.valueOf(action.getProcessId()));
+
+                jdbi.useTransaction(handle -> {
+                    handle.createUpdate("  INSERT INTO sor_transaction.adapter_result\n" +
+                            " ( file_ref_id, paper_no, group_id, file_name, process_id, sor_id, sor_item_id, sor_item_name, answer, created_user_id, tenant_id, created_on, word_score, char_score, validator_score_allowed, validator_score_negative)\n" +
+                            " VALUES( :fileRefId, :paperNo, :groupId, :fileRefId, :processId , :sorId, :sorItemId, :sorKey, :inputValue, :createdUserId, :tenentId, NOW(), :wordScore , :charScore , :validatorScore, :validatorNegativeScore);\n" +
+                            "   ").bindBean(result).execute();
+
+                    handle.createUpdate("INSERT INTO sor_transaction.docnet_result" +
+                                    "( file_ref_id, paper_no, group_id, sor_id, sor_item_id, sor_item_name, question, answer, created_user_id, tenant_id, created_on, confidence_score) " +
+                                    "VALUES( :fileRefId, :paperNo, :groupId, :sorId, :sorItemId, :sorKey, :question, :inputValue, :createdUserId, :tenentId, NOW(), :confidenceScore);")
+                            .bindBean(result).execute();
+                });
+            }
+        } catch (Exception e) {
+            action.getContext().put(scalarAdapter.getName().concat(".error"), "true");
+            log.info(aMarker, "The Exception occurred ", e);
+            throw new HandymanException("Failed to execute", e);
         }
-
-        double confidenceScore = wordScore + charScore + validatorScore - validatorNegativeScore;
-        result.setWordScore(wordScore);
-        result.setCharScore(charScore);
-        result.setValidatorScore(validatorScore);
-        result.setValidatorNegativeScore(validatorNegativeScore);
-        result.setConfidenceScore(confidenceScore);
-        result.setProcessId(String.valueOf(action.getProcessId()));
-
-        jdbi.useTransaction(handle -> {
-            handle.createUpdate("  INSERT INTO sor_transaction.adapter_result\n" +
-                    " ( file_ref_id, paper_no, group_id, file_name, process_id, sor_id, sor_item_id, sor_item_name, answer, created_user_id, tenant_id, created_on, word_score, char_score, validator_score_allowed, validator_score_negative)\n" +
-                    " VALUES( :fileRefId, :paperNo, :groupId, split_part(:fileRefId,'_',1), :processId , :sorId, :sorItemId, :sorKey, :inputValue, :createdUserId, :tenentId, NOW(), :wordScore , :charScore , :validatorScore, :validatorNegativeScore);\n" +
-                    "   ").bindBean(result).execute();
-
-            handle.createUpdate("INSERT INTO sor_transaction.docnet_result" +
-                            "( file_ref_id, paper_no, group_id, sor_id, sor_item_id, sor_item_name, question, answer, created_user_id, tenant_id, created_on, confidence_score) " +
-                            "VALUES( :fileRefId, :paperNo, :groupId, :sorId, :sorItemId, :sorKey, :question, :inputValue, :createdUserId, :tenentId, NOW(), :confidenceScore);")
-                    .bindBean(result).execute();
-        });
     }
 
 

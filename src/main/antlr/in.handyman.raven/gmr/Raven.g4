@@ -602,9 +602,8 @@ scalarAdapter:
       'scalarAdapter' 'as' name=STRING
       'on-resource-conn' resourceConn=STRING
       'using-docnut-result'
-      '{' resuletSet=STRING  '}'
-       ('on-condition' condition=expression)*
-       ('on-parallel-fielding' forkBatchSize=STRING)*;
+      '{' resultSet=STRING  '}'
+       ('on-condition' condition=expression)*;
 
 resource : STRING;
 
