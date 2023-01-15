@@ -103,7 +103,9 @@ action:
     |numericvalidator
     |nervalidator
     |donutDocQa
-    |scalarAdapter);
+    |scalarAdapter
+    |phraseMatchPaperFilter
+    |zeroShotClassifierPaperFilter);
 
 
 multitude:
@@ -604,6 +606,27 @@ scalarAdapter:
       'using-docnut-result'
       '{' resultSet=STRING  '}'
        ('on-condition' condition=expression)*;
+
+phraseMatchPaperFilter:
+    'phrase-match-paper-filter' 'as' name=STRING
+    'with-origin-id' originId=STRING
+    'for-paper' paperNo=STRING 'group-id' groupId=STRING
+    'on-resource-conn' resourceConn=STRING
+    'for-page-content'  pageContent=STRING
+    'with-keys-to-filter' keysToFilter=STRING
+    'with-process-id' processID=STRING
+    '{'  '}'('on-condition' condition=expression)* ;
+
+zeroShotClassifierPaperFilter:
+    'zero-shot-classifier-paper-filter' 'as' name=STRING
+    'with-origin-id' originId=STRING
+    'for-paper' paperNo=STRING 'group-id' groupId=STRING
+    'on-resource-conn' resourceConn=STRING
+    'for-page-content'  pageContent=STRING
+    'with-keys-to-filter' keysToFilter=STRING
+    'with-process-id' processID=STRING
+    '{'  '}'('on-condition' condition=expression)* ;
+
 
 resource : STRING;
 
