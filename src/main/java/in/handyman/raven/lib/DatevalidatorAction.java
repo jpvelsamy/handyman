@@ -24,24 +24,23 @@ import java.util.Optional;
 )
 public class DatevalidatorAction implements IActionExecution {
     private final ActionExecutionAudit action;
-
     private final Logger log;
-
     private final Datevalidator datevalidator;
-
     private final Marker aMarker;
+    AdapterInterface dobValidatorAdapter ;
+
 
     public DatevalidatorAction(final ActionExecutionAudit action, final Logger log,
                                final Object datevalidator) {
         this.datevalidator = (Datevalidator) datevalidator;
         this.action = action;
         this.log = log;
+        this.dobValidatorAdapter = new DateAdapter();
         this.aMarker = MarkerFactory.getMarker(" Datevalidator:" + this.datevalidator.getName());
     }
 
-    public static int getDateScore(Validator adapter) {
+    int getDateScore(Validator adapter) {
         try {
-            AdapterInterface dobValidatorAdapter = new DateAdapter();
             int currentYear = Integer.parseInt(new SimpleDateFormat("yyyy").format(new Date()));
             int comparableYear = adapter.getComparableChar().isEmpty() ? currentYear : Integer.parseInt(adapter.getComparableChar());
             String[] dateFormats = adapter.getAllowedSpecialChar().split(",");

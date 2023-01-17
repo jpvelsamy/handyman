@@ -26,18 +26,20 @@ public class NumericvalidatorAction implements IActionExecution {
     private final Numericvalidator numericvalidator;
 
     private final Marker aMarker;
+    AdapterInterface numericAdapter;
+
 
     public NumericvalidatorAction(final ActionExecutionAudit action, final Logger log,
                                   final Object numericvalidator) {
         this.numericvalidator = (Numericvalidator) numericvalidator;
         this.action = action;
         this.log = log;
+        this.numericAdapter = new NumericAdapter();
         this.aMarker = MarkerFactory.getMarker(" Numericvalidator:" + this.numericvalidator.getName());
     }
 
-    public static int getNumericScore(Validator adapter) {
+    int getNumericScore(Validator adapter) {
         try {
-            AdapterInterface numericAdapter = new NumericAdapter();
             boolean validator = numericAdapter.getValidationModel(adapter.getInputValue(), adapter.getAllowedSpecialChar());
             return validator ? adapter.getThreshold() : 0;
         } catch (Exception ex) {

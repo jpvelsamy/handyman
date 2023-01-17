@@ -26,6 +26,9 @@ public class NervalidatorAction implements IActionExecution {
     private final String URI;
     private final Nervalidator nervalidator;
     private final Marker aMarker;
+    AdapterInterface alphaAdapter;
+    AdapterInterface nameAdapter;
+
 
     public NervalidatorAction(final ActionExecutionAudit action, final Logger log,
                               final Object nervalidator) {
@@ -33,16 +36,16 @@ public class NervalidatorAction implements IActionExecution {
         this.action = action;
         this.log = log;
         this.URI = action.getContext().get("copro.text-validation.url");
+        this.alphaAdapter = new AlphaAdapter();
+        this.nameAdapter = new NameAdapter();
         this.aMarker = MarkerFactory.getMarker(" Nervalidator:" + this.nervalidator.getName());
     }
 
-    public static int getNerScore(Validator adapter, String uri) {
+    int getNerScore(Validator adapter, String uri) {
         int confidenceScore = 0;
         try {
-            AdapterInterface alphaAdapter = new AlphaAdapter();
             boolean alphaValidator = alphaAdapter.getValidationModel(adapter.getInputValue(), adapter.getAllowedSpecialChar());
             if (alphaValidator) {
-                AdapterInterface nameAdapter = new NameAdapter();
                 boolean validator = nameAdapter.getValidationModel(adapter.getInputValue(), uri);
                 confidenceScore = validator ? adapter.getThreshold() : 0;
             }
