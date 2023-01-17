@@ -58,7 +58,7 @@ public class NervalidatorAction implements IActionExecution {
             log.info(aMarker, "<-------Ner Validator Count Action for {} has been started------->" + nervalidator.getName());
             AdapterInterface nameAdapter = new NameAdapter();
             boolean validator = nameAdapter.getValidationModel(nervalidator.getInputValue(), URI);
-            int confidenceScore = validator ? Integer.valueOf(nervalidator.getNerThreshold()) : 0;
+            int confidenceScore = validator ? Integer.parseInt(nervalidator.getNerThreshold()) : 0;
             action.getContext().put("validator.score", String.valueOf(confidenceScore));
             log.info(aMarker, "<-------Ner Validator Action for {} has been completed------->" + nervalidator.getName());
 
