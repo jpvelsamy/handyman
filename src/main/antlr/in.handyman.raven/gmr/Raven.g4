@@ -609,10 +609,9 @@ scalarAdapter:
 
 intellimatch:
          'intellimatch' 'as' name=STRING
-         'actual-sentence' actualSentence=STRING
-         'compare-sentence' compareSentence=STRING
+         'on-resource-conn' resourceConn=STRING
          'match-result' matchResult=STRING
-         'using' '{' '}' ('on-condition' condition=expression)*;
+         'using' '{' inputSet=STRING '}' ('on-condition' condition=expression)*;
 
 
 resource : STRING;

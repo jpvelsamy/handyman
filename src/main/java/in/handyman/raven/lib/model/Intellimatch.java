@@ -24,11 +24,11 @@ import lombok.NoArgsConstructor;
 public class Intellimatch implements IActionContext {
   private String name;
 
-  private String actualSentence;
-
-  private String compareSentence;
+  private String resourceConn;
 
   private String matchResult;
+
+  private String inputSet;
 
   private Boolean condition = true;
 }
