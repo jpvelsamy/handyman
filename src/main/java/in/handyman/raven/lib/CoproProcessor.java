@@ -1,5 +1,6 @@
 package in.handyman.raven.lib;
 
+import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.util.CommonQueryUtil;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.PreparedBatch;
@@ -30,14 +31,26 @@ public class CoproProcessor<T> {
 
     private final T stoppingSeed;
 
-    public CoproProcessor(final ArrayBlockingQueue<T> queue, final Class<T> targetClass, final Jdbi jdbi, final Logger log, final T stoppingSeed) {
+    private final List<String> nodes;
+    private final Integer nodeSize;
+
+    private final AtomicInteger nodeCount = new AtomicInteger();
+
+    public CoproProcessor(final ArrayBlockingQueue<T> queue, final Class<T> targetClass, final Jdbi jdbi, final Logger log, final T stoppingSeed, final List<String> nodes) {
         this.queue = queue;
         this.stoppingSeed = stoppingSeed;
+        this.nodes = nodes;
         this.executorService = Executors.newWorkStealingPool();
         this.targetClass = targetClass;
         this.jdbi = jdbi;
         this.log = log;
-        this.log.info("Copro processor created");
+        this.nodeSize = nodes.size();
+        if (nodeSize > 0) {
+            this.log.info("Copro processor created for copro nodes {}", nodeSize);
+        } else {
+            this.log.info("Failed to create Copro processor due to empty copro nodes");
+            throw new HandymanException("Failed to create Copro processor due to empty copro nodes");
+        }
     }
 
     public void startProducer(final String sqlQuery, final Integer readBatchSize) {
@@ -73,7 +86,8 @@ public class CoproProcessor<T> {
                     try {
                         final T take = queue.take();
                         if (tPredicate.test(take)) {
-                            final T process = callable.process(take);
+                            final int index = nodeCount.incrementAndGet() % nodeSize;
+                            final T process = callable.process(nodes.get(index), take);
                             processedEntity.add(process);
                             if (counter.getAndIncrement() == writeBatchSize) {
                                 jdbi.useTransaction(handle -> {
@@ -109,7 +123,7 @@ public class CoproProcessor<T> {
 
     public interface ConsumerProcess<T> {
 
-        T process(final T entity);
+        T process(final String endpoint, final T entity);
 
     }
 }
