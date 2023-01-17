@@ -800,6 +800,46 @@ public interface RavenListener extends ParseTreeListener {
 	 */
 	void exitScalarAdapter(RavenParser.ScalarAdapterContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link RavenParser#phraseMatchPaperFilter}.
+	 * @param ctx the parse tree
+	 */
+	void enterPhraseMatchPaperFilter(RavenParser.PhraseMatchPaperFilterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#phraseMatchPaperFilter}.
+	 * @param ctx the parse tree
+	 */
+	void exitPhraseMatchPaperFilter(RavenParser.PhraseMatchPaperFilterContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#zeroShotClassifierPaperFilter}.
+	 * @param ctx the parse tree
+	 */
+	void enterZeroShotClassifierPaperFilter(RavenParser.ZeroShotClassifierPaperFilterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#zeroShotClassifierPaperFilter}.
+	 * @param ctx the parse tree
+	 */
+	void exitZeroShotClassifierPaperFilter(RavenParser.ZeroShotClassifierPaperFilterContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#assetInfo}.
+	 * @param ctx the parse tree
+	 */
+	void enterAssetInfo(RavenParser.AssetInfoContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#assetInfo}.
+	 * @param ctx the parse tree
+	 */
+	void exitAssetInfo(RavenParser.AssetInfoContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#dataExtraction}.
+	 * @param ctx the parse tree
+	 */
+	void enterDataExtraction(RavenParser.DataExtractionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#dataExtraction}.
+	 * @param ctx the parse tree
+	 */
+	void exitDataExtraction(RavenParser.DataExtractionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link RavenParser#resource}.
 	 * @param ctx the parse tree
 	 */

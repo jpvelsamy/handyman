@@ -105,7 +105,9 @@ action:
     |donutDocQa
     |scalarAdapter
     |phraseMatchPaperFilter
-    |zeroShotClassifierPaperFilter);
+    |zeroShotClassifierPaperFilter
+    |dataExtraction
+    |assetInfo);
 
 
 multitude:
@@ -627,6 +629,16 @@ zeroShotClassifierPaperFilter:
     'with-process-id' processID=STRING
     '{'  '}'('on-condition' condition=expression)* ;
 
+
+assetInfo:
+	'assetInfo' 'as' name=STRING
+	'on-resource-conn' resourceConn=STRING
+	'using' '{' values=STRING '}' ('on-condition' condition=expression)* ;
+
+dataExtraction:
+	'data-extraction' 'as' name=STRING
+	'on-resource-conn' resourceConn=STRING
+	'using' '{' value=STRING '}' ('on-condition' condition=expression)* ;
 
 resource : STRING;
 
