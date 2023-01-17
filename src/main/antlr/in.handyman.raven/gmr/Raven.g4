@@ -103,6 +103,7 @@ action:
     |numericvalidator
     |nervalidator
     |donutDocQa
+    |intellimatch
     |scalarAdapter);
 
 
@@ -605,6 +606,14 @@ scalarAdapter:
       'using-docnut-result'
       '{' resultSet=STRING  '}'
        ('on-condition' condition=expression)*;
+
+intellimatch:
+         'intellimatch' 'as' name=STRING
+         'actual-sentence' actualSentence=STRING
+         'compare-sentence' compareSentence=STRING
+         'match-result' matchResult=STRING
+         'using' '{' '}' ('on-condition' condition=expression)*;
+
 
 resource : STRING;
 
