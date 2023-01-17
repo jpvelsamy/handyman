@@ -36,7 +36,7 @@ public class CoproProcessor<T> {
 
     private final AtomicInteger nodeCount = new AtomicInteger();
 
-    public CoproProcessor(final ArrayBlockingQueue<T> queue, final Class<T> targetClass, final Jdbi jdbi, final Logger log, final T stoppingSeed, final List<String> nodes) {
+    public CoproProcessor(final BlockingQueue<T> queue, final Class<T> targetClass, final Jdbi jdbi, final Logger log, final T stoppingSeed, final List<String> nodes) {
         this.queue = queue;
         this.stoppingSeed = stoppingSeed;
         this.nodes = nodes;
