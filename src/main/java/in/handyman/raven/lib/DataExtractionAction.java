@@ -15,6 +15,7 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.DataExtraction;
+
 import java.lang.Exception;
 import java.lang.Object;
 import java.lang.Override;
@@ -42,94 +43,109 @@ import org.slf4j.MarkerFactory;
         actionName = "DataExtraction"
 )
 public class DataExtractionAction implements IActionExecution {
-  private final ActionExecutionAudit action;
+    private final ActionExecutionAudit action;
 
-  private final Logger log;
+    private final Logger log;
 
-  private final DataExtraction dataExtraction;
-  private static final MediaType MediaTypeJSON = MediaType
-          .parse("application/json; charset=utf-8");
-  private final Marker aMarker;
-  private final ObjectMapper mapper = new ObjectMapper();
+    private final DataExtraction dataExtraction;
+    private static final MediaType MediaTypeJSON = MediaType
+            .parse("application/json; charset=utf-8");
+    private final Marker aMarker;
+    private final ObjectMapper mapper = new ObjectMapper();
 
-  private final String URI;
+    private final String URI;
 
 
-  public DataExtractionAction(final ActionExecutionAudit action, final Logger log,
-                              final Object dataExtraction) {
-    this.dataExtraction = (DataExtraction) dataExtraction;
-    this.action = action;
-    this.log = log;
-    this.aMarker = MarkerFactory.getMarker(" DataExtraction:"+this.dataExtraction.getName());
-    this.URI = action.getContext().get("copro.data-extraction.url");
-  }
+    public DataExtractionAction(final ActionExecutionAudit action, final Logger log,
+                                final Object dataExtraction) {
+        this.dataExtraction = (DataExtraction) dataExtraction;
+        this.action = action;
+        this.log = log;
+        this.aMarker = MarkerFactory.getMarker(" DataExtraction:" + this.dataExtraction.getName());
+        this.URI = action.getContext().get("copro.data-extraction.url");
+    }
 
-  @Override
-  public void execute() throws Exception {
-    log.info(aMarker, "<-------Data extraction Action for {} has been started------->" + dataExtraction.getName());
-    final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
+    @Override
+    public void execute() throws Exception {
+        log.info(aMarker, "<-------Data extraction Action for {} has been started------->" + dataExtraction.getName());
+        final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
 
-    final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(dataExtraction.getResourceConn());
-    final List<Map<String, Object>> requestInfos = new ArrayList<>();
+        final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(dataExtraction.getResourceConn());
+        final List<Map<String, Object>> requestInfos = new ArrayList<>();
 
-    jdbi.useTransaction(handle -> {
-      final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(dataExtraction.getValue());
-      formattedQuery.forEach(sqlToExecute -> {
-        requestInfos.addAll(handle.createQuery(sqlToExecute).mapToMap().stream().collect(Collectors.toList()));
-      });
-    });
+        jdbi.useTransaction(handle -> {
+            final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(dataExtraction.getValue());
+            formattedQuery.forEach(sqlToExecute -> {
+                requestInfos.addAll(handle.createQuery(sqlToExecute).mapToMap().stream().collect(Collectors.toList()));
+            });
+        });
 
-    for (var requestInfo : requestInfos) {
-      final String inputFilepathString = Optional.ofNullable(requestInfo.get("inputfilepath")).map(String::valueOf).orElse("[]");
-      final String outputDirString = Optional.ofNullable(requestInfo.get("data_extraction_dest_path")).map(String::valueOf).orElse("[]");
-      final ObjectNode objectNode = mapper.createObjectNode();
-      objectNode.put("inputFilePath", inputFilepathString);
-      // objectNode.put("outputDir", outputDirString);
-      log.info(aMarker, " Input variables id : {}", action.getActionId());
+        for (var requestInfo : requestInfos) {
+            final String inputFilepathString = Optional.ofNullable(requestInfo.get("inputfilepath")).map(String::valueOf).orElse("[]");
+            final String outputDirString = Optional.ofNullable(requestInfo.get("data_extraction_dest_path")).map(String::valueOf).orElse("[]");
+            final ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("inputFilePath", inputFilepathString);
+            // objectNode.put("outputDir", outputDirString);
+            log.info(aMarker, " Input variables id : {}", action.getActionId());
 
-      // build a request
-      Request request = new Request.Builder().url(URI)
-              .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-      log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n Input-File-Path : {} \n Output-Directory : {} \n", URI, inputFilepathString,outputDirString );
-      String name = dataExtraction.getName();
-      log.info(aMarker, "The Request Details : {}", request);
-      try (Response response = httpclient.newCall(request).execute()) {
-        String responseBody = response.body().string();
-        if (response.isSuccessful()) {
-          log.info(aMarker, "The Successful Response for {} --> {}", name, responseBody);
-          String content=Optional.ofNullable(mapper.readValue(responseBody, AssetAttributionResponse.class).getPageContent()).orElse("");
-          content=content.replaceAll("'","''");
-          String filePath=Optional.ofNullable(mapper.readTree(responseBody).get("filePath")).map(JsonNode::toString).orElse("[]");
-          action.getContext().put(dataExtraction.getName() + ".extractedText",content);
-          action.getContext().put(dataExtraction.getName() + ".filePath",filePath);
-        } else {
-          log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
-          action.getContext().put(name.concat(".error"), "true");
-          action.getContext().put(name.concat(".errorMessage"), responseBody);
+            // build a request
+            Request request = new Request.Builder().url(URI)
+                    .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
+            log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n Input-File-Path : {} \n Output-Directory : {} \n", URI, inputFilepathString, outputDirString);
+            String name = dataExtraction.getName();
+            log.info(aMarker, "The Request Details : {}", request);
+            try (Response response = httpclient.newCall(request).execute()) {
+                String responseBody = response.body().string();
+                if (response.isSuccessful()) {
+                    log.info(aMarker, "The Successful Response for {} --> {}", name, responseBody);
+                    String content = Optional.ofNullable(mapper.readValue(responseBody, AssetAttributionResponse.class).getPageContent()).orElse("");
+                    content = cleanTextContent(content);
+                    String filePath = Optional.ofNullable(mapper.readTree(responseBody).get("filePath")).map(JsonNode::toString).orElse("[]");
+                    action.getContext().put(dataExtraction.getName() + ".extractedText", content);
+                    action.getContext().put(dataExtraction.getName() + ".filePath", filePath);
+                } else {
+                    log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
+                    action.getContext().put(name.concat(".error"), "true");
+                    action.getContext().put(name.concat(".errorMessage"), responseBody);
+                }
+                action.getContext().put(name + ".isSuccessful", String.valueOf(response.isSuccessful()));
+            } catch (Exception e) {
+                log.error(aMarker, "The Exception occurred ", e);
+                action.getContext().put(name + ".isSuccessful", "false");
+                throw new HandymanException("Failed to execute", e);
+            }
+            log.info(aMarker, "<-------Data extraction Action for {} has been completed------->" + dataExtraction.getName());
+
         }
-        action.getContext().put(name + ".isSuccessful", String.valueOf(response.isSuccessful()));
-      } catch (Exception e) {
-        log.error(aMarker, "The Exception occurred ", e);
-        action.getContext().put(name + ".isSuccessful", "false");
-        throw new HandymanException("Failed to execute", e);
-      }
-      log.info(aMarker, "<-------Data extraction Action for {} has been completed------->" + dataExtraction.getName());
 
     }
 
-  }
+    private static String cleanTextContent(String text) {
+        // strips off all non-ASCII characters
+        text = text.replaceAll("[^\\x00-\\x7F]", "");
+        // erases all the ASCII control characters
+        text = text.replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", "");
+        // removes non-printable characters from Unicode
+        text = text.replaceAll("\\p{C}", "");
+        text = text.replaceAll("[^ -~]", "");
+        text = text.replaceAll("[^\\p{ASCII}]", "");
+        text = text.replaceAll("\\\\x\\p{XDigit}{2}", "");
+        text = text.replaceAll("\\\\n", "");
+        text = text.replaceAll("[^\\x20-\\x7e]", "");
+        return text;
+    }
 
-  @Override
-  public boolean executeIf() throws Exception {
-    return dataExtraction.getCondition();
-  }
+    @Override
+    public boolean executeIf() throws Exception {
+        return dataExtraction.getCondition();
+    }
 
-  @Data
-  @AllArgsConstructor
-  @Builder
-  @NoArgsConstructor
-  @JsonIgnoreProperties(ignoreUnknown = true)
-  public static class AssetAttributionResponse {
-    private String pageContent;
-  }
+    @Data
+    @AllArgsConstructor
+    @Builder
+    @NoArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class AssetAttributionResponse {
+        private String pageContent;
+    }
 }
