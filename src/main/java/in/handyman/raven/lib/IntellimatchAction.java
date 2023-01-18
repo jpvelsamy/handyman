@@ -72,15 +72,6 @@ public class IntellimatchAction implements IActionExecution {
         log.info(aMarker, "<-------intelli match process for {} has been started------->" + intellimatch.getName());
         final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(intellimatch.getResourceConn());
 
-
-        jdbi.useTransaction(handle -> handle.execute("CREATE TABLE response.response_summary_"+action.getProcessId() +
-                "\t ( id serial4 NOT NULL,\n" +
-                "\trow_count int4 NOT NULL,\n" +
-                "\tcorrect_row_count int4 NOT NULL,\n" +
-                "\terror_row_count int4 NOT NULL,\n" +
-                "\tcreated_at timestamp NOT NULL\n" +
-                ");"));
-
         final List<MatchResultSet> inputResult = new ArrayList<>();
         jdbi.useTransaction(handle -> {
             final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(intellimatch.getInputSet());
@@ -106,13 +97,13 @@ public class IntellimatchAction implements IActionExecution {
             try (Response response = httpclient.newCall(request).execute()) {
                 String responseBody = Objects.requireNonNull(response.body()).string();
                 if (response.isSuccessful()) {
-                    List<IntelliMatchCopro> output = MAPPER.readValue(responseBody,new TypeReference<>() {
+                    List<IntelliMatchCopro> output = MAPPER.readValue(responseBody, new TypeReference<>() {
                     });
                     result.setIntelliMatch(output.get(0).getSimilarityPercent());
                     resultQueue.add(result);
 
                 } else {
-                    insertSummaryAudit(jdbi, 0, 0, 1);
+                    insertSummaryAudit(jdbi, 0, 0, 1, "failed on" + result.getFileName());
                     throw new HandymanException(responseBody);
                 }
             } catch (Throwable t) {
@@ -123,7 +114,7 @@ public class IntellimatchAction implements IActionExecution {
                 log.info(aMarker, "executing  batch {}", resultQueue.size());
                 consumerBatch(jdbi, resultQueue);
                 log.info(aMarker, "executed  batch {}", resultQueue.size());
-                insertSummaryAudit(jdbi, inputResult.size(), resultQueue.size(), 0);
+                insertSummaryAudit(jdbi, inputResult.size(), resultQueue.size(), 0, "batch inserted");
                 resultQueue.clear();
                 log.info(aMarker, "cleared batch {}", resultQueue.size());
             }
@@ -133,7 +124,7 @@ public class IntellimatchAction implements IActionExecution {
             log.info(aMarker, "executing final batch {}", resultQueue.size());
             consumerBatch(jdbi, resultQueue);
             log.info(aMarker, "executed final batch {}", resultQueue.size());
-            insertSummaryAudit(jdbi, inputResult.size(), resultQueue.size(), 0);
+            insertSummaryAudit(jdbi, inputResult.size(), resultQueue.size(), 0, "final batch inserted");
             resultQueue.clear();
             log.info(aMarker, "cleared final batch {}", resultQueue.size());
         }
@@ -145,34 +136,40 @@ public class IntellimatchAction implements IActionExecution {
             resultQueue.forEach(insert -> {
                         jdbi.useTransaction(handle -> {
                             try {
-                                Update update = handle.createUpdate(" UPDATE " + intellimatch.getMatchResult() +
-                                        " SET intelli_match= :intelliMatch " +
-                                        " WHERE file_name= :fileName ; ");
+                                Update update = handle.createUpdate(" INSERT INTO " + intellimatch.getMatchResult() +
+                                        " ( file_name, created_on, actual_value, extracted_value, similarity, levenshtein, perfect_match, text_match, intelli_match)" +
+                                        " VALUES( :fileName, NOW(), :actualValue, :extractedValue,  similarity(:actualValue,:extractedValue), " +
+                                        " levenshtein(:actualValue,:extractedValue), " +
+                                        " (CASE WHEN :actualValue=:extractedValue THEN 'yes' ELSE 'no' end ), " +
+                                        " (CASE WHEN :actualValue like concat('%',:extractedValue,'%') THEN 'yes'" +
+                                        "                       WHEN :actualValue = :extractedValue THEN 'yes' ELSE 'no' end)," +
+                                        "  :intelliMatch )");
                                 Update bindBean = update.bindBean(insert);
                                 bindBean.execute();
                             } catch (Throwable t) {
-                                insertSummaryAudit(jdbi, 0, 0, 1);
+                                insertSummaryAudit(jdbi, 0, 0, 1, "failed in bactch for " + insert.getFileName());
                                 log.error(aMarker, "error inserting result {}", resultQueue, t);
                             }
                         });
                     }
             );
         } catch (Throwable t) {
-            insertSummaryAudit(jdbi, 0, 0, resultQueue.size());
+            insertSummaryAudit(jdbi, 0, 0, resultQueue.size(), "failed in batch insert");
             log.error(aMarker, "error inserting result {}", resultQueue, t);
         }
     }
 
-    void insertSummaryAudit(final Jdbi jdbi, int rowCount, int executeCount, int errorCount) {
+    void insertSummaryAudit(final Jdbi jdbi, int rowCount, int executeCount, int errorCount, String comments) {
         SanitarySummary summary = new SanitarySummary().builder()
                 .rowCount(rowCount)
                 .correctRowCount(executeCount)
                 .errorRowCount(errorCount)
+                .comments(comments)
                 .build();
         jdbi.useTransaction(handle -> {
-            Update update = handle.createUpdate("  INSERT INTO response.response_summary_" + action.getProcessId() +
-                    " ( row_count, correct_row_count, error_row_count, created_at) " +
-                    " VALUES(:rowCount, :correctRowCount, :errorRowCount, NOW());");
+            Update update = handle.createUpdate("  INSERT INTO " + intellimatch.getAuditTable() +
+                    " ( row_count, correct_row_count, error_row_count,comments, created_at) " +
+                    " VALUES(:rowCount, :correctRowCount, :errorRowCount, :comments, NOW());");
             Update bindBean = update.bindBean(summary);
             bindBean.execute();
         });
@@ -192,8 +189,10 @@ public class IntellimatchAction implements IActionExecution {
         int rowCount;
         int correctRowCount;
         int errorRowCount;
+        String comments;
 
     }
+
     @AllArgsConstructor
     @NoArgsConstructor
     @Data
@@ -203,6 +202,7 @@ public class IntellimatchAction implements IActionExecution {
         String sentence;
         double similarityPercent;
     }
+
     @AllArgsConstructor
     @NoArgsConstructor
     @Data
