@@ -54,7 +54,7 @@ public class IntellimatchAction implements IActionExecution {
     final OkHttpClient httpclient;
     private static final MediaType MediaTypeJSON = MediaType.parse("application/json; charset=utf-8");
 
-    private final Integer writeBatchSize = 1;
+    private final Integer writeBatchSize = 1000;
 
     public IntellimatchAction(final ActionExecutionAudit action, final Logger log,
                               final Object intellimatch) {
@@ -138,11 +138,12 @@ public class IntellimatchAction implements IActionExecution {
                             try {
                                 Update update = handle.createUpdate(" INSERT INTO " + intellimatch.getMatchResult() +
                                         " ( file_name, created_on, actual_value, extracted_value, similarity, levenshtein, perfect_match, text_match, intelli_match)" +
-                                        " VALUES( :fileName, NOW(), :actualValue, :extractedValue,  similarity(:actualValue,:extractedValue), " +
+                                        " VALUES( :fileName, NOW(), :actualValue, :extractedValue,  " +
+                                        " similarity(lower(:actualValue),:extractedValue), " +
                                         " levenshtein(:actualValue,:extractedValue), " +
-                                        " (CASE WHEN :actualValue=:extractedValue THEN 'yes' ELSE 'no' end ), " +
-                                        " (CASE WHEN :actualValue like concat('%',:extractedValue,'%') THEN 'yes'" +
-                                        "                       WHEN :actualValue = :extractedValue THEN 'yes' ELSE 'no' end)," +
+                                        " (CASE WHEN lower(:actualValue)=:extractedValue THEN 'yes' ELSE 'no' end ), " +
+                                        " (CASE WHEN lower(:actualValue) like concat('%',:extractedValue,'%') THEN 'yes'" +
+                                        "                       WHEN lower(:actualValue) = :extractedValue THEN 'yes' ELSE 'no' end)," +
                                         "  :intelliMatch )");
                                 Update bindBean = update.bindBean(insert);
                                 bindBean.execute();
