@@ -99,7 +99,8 @@ public class DataExtractionAction implements IActionExecution {
                 if (response.isSuccessful()) {
                     log.info(aMarker, "The Successful Response for {} --> {}", name, responseBody);
                     String content = Optional.ofNullable(mapper.readValue(responseBody, AssetAttributionResponse.class).getPageContent()).orElse("");
-                    content = cleanTextContent(content);
+                    content=content.replaceAll("'","''");
+                    content=content.replaceAll(";","");
                     String filePath = Optional.ofNullable(mapper.readTree(responseBody).get("filePath")).map(JsonNode::toString).orElse("[]");
                     action.getContext().put(dataExtraction.getName() + ".extractedText", content);
                     action.getContext().put(dataExtraction.getName() + ".filePath", filePath);
