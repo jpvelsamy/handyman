@@ -611,6 +611,7 @@ intellimatch:
          'intellimatch' 'as' name=STRING
          'on-resource-conn' resourceConn=STRING
          'match-result' matchResult=STRING
+         'audit-table' auditTable=STRING
          'using' '{' inputSet=STRING '}' ('on-condition' condition=expression)*;
 
 

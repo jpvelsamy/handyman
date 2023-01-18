@@ -28,6 +28,8 @@ public class Intellimatch implements IActionContext {
 
   private String matchResult;
 
+  private String auditTable;
+
   private String inputSet;
 
   private Boolean condition = true;
