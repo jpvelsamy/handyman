@@ -300,7 +300,7 @@ public class ScalarAdapterAction implements IActionExecution {
   @Data
   @Builder
   @JsonIgnoreProperties(ignoreUnknown = true)
-  public static class ValidatorConfigurationDetail {
+  public static class ValidatorConfigurationDetail implements CoproProcessor.Entity{
     private int sorId;
     private String ProcessId;
     private String sorKey;
@@ -328,5 +328,10 @@ public class ScalarAdapterAction implements IActionExecution {
     private double validatorNegativeScore;
     private double confidenceScore;
     private String sorItemName;
+
+      @Override
+      public List<String> getRowData() {
+          return null;
+      }
   }
 }
