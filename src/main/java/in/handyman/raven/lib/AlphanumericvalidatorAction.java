@@ -26,18 +26,20 @@ public class AlphanumericvalidatorAction implements IActionExecution {
     private final Alphanumericvalidator alphanumericvalidator;
 
     private final Marker aMarker;
+    AdapterInterface aplhaNumericAdapter;
+
 
     public AlphanumericvalidatorAction(final ActionExecutionAudit action, final Logger log,
                                        final Object alphanumericvalidator) {
         this.alphanumericvalidator = (Alphanumericvalidator) alphanumericvalidator;
         this.action = action;
         this.log = log;
+        this.aplhaNumericAdapter = new AlphaNumericAdapter();
         this.aMarker = MarkerFactory.getMarker(" Alphanumericvalidator:" + this.alphanumericvalidator.getName());
     }
 
-    public static int getAlphaNumericScore(Validator adapter) {
+    int getAlphaNumericScore(Validator adapter) {
         try {
-            AdapterInterface aplhaNumericAdapter = new AlphaNumericAdapter();
             boolean validator = aplhaNumericAdapter.getValidationModel(adapter.getInputValue(), adapter.getAllowedSpecialChar());
             return validator ? adapter.getThreshold() : 0;
         } catch (Exception ex) {

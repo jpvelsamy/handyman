@@ -35,4 +35,6 @@ public class StatementExecutionAudit extends Auditable implements DoaConstant {
     private Integer rowsProcessed;
     private Double timeTaken;
 
+
+
 }

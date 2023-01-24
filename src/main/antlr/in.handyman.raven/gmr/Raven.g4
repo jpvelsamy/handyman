@@ -605,6 +605,7 @@ donutDocQa:
 scalarAdapter:
       'scalarAdapter' 'as' name=STRING
       'on-resource-conn' resourceConn=STRING
+      'process-id' processID=STRING
       'using-docnut-result'
       '{' resultSet=STRING  '}'
        ('on-condition' condition=expression)*;

@@ -25,6 +25,8 @@ public class WordcountAction implements IActionExecution {
     private final Wordcount wordcount;
 
     private final Marker aMarker;
+    AdapterInterface wordCountAdapter;
+
 
     public WordcountAction(final ActionExecutionAudit action, final Logger log,
                            final Object wordcount) {
@@ -32,18 +34,17 @@ public class WordcountAction implements IActionExecution {
         this.action = action;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker(" Wordcount:" + this.wordcount.getName());
+        this.wordCountAdapter = new WordCountAdapter();
+
     }
 
-    public static int getWordCount(String input, int countLimit, int threshold) {
-        int confidenceScore = 0;
+    int getWordCount(String input, int countLimit, int threshold) {
         try {
-            AdapterInterface wordCountAdapter = new WordCountAdapter();
             int wordCount = wordCountAdapter.getThresholdScore(input);
-            confidenceScore = wordCount <= countLimit ? threshold : 0;
+            return wordCount <= countLimit ? threshold : 0;
         } catch (Exception e) {
             throw new HandymanException("Failed to execute", e);
         }
-        return confidenceScore;
     }
 
     @Override

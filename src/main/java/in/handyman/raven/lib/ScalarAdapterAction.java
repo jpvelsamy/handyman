@@ -1,30 +1,27 @@
 package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.google.common.collect.Lists;
-import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
-import in.handyman.raven.lib.model.ScalarAdapter;
-import in.handyman.raven.lib.model.Validator;
+import in.handyman.raven.lib.model.*;
 import in.handyman.raven.util.CommonQueryUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.result.ResultIterable;
+import org.jdbi.v3.core.statement.Query;
+import org.jdbi.v3.core.statement.Update;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -34,48 +31,71 @@ import java.util.stream.Collectors;
         actionName = "ScalarAdapter"
 )
 public class ScalarAdapterAction implements IActionExecution {
-    public static final String NER = "ner";
-    private final ActionExecutionAudit action;
+  public static final String NER = "ner";
+  private final ActionExecutionAudit action;
 
-    private final Logger log;
+  private final Logger log;
 
-    private final ScalarAdapter scalarAdapter;
-    private final Marker aMarker;
+  private final ScalarAdapter scalarAdapter;
+  private final Marker aMarker;
+
+  private final Integer writeBatchSize = 1000;
+
+  private final AlphavalidatorAction alphaAction;
+  private final NumericvalidatorAction numericAction;
+  private final AlphanumericvalidatorAction alphaNumericAction;
+  private final DatevalidatorAction dateAction;
+  private final NervalidatorAction nerAction;
+  private final WordcountAction wordcountAction;
+  private final CharactercountAction charactercountAction;
 
 
-    public ScalarAdapterAction(final ActionExecutionAudit action, final Logger log,
-                               final Object scalarAdapter) {
-        this.scalarAdapter = (ScalarAdapter) scalarAdapter;
-        this.action = action;
-        this.log = log;
-        this.aMarker = MarkerFactory.getMarker(" ScalarAdapter:" + this.scalarAdapter.getName());
+  public ScalarAdapterAction(final ActionExecutionAudit action, final Logger log,
+                             final Object scalarAdapter) {
+    this.scalarAdapter = (ScalarAdapter) scalarAdapter;
+    this.action = action;
+    this.log = log;
+    this.aMarker = MarkerFactory.getMarker(" ScalarAdapter:" + this.scalarAdapter.getName());
+    this.wordcountAction = new WordcountAction(action, log, Wordcount.builder().build());
+    this.charactercountAction = new CharactercountAction(action, log, Charactercount.builder().build());
+    this.alphaAction = new AlphavalidatorAction(action, log, Alphavalidator.builder().build());
+    this.numericAction = new NumericvalidatorAction(action, log, Numericvalidator.builder().build());
+    this.alphaNumericAction = new AlphanumericvalidatorAction(action, log, Alphanumericvalidator.builder().build());
+    this.dateAction = new DatevalidatorAction(action, log, Datevalidator.builder().build());
+    this.nerAction = new NervalidatorAction(action, log, Nervalidator.builder().build());
+  }
+
+  @Override
+  public void execute() throws Exception {
+    try {
+      log.info(aMarker, "scalar has started" + scalarAdapter.getName());
+
+      final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(scalarAdapter.getResourceConn());
+      final List<ValidatorConfigurationDetail> validatorConfigurationDetails = new ArrayList<>();
+
+      jdbi.useTransaction(handle -> {
+        final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(scalarAdapter.getResultSet());
+        AtomicInteger i = new AtomicInteger(0);
+        formattedQuery.forEach(sqlToExecute -> {
+          log.info(aMarker, "executing  query {} from index {}", sqlToExecute, i.getAndIncrement());
+          Query query = handle.createQuery(sqlToExecute);
+          ResultIterable<ValidatorConfigurationDetail> resultIterable = query.mapToBean(ValidatorConfigurationDetail.class);
+          List<ValidatorConfigurationDetail> detailList = resultIterable.stream().collect(Collectors.toList());
+          validatorConfigurationDetails.addAll(detailList);
+          log.info(aMarker, "executed query from index {}", i.get());
+        });
+      });
+
+      //Add summary audit - ${process-id}.sanitizer_summary - this should hold row count, correct row count, error_row_count
+      insertSummaryAudit(jdbi, validatorConfigurationDetails.size(), 0, 0);
+      doCompute(jdbi, validatorConfigurationDetails);
+      //doProcess(jdbi, validatorConfigurationDetails);
+      log.info(aMarker, "scalar has completed" + scalarAdapter.getName());
+    } catch (Throwable e) {
+      action.getContext().put(scalarAdapter.getName().concat(".error"), "true");
+      log.error(aMarker, "The Exception occuered in Scalar Adpater ", e);
     }
-
-    @Override
-    public void execute() throws Exception {
-        try {
-            log.info(aMarker, "scalar has started" + scalarAdapter.getName());
-
-            final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(scalarAdapter.getResourceConn());
-            final List<ValidatorConfigurationDetail> validatorConfigurationDetails = new ArrayList<>();
-
-            jdbi.useTransaction(handle -> {
-                final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(scalarAdapter.getResultSet());
-                formattedQuery.forEach(sqlToExecute -> {
-                    validatorConfigurationDetails.addAll(handle.createQuery(sqlToExecute).
-                            mapToBean(ValidatorConfigurationDetail.class).stream().collect(Collectors.toList()));
-                });
-            });
-
-            doCompute(jdbi, validatorConfigurationDetails);
-            //doProcess(jdbi, validatorConfigurationDetails);
-            log.info(aMarker, "scalar has completed" + scalarAdapter.getName());
-        } catch (Exception e) {
-            action.getContext().put(scalarAdapter.getName().concat(".error"), "true");
-            log.info(aMarker, "The Exception occurred ", e);
-            throw new HandymanException("Failed to execute", e);
-        }
-    }
+  }
 
   /*  private void doProcess(final Jdbi jdbi, final List<ValidatorConfigurationDetail> validatorConfigurationDetails) {
         final int parallelism;
@@ -131,121 +151,187 @@ public class ScalarAdapterAction implements IActionExecution {
         }
     }*/
 
-    private void doCompute(final Jdbi jdbi, List<ValidatorConfigurationDetail> listOfDetails) {
-        try {
-            for(ValidatorConfigurationDetail result: listOfDetails) {
-                String inputValue = result.getInputValue();
-                int wordScore = WordcountAction.getWordCount(inputValue,
-                        result.getWordLimit(), result.getWordThreshold());
-                int charScore = CharactercountAction.getCharCount(inputValue,
-                        result.getCharLimit(), result.getCharThreshold());
-                Validator configurationDetails = Validator.builder()
-                        .inputValue(inputValue)
-                        .adapter(result.getAllowedAdapter())
-                        .allowedSpecialChar(result.getAllowedCharacters())
-                        .comparableChar(result.getComparableCharacters())
-                        .threshold(result.getValidatorThreshold())
-                        .build();
+  private void doCompute(final Jdbi jdbi, List<ValidatorConfigurationDetail> listOfDetails) {
+    try {
+      List<ValidatorConfigurationDetail> resultQueue = new ArrayList<>();
+      for (ValidatorConfigurationDetail result : listOfDetails) {
+        log.info(aMarker, "executing  validator {}", result);
 
-                if(inputValue.isEmpty()){
-                    int validatorScore = computeAdapterScore(configurationDetails);
+        String inputValue = result.getInputValue();
+        int wordScore = wordcountAction.getWordCount(inputValue,
+                result.getWordLimit(), result.getWordThreshold());
+        int charScore = charactercountAction.getCharCount(inputValue,
+                result.getCharLimit(), result.getCharThreshold());
+        Validator configurationDetails = Validator.builder()
+                .inputValue(inputValue)
+                .adapter(result.getAllowedAdapter())
+                .allowedSpecialChar(result.getAllowedCharacters())
+                .comparableChar(result.getComparableCharacters())
+                .threshold(result.getValidatorThreshold())
+                .build();
 
-                }
-                int validatorScore = computeAdapterScore(configurationDetails);
-                int validatorNegativeScore = 0;
-                if (result.getRestrictedAdapterFlag() == 1 && validatorScore != 0) {
-                    configurationDetails.setAdapter(result.getRestrictedAdapter());
-                    validatorNegativeScore = computeAdapterScore(configurationDetails);
-                }
+        int validatorScore = computeAdapterScore(configurationDetails);
+        int validatorNegativeScore = 0;
+        if (result.getRestrictedAdapterFlag() == 1 && validatorScore != 0) {
+          configurationDetails.setAdapter(result.getRestrictedAdapter());
+          validatorNegativeScore = computeAdapterScore(configurationDetails);
+        }
 
-                double confidenceScore = wordScore + charScore + validatorScore - validatorNegativeScore;
-                result.setWordScore(wordScore);
-                result.setCharScore(charScore);
-                result.setValidatorScore(validatorScore);
-                result.setValidatorNegativeScore(validatorNegativeScore);
-                result.setConfidenceScore(confidenceScore);
-                result.setProcessId(String.valueOf(action.getProcessId()));
+        double confidenceScore = wordScore + charScore + validatorScore - validatorNegativeScore;
 
+        result.setWordScore(wordScore);
+        result.setCharScore(charScore);
+        result.setValidatorScore(validatorScore);
+        result.setValidatorNegativeScore(validatorNegativeScore);
+        result.setConfidenceScore(confidenceScore);
+        result.setProcessId(String.valueOf(action.getProcessId()));
+        resultQueue.add(result);
+        log.info(aMarker, "executed  validator {}", result);
+
+        if (resultQueue.size() == this.writeBatchSize) {
+          log.info(aMarker, "executing  batch {}", resultQueue.size());
+          consumerBatch(jdbi, resultQueue);
+          log.info(aMarker, "executed  batch {}", resultQueue.size());
+          insertSummaryAudit(jdbi, listOfDetails.size(), resultQueue.size(), 0);
+          resultQueue.clear();
+          log.info(aMarker, "cleared batch {}", resultQueue.size());
+        }
+      }
+      if (!resultQueue.isEmpty()) {
+        log.info(aMarker, "executing final batch {}", resultQueue.size());
+        consumerBatch(jdbi, resultQueue);
+        log.info(aMarker, "executed final batch {}", resultQueue.size());
+        insertSummaryAudit(jdbi, listOfDetails.size(), resultQueue.size(), 0);
+        resultQueue.clear();
+        log.info(aMarker, "cleared final batch {}", resultQueue.size());
+      }
+    } catch (Throwable e) {
+      action.getContext().put(scalarAdapter.getName().concat(".error"), "true");
+      log.error(aMarker, "The Exception occurred in Scalar Computation", e);
+    }
+  }
+
+  void consumerBatch(final Jdbi jdbi, List<ValidatorConfigurationDetail> resultQueue) {
+    try {
+      resultQueue.forEach(insert -> {
                 jdbi.useTransaction(handle -> {
-                    handle.createUpdate("  INSERT INTO sor_transaction.adapter_result\n" +
-                            " ( file_ref_id, paper_no, group_id, file_name, process_id, sor_id, sor_item_id, sor_item_name, answer, created_user_id, tenant_id, created_on, word_score, char_score, validator_score_allowed, validator_score_negative)\n" +
-                            " VALUES( :fileRefId, :paperNo, :groupId, :fileRefId, :processId , :sorId, :sorItemId, :sorKey, :inputValue, :createdUserId, :tenentId, NOW(), :wordScore , :charScore , :validatorScore, :validatorNegativeScore);\n" +
-                            "   ").bindBean(result).execute();
-
-                    handle.createUpdate("INSERT INTO sor_transaction.docnet_result" +
-                                    "( file_ref_id, paper_no, group_id, sor_id, sor_item_id, sor_item_name, question, answer, created_user_id, tenant_id, created_on, confidence_score) " +
-                                    "VALUES( :fileRefId, :paperNo, :groupId, :sorId, :sorItemId, :sorKey, :question, :inputValue, :createdUserId, :tenentId, NOW(), :confidenceScore);")
-                            .bindBean(result).execute();
+                  try {
+                    Update update = handle.createUpdate("  INSERT INTO sor_transaction.adapter_result_" + action.getProcessId() +
+                            " ( file_ref_id, paper_no, group_id, file_name, process_id, sor_id, sor_item_id, sor_item_name,question, answer, created_user_id, tenant_id, created_on, word_score, char_score, validator_score_allowed, validator_score_negative, confidence_score) " +
+                            " VALUES( :fileRefId, :paperNo, :groupId, :fileRefId, :processId , :sorId, :sorItemId, :sorKey, :question ,:inputValue, :createdUserId, :tenentId, NOW(), :wordScore , :charScore , :validatorScore, :validatorNegativeScore, :confidenceScore);" +
+                            "   ");
+                    Update bindBean = update.bindBean(insert);
+                    bindBean.execute();
+                  } catch (Throwable t) {
+                    insertSummaryAudit(jdbi, 0, 0, 1);
+                    log.error(aMarker, "error inserting result {}", resultQueue, t);
+                  }
                 });
-            }
-        } catch (Exception e) {
-            action.getContext().put(scalarAdapter.getName().concat(".error"), "true");
-            log.info(aMarker, "The Exception occurred ", e);
-            throw new HandymanException("Failed to execute", e);
-        }
+              }
+      );
+    } catch (Throwable t) {
+      insertSummaryAudit(jdbi, 0, 0, resultQueue.size());
+      log.error(aMarker, "error inserting result {}", resultQueue, t);
     }
+  }
 
-
-    int computeAdapterScore(Validator inputDetail) {
-        int confidenceScore = 0;
-        switch (inputDetail.getAdapter()) {
-            case "alpha":
-                confidenceScore = AlphavalidatorAction.getAlphaScore(inputDetail);
-                break;
-            case "alphanumeric":
-                confidenceScore = AlphanumericvalidatorAction.getAlphaNumericScore(inputDetail);
-                break;
-            case "numeric":
-                confidenceScore = NumericvalidatorAction.getNumericScore(inputDetail);
-                break;
-            case NER:
-                final String URI = action.getContext().get("copro.text-validation.url");
-                confidenceScore = NervalidatorAction.getNerScore(inputDetail, URI);
-                break;
-            case "date":
-                confidenceScore = DatevalidatorAction.getDateScore(inputDetail);
-                break;
-        }
-        return confidenceScore;
+  int computeAdapterScore(Validator inputDetail) {
+    int confidenceScore = 0;
+    try {
+      switch (inputDetail.getAdapter()) {
+        case "alpha":
+          confidenceScore = this.alphaAction.getAlphaScore(inputDetail);
+          break;
+        case "alphanumeric":
+          confidenceScore = this.alphaNumericAction.getAlphaNumericScore(inputDetail);
+          break;
+        case "numeric":
+          confidenceScore = this.numericAction.getNumericScore(inputDetail);
+          break;
+        case NER:
+          final String URI = action.getContext().get("copro.text-validation.url");
+          confidenceScore = this.nerAction.getNerScore(inputDetail, URI);
+          break;
+        case "date":
+          confidenceScore = this.dateAction.getDateScore(inputDetail);
+          break;
+      }
+    } catch (Throwable t) {
+      log.error(aMarker, "error adpater validation{}", inputDetail, t);
     }
+    return confidenceScore;
 
-    @Override
-    public boolean executeIf() throws Exception {
-        return scalarAdapter.getCondition();
-    }
+  }
 
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Data
-    @Builder
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class ValidatorConfigurationDetail {
-        private int sorId;
-        private String ProcessId;
-        private String sorKey;
-        private String question;
-        private String inputValue;
-        private String allowedAdapter;
-        private String restrictedAdapter;
-        private int wordLimit;
-        private int wordThreshold;
-        private int charLimit;
-        private int charThreshold;
-        private int validatorThreshold;
-        private String allowedCharacters;
-        private String comparableCharacters;
-        private int restrictedAdapterFlag;
-        private String fileRefId;
-        private int paperNo;
-        private String groupId;
-        private int sorItemId;
-        private String createdUserId;
-        private String tenentId;
-        private double wordScore;
-        private double charScore;
-        private double validatorScore;
-        private double validatorNegativeScore;
-        private double confidenceScore;
-        private String sorItemName;
-    }
+  void insertSummaryAudit(final Jdbi jdbi, int rowCount, int executeCount, int errorCount) {
+    SanitarySummary summary = new SanitarySummary().builder()
+            .rowCount(rowCount)
+            .correctRowCount(executeCount)
+            .errorRowCount(errorCount)
+            .build();
+    jdbi.useTransaction(handle -> {
+      Update update = handle.createUpdate("  INSERT INTO sor_transaction.sanitizer_summary_" + action.getProcessId() +
+              " ( row_count, correct_row_count, error_row_count, created_at) " +
+              " VALUES(:rowCount, :correctRowCount, :errorRowCount, NOW());");
+      Update bindBean = update.bindBean(summary);
+      bindBean.execute();
+    });
+  }
+
+  @Override
+  public boolean executeIf() throws Exception {
+    return scalarAdapter.getCondition();
+  }
+
+  @AllArgsConstructor
+  @NoArgsConstructor
+  @Data
+  @Builder
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  public static class SanitarySummary {
+    int rowCount;
+    int correctRowCount;
+    int errorRowCount;
+
+  }
+
+  @AllArgsConstructor
+  @NoArgsConstructor
+  @Data
+  @Builder
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  public static class ValidatorConfigurationDetail implements CoproProcessor.Entity{
+    private int sorId;
+    private String ProcessId;
+    private String sorKey;
+    private String question;
+    private String inputValue;
+    private String allowedAdapter;
+    private String restrictedAdapter;
+    private int wordLimit;
+    private int wordThreshold;
+    private int charLimit;
+    private int charThreshold;
+    private int validatorThreshold;
+    private String allowedCharacters;
+    private String comparableCharacters;
+    private int restrictedAdapterFlag;
+    private String fileRefId;
+    private int paperNo;
+    private String groupId;
+    private int sorItemId;
+    private String createdUserId;
+    private String tenentId;
+    private double wordScore;
+    private double charScore;
+    private double validatorScore;
+    private double validatorNegativeScore;
+    private double confidenceScore;
+    private String sorItemName;
+
+      @Override
+      public List<String> getRowData() {
+          return null;
+      }
+  }
 }

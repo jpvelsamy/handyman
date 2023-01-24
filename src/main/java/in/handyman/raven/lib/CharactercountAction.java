@@ -19,31 +19,28 @@ import org.slf4j.MarkerFactory;
 )
 public class CharactercountAction implements IActionExecution {
     private final ActionExecutionAudit action;
-
     private final Logger log;
-
     private final Charactercount charactercount;
-
     private final Marker aMarker;
+    static AdapterInterface charCountAdapter;
+
 
     public CharactercountAction(final ActionExecutionAudit action, final Logger log,
                                 final Object charactercount) {
         this.charactercount = (Charactercount) charactercount;
         this.action = action;
         this.log = log;
+        this.charCountAdapter = new CharacterCountAdapter();
         this.aMarker = MarkerFactory.getMarker(" Charactercount:" + this.charactercount.getName());
     }
 
     public static int getCharCount(String input, int countLimit, int threshold) {
-        int confidenceScore = 0;
         try {
-            AdapterInterface charCountAdapter = new CharacterCountAdapter();
             int wordCount = charCountAdapter.getThresholdScore(input);
-            confidenceScore = wordCount <= countLimit ? threshold : 0;
+            return wordCount <= countLimit ? threshold : 0;
         } catch (Exception ex) {
             throw new HandymanException("Failed to execute char count", ex);
         }
-        return confidenceScore;
     }
 
     @Override
