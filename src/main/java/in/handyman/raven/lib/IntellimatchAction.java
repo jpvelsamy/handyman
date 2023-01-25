@@ -88,28 +88,32 @@ public class IntellimatchAction implements IActionExecution {
 
         List<MatchResultSet> resultQueue = new ArrayList<>();
         inputResult.forEach(result -> {
-            final ObjectNode objectNode = MAPPER.createObjectNode();
-            List<String> comparableSentence = Arrays.asList(result.getExtractedValue());
-            objectNode.put("inputSentence", result.getActualValue());
-            objectNode.putPOJO("sentences", comparableSentence);
-            final Request request = new Request.Builder().url(URI)
-                    .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-            try (Response response = httpclient.newCall(request).execute()) {
-                String responseBody = Objects.requireNonNull(response.body()).string();
-                if (response.isSuccessful()) {
-                    List<IntelliMatchCopro> output = MAPPER.readValue(responseBody, new TypeReference<>() {
-                    });
-                    result.setIntelliMatch(output.get(0).getSimilarityPercent());
-                    resultQueue.add(result);
+            if (result.getActualValue() != null) {
+                final ObjectNode objectNode = MAPPER.createObjectNode();
+                List<String> comparableSentence = Arrays.asList(result.getExtractedValue());
+                objectNode.put("inputSentence", result.getActualValue());
+                objectNode.putPOJO("sentences", comparableSentence);
+                final Request request = new Request.Builder().url(URI)
+                        .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
+                try (Response response = httpclient.newCall(request).execute()) {
+                    String responseBody = Objects.requireNonNull(response.body()).string();
+                    if (response.isSuccessful()) {
+                        List<IntelliMatchCopro> output = MAPPER.readValue(responseBody, new TypeReference<>() {
+                        });
+                        result.setIntelliMatch(output.get(0).getSimilarityPercent());
+                        resultQueue.add(result);
 
-                } else {
-                    insertSummaryAudit(jdbi, 0, 0, 1, "failed on" + result.getFileName());
-                    throw new HandymanException(responseBody);
+                    } else {
+                        insertSummaryAudit(jdbi, 0, 0, 1, "failed on" + result.getFileName());
+                        throw new HandymanException(responseBody);
+                    }
+                } catch (Throwable t) {
+                    log.error(aMarker, "error inserting row {}", result, t);
                 }
-            } catch (Throwable t) {
-                log.error(aMarker, "error inserting row {}", result, t);
+            } else {
+                result.setIntelliMatch(0);
+                resultQueue.add(result);
             }
-
             if (resultQueue.size() == this.writeBatchSize) {
                 log.info(aMarker, "executing  batch {}", resultQueue.size());
                 consumerBatch(jdbi, resultQueue);
