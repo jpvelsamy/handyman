@@ -184,7 +184,7 @@ public class ScalarAdapterAction implements IActionExecution {
         result.setValidatorScore(validatorScore);
         result.setValidatorNegativeScore(validatorNegativeScore);
         result.setConfidenceScore(confidenceScore);
-        result.setProcessId(String.valueOf(action.getProcessId()));
+        result.setProcessId(String.valueOf(action.getRootPipelineId()));
         resultQueue.add(result);
         log.info(aMarker, "executed  validator {}", result);
 
@@ -216,7 +216,7 @@ public class ScalarAdapterAction implements IActionExecution {
       resultQueue.forEach(insert -> {
                 jdbi.useTransaction(handle -> {
                   try {
-                    Update update = handle.createUpdate("  INSERT INTO sor_transaction.adapter_result_" + action.getProcessId() +
+                    Update update = handle.createUpdate("  INSERT INTO sor_transaction.adapter_result_" + action.getRootPipelineId() +
                             " ( file_ref_id, paper_no, group_id, file_name, process_id, sor_id, sor_item_id, sor_item_name,question, answer, created_user_id, tenant_id, created_on, word_score, char_score, validator_score_allowed, validator_score_negative, confidence_score) " +
                             " VALUES( :fileRefId, :paperNo, :groupId, :fileRefId, :processId , :sorId, :sorItemId, :sorKey, :question ,:inputValue, :createdUserId, :tenentId, NOW(), :wordScore , :charScore , :validatorScore, :validatorNegativeScore, :confidenceScore);" +
                             "   ");
@@ -270,7 +270,7 @@ public class ScalarAdapterAction implements IActionExecution {
             .errorRowCount(errorCount)
             .build();
     jdbi.useTransaction(handle -> {
-      Update update = handle.createUpdate("  INSERT INTO sor_transaction.sanitizer_summary_" + action.getProcessId() +
+      Update update = handle.createUpdate("  INSERT INTO sor_transaction.sanitizer_summary_" + action.getRootPipelineId() +
               " ( row_count, correct_row_count, error_row_count, created_at) " +
               " VALUES(:rowCount, :correctRowCount, :errorRowCount, NOW());");
       Update bindBean = update.bindBean(summary);
