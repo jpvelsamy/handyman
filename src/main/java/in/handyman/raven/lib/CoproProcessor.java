@@ -6,11 +6,14 @@ import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.audit.StatementExecutionAudit;
 import in.handyman.raven.util.CommonQueryUtil;
 import in.handyman.raven.util.UniqueID;
+import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.PreparedBatch;
 import org.slf4j.Logger;
 
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -18,24 +21,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+@Slf4j
+public class CoproProcessor<I, O extends CoproProcessor.Entity> {
 
-public class CoproProcessor<T extends CoproProcessor.Entity> {
-
-    private final BlockingQueue<T> queue;
+    private final BlockingQueue<I> queue;
     private final ExecutorService executorService;
 
-    private final Class<T> targetClass;
+    private final Class<O> outputTargetClass;
+    private final Class<I> inputTargetClass;
     private final Jdbi jdbi;
 
-    private final Logger log;
+    private final Logger logger;
 
-    private final T stoppingSeed;
+    private final I stoppingSeed;
 
     private final List<URL> nodes;
     private final Integer nodeSize;
@@ -44,23 +49,24 @@ public class CoproProcessor<T extends CoproProcessor.Entity> {
 
     private final ActionExecutionAudit actionExecutionAudit;
 
-    public CoproProcessor(final BlockingQueue<T> queue, final Class<T> targetClass,
-                          final Jdbi jdbi, final Logger log,
-                          final T stoppingSeed, final List<URL> coproNodes,
+    public CoproProcessor(final BlockingQueue<I> queue, final Class<O> outputTargetClass,
+                          final Class<I> inputTargetClass, final Jdbi jdbi, final Logger logger,
+                          final I stoppingSeed, final List<URL> coproNodes,
                           final ActionExecutionAudit actionExecutionAudit) {
         this.queue = queue;
+        this.inputTargetClass = inputTargetClass;
         this.stoppingSeed = stoppingSeed;
         this.nodes = coproNodes;
         this.executorService = Executors.newWorkStealingPool();
-        this.targetClass = targetClass;
+        this.outputTargetClass = outputTargetClass;
         this.jdbi = jdbi;
-        this.log = log;
+        this.logger = log;
         this.actionExecutionAudit = actionExecutionAudit;
         this.nodeSize = coproNodes.size();
         if (nodeSize > 0) {
-            this.log.info("Copro processor created for copro coproNodes {}", nodeSize);
+            this.logger.info("Copro processor created for copro coproNodes {}", nodeSize);
         } else {
-            this.log.info("Failed to create Copro processor due to empty copro coproNodes");
+            this.logger.info("Failed to create Copro processor due to empty copro coproNodes");
             throw new HandymanException("Failed to create Copro processor due to empty copro coproNodes");
         }
         final StatementExecutionAudit audit = StatementExecutionAudit.builder()
@@ -91,10 +97,10 @@ public class CoproProcessor<T extends CoproProcessor.Entity> {
                 .statementContent("CoproProcessor started producer for " + actionExecutionAudit.getActionName())
                 .build();
         addAudit(audit);
-        formattedQuery.forEach(sql -> jdbi.useTransaction(handle -> handle.createQuery(sql).mapToBean(targetClass).useStream(stream -> {
+        formattedQuery.forEach(sql -> jdbi.useTransaction(handle -> handle.createQuery(sql).mapToBean(inputTargetClass).useStream(stream -> {
             final AtomicInteger counter = new AtomicInteger();
-            final Map<Integer, List<T>> partitions = stream.collect(Collectors.groupingBy(it -> counter.getAndIncrement() / readBatchSize));
-            log.info("Total no of rows created {}", counter.get());
+            final Map<Integer, List<I>> partitions = stream.collect(Collectors.groupingBy(it -> counter.getAndIncrement() / readBatchSize));
+            logger.info("Total no of rows created {}", counter.get());
             partitions.forEach((integer, ts) -> executorService.submit(() -> {
                 queue.addAll(ts);
                 final StatementExecutionAudit audit2 = StatementExecutionAudit.builder()
@@ -105,17 +111,17 @@ public class CoproProcessor<T extends CoproProcessor.Entity> {
                         .rowsRead(ts.size())
                         .build();
                 addAudit(audit2);
-                log.info("Partition {} added to the queue", integer);
+                logger.info("Partition {} added to the queue", integer);
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e) {
-                    log.error("Error at Producer sleep", e);
+                    logger.error("Error at Producer sleep", e);
                     throw new RuntimeException(e);
                 }
             }));
-            log.info("Total Partition added to the queue: {} ", partitions.size());
+            logger.info("Total Partition added to the queue: {} ", partitions.size());
             queue.add(stoppingSeed);
-            log.info("Added stopping seed to the queue");
+            logger.info("Added stopping seed to the queue");
         })));
         final StatementExecutionAudit audit3 = StatementExecutionAudit.builder()
                 .rootPipelineId(actionExecutionAudit.getRootPipelineId())
@@ -128,55 +134,90 @@ public class CoproProcessor<T extends CoproProcessor.Entity> {
 
     }
 
-    public void startConsumer(final String insertSql, final Integer consumerCount, final Integer writeBatchSize, final ConsumerProcess<T> callable) {
+    public void startConsumer(final String insertSql, final Integer consumerCount, final Integer writeBatchSize, final ConsumerProcess<I, O> callable) {
 
-        final Predicate<T> tPredicate = t -> !Objects.equals(t, stoppingSeed);
+        final Predicate<I> tPredicate = t -> !Objects.equals(t, stoppingSeed);
+        final CountDownLatch countDownLatch = new CountDownLatch(consumerCount);
         for (int consumer = 0; consumer < consumerCount; consumer++) {
             executorService.submit(() -> {
-                final List<T> processedEntity = new ArrayList<>();
-                final AtomicInteger counter = new AtomicInteger();
+                final List<O> processedEntity = new ArrayList<>();
                 while (true) {
                     try {
-                        final T take = queue.take();
+                        final I take = queue.take();
                         if (tPredicate.test(take)) {
                             final int index = nodeCount.incrementAndGet() % nodeSize;//Round robin
-                            final T process = callable.process(nodes.get(index), take);
-                            processedEntity.add(process);
-                            if (counter.getAndIncrement() == writeBatchSize) {
+                            final List<O> results = callable.process(nodes.get(index), take);
+                            processedEntity.addAll(results);
+                            if (nodeCount.get() == writeBatchSize) {
                                 jdbi.useTransaction(handle -> {
                                     final PreparedBatch preparedBatch = handle.prepareBatch(insertSql);
-                                    final int[] execute = preparedBatch.add(processedEntity).execute();
-                                    log.info("Consumer persisted {}", execute);
+                                    for (final O output : processedEntity) {
+                                        List<String> rowData = output.getRowData();
+                                        for (int i = 0; i < rowData.size(); i++) {
+                                            preparedBatch.bind(i, rowData.get(i));
+                                        }
+                                        preparedBatch.add();
+                                    }
+                                    int[] execute = preparedBatch.execute();
+                                    logger.info("Consumer persisted {}", execute);
                                 });
                             }
                         } else {
-                            log.info("Breaking the consumer");
+                            logger.info("Breaking the consumer");
                             queue.add(take);
                             break;
                         }
                     } catch (InterruptedException e) {
-                        log.error("Error at Consumer", e);
+                        logger.error("Error at Consumer thread", e);
+                        throw new RuntimeException(e);
+                    } catch (Exception e) {
+                        logger.error("Error at Consumer Process", e);
                         throw new RuntimeException(e);
                     }
                 }
-                if (!processedEntity.isEmpty()) {
-                    jdbi.useTransaction(handle -> {
-                        final PreparedBatch preparedBatch = handle.prepareBatch(insertSql);
-                        final int[] execute = preparedBatch.add(processedEntity).execute();
-                        log.info("Consumer persisted {}", execute);
-                    });
-                }
-                log.info("Consumer completed the process and persisted {} rows", counter.get());
-            });
-            log.info("Consumer {} submitted the process", consumer);
-        }
+                try {
+                    if (!processedEntity.isEmpty()) {
+                        jdbi.useTransaction(handle -> {
+                            int rowCount = 0;
+                            try (final Connection connection = handle.getConnection()) {
+                                try (PreparedStatement preparedStatement = connection.prepareStatement(insertSql)) {
+                                    for (final O output : processedEntity) {
+                                        List<String> rowData = output.getRowData();
+                                        for (int i = 1; i <= rowData.size(); i++) {
+                                            preparedStatement.setString(i, rowData.get(i));
+                                        }
+                                        preparedStatement.addBatch();
+                                    }
+                                    rowCount = preparedStatement.executeUpdate();
+                                }
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                            logger.info("Consumer persisted {}", rowCount);
+                        });
 
+                    }
+                } catch (Exception e) {
+                    logger.error("Final persistence failed", e);
+                } finally {
+                    logger.info("Consumer {} completed the process and persisted {} rows", countDownLatch.getCount(), nodeCount.get());
+                    countDownLatch.countDown();
+                }
+            });
+
+            logger.info("Consumer {} submitted the process", consumer);
+        }
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            logger.error("Consumer completed the process and persisted {} rows", nodeCount.get(), e);
+        }
     }
 
 
-    public interface ConsumerProcess<T extends Entity> {
+    public interface ConsumerProcess<I, O extends Entity> {
 
-        T process(final URL endpoint, final T entity);
+        List<O> process(final URL endpoint, final I entity) throws Exception;
 
     }
 
