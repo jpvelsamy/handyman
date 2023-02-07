@@ -15,21 +15,8 @@ class ZeroShotClassifierActionTest {
                 .condition(true)
                 .name("Test ZeroShotClassifier")
                 .processID("1234")
-                .querySet("select sot.paper_no, sot.content as page_content, sot.group_id, sot.origin_id, \n" +
-                        "'1234' as process_id,t.sor_container_id,t.truth_entity, \n" +
-                        "t.synonym_label from (select ste.sor_container_id as sor_container_id, \n" +
-                        "ste.truth_entity as truth_entity, \n" +
-                        "jsonb_agg(st.synonym) as synonym_label \n" +
-                        "from sor_meta.sor_tsynonym st \n" +
-                        "inner join sor_meta.sor_item_truth_entity_mapping sitem \n" +
-                        "on sitem.sor_item_name = st.sor_item_name \n" +
-                        "and sitem.sor_truth_mapping_id = st.sor_truth_mapping_id \n" +
-                        "inner join sor_meta.sor_truth_entity ste \n" +
-                        "on ste.truth_entity = sitem.truth_entity  \n" +
-                        "where st.is_paper_filter_candidate ='True'\n" +
-                        "group by ste.sor_container_id,ste.truth_entity  )t\n" +
-                        "cross join info.source_of_truth sot\n" +
-                        "where sot.origin_id ='INT-1' limit 1;")
+                .querySet("SELECT paper_no, page_content, group_id, origin_id, process_id, sor_container_id, truth_entity,  keys_to_filter " +
+                        "FROM public.test_zsc limit 2;")
                 .resourceConn("intics_agadia_db_conn")
                 .build();
 

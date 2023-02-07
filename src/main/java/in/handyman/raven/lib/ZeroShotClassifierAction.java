@@ -17,8 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
-import java.net.URL;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -94,31 +92,6 @@ public class ZeroShotClassifierAction implements IActionExecution {
     @Override
     public boolean executeIf() throws Exception {
         return zeroShotClassifier.getCondition();
-    }
-
-    public static class ZeroShotEntity implements CoproProcessor.Entity {
-
-        //SELECT Col
-
-        //INSERT Col
-
-        @Override
-        public List<String> getRowData() {
-            return null;
-        }
-    }
-
-
-    public static class ZeroShotConsumerProcess implements CoproProcessor.ConsumerProcess<ZeroShotEntity> {
-
-        @Override
-        public ZeroShotEntity process(final URL endpoint, final ZeroShotEntity entity) {
-
-            //TODO actual process
-            return null;
-
-        }
-
     }
 
 }

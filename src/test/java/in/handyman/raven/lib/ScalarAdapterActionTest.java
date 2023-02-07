@@ -14,7 +14,6 @@ class ScalarAdapterActionTest {
         final ScalarAdapter build = ScalarAdapter.builder()
                 .condition(true)
                 .name("Test ScalarAdapter")
-                .forkBatchSize("1")
                 .resultSet(" SELECT dp.sor_id, dp.sor_key , dp.question, dp.answer as input_value,\n" +
                         "                             si.allowed_adapter , si.restricted_adapter ,\n" +
                         "                             si.word_limit , si.word_threshold ,\n" +

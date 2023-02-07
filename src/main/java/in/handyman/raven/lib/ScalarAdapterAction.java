@@ -5,7 +5,15 @@ import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
-import in.handyman.raven.lib.model.*;
+import in.handyman.raven.lib.model.Alphanumericvalidator;
+import in.handyman.raven.lib.model.Alphavalidator;
+import in.handyman.raven.lib.model.Charactercount;
+import in.handyman.raven.lib.model.Datevalidator;
+import in.handyman.raven.lib.model.Nervalidator;
+import in.handyman.raven.lib.model.Numericvalidator;
+import in.handyman.raven.lib.model.ScalarAdapter;
+import in.handyman.raven.lib.model.Validator;
+import in.handyman.raven.lib.model.Wordcount;
 import in.handyman.raven.util.CommonQueryUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -330,7 +338,7 @@ public class ScalarAdapterAction implements IActionExecution {
     private String sorItemName;
 
       @Override
-      public List<String> getRowData() {
+      public List<Object> getRowData() {
           return null;
       }
   }

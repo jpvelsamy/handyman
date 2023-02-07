@@ -13,11 +13,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import okhttp3.*;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.argument.Arguments;
 import org.jdbi.v3.core.argument.NullArgument;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -26,7 +29,12 @@ import org.slf4j.MarkerFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Types;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -60,9 +68,9 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
         jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
         log.info(aMarker, "<-------Phrase match paper filter Action for {} has been started------->", zeroShotClassifierPaperFilter.getName());
         final String processId = Optional.ofNullable(zeroShotClassifierPaperFilter.getProcessID()).map(String::valueOf).orElse(null);
-        final String insertQuery = "INSERT INTO paper.zero_shot_classifier_filtering_result_" + processId + "(origin_id,group_id,paper_no,synonym,confidence_score, created_on) " +
+        final String insertQuery = "INSERT INTO zero_shot_classifier_filtering_result_" + processId + "(origin_id,group_id,paper_no,synonym,confidence_score, created_on) " +
                 " VALUES(?,?,?,?,?,now())";
-        final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.paper-filtering-zero-shot-classifier.url")).map(s -> Arrays.asList(s.split(",")).stream().map(s1 -> {
+        final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.paper-filtering-zero-shot-classifier.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
             try {
                 return new URL(s1);
             } catch (MalformedURLException e) {
@@ -77,9 +85,9 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
                         PaperFilteringZeroShotClassifierInputTable.class,
                         jdbi, log,
                         new PaperFilteringZeroShotClassifierInputTable(), urls, action);
-        coproProcessor.startProducer(zeroShotClassifierPaperFilter.getQuerySet(), 500);
+        coproProcessor.startProducer(zeroShotClassifierPaperFilter.getQuerySet(), 10);
         Thread.sleep(1000);
-        coproProcessor.startConsumer(insertQuery, 2, 1000, new ZeroShotConsumerProcess(log, aMarker, action));
+        coproProcessor.startConsumer(insertQuery, 2, 10, new ZeroShotConsumerProcess(log, aMarker, action));
         log.info(aMarker, " Zero shot classifier has been completed {}  ", zeroShotClassifierPaperFilter.getName());
     }
 
@@ -171,7 +179,7 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
         private String processId;
 
         @Override
-        public List<String> getRowData() {
+        public List<Object> getRowData() {
             return null;
         }
     }
@@ -190,8 +198,8 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
 //        private String processId;
 
         @Override
-        public List<String> getRowData() {
-            return Stream.of(this.originId, this.groupId, this.paperNo, this.entity,this.confidenceScore).map(Object::toString).collect(Collectors.toList());
+        public List<Object> getRowData() {
+            return Stream.of(this.originId, this.groupId, this.paperNo, this.entity, this.confidenceScore).collect(Collectors.toList());
         }
     }
 
