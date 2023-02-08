@@ -16,10 +16,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -196,10 +193,11 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
                                         }
                                         preparedStatement.addBatch();
                                     }
-                                    rowCount = preparedStatement.executeUpdate();
+                                    rowCount = (int) Arrays.stream(preparedStatement.executeBatch()).count();
                                 }
                             } catch (Exception e) {
                                 handle.rollback();
+                                e.printStackTrace();
                                 throw new RuntimeException(e);
                             } finally {
                                 handle.commit();
