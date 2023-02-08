@@ -104,7 +104,8 @@ action:
     |nervalidator
     |donutDocQa
     |intellimatch
-    |scalarAdapter);
+    |scalarAdapter
+    |hwdetection);
 
 
 multitude:
@@ -302,7 +303,9 @@ paperItemization:
     'paper-itemization' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
 
 autoRotation:
-    'autoRotation' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
+    'autoRotation' 'as' name=STRING 'from-target-file'
+     filePath=STRING 'using' outputDir=STRING  'using'  '{' '}'
+     ('on-condition' condition=expression)* ;
 
 blankPageRemover:
     'blankPageRemover' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
@@ -613,6 +616,13 @@ intellimatch:
          'match-result' matchResult=STRING
          'audit-table' auditTable=STRING
          'using' '{' inputSet=STRING '}' ('on-condition' condition=expression)*;
+
+hwdetection:
+    'hwdetection' 'as' name=STRING 'inputFilePath'
+     filePath=STRING  'outputDir' directorypath=STRING
+     'modelPath' modelpath=STRING 'using'  '{' '}'
+     ('on-condition' condition=expression)* ;
+
 
 
 resource : STRING;
