@@ -618,9 +618,12 @@ intellimatch:
          'using' '{' inputSet=STRING '}' ('on-condition' condition=expression)*;
 
 hwdetection:
-    'hwdetection' 'as' name=STRING 'inputFilePath'
-     filePath=STRING  'outputDir' directorypath=STRING
-     'modelPath' modelpath=STRING 'using'  '{' '}'
+    'hwdetection' 'as' name=STRING
+     'on-resource-conn' resourceConn=STRING
+     'handwritten-table' handwrittenTable=STRING
+      'audit-table' auditTable=STRING
+     'outputDir' directorypath=STRING
+     'modelPath' modelpath=STRING 'using'  '{' input=STRING '}'
      ('on-condition' condition=expression)* ;
 
 
