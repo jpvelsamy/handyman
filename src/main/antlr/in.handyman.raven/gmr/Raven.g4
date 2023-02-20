@@ -641,11 +641,8 @@ assetInfo:
 dataExtraction:
 	'dataExtraction' 'as' name=STRING
 	'resource-conn' resourceConn=STRING
+	'result-table' resultTable=STRING
 	'using' '{' querySet=STRING '}' ('on-condition' condition=expression)* ;
-
-
-
-
 
 resource : STRING;
 
