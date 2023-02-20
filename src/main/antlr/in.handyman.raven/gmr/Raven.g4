@@ -273,7 +273,7 @@ pushJson :
 
 mapJsonContext :
       'map-json-into-context' 'as' name=STRING  'using'  '{'
-                        autoRotation                              value=STRING
+               value=STRING
                                                    '}' ('on-condition' condition=expression)* ;
                                                    
 sharePoint:
@@ -305,10 +305,10 @@ paperItemization:
     'paper-itemization' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
 
 autoRotation:
-    'autoRotation' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
+    'autoRotation' 'as' name=STRING 'output-dir' outputDir=STRING  'resource-conn' resourceConn=STRING 'using'  '{' querySet=STRING '}' ('on-condition' condition=expression)* ;
 
 blankPageRemover:
-    'blankPageRemover' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
+    'blankPageRemover' 'as' name=STRING  'output-dir' outputDir=STRING 'resource-conn' resourceConn=STRING  'using'  '{'  querySet=STRING '}' ('on-condition' condition=expression)* ;
 
 qrAttribution:
     'qrAttribution' 'as' name=STRING 'using'  '{' filePath=STRING '}' ('on-condition' condition=expression)* ;
@@ -635,12 +635,14 @@ zeroShotClassifierPaperFilter:
 assetInfo:
 	'assetInfo' 'as' name=STRING
 	'on-resource-conn' resourceConn=STRING
+	'result-table' assetTable=STRING
 	'using' '{' values=STRING '}' ('on-condition' condition=expression)* ;
 
 dataExtraction:
-	'data-extraction' 'as' name=STRING
-	'on-resource-conn' resourceConn=STRING
-	'using' '{' value=STRING '}' ('on-condition' condition=expression)* ;
+	'dataExtraction' 'as' name=STRING
+	'resource-conn' resourceConn=STRING
+	'result-table' resultTable=STRING
+	'using' '{' querySet=STRING '}' ('on-condition' condition=expression)* ;
 
 resource : STRING;
 

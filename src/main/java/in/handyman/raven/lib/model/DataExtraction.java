@@ -26,7 +26,9 @@ public class DataExtraction implements IActionContext {
 
   private String resourceConn;
 
-  private String value;
+  private String resultTable;
+
+  private String querySet;
 
   private Boolean condition = true;
 }
