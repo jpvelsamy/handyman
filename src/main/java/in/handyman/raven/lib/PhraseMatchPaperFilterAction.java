@@ -57,6 +57,7 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
 
   @Override
   public void execute() throws Exception {
+
     final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(phraseMatchPaperFilter.getResourceConn());
     log.info(aMarker, "<-------Phrase match paper filter Action for {} has been started------->", phraseMatchPaperFilter.getName());
     final OkHttpClient httpclient = new OkHttpClient.Builder()
@@ -102,7 +103,6 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
                     .bindBean(phraseMatchFilteringResultTable)
                     .execute());
           }
-
         });
         action.getContext().put(name.concat(".error"), "false");
         log.info(aMarker, "The Successful Response for {} --> {}", name, responseBody);

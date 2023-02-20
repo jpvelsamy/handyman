@@ -120,48 +120,46 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
             List<PaperFilteringZeroShotClassifierOutputTable> parentObj = new ArrayList<>();
             final ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("pageContent", entity.pageContent);
-//            JSONArray entityArray = new JSONArray(entity.keysToFilter);
-//            entityArray.forEach(entry -> {
-//                JSONObject childObj = new JSONObject(entry.toString());
-//                childObj.keys().forEachRemaining(value -> {
-                    try {
-                        objectNode.set("keysToFilter", mapper.readTree(entity.keysToFilter));
-                        objectNode.put("originId", entity.originId);
-                        objectNode.put("groupId", entity.groupId);
-                        objectNode.put("paperNo", entity.paperNo);
-                        log.info(aMarker, " Input variables id : {}", action.getActionId());
-                        Request request = new Request.Builder().url(endpoint)
-                                .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-                        log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n page content : {} \n key-filters : {} ", endpoint, entity.getPageContent(), entity.getKeysToFilter());
-                        log.debug(aMarker, "The Request Details: {}", request);
-                        try (Response response = httpclient.newCall(request).execute()) {
-                            String responseBody = Objects.requireNonNull(response.body()).string();
-                            if (response.isSuccessful()) {
-                                JSONObject parentResponseObject = new JSONObject(responseBody);
-                                final Integer paperNo = Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null);
-                                JSONObject responseObject = new JSONObject(String.valueOf(parentResponseObject.get("entity_confidence_score")));
-                                parentObj.addAll(responseObject.toMap().entrySet().stream().map(stringObjectEntry -> {
-                                    final String key = stringObjectEntry.getKey();
-                                    return PaperFilteringZeroShotClassifierOutputTable
-                                            .builder()
-                                            .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                                            .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).orElse(null))
-                                            .entity(Optional.ofNullable(key).map(String::valueOf).orElse(null))
-                                            .confidenceScore(Optional.ofNullable(stringObjectEntry.getValue()).map(String::valueOf).orElse(null))
-                                            .paperNo(paperNo)
-                                            .build();
-                                }).collect(Collectors.toList()));
-                            }
-                        } catch (Exception e) {
-                            log.info(aMarker, "The Exception occurred ", e);
-                            throw new HandymanException("Failed to execute", e);
-                        }
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException(e);
-                    }
-//                });
-//            });
+            try {
+                objectNode.set("keysToFilter", mapper.readTree(entity.keysToFilter));
+                objectNode.put("originId", entity.originId);
+                objectNode.put("groupId", entity.groupId);
+                objectNode.put("paperNo", entity.paperNo);
+                log.info(aMarker, " Input variables id : {}", action.getActionId());
+                Request request = new Request.Builder().url(endpoint)
+                        .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
+                log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n page content : {} \n key-filters : {} ", endpoint, entity.getPageContent(), entity.getKeysToFilter());
+                log.debug(aMarker, "The Request Details: {}", request);
+                coproAPIProcessor(entity, parentObj, request);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
             return parentObj;
+        }
+
+        private void coproAPIProcessor(PaperFilteringZeroShotClassifierInputTable entity, List<PaperFilteringZeroShotClassifierOutputTable> parentObj, Request request) {
+            try (Response response = httpclient.newCall(request).execute()) {
+                String responseBody = Objects.requireNonNull(response.body()).string();
+                if (response.isSuccessful()) {
+                    JSONObject parentResponseObject = new JSONObject(responseBody);
+                    final Integer paperNo = Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null);
+                    JSONObject responseObject = new JSONObject(String.valueOf(parentResponseObject.get("entity_confidence_score")));
+                    parentObj.addAll(responseObject.toMap().entrySet().stream().map(stringObjectEntry -> {
+                        final String key = stringObjectEntry.getKey();
+                        return PaperFilteringZeroShotClassifierOutputTable
+                                .builder()
+                                .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
+                                .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).orElse(null))
+                                .entity(Optional.ofNullable(key).map(String::valueOf).orElse(null))
+                                .confidenceScore(Optional.ofNullable(stringObjectEntry.getValue()).map(String::valueOf).orElse(null))
+                                .paperNo(paperNo)
+                                .build();
+                    }).collect(Collectors.toList()));
+                }
+            } catch (Exception e) {
+                log.info(aMarker, "The Exception occurred ", e);
+                throw new HandymanException("Failed to execute", e);
+            }
         }
 
     }
