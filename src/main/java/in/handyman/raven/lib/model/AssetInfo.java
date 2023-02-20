@@ -26,6 +26,8 @@ public class AssetInfo implements IActionContext {
 
   private String resourceConn;
 
+  private String assetTable;
+
   private String values;
 
   private Boolean condition = true;
