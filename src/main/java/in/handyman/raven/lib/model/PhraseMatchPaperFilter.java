@@ -24,19 +24,22 @@ import lombok.NoArgsConstructor;
 public class PhraseMatchPaperFilter implements IActionContext {
   private String name;
 
-  private String originId;
+//  private String originId;
 
-  private String paperNo;
+//  private String paperNo;
 
-  private String groupId;
+//  private String groupId;
 
   private String resourceConn;
 
-  private String pageContent;
+//  private String pageContent;
 
-  private String keysToFilter;
+//  private String keysToFilter;
 
   private String processID;
+
+  private String querySet;
+
 
   private Boolean condition = true;
 }

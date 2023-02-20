@@ -68,8 +68,8 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
         jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
         log.info(aMarker, "<-------Phrase match paper filter Action for {} has been started------->", zeroShotClassifierPaperFilter.getName());
         final String processId = Optional.ofNullable(zeroShotClassifierPaperFilter.getProcessID()).map(String::valueOf).orElse(null);
-        final String insertQuery = "INSERT INTO paper.zero_shot_classifier_filtering_result_" + processId + "(origin_id,group_id,paper_no,synonym,confidence_score, created_on) " +
-                " VALUES(?,?,?,?,?,now())";
+        final String insertQuery = "INSERT INTO paper.zero_shot_classifier_filtering_result_" + processId + "(origin_id,group_id,paper_no,synonym,confidence_score,truth_entity, created_on) " +
+                " VALUES(?,?,?,?,?,?,now())";
         final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.paper-filtering-zero-shot-classifier.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
             try {
                 return new URL(s1);
@@ -121,6 +121,7 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
             final ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("pageContent", entity.pageContent);
             try {
+                objectNode.put("truthEntity", entity.truthEntity);
                 objectNode.set("keysToFilter", mapper.readTree(entity.keysToFilter));
                 objectNode.put("originId", entity.originId);
                 objectNode.put("groupId", entity.groupId);
@@ -150,6 +151,7 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
                                 .builder()
                                 .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                                 .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).orElse(null))
+                                .truthEntity(Optional.ofNullable(entity.getTruthEntity()).map(String::valueOf).orElse(null))
                                 .entity(Optional.ofNullable(key).map(String::valueOf).orElse(null))
                                 .confidenceScore(Optional.ofNullable(stringObjectEntry.getValue()).map(String::valueOf).orElse(null))
                                 .paperNo(paperNo)
@@ -173,6 +175,8 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
         private Integer paperNo;
         private String groupId;
         private String pageContent;
+
+        private String truthEntity;
         private String keysToFilter;
         private String processId;
 
@@ -191,13 +195,15 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
         private String originId;
         private Integer paperNo;
         private String groupId;
+        private String truthEntity;
+
         private String confidenceScore;
         private String entity;
 //        private String processId;
 
         @Override
         public List<Object> getRowData() {
-            return Stream.of(this.originId, this.groupId, this.paperNo, this.entity, this.confidenceScore).collect(Collectors.toList());
+            return Stream.of(this.originId, this.groupId, this.paperNo, this.entity, this.confidenceScore, this.truthEntity).collect(Collectors.toList());
         }
     }
 
