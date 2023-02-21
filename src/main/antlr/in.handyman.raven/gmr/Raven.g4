@@ -304,10 +304,10 @@ paperItemization:
     'paper-itemization' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
 
 autoRotation:
-    'autoRotation' 'as' name=STRING 'output-dir' outputDir=STRING 'process-id' processId=STRING  'resource-conn' resourceConn=STRING 'using'  '{' querySet=STRING '}' ('on-condition' condition=expression)*  ('on-parallel-fielding' forkBatchSize=STRING)*;
+    'autoRotation' 'as' name=STRING 'output-dir' outputDir=STRING 'process-id' processId=STRING  'resource-conn' resourceConn=STRING 'using'  '{' querySet=STRING '}' ('on-condition' condition=expression)*  ;
 
 blankPageRemover:
-    'blankPageRemover' 'as' name=STRING  'output-dir' outputDir=STRING 'process-id' processId=STRING 'resource-conn' resourceConn=STRING  'using'  '{'  querySet=STRING '}' ('on-condition' condition=expression)*  ('on-parallel-fielding' forkBatchSize=STRING)*;
+    'blankPageRemover' 'as' name=STRING  'output-dir' outputDir=STRING 'process-id' processId=STRING 'resource-conn' resourceConn=STRING  'using'  '{'  querySet=STRING '}' ('on-condition' condition=expression)* ;
 
 qrAttribution:
     'qrAttribution' 'as' name=STRING 'using'  '{' filePath=STRING '}' ('on-condition' condition=expression)* ;
@@ -643,7 +643,7 @@ dataExtraction:
 	'resource-conn' resourceConn=STRING
 	'result-table' resultTable=STRING
 	'process-id' processId=STRING
-	'using' '{' querySet=STRING '}' ('on-condition' condition=expression)*  ('on-parallel-fielding' forkBatchSize=STRING)*;
+	'using' '{' querySet=STRING '}' ('on-condition' condition=expression)* ;
 
 resource : STRING;
 
