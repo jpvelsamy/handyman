@@ -38,154 +38,159 @@ import java.util.stream.Stream;
         actionName = "BlankPageRemover"
 )
 public class BlankPageRemoverAction implements IActionExecution {
-  private static final MediaType MediaTypeJSON = MediaType
-          .parse("application/json; charset=utf-8");
-  private final ActionExecutionAudit action;
-  private final Logger log;
-  private final BlankPageRemover blankPageRemover;
-  private final ObjectMapper mapper = new ObjectMapper();
-  private final String URI;
-
-  private final Marker aMarker;
-
-  public BlankPageRemoverAction(final ActionExecutionAudit action, final Logger log,
-                                final Object blankPageRemover) {
-    this.blankPageRemover = (BlankPageRemover) blankPageRemover;
-    this.action = action;
-    this.log = log;
-    this.aMarker = MarkerFactory.getMarker(" BlankPageRemover:" + this.blankPageRemover.getName());
-    this.URI = action.getContext().get("copro.blank-page-remover.url");
-
-  }
-
-  @Override
-  public void execute() throws Exception {
-
-    final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(blankPageRemover.getResourceConn());
-
-    jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
-    log.info(aMarker, "<-------Blank Page Removal Action for {} has been started------->", blankPageRemover.getName());
-    final String outputDir = Optional.ofNullable(blankPageRemover.getOutputDir()).map(String::valueOf).orElse(null);
-    final String insertQuery = "INSERT INTO info.blank_page_removal_"+blankPageRemover.getProcessId() + "(origin_id,group_id,processed_file_path, created_on) " +
-            " VALUES(?,?,?,now())";
-    final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.blank-page-remover.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
-      try {
-        return new URL(s1);
-      } catch (MalformedURLException e) {
-        log.error("Error in processing the URL ", e);
-        throw new RuntimeException(e);
-      }
-    }).collect(Collectors.toList())).orElse(Collections.emptyList());
-
-    final CoproProcessor<BlankPageRemoverAction.BlankPageRemoverInputTable, BlankPageRemoverAction.BlankPageRemoverOutputTable> coproProcessor =
-            new CoproProcessor<>(new LinkedBlockingQueue<>(),
-                    BlankPageRemoverAction.BlankPageRemoverOutputTable.class,
-                    BlankPageRemoverAction.BlankPageRemoverInputTable.class,
-                    jdbi, log,
-                    new BlankPageRemoverAction.BlankPageRemoverInputTable(), urls, action);
-    coproProcessor.startProducer(blankPageRemover.getQuerySet(), 10);
-    Thread.sleep(1000);
-    coproProcessor.startConsumer(insertQuery, 5, 10, new BlankPageRemoverAction.BlankPageRemoverConsumerProcess(log, aMarker, action, outputDir));
-    log.info(aMarker, " Blank Page Removal Action has been completed {}  ", blankPageRemover.getName());
-  }
-
-
-  public static class BlankPageRemoverConsumerProcess implements CoproProcessor.ConsumerProcess<BlankPageRemoverAction.BlankPageRemoverInputTable, BlankPageRemoverAction.BlankPageRemoverOutputTable> {
-    private final Logger log;
-    private final Marker aMarker;
-    private final ObjectMapper mapper = new ObjectMapper();
     private static final MediaType MediaTypeJSON = MediaType
             .parse("application/json; charset=utf-8");
-    private final String outputDir;
+    private final ActionExecutionAudit action;
+    private final Logger log;
+    private final BlankPageRemover blankPageRemover;
+    private final ObjectMapper mapper = new ObjectMapper();
+    private final String URI;
 
-    public final ActionExecutionAudit action;
-    final OkHttpClient httpclient = new OkHttpClient.Builder()
-            .connectTimeout(10, TimeUnit.MINUTES)
-            .writeTimeout(10, TimeUnit.MINUTES)
-            .readTimeout(10, TimeUnit.MINUTES)
-            .build();
+    private final Marker aMarker;
 
-    public BlankPageRemoverConsumerProcess(final Logger log, final Marker aMarker, ActionExecutionAudit action, String outputDir) {
-      this.log = log;
-      this.aMarker = aMarker;
-      this.action = action;
-      this.outputDir = outputDir;
+    public BlankPageRemoverAction(final ActionExecutionAudit action, final Logger log,
+                                  final Object blankPageRemover) {
+        this.blankPageRemover = (BlankPageRemover) blankPageRemover;
+        this.action = action;
+        this.log = log;
+        this.aMarker = MarkerFactory.getMarker(" BlankPageRemover:" + this.blankPageRemover.getName());
+        this.URI = action.getContext().get("copro.blank-page-remover.url");
+
     }
 
     @Override
-    public List<BlankPageRemoverAction.BlankPageRemoverOutputTable> process(URL endpoint, BlankPageRemoverAction.BlankPageRemoverInputTable entity) throws JsonProcessingException {
-      List<BlankPageRemoverAction.BlankPageRemoverOutputTable> parentObj = new ArrayList<>();
-      final ObjectNode objectNode = mapper.createObjectNode();
-      objectNode.put("inputFilePath", entity.filePath);
-      objectNode.put("outputDir", outputDir);
-      log.info(aMarker, " Input variables id : {}", action.getActionId());
-      Request request = new Request.Builder().url(endpoint)
-              .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-      log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n page content : {} \n key-filters : {} ");
-      log.debug(aMarker, "The Request Details: {}", request);
-      try (Response response = httpclient.newCall(request).execute()) {
-        String responseBody = Objects.requireNonNull(response.body()).string();
-        if (response.isSuccessful()) {
-          JSONObject parentResponseObject = new JSONObject(responseBody);
-          parentObj.add(
-                  BlankPageRemoverOutputTable
-                          .builder()
-                          .processedFilePath(Optional.ofNullable(parentResponseObject.get("processedFilePath")).map(String::valueOf).orElse(null))
-                          .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                          .groupId(entity.getGroupId())
-                          .build());
+    public void execute() throws Exception {
+        try {
+            log.info(aMarker, " Blank Page Removal Action has been started {}  ", blankPageRemover.getName());
+
+            final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(blankPageRemover.getResourceConn());
+            jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
+            final String outputDir = Optional.ofNullable(blankPageRemover.getOutputDir()).map(String::valueOf).orElse(null);
+            final String insertQuery = "INSERT INTO info.blank_page_removal_" + blankPageRemover.getProcessId() + "(origin_id,group_id,processed_file_path, created_on) " +
+                    " VALUES(?,?,?,now())";
+            log.info(aMarker, "Blank Page Removal Insert query {}", insertQuery);
+
+            final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.blank-page-remover.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
+                try {
+                    return new URL(s1);
+                } catch (MalformedURLException e) {
+                    log.error("Error in processing the URL ", e);
+                    throw new RuntimeException(e);
+                }
+            }).collect(Collectors.toList())).orElse(Collections.emptyList());
+
+            final CoproProcessor<BlankPageRemoverAction.BlankPageRemoverInputTable, BlankPageRemoverAction.BlankPageRemoverOutputTable> coproProcessor =
+                    new CoproProcessor<>(new LinkedBlockingQueue<>(),
+                            BlankPageRemoverAction.BlankPageRemoverOutputTable.class,
+                            BlankPageRemoverAction.BlankPageRemoverInputTable.class,
+                            jdbi, log,
+                            new BlankPageRemoverAction.BlankPageRemoverInputTable(), urls, action);
+            coproProcessor.startProducer(blankPageRemover.getQuerySet(), 10);
+            Thread.sleep(1000);
+            coproProcessor.startConsumer(insertQuery, 5, 10, new BlankPageRemoverAction.BlankPageRemoverConsumerProcess(log, aMarker, action, outputDir));
+            log.info(aMarker, " Blank Page Removal Action has been completed {}  ", blankPageRemover.getName());
+        } catch (Throwable t) {
+            log.error(aMarker, "error at blank page removal {}", t);
         }
-      } catch (Exception e) {
-        log.info(aMarker, "The Exception occurred ", e);
-        //eroor
-        throw new HandymanException("Failed to execute", e);
-      }
-      return parentObj;
     }
 
-  }
 
-  @Override
-  public boolean executeIf() throws Exception {
-    return blankPageRemover.getCondition();
-  }
+    public static class BlankPageRemoverConsumerProcess implements CoproProcessor.ConsumerProcess<BlankPageRemoverAction.BlankPageRemoverInputTable, BlankPageRemoverAction.BlankPageRemoverOutputTable> {
+        private final Logger log;
+        private final Marker aMarker;
+        private final ObjectMapper mapper = new ObjectMapper();
+        private static final MediaType MediaTypeJSON = MediaType
+                .parse("application/json; charset=utf-8");
+        private final String outputDir;
 
-  @Data
-  @AllArgsConstructor
-  @NoArgsConstructor
-  @Builder
-  public static class BlankPageRemoverInputTable implements CoproProcessor.Entity {
-    private String originId;
-    private Integer groupId;
-    private String inboundId;
-    private String tenantId;
-    private String filePath;
-    private String outputDir;
-    private String documentId;
+        public final ActionExecutionAudit action;
+        final OkHttpClient httpclient = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.MINUTES)
+                .writeTimeout(10, TimeUnit.MINUTES)
+                .readTimeout(10, TimeUnit.MINUTES)
+                .build();
 
+        public BlankPageRemoverConsumerProcess(final Logger log, final Marker aMarker, ActionExecutionAudit action, String outputDir) {
+            this.log = log;
+            this.aMarker = aMarker;
+            this.action = action;
+            this.outputDir = outputDir;
+        }
+
+        @Override
+        public List<BlankPageRemoverAction.BlankPageRemoverOutputTable> process(URL endpoint, BlankPageRemoverAction.BlankPageRemoverInputTable entity) throws JsonProcessingException {
+            List<BlankPageRemoverAction.BlankPageRemoverOutputTable> parentObj = new ArrayList<>();
+            final ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("inputFilePath", entity.filePath);
+            objectNode.put("outputDir", outputDir);
+            log.info(aMarker, " Input variables id : {}", action.getActionId());
+            Request request = new Request.Builder().url(endpoint)
+                    .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
+            log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n page content : {} \n key-filters : {} ");
+            log.debug(aMarker, "The Request Details: {}", request);
+            try (Response response = httpclient.newCall(request).execute()) {
+                String responseBody = Objects.requireNonNull(response.body()).string();
+                if (response.isSuccessful()) {
+                    JSONObject parentResponseObject = new JSONObject(responseBody);
+                    parentObj.add(
+                            BlankPageRemoverOutputTable
+                                    .builder()
+                                    .processedFilePath(Optional.ofNullable(parentResponseObject.get("processedFilePath")).map(String::valueOf).orElse(null))
+                                    .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
+                                    .groupId(entity.getGroupId())
+                                    .build());
+                }
+            } catch (Exception e) {
+                log.info(aMarker, "The Exception occurred ", e);
+                //eroor
+                throw new HandymanException("Failed to execute", e);
+            }
+            return parentObj;
+        }
+
+    }
 
     @Override
-    public List<Object> getRowData() {
-      return null;
+    public boolean executeIf() throws Exception {
+        return blankPageRemover.getCondition();
     }
-  }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class BlankPageRemoverInputTable implements CoproProcessor.Entity {
+        private String originId;
+        private Integer groupId;
+        private String inboundId;
+        private String tenantId;
+        private String filePath;
+        private String outputDir;
+        private String documentId;
 
 
-  @Data
-  @AllArgsConstructor
-  @NoArgsConstructor
-  @Builder
-  public static class BlankPageRemoverOutputTable implements CoproProcessor.Entity {
-
-    private String originId;
-    private Integer groupId;
-    private String processedFilePath;
-
-    @Override
-    public List<Object> getRowData() {
-      return Stream.of(this.originId, this.groupId, this.processedFilePath).collect(Collectors.toList());
+        @Override
+        public List<Object> getRowData() {
+            return null;
+        }
     }
-  }
+
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class BlankPageRemoverOutputTable implements CoproProcessor.Entity {
+
+        private String originId;
+        private Integer groupId;
+        private String processedFilePath;
+
+        @Override
+        public List<Object> getRowData() {
+            return Stream.of(this.originId, this.groupId, this.processedFilePath).collect(Collectors.toList());
+        }
+    }
 
 
 }
