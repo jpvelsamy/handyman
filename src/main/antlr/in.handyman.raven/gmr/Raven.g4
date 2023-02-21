@@ -179,8 +179,7 @@ assign:
 	'assign' 'as' name=STRING 'source' source=STRING 'using'
 	'{'
 		value=STRING
-	'}' ('on-condition' condition=expression)*
-;
+	'}' ('on-condition' condition=expression)*;
 
 
 dropFile:
@@ -305,10 +304,10 @@ paperItemization:
     'paper-itemization' 'as' name=STRING 'from-target-file' filePath=STRING 'using' outputDir=STRING  'using'  '{' '}' ('on-condition' condition=expression)* ;
 
 autoRotation:
-    'autoRotation' 'as' name=STRING 'output-dir' outputDir=STRING  'resource-conn' resourceConn=STRING 'using'  '{' querySet=STRING '}' ('on-condition' condition=expression)* ;
+    'autoRotation' 'as' name=STRING 'output-dir' outputDir=STRING 'process-id' processId=STRING  'resource-conn' resourceConn=STRING 'using'  '{' querySet=STRING '}' ('on-condition' condition=expression)*  ('on-parallel-fielding' forkBatchSize=STRING)*;
 
 blankPageRemover:
-    'blankPageRemover' 'as' name=STRING  'output-dir' outputDir=STRING 'resource-conn' resourceConn=STRING  'using'  '{'  querySet=STRING '}' ('on-condition' condition=expression)* ;
+    'blankPageRemover' 'as' name=STRING  'output-dir' outputDir=STRING 'process-id' processId=STRING 'resource-conn' resourceConn=STRING  'using'  '{'  querySet=STRING '}' ('on-condition' condition=expression)*  ('on-parallel-fielding' forkBatchSize=STRING)*;
 
 qrAttribution:
     'qrAttribution' 'as' name=STRING 'using'  '{' filePath=STRING '}' ('on-condition' condition=expression)* ;
@@ -635,6 +634,7 @@ zeroShotClassifierPaperFilter:
 assetInfo:
 	'assetInfo' 'as' name=STRING
 	'on-resource-conn' resourceConn=STRING
+	'get-audit-table' auditTable=STRING
 	'result-table' assetTable=STRING
 	'using' '{' values=STRING '}' ('on-condition' condition=expression)* ;
 
@@ -642,7 +642,8 @@ dataExtraction:
 	'dataExtraction' 'as' name=STRING
 	'resource-conn' resourceConn=STRING
 	'result-table' resultTable=STRING
-	'using' '{' querySet=STRING '}' ('on-condition' condition=expression)* ;
+	'process-id' processId=STRING
+	'using' '{' querySet=STRING '}' ('on-condition' condition=expression)*  ('on-parallel-fielding' forkBatchSize=STRING)*;
 
 resource : STRING;
 
