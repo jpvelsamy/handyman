@@ -72,18 +72,18 @@ public class HwdetectionAction implements IActionExecution {
   public void execute() throws Exception {
 
     final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(hwdetection.getResourceConn());
-    final List<handwrittenTable> inputResult = new ArrayList<>();
+    final List<HandwrittenTable> inputResult = new ArrayList<>();
     jdbi.useTransaction(handle -> {
       final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(hwdetection.getInput());
       AtomicInteger i = new AtomicInteger(0);
       formattedQuery.forEach(sqlToExecute -> {
         Query query = handle.createQuery(sqlToExecute);
-        ResultIterable<handwrittenTable> resultIterable = query.mapToBean(handwrittenTable.class);
-        List<handwrittenTable> detailList = resultIterable.stream().collect(Collectors.toList());
+        ResultIterable<HandwrittenTable> resultIterable = query.mapToBean(HandwrittenTable.class);
+        List<HandwrittenTable> detailList = resultIterable.stream().collect(Collectors.toList());
         inputResult.addAll(detailList);
       });
     });
-    List<handwrittenTable> resultQueue = new ArrayList<>();
+    List<HandwrittenTable> resultQueue = new ArrayList<>();
     inputResult.forEach(result -> {
       if (result.getFilePath() != null) {
         final ObjectNode objectNode = MAPPER.createObjectNode();
@@ -95,7 +95,7 @@ public class HwdetectionAction implements IActionExecution {
         try (Response response = httpclient.newCall(request).execute()) {
           String responseBody = Objects.requireNonNull(response.body()).string();
           if (response.isSuccessful()) {
-            hwclassificationcoproapi output = MAPPER.readValue(responseBody, new TypeReference<>() {
+            HwClassificationcoproapi output = MAPPER.readValue(responseBody, new TypeReference<>() {
             });
             result.setValueType(output.getDocumentType());
             resultQueue.add(result);
@@ -132,7 +132,7 @@ public class HwdetectionAction implements IActionExecution {
   }
 
 
-  void consumerBatch(final Jdbi jdbi, List<handwrittenTable> resultQueue) {
+  void consumerBatch(final Jdbi jdbi, List<HandwrittenTable> resultQueue) {
 
     try {
       resultQueue.forEach(insert -> {
@@ -182,7 +182,7 @@ public class HwdetectionAction implements IActionExecution {
   @Data
   @Builder
   @JsonIgnoreProperties(ignoreUnknown = true)
-  public static class handwrittenSummary {
+  public static class HandwrittenSummary {
     int rowCount;
     int correctRowCount;
     int errorRowCount;
@@ -196,7 +196,7 @@ public class HwdetectionAction implements IActionExecution {
   @Data
   @Builder
   @JsonIgnoreProperties(ignoreUnknown = true)
-  public static  class handwrittenTable {
+  public static  class HandwrittenTable {
 
     String originId;
     Integer paperNo;
@@ -209,7 +209,7 @@ public class HwdetectionAction implements IActionExecution {
   @Data
   @Builder
   @JsonIgnoreProperties(ignoreUnknown = true)
-  public static class hwclassificationcoproapi {
+  public static class HwClassificationcoproapi {
     String documentType;
 
   }
