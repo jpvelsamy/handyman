@@ -61,33 +61,38 @@ public class AutoRotationAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-        final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(autoRotation.getResourceConn());
+        try{
+            final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(autoRotation.getResourceConn());
 
-        jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
-        log.info(aMarker, "<-------Auto Rotation Action for {} has been started------->", autoRotation.getName());
-        final String processId = Optional.ofNullable(autoRotation.getProcessId()).map(String::valueOf).orElse(null);
-        final String outputDir = Optional.ofNullable(autoRotation.getOutputDir()).map(String::valueOf).orElse(null);
-        final String insertQuery = "INSERT INTO info.auto_rotation_" + autoRotation.getProcessId() + "(origin_id,group_id,processed_file_path,paper_no, created_on) " +
-                " VALUES(?,?,?,?,now())";
-        final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.autorotation.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
-            try {
-                return new URL(s1);
-            } catch (MalformedURLException e) {
-                log.error("Error in processing the URL ", e);
-                throw new RuntimeException(e);
-            }
-        }).collect(Collectors.toList())).orElse(Collections.emptyList());
+            jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
+            log.info(aMarker, "<-------Auto Rotation Action for {} has been started------->", autoRotation.getName());
+            final String processId = Optional.ofNullable(autoRotation.getProcessId()).map(String::valueOf).orElse(null);
+            final String outputDir = Optional.ofNullable(autoRotation.getOutputDir()).map(String::valueOf).orElse(null);
+            final String insertQuery = "INSERT INTO info.auto_rotation_" + autoRotation.getProcessId() + "(origin_id,group_id,processed_file_path,paper_no, status,stage,message,created_on) " +
+                    " VALUES(?,?,?,?, ?,?,?,now())";
+            final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.autorotation.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
+                try {
+                    return new URL(s1);
+                } catch (MalformedURLException e) {
+                    log.error("Error in processing the URL ", e);
+                    throw new RuntimeException(e);
+                }
+            }).collect(Collectors.toList())).orElse(Collections.emptyList());
 
-        final CoproProcessor<AutoRotationAction.AutoRotationInputTable, AutoRotationAction.AutoRotationOutputTable> coproProcessor =
-                new CoproProcessor<>(new LinkedBlockingQueue<>(),
-                        AutoRotationAction.AutoRotationOutputTable.class,
-                        AutoRotationAction.AutoRotationInputTable.class,
-                        jdbi, log,
-                        new AutoRotationAction.AutoRotationInputTable(), urls, action);
-        coproProcessor.startProducer(autoRotation.getQuerySet(), 10);
-        Thread.sleep(1000);
-        coproProcessor.startConsumer(insertQuery, 5, 10, new AutoRotationAction.AutoRotationConsumerProcess(log, aMarker, action, outputDir));
-        log.info(aMarker, " Auto Rotation Action has been completed {}  ", autoRotation.getName());
+            final CoproProcessor<AutoRotationAction.AutoRotationInputTable, AutoRotationAction.AutoRotationOutputTable> coproProcessor =
+                    new CoproProcessor<>(new LinkedBlockingQueue<>(),
+                            AutoRotationAction.AutoRotationOutputTable.class,
+                            AutoRotationAction.AutoRotationInputTable.class,
+                            jdbi, log,
+                            new AutoRotationAction.AutoRotationInputTable(), urls, action);
+            coproProcessor.startProducer(autoRotation.getQuerySet(), Integer.valueOf(action.getContext().get("read.batch.size")));
+            Thread.sleep(1000);
+            coproProcessor.startConsumer(insertQuery, Integer.valueOf(action.getContext().get("consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")), new AutoRotationAction.AutoRotationConsumerProcess(log, aMarker, action, outputDir));
+            log.info(aMarker, " Auto Rotation Action has been completed {}  ", autoRotation.getName());
+        }catch(Exception e){
+            action.getContext().put(autoRotation.getName() + ".isSuccessful", "false");
+            log.error(aMarker,"error in execute method for auto rotation ",e);
+        }
     }
 
     public static class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProcess<AutoRotationAction.AutoRotationInputTable, AutoRotationAction.AutoRotationOutputTable> {
@@ -123,13 +128,13 @@ public class AutoRotationAction implements IActionExecution {
                     .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
             log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n page content : {} \n key-filters : {} ");
             log.debug(aMarker, "The Request Details: {}", request);
+            AtomicInteger atomicInteger = new AtomicInteger();
             try (Response response = httpclient.newCall(request).execute()) {
-
                 if (response.isSuccessful()) {
                     var responseParse = Objects.requireNonNull(response.body().string());
                     JSONObject parentResponse = new JSONObject(responseParse);
                     JSONArray filePathArray = new JSONArray(parentResponse.get("processedFilePaths").toString());
-                    AtomicInteger atomicInteger = new AtomicInteger();
+
                     filePathArray.forEach(s -> {
                         parentObj.add(
                                 AutoRotationAction.AutoRotationOutputTable
@@ -138,13 +143,39 @@ public class AutoRotationAction implements IActionExecution {
                                         .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                                         .groupId(entity.getGroupId())
                                         .paperNo(atomicInteger.incrementAndGet())
+                                        .status("COMPLETED")
+                                        .stage("AUTO_ROTATION")
+                                        .message("Auto rotation completed")
                                         .build());
                     });
+                }else{
+                    parentObj.add(
+                            AutoRotationAction.AutoRotationOutputTable
+                                    .builder()
+                                    .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
+                                    .groupId(entity.getGroupId())
+                                    .paperNo(atomicInteger.incrementAndGet())
+                                    .status("FAILED")
+                                    .stage("AUTO_ROTATION")
+                                    .message("Auto rotation failed in copro api response")
+                                    .build());
+                    log.info(aMarker, "The Exception occurred ");
                 }
             } catch (Exception e) {
+                parentObj.add(
+                        AutoRotationAction.AutoRotationOutputTable
+                                .builder()
+                                .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
+                                .groupId(entity.getGroupId())
+                                .paperNo(atomicInteger.incrementAndGet())
+                                .status("FAILED")
+                                .stage("AUTO_ROTATION")
+                                .message("Auto rotation failed in copro api request")
+                                .build());
                 log.info(aMarker, "The Exception occurred ", e);
                 throw new HandymanException("Failed to execute", e);
             }
+            atomicInteger.set(0);
             return parentObj;
         }
 
@@ -191,10 +222,13 @@ public class AutoRotationAction implements IActionExecution {
         private Integer groupId;
         private String processedFilePath;
         private Integer paperNo;
+        private String status;
+        private String stage;
+        private String message;
 
         @Override
         public List<Object> getRowData() {
-            return Stream.of(this.originId, this.groupId, this.processedFilePath, this.paperNo).collect(Collectors.toList());
+            return Stream.of(this.originId, this.groupId, this.processedFilePath, this.paperNo,this.status,this.stage,this.message).collect(Collectors.toList());
         }
     }
 

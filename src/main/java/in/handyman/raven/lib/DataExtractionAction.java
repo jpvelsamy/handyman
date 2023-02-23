@@ -59,26 +59,32 @@ public class DataExtractionAction implements IActionExecution {
 
   @Override
   public void execute() throws Exception {
-    final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(dataExtraction.getResourceConn());
+    try{
+      final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(dataExtraction.getResourceConn());
 
-    jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
-    log.info(aMarker, "<-------Data Extraction Action for {} has been started------->", dataExtraction.getName());
+      jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
+      log.info(aMarker, "<-------Data Extraction Action for {} has been started------->", dataExtraction.getName());
 
-    final String insertQuery = "INSERT INTO info.data_extraction_"+dataExtraction.getProcessId()+ "(origin_id,group_id, file_path, extracted_text,paper_no,file_name, created_on) " + " VALUES(?,?,?,?,?,?,now())";
-    final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.data-extraction.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
-      try {
-        return new URL(s1);
-      } catch (MalformedURLException e) {
-        log.error("Error in processing the URL ", e);
-        throw new RuntimeException(e);
-      }
-    }).collect(Collectors.toList())).orElse(Collections.emptyList());
+      final String insertQuery = "INSERT INTO info.data_extraction_"+dataExtraction.getProcessId()+ "(origin_id,group_id, file_path, extracted_text,paper_no,file_name, status,stage,message, created_on) " + " VALUES(?,?,?,?,?,?, ?,?,?,now())";
+      final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.data-extraction.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
+        try {
+          return new URL(s1);
+        } catch (MalformedURLException e) {
+          log.error("Error in processing the URL ", e);
+          throw new RuntimeException(e);
+        }
+      }).collect(Collectors.toList())).orElse(Collections.emptyList());
 
-    final CoproProcessor<DataExtractionAction.DataExtractionInputTable, DataExtractionAction.DataExtractionOutputTable> coproProcessor = new CoproProcessor<>(new LinkedBlockingQueue<>(), DataExtractionAction.DataExtractionOutputTable.class, DataExtractionAction.DataExtractionInputTable.class, jdbi, log, new DataExtractionAction.DataExtractionInputTable(), urls, action);
-    coproProcessor.startProducer(dataExtraction.getQuerySet(), 10);
-    Thread.sleep(1000);
-    coproProcessor.startConsumer(insertQuery, 5, 10, new DataExtractionAction.DataExtractionConsumerProcess(log, aMarker, action));
-    log.info(aMarker, " Data Extraction Action has been completed {}  ", dataExtraction.getName());
+      final CoproProcessor<DataExtractionAction.DataExtractionInputTable, DataExtractionAction.DataExtractionOutputTable> coproProcessor = new CoproProcessor<>(new LinkedBlockingQueue<>(), DataExtractionAction.DataExtractionOutputTable.class, DataExtractionAction.DataExtractionInputTable.class, jdbi, log, new DataExtractionAction.DataExtractionInputTable(), urls, action);
+      coproProcessor.startProducer(dataExtraction.getQuerySet(), Integer.valueOf(action.getContext().get("read.batch.size")));
+      Thread.sleep(1000);
+      coproProcessor.startConsumer(insertQuery, Integer.valueOf(action.getContext().get("consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")), new DataExtractionAction.DataExtractionConsumerProcess(log, aMarker, action));
+      log.info(aMarker, " Data Extraction Action has been completed {}  ", dataExtraction.getName());
+    }catch (Exception e){
+      action.getContext().put(dataExtraction.getName() + ".isSuccessful", "false");
+      log.error(aMarker,"error in execute method in data extraction", e);
+    }
+
   }
 
   public static class DataExtractionConsumerProcess implements CoproProcessor.ConsumerProcess<DataExtractionAction.DataExtractionInputTable, DataExtractionAction.DataExtractionOutputTable> {
@@ -118,9 +124,31 @@ public class DataExtractionAction implements IActionExecution {
                   .groupId(entity.getGroupId())
                   .fileName(Optional.ofNullable(parentResponseObject.get("fileName")).map(String::valueOf).orElse(null))
                   .paperNo(entity.paperNo)
+                          .status("COMPLETED")
+                          .stage("DATA_EXTRACTION")
+                          .message("Data extraction completed")
                   .build());
+        }else{
+          parentObj.add(DataExtractionOutputTable.builder()
+                  .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
+                  .groupId(entity.getGroupId())
+                  .paperNo(entity.paperNo)
+                  .status("FAILED")
+                  .stage("DATA_EXTRACTION")
+                  .message("Data extraction failed in copro api response")
+                  .build());
+          log.info(aMarker, "The Exception occurred ");
         }
       } catch (Exception e) {
+        parentObj.add(DataExtractionOutputTable.builder()
+                .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
+                .groupId(entity.getGroupId())
+                .paperNo(entity.paperNo)
+                .status("FAILED")
+                .stage("DATA_EXTRACTION")
+                .message("Data extraction failed in copro api request")
+                .build());
+
         log.info(aMarker, "The Exception occurred ", e);
         throw new HandymanException("Failed to execute", e);
       }
@@ -163,11 +191,14 @@ public class DataExtractionAction implements IActionExecution {
     private String extractedText;
     private String fileName;
     private Integer paperNo;
+    private String status;
+    private String stage;
+    private String message;
 
 
     @Override
     public List<Object> getRowData() {
-      return Stream.of(this.originId, this.groupId, this.filePath, this.extractedText,this.paperNo,this.fileName).collect(Collectors.toList());
+      return Stream.of(this.originId, this.groupId, this.filePath, this.extractedText,this.paperNo,this.fileName,this.status,this.stage,this.message).collect(Collectors.toList());
     }
   }
 

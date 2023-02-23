@@ -151,7 +151,14 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
                             final I take = queue.take();
                             if (tPredicate.test(take)) {
                                 final int index = nodeCount.incrementAndGet() % nodeSize;//Round robin
-                                final List<O> results = callable.process(nodes.get(index), take);
+                                final List<O> results = new ArrayList<>();
+
+                                try {
+                                    final List<O> list = callable.process(nodes.get(index), take);
+                                    results.addAll(list);
+                                } catch (Exception e) {
+                                    logger.error("Error in callable process in consumer", e);
+                                }
                                 processedEntity.addAll(results);
                                 if (nodeCount.get() % writeBatchSize == 0) {
                                     jdbi.useTransaction(handle -> {
@@ -166,6 +173,7 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
                                         int[] execute = preparedBatch.execute();
                                         logger.info("Consumer persisted {}", execute);
                                     });
+                                    processedEntity.clear();
                                 }
                             } else {
                                 logger.info("Breaking the consumer");

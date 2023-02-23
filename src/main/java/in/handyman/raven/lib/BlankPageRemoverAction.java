@@ -66,8 +66,9 @@ public class BlankPageRemoverAction implements IActionExecution {
             final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(blankPageRemover.getResourceConn());
             jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
             final String outputDir = Optional.ofNullable(blankPageRemover.getOutputDir()).map(String::valueOf).orElse(null);
-            final String insertQuery = "INSERT INTO info.blank_page_removal_" + blankPageRemover.getProcessId() + "(origin_id,group_id,processed_file_path, created_on) " +
-                    " VALUES(?,?,?,now())";
+
+            final String insertQuery = "INSERT INTO info.blank_page_removal_" + blankPageRemover.getProcessId() + "(origin_id,group_id,processed_file_path, status,stage,message,created_on) " +
+                    " VALUES(?,?,?, ?,?,?,now())";
             log.info(aMarker, "Blank Page Removal Insert query {}", insertQuery);
 
             final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.blank-page-remover.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
@@ -79,22 +80,26 @@ public class BlankPageRemoverAction implements IActionExecution {
                 }
             }).collect(Collectors.toList())).orElse(Collections.emptyList());
 
+            //3. initiate copro processor
             final CoproProcessor<BlankPageRemoverAction.BlankPageRemoverInputTable, BlankPageRemoverAction.BlankPageRemoverOutputTable> coproProcessor =
                     new CoproProcessor<>(new LinkedBlockingQueue<>(),
                             BlankPageRemoverAction.BlankPageRemoverOutputTable.class,
                             BlankPageRemoverAction.BlankPageRemoverInputTable.class,
                             jdbi, log,
                             new BlankPageRemoverAction.BlankPageRemoverInputTable(), urls, action);
-            coproProcessor.startProducer(blankPageRemover.getQuerySet(), 10);
+
+            //4. call the method start producer
+            coproProcessor.startProducer(blankPageRemover.getQuerySet(), Integer.valueOf(action.getContext().get("read.batch.size")));
             Thread.sleep(1000);
-            coproProcessor.startConsumer(insertQuery, 5, 10, new BlankPageRemoverAction.BlankPageRemoverConsumerProcess(log, aMarker, action, outputDir));
+            coproProcessor.startConsumer(insertQuery, Integer.valueOf(action.getContext().get("consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")), new BlankPageRemoverAction.BlankPageRemoverConsumerProcess(log, aMarker, action, outputDir));
             log.info(aMarker, " Blank Page Removal Action has been completed {}  ", blankPageRemover.getName());
         } catch (Throwable t) {
-            log.error(aMarker, "error at blank page removal {}", t);
+            action.getContext().put(blankPageRemover.getName() + ".isSuccessful", "false");
+            log.error(aMarker, "error at blank page removal execute method {}", t);
         }
     }
 
-
+        //5. write consumer process class which implements CoproProcessor.ConsumerProcess
     public static class BlankPageRemoverConsumerProcess implements CoproProcessor.ConsumerProcess<BlankPageRemoverAction.BlankPageRemoverInputTable, BlankPageRemoverAction.BlankPageRemoverOutputTable> {
         private final Logger log;
         private final Marker aMarker;
@@ -117,6 +122,7 @@ public class BlankPageRemoverAction implements IActionExecution {
             this.outputDir = outputDir;
         }
 
+        //6. implement the copro api logic inside the process
         @Override
         public List<BlankPageRemoverAction.BlankPageRemoverOutputTable> process(URL endpoint, BlankPageRemoverAction.BlankPageRemoverInputTable entity) throws JsonProcessingException {
             List<BlankPageRemoverAction.BlankPageRemoverOutputTable> parentObj = new ArrayList<>();
@@ -126,7 +132,7 @@ public class BlankPageRemoverAction implements IActionExecution {
             log.info(aMarker, " Input variables id : {}", action.getActionId());
             Request request = new Request.Builder().url(endpoint)
                     .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-            log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n page content : {} \n key-filters : {} ");
+            log.debug(aMarker, "Request has been build with the parameters \n URI : {} ");
             log.debug(aMarker, "The Request Details: {}", request);
             try (Response response = httpclient.newCall(request).execute()) {
                 String responseBody = Objects.requireNonNull(response.body()).string();
@@ -138,11 +144,34 @@ public class BlankPageRemoverAction implements IActionExecution {
                                     .processedFilePath(Optional.ofNullable(parentResponseObject.get("processedFilePath")).map(String::valueOf).orElse(null))
                                     .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                                     .groupId(entity.getGroupId())
+                                    .status("COMPLETED")
+                                    .stage("BLANK_PAGE_REMOVAL")
+                                    .message("Blankpage removal finished")
                                     .build());
+                }else{
+                    parentObj.add(
+                            BlankPageRemoverOutputTable
+                                    .builder()
+                                    .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
+                                    .groupId(entity.getGroupId())
+                                    .status("FAILED")
+                                    .stage("BLANK_PAGE_REMOVAL")
+                                    .message("Blankpage removal failed in copro api respose")
+                                    .build());
+                    log.info(aMarker, "The Exception occurred in blank page remover ");
                 }
             } catch (Exception e) {
-                log.info(aMarker, "The Exception occurred ", e);
-                //eroor
+                parentObj.add(
+                        BlankPageRemoverOutputTable
+                                .builder()
+                                .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
+                                .groupId(entity.getGroupId())
+                                .status("FAILED")
+                                .stage("BLANK_PAGE_REMOVAL")
+                                .message("Blankpage removal failed in copro api request")
+                                .build());
+                log.info(aMarker, "The Exception occurred in blank page remover ", e);
+                //TODO  insert query for error queue
                 throw new HandymanException("Failed to execute", e);
             }
             return parentObj;
@@ -155,6 +184,7 @@ public class BlankPageRemoverAction implements IActionExecution {
         return blankPageRemover.getCondition();
     }
 
+    //1. input pojo from select query, which implements CoproProcessor.Entity
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
@@ -175,7 +205,7 @@ public class BlankPageRemoverAction implements IActionExecution {
         }
     }
 
-
+    //2. output pojo for table, which implements CoproProcessor.Entity
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
@@ -185,10 +215,13 @@ public class BlankPageRemoverAction implements IActionExecution {
         private String originId;
         private Integer groupId;
         private String processedFilePath;
+        private String status;
+        private String stage;
+        private String message;
 
         @Override
         public List<Object> getRowData() {
-            return Stream.of(this.originId, this.groupId, this.processedFilePath).collect(Collectors.toList());
+            return Stream.of(this.originId, this.groupId, this.processedFilePath,this.status,this.stage,this.message).collect(Collectors.toList());
         }
     }
 

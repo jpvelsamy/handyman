@@ -186,7 +186,7 @@ public class AssetInfoAction implements IActionExecution {
                 bindBean.execute();
             });
         } catch (Throwable t) {
-            log.error(aMarker, "error inserting result {}", t);
+            log.error(aMarker, "error inserting into batch insert audit  {}", t);
         }
     }
 
