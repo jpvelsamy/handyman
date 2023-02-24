@@ -58,8 +58,8 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
         jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
         log.info(aMarker, "<-------Phrase match paper filter Action for {} has been started------->", phraseMatchPaperFilter.getName());
         final String processId = Optional.ofNullable(phraseMatchPaperFilter.getProcessID()).map(String::valueOf).orElse(null);
-        final String insertQuery = "INSERT INTO paper.phrase_match_filtering_result_" + processId + "(origin_id,group_id,paper_no,truth_entity, synonym, is_key_present, created_on) " +
-                " VALUES(?,?,?,?,?,?,now())";
+        final String insertQuery = "INSERT INTO paper.phrase_match_filtering_result_" + processId + "(origin_id,group_id,paper_no,truth_entity, synonym, is_key_present,status,stage,message, created_on) " +
+                " VALUES(?,?,?,?,?,?,?,?,?,now())";
         final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.paper-filtering-phrase-match.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
             try {
                 return new URL(s1);
@@ -77,7 +77,7 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
                         new PhraseMatchPaperFilterAction.PhraseMatchInputTable(), urls, action);
         coproProcessor.startProducer(phraseMatchPaperFilter.getQuerySet(), 10);
         Thread.sleep(1000);
-        coproProcessor.startConsumer(insertQuery, 2, 10, new PhraseMatchPaperFilterAction.PhraseMatchConsumerProcess(log, aMarker, action));
+        coproProcessor.startConsumer(insertQuery, 3, 10, new PhraseMatchPaperFilterAction.PhraseMatchConsumerProcess(log, aMarker, action));
         log.info(aMarker, " Zero shot classifier has been completed {}  ", phraseMatchPaperFilter.getName());
 
 
@@ -95,6 +95,8 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
         private static final MediaType MediaTypeJSON = MediaType
                 .parse("application/json; charset=utf-8");
         public final ActionExecutionAudit action;
+        private static final String actionName = "PHRASE_MATCH";
+
         final OkHttpClient httpclient = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.MINUTES)
                 .writeTimeout(10, TimeUnit.MINUTES)
@@ -146,12 +148,34 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
                                 .truthEntity(Optional.ofNullable(responseObject.get("truthEntity")).map(String::valueOf).orElse(null))
                                 .entity(Optional.ofNullable(responseObject.get("entity")).map(String::valueOf).orElse(null))
                                 .isKeyPresent(Optional.ofNullable(responseObject.get("isKeyPresent")).map(String::valueOf).orElse(null))
+                                .status("COMPLETED")
+                                .stage(actionName)
+                                .message("Completed API call phrase match")
                                 .build());
                     });
-
+                } else {
+                    parentObj.add(
+                            PhraseMatchOutputTable
+                                    .builder()
+                                    .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
+                                    .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).orElse(null))
+                                    .status("FAILED")
+                                    .stage(actionName)
+                                    .message(Optional.of(responseBody).map(String::valueOf).orElse(null))
+                                    .build());
+                    log.info(aMarker, "The Exception occurred in Phrase match API call");
                 }
             } catch (Exception e) {
                 log.info(aMarker, "The Exception occurred ", e);
+                parentObj.add(
+                        PhraseMatchOutputTable
+                                .builder()
+                                .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
+                                .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).orElse(null))
+                                .status("FAILED")
+                                .stage(actionName)
+                                .message("Exception due to input payload")
+                                .build());
                 throw new HandymanException("Failed to execute", e);
             }
         }
@@ -189,9 +213,16 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
         private String entity;
         private String truthEntity;
 
+        private String status;
+
+        private String stage;
+
+        private String message;
+
+
         @Override
         public List<Object> getRowData() {
-            return Stream.of(this.originId, this.groupId, this.paperNo,this.truthEntity, this.entity, this.isKeyPresent).collect(Collectors.toList());
+            return Stream.of(this.originId, this.groupId, this.paperNo, this.truthEntity, this.entity, this.isKeyPresent, this.status, this.stage, this.message).collect(Collectors.toList());
         }
     }
 

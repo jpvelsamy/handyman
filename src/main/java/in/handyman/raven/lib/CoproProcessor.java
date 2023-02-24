@@ -192,6 +192,7 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
                         jdbi.useTransaction(handle -> {
                             int rowCount = 0;
                             final Connection connection = handle.getConnection();
+//                            connection.setAutoCommit(false);
                             try {
                                 try (PreparedStatement preparedStatement = connection.prepareStatement(insertSql)) {
                                     for (final O output : processedEntity) {
@@ -204,11 +205,15 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
                                     rowCount = (int) Arrays.stream(preparedStatement.executeBatch()).count();
                                 }
                             } catch (Exception e) {
-                                handle.rollback();
                                 e.printStackTrace();
+                                handle.rollback();
                                 throw new RuntimeException(e);
                             } finally {
-                                handle.commit();
+                                if (handle != null && handle.isInTransaction()) {
+                                    System.out.println("Commit");
+//                                    handle.commit();
+                                }
+//                                handle.commit();
                             }
                             logger.info("Consumer persisted {}", rowCount);
                         });
