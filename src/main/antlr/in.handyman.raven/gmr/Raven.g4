@@ -107,7 +107,8 @@ action:
     |phraseMatchPaperFilter
     |zeroShotClassifierPaperFilter
     |dataExtraction
-    |assetInfo);
+    |assetInfo
+    |episodeOfCoverage);
 
 
 multitude:
@@ -613,6 +614,9 @@ phraseMatchPaperFilter:
     'phrase-match-paper-filter' 'as' name=STRING
     'on-resource-conn' resourceConn=STRING
     'for-process-id' processID=STRING
+    'thread-count' threadCount=STRING
+    'read-batch-size' readBatchSize=STRING
+    'write-batch-size' writeBatchSize=STRING
     'with-input-query'
     '{'
         querySet=STRING
@@ -623,6 +627,9 @@ zeroShotClassifierPaperFilter:
     'zero-shot-classifier-paper-filter' 'as' name=STRING
     'on-resource-conn' resourceConn=STRING
     'for-process-id' processID=STRING
+    'thread-count' threadCount=STRING
+    'read-batch-size' readBatchSize=STRING
+    'write-batch-size' writeBatchSize=STRING
     'with-input-query'
     '{'
         querySet=STRING
@@ -643,6 +650,16 @@ dataExtraction:
 	'result-table' resultTable=STRING
 	'process-id' processId=STRING
 	'using' '{' querySet=STRING '}' ('on-condition' condition=expression)* ;
+
+episodeOfCoverage:
+  'episodeOfCoverage' 'as' name=STRING
+  'on-resource-conn' resourceConn=STRING
+  'origin-id' originId=STRING
+  'total-pages' totalPages=STRING
+  'output-table' outputTable=STRING
+  'grouping-item' '{' eocGroupingItem=STRING '}' ('on-condition' condition=expression)*
+  'input-file-path' '{' filepath=STRING '}' ('on-condition' condition=expression)*
+  'eoc-grouping' '{' value=STRING '}' ('on-condition' condition=expression)* ;
 
 resource : STRING;
 

@@ -66,7 +66,6 @@ public class AutoRotationAction implements IActionExecution {
 
             jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
             log.info(aMarker, "<-------Auto Rotation Action for {} has been started------->", autoRotation.getName());
-            final String processId = Optional.ofNullable(autoRotation.getProcessId()).map(String::valueOf).orElse(null);
             final String outputDir = Optional.ofNullable(autoRotation.getOutputDir()).map(String::valueOf).orElse(null);
             final String insertQuery = "INSERT INTO info.auto_rotation_" + autoRotation.getProcessId() + "(origin_id,group_id,processed_file_path,paper_no, status,stage,message,created_on) " +
                     " VALUES(?,?,?,?, ?,?,?,now())";
