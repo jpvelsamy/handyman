@@ -107,7 +107,8 @@ action:
     |phraseMatchPaperFilter
     |zeroShotClassifierPaperFilter
     |dataExtraction
-    |assetInfo);
+    |assetInfo
+    |episodeOfCoverage);
 
 
 multitude:
@@ -644,6 +645,16 @@ dataExtraction:
 	'result-table' resultTable=STRING
 	'process-id' processId=STRING
 	'using' '{' querySet=STRING '}' ('on-condition' condition=expression)* ;
+
+episodeOfCoverage:
+  'episodeOfCoverage' 'as' name=STRING
+  'on-resource-conn' resourceConn=STRING
+  'origin-id' originId=STRING
+  'total-pages' totalPages=STRING
+  'output-table' outputTable=STRING
+  'grouping-item' '{' eocGroupingItem=STRING '}' ('on-condition' condition=expression)*
+  'input-file-path' '{' filepath=STRING '}' ('on-condition' condition=expression)*
+  'eoc-grouping' '{' value=STRING '}' ('on-condition' condition=expression)* ;
 
 resource : STRING;
 
