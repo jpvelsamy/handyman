@@ -68,8 +68,8 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
         jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
         log.info(aMarker, "<-------Phrase match paper filter Action for {} has been started------->", zeroShotClassifierPaperFilter.getName());
         final String processId = Optional.ofNullable(zeroShotClassifierPaperFilter.getProcessID()).map(String::valueOf).orElse(null);
-        final String insertQuery = "INSERT INTO paper.zero_shot_classifier_filtering_result_" + processId + "(origin_id,group_id,paper_no,synonym,confidence_score,truth_entity, created_on) " +
-                " VALUES(?,?,?,?,?,?,now())";
+        final String insertQuery = "INSERT INTO paper.zero_shot_classifier_filtering_result_" + processId + "(origin_id,group_id,paper_no,synonym,confidence_score,truth_entity,status,stage,message, created_on) " +
+                " VALUES(?,?,?,?,?,?,?,?,?,now())";
         final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.paper-filtering-zero-shot-classifier.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
             try {
                 return new URL(s1);
@@ -87,7 +87,7 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
                         new PaperFilteringZeroShotClassifierInputTable(), urls, action);
         coproProcessor.startProducer(zeroShotClassifierPaperFilter.getQuerySet(), 10);
         Thread.sleep(1000);
-        coproProcessor.startConsumer(insertQuery, 2, 10, new ZeroShotConsumerProcess(log, aMarker, action));
+        coproProcessor.startConsumer(insertQuery, 3, 10, new ZeroShotConsumerProcess(log, aMarker, action));
         log.info(aMarker, " Zero shot classifier has been completed {}  ", zeroShotClassifierPaperFilter.getName());
     }
 
@@ -102,6 +102,9 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
         private final ObjectMapper mapper = new ObjectMapper();
         private static final MediaType MediaTypeJSON = MediaType
                 .parse("application/json; charset=utf-8");
+
+        private static final String actionName = "ZERO_SHOT_CLASSIFIER";
+
         public final ActionExecutionAudit action;
         final OkHttpClient httpclient = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.MINUTES)
@@ -155,11 +158,34 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
                                 .entity(Optional.ofNullable(key).map(String::valueOf).orElse(null))
                                 .confidenceScore(Optional.ofNullable(stringObjectEntry.getValue()).map(String::valueOf).orElse(null))
                                 .paperNo(paperNo)
+                                .status("COMPLETED")
+                                .stage(actionName)
+                                .message("Completed API call zero shot classifier")
                                 .build();
                     }).collect(Collectors.toList()));
+                } else {
+                    parentObj.add(
+                            ZeroShotClassifierPaperFilterAction.PaperFilteringZeroShotClassifierOutputTable
+                                    .builder()
+                                    .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
+                                    .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).orElse(null))
+                                    .status("FAILED")
+                                    .stage(actionName)
+                                    .message(Optional.of(responseBody).map(String::valueOf).orElse(null))
+                                    .build());
+                    log.info(aMarker, "The Exception occurred in zero shot classifier API call");
                 }
             } catch (Exception e) {
                 log.info(aMarker, "The Exception occurred ", e);
+                parentObj.add(
+                        ZeroShotClassifierPaperFilterAction.PaperFilteringZeroShotClassifierOutputTable
+                                .builder()
+                                .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
+                                .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).orElse(null))
+                                .status("FAILED")
+                                .stage(actionName)
+                                .message("Exception due to input payload")
+                                .build());
                 throw new HandymanException("Failed to execute", e);
             }
         }
@@ -199,11 +225,17 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
 
         private String confidenceScore;
         private String entity;
-//        private String processId;
+
+        private String status;
+
+        private String stage;
+
+        private String message;
+
 
         @Override
         public List<Object> getRowData() {
-            return Stream.of(this.originId, this.groupId, this.paperNo, this.entity, this.confidenceScore, this.truthEntity).collect(Collectors.toList());
+            return Stream.of(this.originId, this.groupId, this.paperNo, this.entity, this.confidenceScore, this.truthEntity, this.status, this.stage, this.message).collect(Collectors.toList());
         }
     }
 
