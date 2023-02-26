@@ -75,9 +75,11 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
                         PhraseMatchPaperFilterAction.PhraseMatchInputTable.class,
                         jdbi, log,
                         new PhraseMatchPaperFilterAction.PhraseMatchInputTable(), urls, action);
-        coproProcessor.startProducer(phraseMatchPaperFilter.getQuerySet(), 10);
+        coproProcessor.startProducer(phraseMatchPaperFilter.getQuerySet(), Integer.parseInt(phraseMatchPaperFilter.getReadBatchSize()));
         Thread.sleep(1000);
-        coproProcessor.startConsumer(insertQuery, 3, 10, new PhraseMatchPaperFilterAction.PhraseMatchConsumerProcess(log, aMarker, action));
+        coproProcessor.startConsumer(insertQuery, Integer.parseInt(phraseMatchPaperFilter.getThreadCount()),
+                Integer.parseInt(phraseMatchPaperFilter.getWriteBatchSize()),
+                new PhraseMatchPaperFilterAction.PhraseMatchConsumerProcess(log, aMarker, action));
         log.info(aMarker, " Zero shot classifier has been completed {}  ", phraseMatchPaperFilter.getName());
 
 

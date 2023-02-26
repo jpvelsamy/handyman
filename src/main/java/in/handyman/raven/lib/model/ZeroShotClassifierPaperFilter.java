@@ -22,7 +22,10 @@ public class ZeroShotClassifierPaperFilter implements IActionContext {
   private String processID;
 
   private String querySet;
-  private String labels;
 
+  private String threadCount;
+
+  private String readBatchSize;
+  private String writeBatchSize;
   private Boolean condition = true;
 }
