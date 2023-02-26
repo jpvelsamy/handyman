@@ -66,11 +66,12 @@ public class BlankPageRemoverAction implements IActionExecution {
             final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(blankPageRemover.getResourceConn());
             jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
             final String outputDir = Optional.ofNullable(blankPageRemover.getOutputDir()).map(String::valueOf).orElse(null);
-
+            //5. build insert prepare statement with output table columns
             final String insertQuery = "INSERT INTO info.blank_page_removal_" + blankPageRemover.getProcessId() + "(origin_id,group_id,processed_file_path, status,stage,message,created_on) " +
                     " VALUES(?,?,?, ?,?,?,now())";
             log.info(aMarker, "Blank Page Removal Insert query {}", insertQuery);
 
+            //3. initiate copro processor and copro urls
             final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.blank-page-remover.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
                 try {
                     return new URL(s1);
@@ -80,7 +81,6 @@ public class BlankPageRemoverAction implements IActionExecution {
                 }
             }).collect(Collectors.toList())).orElse(Collections.emptyList());
 
-            //3. initiate copro processor
             final CoproProcessor<BlankPageRemoverAction.BlankPageRemoverInputTable, BlankPageRemoverAction.BlankPageRemoverOutputTable> coproProcessor =
                     new CoproProcessor<>(new LinkedBlockingQueue<>(),
                             BlankPageRemoverAction.BlankPageRemoverOutputTable.class,
@@ -88,9 +88,10 @@ public class BlankPageRemoverAction implements IActionExecution {
                             jdbi, log,
                             new BlankPageRemoverAction.BlankPageRemoverInputTable(), urls, action);
 
-            //4. call the method start producer
+            //4. call the method start producer from coproprocessor
             coproProcessor.startProducer(blankPageRemover.getQuerySet(), Integer.valueOf(action.getContext().get("read.batch.size")));
             Thread.sleep(1000);
+            //8. call the method start consumer from coproprocessor
             coproProcessor.startConsumer(insertQuery, Integer.valueOf(action.getContext().get("consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")), new BlankPageRemoverAction.BlankPageRemoverConsumerProcess(log, aMarker, action, outputDir));
             log.info(aMarker, " Blank Page Removal Action has been completed {}  ", blankPageRemover.getName());
         } catch (Throwable t) {
@@ -99,7 +100,7 @@ public class BlankPageRemoverAction implements IActionExecution {
         }
     }
 
-        //5. write consumer process class which implements CoproProcessor.ConsumerProcess
+        //6. write consumer process class which implements CoproProcessor.ConsumerProcess
     public static class BlankPageRemoverConsumerProcess implements CoproProcessor.ConsumerProcess<BlankPageRemoverAction.BlankPageRemoverInputTable, BlankPageRemoverAction.BlankPageRemoverOutputTable> {
         private final Logger log;
         private final Marker aMarker;
@@ -122,7 +123,7 @@ public class BlankPageRemoverAction implements IActionExecution {
             this.outputDir = outputDir;
         }
 
-        //6. implement the copro api logic inside the process
+        //7. overwrite the method process in coproprocessor, write copro api logic inside this method
         @Override
         public List<BlankPageRemoverAction.BlankPageRemoverOutputTable> process(URL endpoint, BlankPageRemoverAction.BlankPageRemoverInputTable entity) throws JsonProcessingException {
             List<BlankPageRemoverAction.BlankPageRemoverOutputTable> parentObj = new ArrayList<>();
