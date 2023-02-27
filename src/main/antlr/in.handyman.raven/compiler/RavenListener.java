@@ -840,6 +840,56 @@ public interface RavenListener extends ParseTreeListener {
 	 */
 	void exitDataExtraction(RavenParser.DataExtractionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link RavenParser#episodeOfCoverage}.
+	 * @param ctx the parse tree
+	 */
+	void enterEpisodeOfCoverage(RavenParser.EpisodeOfCoverageContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#episodeOfCoverage}.
+	 * @param ctx the parse tree
+	 */
+	void exitEpisodeOfCoverage(RavenParser.EpisodeOfCoverageContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#userRegistration}.
+	 * @param ctx the parse tree
+	 */
+	void enterUserRegistration(RavenParser.UserRegistrationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#userRegistration}.
+	 * @param ctx the parse tree
+	 */
+	void exitUserRegistration(RavenParser.UserRegistrationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#authToken}.
+	 * @param ctx the parse tree
+	 */
+	void enterAuthToken(RavenParser.AuthTokenContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#authToken}.
+	 * @param ctx the parse tree
+	 */
+	void exitAuthToken(RavenParser.AuthTokenContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#eocJsonGenerator}.
+	 * @param ctx the parse tree
+	 */
+	void enterEocJsonGenerator(RavenParser.EocJsonGeneratorContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#eocJsonGenerator}.
+	 * @param ctx the parse tree
+	 */
+	void exitEocJsonGenerator(RavenParser.EocJsonGeneratorContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#zipContentList}.
+	 * @param ctx the parse tree
+	 */
+	void enterZipContentList(RavenParser.ZipContentListContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#zipContentList}.
+	 * @param ctx the parse tree
+	 */
+	void exitZipContentList(RavenParser.ZipContentListContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link RavenParser#resource}.
 	 * @param ctx the parse tree
 	 */

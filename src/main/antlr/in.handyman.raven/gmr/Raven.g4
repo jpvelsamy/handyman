@@ -108,7 +108,11 @@ action:
     |zeroShotClassifierPaperFilter
     |dataExtraction
     |assetInfo
-    |episodeOfCoverage);
+    |episodeOfCoverage
+    |userRegistration
+    |authToken
+    |eocJsonGenerator
+    |zipContentList);
 
 
 multitude:
@@ -660,6 +664,34 @@ episodeOfCoverage:
   'grouping-item' '{' eocGroupingItem=STRING '}' ('on-condition' condition=expression)*
   'input-file-path' '{' filepath=STRING '}' ('on-condition' condition=expression)*
   'eoc-grouping' '{' value=STRING '}' ('on-condition' condition=expression)* ;
+
+userRegistration:
+        'userRegistration' 'as' name=STRING
+        'on-resource-conn' resourceConn=STRING
+        'using'  '{' '}' ('on-condition' condition=expression)* ;
+
+authToken:
+         'authToken' 'as' name=STRING
+         'on-resource-conn' resourceConn=STRING
+         'using'  '{' '}' ('on-condition' condition=expression)* ;
+
+eocJsonGenerator:
+          'eocJsonGenerator' 'as' name=STRING
+          'on-resource-conn' resourceConn=STRING
+          'document-id' documentId=STRING
+          'eoc-id' eocId=STRING
+          'origin-id' originId=STRING
+          'group-id' groupId=STRING
+          'auth-token' authtoken=STRING
+          'using'  '{' '}' ('on-condition' condition=expression)* ;
+
+zipContentList:
+            'zipContentList' 'as' name=STRING
+            'on-resource-conn' resourceConn=STRING
+            'document-id' documentId=STRING
+            'origin-id' originId=STRING
+            'zip-file-path' zipFilePath=STRING
+            'using'  '{' '}' ('on-condition' condition=expression)* ;
 
 resource : STRING;
 
