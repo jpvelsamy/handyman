@@ -92,18 +92,16 @@ public class EpisodeOfCoverageAction implements IActionExecution {
         stringListMap.forEach((s, integers) -> {
             for (Integer integer : integers) {
                 CoverageEntity coverageEntity = CoverageEntity.builder()
-                        .paper(integer)
+                        .paperNo(integer)
                         .pahubId(s)
                         .originId(episodeOfCoverage.getOriginId())
                         .sourceOfPahub(sorItem)
                         .build();
                 try {
-                    jdbi.useTransaction(handle -> handle.execute("create table if not exists macro." + episodeOfCoverage.getOutputTable() + " (pahub_id varchar not null,origin_id varchar(255) NOT NULL,source_of_pahub varchar null,paper int NOT NULL);"));
-
                     jdbi.useTransaction(handle -> {
-                        handle.createUpdate("INSERT INTO macro." + episodeOfCoverage.getOutputTable() +
-                                        "(pahub_id, origin_id, source_of_pahub, paper)" +
-                                        "VALUES (:pahubId , :originId, :sourceOfPahub , :paper)")
+                        handle.createUpdate("INSERT INTO " + episodeOfCoverage.getOutputTable() +
+                                        "(pahub_id, origin_id, source_of_pahub, paper_no)" +
+                                        "VALUES (:pahubId , :originId, :sourceOfPahub , :paperNo)")
                                 .bindBean(coverageEntity).execute();
                     });
 
@@ -299,6 +297,6 @@ public class EpisodeOfCoverageAction implements IActionExecution {
 
         private String sourceOfPahub;
 
-        private Integer paper;
+        private Integer paperNo;
     }
 }
