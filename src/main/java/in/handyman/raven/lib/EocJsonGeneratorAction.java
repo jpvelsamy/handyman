@@ -71,7 +71,7 @@ public class EocJsonGeneratorAction implements IActionExecution {
                 .documentId(eocJsonGenerator.getDocumentId())
                 .eocId(eocJsonGenerator.getEocId())
                 .originId(eocJsonGenerator.getOriginId())
-                .groupId(eocJsonGenerator.getGroupId())
+                .groupId(Integer.valueOf(eocJsonGenerator.getGroupId()))
                 .eocResponse(responseBody).build();
 
         jdbi.useTransaction(handle -> {
@@ -108,7 +108,7 @@ public class EocJsonGeneratorAction implements IActionExecution {
     private String documentId;
     private String eocId;
     private String originId;
-    private String groupId;
+    private Integer groupId;
     private String eocResponse;
   }
 }
