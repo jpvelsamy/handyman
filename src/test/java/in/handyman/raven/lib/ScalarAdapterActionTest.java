@@ -14,16 +14,17 @@ class ScalarAdapterActionTest {
         final ScalarAdapter build = ScalarAdapter.builder()
                 .condition(true)
                 .name("Test ScalarAdapter")
-                .resultSet(" SELECT dp.sor_id, dp.sor_key , dp.question, dp.answer as input_value,\n" +
-                        "                             si.allowed_adapter , si.restricted_adapter ,\n" +
-                        "                             si.word_limit , si.word_threshold ,\n" +
-                        "                             si.char_limit , si.char_threshold ,\n" +
-                        "                             si.validator_threshold , si.allowed_characters ,\n" +
-                        "                             si.comparable_characters, si.restricted_adapter_flag,\n" +
-                        "                             dp.file_ref_id ,dp.paper_no ,dp.group_id, dp.sor_item_id,\n" +
-                        "                             dp.created_user_id, dp.tenant_id\n" +
-                        "               FROM macro.docnet_processor dp\n" +
-                        "               JOIN sor_meta.sor_item si ON si.sor_key = dp.sor_key")
+                .processID("138968829607360172")
+                .resultSet("SELECT dp.sor_item_name as sor_key, dp.sor_question as question, dp.answer as input_value,\n" +
+                        "\t\t\t\t\t\tsi.allowed_adapter , si.restricted_adapter ,\n" +
+                        "\t\t\t\t\t\tsi.word_limit , si.word_threshold ,\n" +
+                        "\t\t\t\t\t\tsi.char_limit , si.char_threshold ,\n" +
+                        "\t\t\t\t\t\tsi.validator_threshold , si.allowed_characters ,\n" +
+                        "\t\t\t\t\t\tsi.comparable_characters, si.restricted_adapter_flag,\n" +
+                        "\t\t\t\t\t\tdp.origin_id ,dp.paper_no ,dp.group_id,\n" +
+                        "\t\t\t\t\t\tdp.created_user_id, dp.tenant_id\n" +
+                        "\t\t\t\tFROM sor_transaction.vqa_transaction dp\n" +
+                        "\t\t\t\tJOIN sor_meta.sor_item si ON si.sor_item_name = dp.sor_item_name")
                 .resourceConn("intics_agadia_db_conn")
                 .build();
 
