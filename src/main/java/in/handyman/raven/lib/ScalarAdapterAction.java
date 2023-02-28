@@ -325,7 +325,7 @@ public class ScalarAdapterAction implements IActionExecution {
     private String comparableCharacters;
     private int restrictedAdapterFlag;
     private int paperNo;
-    private String groupId;
+    private Integer groupId;
     private int sorItemId;
     private String createdUserId;
     private String tenantId;
