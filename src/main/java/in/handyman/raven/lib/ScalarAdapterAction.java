@@ -186,7 +186,6 @@ public class ScalarAdapterAction implements IActionExecution {
         }
 
         double confidenceScore = wordScore + charScore + validatorScore - validatorNegativeScore;
-
         result.setWordScore(wordScore);
         result.setCharScore(charScore);
         result.setValidatorScore(validatorScore);
@@ -224,9 +223,9 @@ public class ScalarAdapterAction implements IActionExecution {
       resultQueue.forEach(insert -> {
                 jdbi.useTransaction(handle -> {
                   try {
-                    Update update = handle.createUpdate("  INSERT INTO sor_transaction.adapter_result_" + action.getProcessId() +
-                            " ( file_ref_id, paper_no, group_id, file_name, process_id, sor_id, sor_item_id, sor_item_name,question, answer, created_user_id, tenant_id, created_on, word_score, char_score, validator_score_allowed, validator_score_negative, confidence_score) " +
-                            " VALUES( :fileRefId, :paperNo, :groupId, :fileRefId, :processId , :sorId, :sorItemId, :sorKey, :question ,:inputValue, :createdUserId, :tenentId, NOW(), :wordScore , :charScore , :validatorScore, :validatorNegativeScore, :confidenceScore);" +
+                    Update update = handle.createUpdate("  INSERT INTO sor_transaction.adapter_result_" + scalarAdapter.getProcessID() +
+                            " ( origin_id, paper_no, group_id, process_id, sor_id, sor_item_id, sor_item_name,question, answer, created_user_id, tenant_id, created_on, word_score, char_score, validator_score_allowed, validator_score_negative, confidence_score) " +
+                            " VALUES( :originId, :paperNo, :groupId, :processId , :sorId, :sorItemId, :sorKey, :question ,:inputValue, :createdUserId, :tenantId, NOW(), :wordScore , :charScore , :validatorScore, :validatorNegativeScore, :confidenceScore);" +
                             "   ");
                     Update bindBean = update.bindBean(insert);
                     bindBean.execute();
@@ -278,7 +277,7 @@ public class ScalarAdapterAction implements IActionExecution {
             .errorRowCount(errorCount)
             .build();
     jdbi.useTransaction(handle -> {
-      Update update = handle.createUpdate("  INSERT INTO sor_transaction.sanitizer_summary_" + action.getProcessId() +
+      Update update = handle.createUpdate("  INSERT INTO sor_transaction.sanitizer_summary_" + scalarAdapter.getProcessID() +
               " ( row_count, correct_row_count, error_row_count, created_at) " +
               " VALUES(:rowCount, :correctRowCount, :errorRowCount, NOW());");
       Update bindBean = update.bindBean(summary);
@@ -308,8 +307,9 @@ public class ScalarAdapterAction implements IActionExecution {
   @Data
   @Builder
   @JsonIgnoreProperties(ignoreUnknown = true)
-  public static class ValidatorConfigurationDetail implements CoproProcessor.Entity{
+  public static class ValidatorConfigurationDetail {
     private int sorId;
+    private String originId;
     private String ProcessId;
     private String sorKey;
     private String question;
@@ -324,22 +324,16 @@ public class ScalarAdapterAction implements IActionExecution {
     private String allowedCharacters;
     private String comparableCharacters;
     private int restrictedAdapterFlag;
-    private String fileRefId;
     private int paperNo;
     private String groupId;
     private int sorItemId;
     private String createdUserId;
-    private String tenentId;
+    private String tenantId;
     private double wordScore;
     private double charScore;
     private double validatorScore;
     private double validatorNegativeScore;
     private double confidenceScore;
     private String sorItemName;
-
-      @Override
-      public List<Object> getRowData() {
-          return null;
-      }
   }
 }
