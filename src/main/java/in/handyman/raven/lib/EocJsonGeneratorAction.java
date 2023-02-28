@@ -55,7 +55,7 @@ public class EocJsonGeneratorAction implements IActionExecution {
     final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(eocJsonGenerator.getResourceConn());
     final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
 
-    Request request = new Request.Builder().url(URI + "api/v1/" + eocJsonGenerator.getDocumentId() + "/pahubpatientepisoderequest/" + eocJsonGenerator.getEocId())
+    Request request = new Request.Builder().url(URI + "api/v1/" + eocJsonGenerator.getDocumentId() + "/docdetaillineitem/" + eocJsonGenerator.getEocId())
             .header("Authorization", "Bearer " + eocJsonGenerator.getAuthtoken()).build();
 
     String name = eocJsonGenerator.getName();
