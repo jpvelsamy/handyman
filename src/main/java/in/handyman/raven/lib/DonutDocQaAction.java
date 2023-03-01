@@ -2,6 +2,7 @@ package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
@@ -13,6 +14,7 @@ import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.DonutDocQa;
 import in.handyman.raven.util.CommonQueryUtil;
 import in.handyman.raven.util.InstanceUtil;
+import jakarta.json.Json;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +27,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.PreparedBatch;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -83,7 +86,7 @@ public class DonutDocQaAction implements IActionExecution {
 
         // Create DDL
 
-        jdbi.useTransaction(handle -> handle.execute("create table if not exists macro." + donutDocQa.getResponseAs() + " ( id bigserial not null, file_path text,question text, predicted_attribution_value text, action_id bigint, root_pipeline_id bigint,process_id bigint, created_date timestamp not null default now() );"));
+        jdbi.useTransaction(handle -> handle.execute("create table if not exists macro." + donutDocQa.getResponseAs() + " ( id bigserial not null, file_path text,question text, predicted_attribution_value text,b_box json null, action_id bigint, root_pipeline_id bigint,process_id bigint, created_date timestamp not null default now() );"));
         jdbi.useTransaction(handle -> handle.execute("create table if not exists macro." + donutDocQa.getResponseAs() + "_error ( id bigserial not null, file_path text,error_message text,  action_id bigint, root_pipeline_id bigint,process_id bigint, created_date timestamp not null default now() );"));
 
         final List<DonutLineItem> donutLineItems = new ArrayList<>();
@@ -151,13 +154,14 @@ public class DonutDocQaAction implements IActionExecution {
                 log.info(aMarker, "completed {}", lineItems.size());
 
                 jdbi.useTransaction(handle -> {
-                    final PreparedBatch batch = handle.prepareBatch("INSERT INTO macro." + donutDocQa.getResponseAs() + " (process_id,file_path,question, predicted_attribution_value, action_id, root_pipeline_id) VALUES(" + action.getPipelineId() + ",:filePath,:question,:predictedAttributionValue, " + action.getActionId() + ", " + action.getRootPipelineId() + ");");
+                    final PreparedBatch batch = handle.prepareBatch("INSERT INTO macro." + donutDocQa.getResponseAs() + " (process_id,file_path,question, predicted_attribution_value,b_box, action_id, root_pipeline_id) VALUES(" + action.getPipelineId() + ",:filePath,:question,:predictedAttributionValue, :bBoxes::json, " + action.getActionId() + ", " + action.getRootPipelineId() + ");");
                     Lists.partition(lineItems, 100).forEach(resultLineItems -> {
                         log.info(aMarker, "inserting into donut_docqa_action {}", resultLineItems.size());
                         resultLineItems.forEach(resultLineItem -> {
                             batch.bind("filePath", filePath)
                                     .bind("question", resultLineItem.question)
                                     .bind("predictedAttributionValue", resultLineItem.predictedAttributionValue)
+                                    .bind("bboxes",String.valueOf(resultLineItem.bBoxes))
                                     .add();
                         });
                         int[] counts = batch.execute();
@@ -214,6 +218,7 @@ public class DonutDocQaAction implements IActionExecution {
     public static class DonutResultLineItem {
         private String question;
         private String predictedAttributionValue;
+        private JsonNode bBoxes;
 
     }
 
@@ -241,6 +246,7 @@ public class DonutDocQaAction implements IActionExecution {
             try (Response response = httpclient.newCall(request).execute()) {
                 String responseBody = Objects.requireNonNull(response.body()).string();
                 if (response.isSuccessful()) {
+
                     List<DonutResultLineItem> donutLineItems = MAPPER.readValue(responseBody, new TypeReference<>() {
                     });
                     log.info("DonutLineItem size {}", donutLineItems.size());
