@@ -114,7 +114,9 @@ action:
     |eocJsonGenerator
     |zipContentList
     |hwDetection
-    |intellimatch);
+    |intellimatch
+    |checkboxVqa
+    |hwUrgencyTriage);
 
 
 multitude:
@@ -712,6 +714,37 @@ intellimatch:
      'match-result' matchResult=STRING
      'audit-table' auditTable=STRING
      'using' '{' inputSet=STRING '}' ('on-condition' condition=expression)*;
+
+checkboxVqa:
+    'checkbox-vqa' 'as' name=STRING
+    'on-resource-conn' resourceConn=STRING
+    'cad-model-path' cadModelPath=STRING
+    'cd-model-path' cdModelPath=STRING
+    'cr-model-path' crModelPath=STRING
+    'text-model' textModel=STRING
+    'cr-width' crWidth=STRING
+    'cr-height' crHeight=STRING
+    'output-dir' outputDir=STRING
+    'using' '{' querySet=STRING '}' ('on-condition' condition=expression)*;
+
+hwUrgencyTriage:
+    'hwUrgencyTriage' 'as' name=STRING
+    'on-resource-conn' resourceConn=STRING
+    'binary-classifier-model-file-path' binaryClassifierModelFilePath=STRING
+    'multi-classifier-model-file-path' multiClassifierModelFilePath=STRING
+    'checkbox-classifier-model-file-path' checkboxClassifierModelFilePath=STRING
+    'synonyms' synonyms=STRING
+    'binary-classifier-labels' binaryClassifierLabels=STRING
+    'multi-classifier-labels' multiClassifierLabels=STRING
+    'checkbox-classifier-labels' checkboxClassifierLabels=STRING
+    'output-dir' outputDir=STRING
+    'binary-image-width' binaryImageWidth=STRING
+    'binary-image-height' binaryImageHeight=STRING
+    'multi-image-width' multiImageWidth=STRING
+    'multi-image-height' multiImageHeight=STRING
+    'checkbox-image-width' checkboxImageWidth=STRING
+    'checkbox-image-height' checkboxImageHeight=STRING
+    'using'  '{' querySet=STRING '}' ('on-condition' condition=expression)* ;
 
 resource : STRING;
 
