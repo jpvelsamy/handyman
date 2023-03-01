@@ -161,7 +161,7 @@ public class DonutDocQaAction implements IActionExecution {
                             batch.bind("filePath", filePath)
                                     .bind("question", resultLineItem.question)
                                     .bind("predictedAttributionValue", resultLineItem.predictedAttributionValue)
-                                    .bind("bboxes",String.valueOf(resultLineItem.bBoxes))
+                                    .bind("bBoxes",String.valueOf(resultLineItem.bboxes))
                                     .add();
                         });
                         int[] counts = batch.execute();
@@ -218,7 +218,7 @@ public class DonutDocQaAction implements IActionExecution {
     public static class DonutResultLineItem {
         private String question;
         private String predictedAttributionValue;
-        private JsonNode bBoxes;
+        private JsonNode bboxes;
 
     }
 
