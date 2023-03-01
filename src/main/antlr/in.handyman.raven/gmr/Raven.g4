@@ -112,7 +112,8 @@ action:
     |userRegistration
     |authToken
     |eocJsonGenerator
-    |zipContentList);
+    |zipContentList
+    |hwDetection);
 
 
 multitude:
@@ -692,6 +693,16 @@ zipContentList:
             'origin-id' originId=STRING
             'zip-file-path' zipFilePath=STRING
             'using'  '{' '}' ('on-condition' condition=expression)* ;
+
+
+hwDetection:
+    'hwDetection' 'as' name=STRING
+    'on-resource-conn' resourceConn=STRING
+    'outputDir' directoryPath=STRING
+    'modelPath' modelPath=STRING
+    'using'  '{'
+        querySet=STRING
+    '}' ('on-condition' condition=expression)* ;
 
 resource : STRING;
 
