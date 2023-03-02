@@ -61,7 +61,7 @@ public class HwDetectionAction implements IActionExecution {
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
 
       log.info(aMarker, "<-------Handwritten Classification Action for {} has been started------->", hwDetection.getName());
-      final String insertQuery = "INSERT INTO hwclassification.handwritten(created_on, created_user_id, last_updated_on, last_updated_user_id, tenant_id, model_score, origin_id, paper_no, template_id, model_registry_id, document_type, status, stage, message)" +
+      final String insertQuery = "INSERT INTO paper_classification.paper_classification_result(created_on, created_user_id, last_updated_on, last_updated_user_id, tenant_id, model_score, origin_id, paper_no, template_id, model_registry_id, document_type, status, stage, message)" +
               "values(now(),?,now(),?,?,?,?,?,?,?,?,?,?,?)";
       final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.hw-detection.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
         try {
