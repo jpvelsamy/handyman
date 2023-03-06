@@ -26,6 +26,8 @@ public class CheckboxVqa implements IActionContext {
 
   private String resourceConn;
 
+  private String processID;
+
   private String cadModelPath;
 
   private String cdModelPath;

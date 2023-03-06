@@ -26,6 +26,8 @@ public class HwUrgencyTriage implements IActionContext {
 
   private String resourceConn;
 
+  private String processID;
+
   private String binaryClassifierModelFilePath;
 
   private String multiClassifierModelFilePath;

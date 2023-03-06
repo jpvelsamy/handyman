@@ -718,6 +718,7 @@ intellimatch:
 checkboxVqa:
     'checkbox-vqa' 'as' name=STRING
     'on-resource-conn' resourceConn=STRING
+    'process-id' processID=STRING
     'cad-model-path' cadModelPath=STRING
     'cd-model-path' cdModelPath=STRING
     'cr-model-path' crModelPath=STRING
@@ -728,8 +729,9 @@ checkboxVqa:
     'using' '{' querySet=STRING '}' ('on-condition' condition=expression)*;
 
 hwUrgencyTriage:
-    'hwUrgencyTriage' 'as' name=STRING
+    'hwUrgency-triage' 'as' name=STRING
     'on-resource-conn' resourceConn=STRING
+    'process-id' processID=STRING
     'binary-classifier-model-file-path' binaryClassifierModelFilePath=STRING
     'multi-classifier-model-file-path' multiClassifierModelFilePath=STRING
     'checkbox-classifier-model-file-path' checkboxClassifierModelFilePath=STRING
