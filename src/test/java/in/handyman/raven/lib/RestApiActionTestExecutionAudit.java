@@ -84,6 +84,24 @@ class RestApiActionTestExecutionAudit {
         log.info(request.toString());
         LambdaEngine.start(request);
     }
+
+    @Test
+    public void qrcode()
+    {
+        LContext request = LContext.builder()
+                .pipelineName("qr.extraction.processor")
+                .processLoadType(HRequestResolver.LoadType.FILE.name())
+                .inheritedContext(Map.ofEntries(Map.entry("created_user_id", "-1"),
+                        Map.entry("batch_id","TMP-AGD-001"),
+                        Map.entry("tenant_id","TND-001"),
+                        Map.entry("document_id","TMP-AGD-001"),
+                        Map.entry("last_updated_user_id","-1"),
+                        Map.entry("dir_path","/home/anandh.andrews@zucisystems.com/W-space/pr1-lambdas/agadia/input/"),
+                        Map.entry("target_directory_path","/home/anandh.andrews@zucisystems.com/W-space/pr1-lambdas/agadia/agadia_output") ))
+                .build();
+        log.info(request.toString());
+        LambdaEngine.start(request);
+    }
     @Test
     public void testTruthAttributionSummoning() {
         LContext request = LContext.builder()

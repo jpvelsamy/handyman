@@ -16,31 +16,31 @@ public class EocIdCoverage {
     private final EpisodeOfCoverage episodeOfCoverage;
 
     private final Marker aMarker;
-    public EocIdCoverage(Logger log, EpisodeOfCoverage episodeOfCoverage, Marker aMarker,ActionExecutionAudit action) {
+    private final ActionExecutionAudit action;
+    public EocIdCoverage(Logger log, EpisodeOfCoverage episodeOfCoverage, Marker aMarker, ActionExecutionAudit action) {
         this.log = log;
         this.episodeOfCoverage = episodeOfCoverage;
         this.aMarker = aMarker;
+        this.action=action;
     }
 
     public Map<String,List<Integer>> SplitByEocId(Jdbi jdbi, String sorItem) {
-
         Map<String,List<Integer>> eocObjectMap=new HashMap<>();
 
-        if(Objects.equals(sorItem,"eoc_id")){
-
-            List<Map<String, Object>> eocIdRequestInfo=queryExecutor(jdbi,sorItem,episodeOfCoverage.getEocGroupingItem());
+        if(Objects.equals(sorItem,"patient_eoc")){
+            String inputQuery=episodeOfCoverage.getValue().replace(";"," ").concat("AND sor_item_name IN ('patient_eoc' )");
+            List<Map<String, Object>> eocIdRequestInfo=queryExecutor(jdbi,sorItem,inputQuery);
             if (!eocIdRequestInfo.isEmpty()) {
 
-                List<Map<String, Object>> eocGroupingEocIdRequestInfos=queryExecutor(jdbi,sorItem,episodeOfCoverage.getValue());
                 List<Integer> breakPointsList = new ArrayList<>();
-                eocGroupingEocIdRequestInfos.forEach(eocGroupingEocIdRequestInfo -> {
+                eocIdRequestInfo.forEach(eocGroupingEocIdRequestInfo -> {
                     final Integer startNoString = (Integer) Optional.ofNullable(eocGroupingEocIdRequestInfo.get("start_no")).orElse(0);
                     breakPointsList.add(startNoString);
                 });
                 Collections.sort(breakPointsList);
 
 
-                for (var eocGroupingEocIdRequestInfo : eocGroupingEocIdRequestInfos) {
+                for (var eocGroupingEocIdRequestInfo : eocIdRequestInfo) {
                     List<Integer> paperList = new ArrayList<>();
                     Integer startNoInt = (Integer) Optional.ofNullable(eocGroupingEocIdRequestInfo.get("start_no")).orElse(0);
                     final String answerString = Optional.ofNullable(eocGroupingEocIdRequestInfo.get("answer")).map(String::valueOf).orElse("");

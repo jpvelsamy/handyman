@@ -19,30 +19,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "EpisodeOfCoverage"
+    actionName = "QrExtraction"
 )
-public class EpisodeOfCoverage implements IActionContext {
+public class QrExtraction implements IActionContext {
   private String name;
 
   private String resourceConn;
 
-  private String originId;
-
-  private String groupId;
-
-  private String totalPages;
+  private String processId;
 
   private String outputTable;
 
-  private String eocGroupingItem;
-
-  private String eocIdCount;
-
-  private String filepath;
-
-  private String qrInput;
-
-  private String value;
+  private String querySet;
 
   private Boolean condition = true;
 }
