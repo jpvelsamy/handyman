@@ -116,7 +116,8 @@ action:
     |hwDetection
     |intellimatch
     |checkboxVqa
-    |hwUrgencyTriage);
+    |hwUrgencyTriage
+    |qrExtraction);
 
 
 multitude:
@@ -663,10 +664,13 @@ episodeOfCoverage:
   'episodeOfCoverage' 'as' name=STRING
   'on-resource-conn' resourceConn=STRING
   'origin-id' originId=STRING
+  'group-id' groupId=STRING
   'total-pages' totalPages=STRING
   'output-table' outputTable=STRING
-  'grouping-item' '{' eocGroupingItem=STRING '}' ('on-condition' condition=expression)*
-  'input-file-path' '{' filepath=STRING '}' ('on-condition' condition=expression)*
+  'grouping-item'  eocGroupingItem=STRING
+  'patient-eoc-count' eocIdCount=STRING
+  'input-file-path' '{' filepath=STRING '}'
+  'qr-grouping' '{' qrInput=STRING '}'
   'eoc-grouping' '{' value=STRING '}' ('on-condition' condition=expression)* ;
 
 userRegistration:
@@ -745,6 +749,13 @@ hwUrgencyTriage:
     'checkbox-image-width' checkboxImageWidth=STRING
     'checkbox-image-height' checkboxImageHeight=STRING
     'using'  '{' querySet=STRING '}' ('on-condition' condition=expression)* ;
+
+qrExtraction:
+	'qr-extraction' 'as' name=STRING
+	'on-resource-conn' resourceConn=STRING
+	'process-id' processId=STRING
+	'output-table' outputTable=STRING
+	'using' '{' querySet=STRING '}' ('on-condition' condition=expression)* ;
 
 resource : STRING;
 
