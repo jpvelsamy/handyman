@@ -1,4 +1,3 @@
-
 package in.handyman.raven.lib;
 
 import in.handyman.raven.lambda.access.ResourceAccess;
@@ -18,6 +17,9 @@ import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,275 +30,124 @@ import java.util.Map;
         actionName = "EpisodeOfCoverage"
 )
 public class EpisodeOfCoverageAction implements IActionExecution {
-    private final ActionExecutionAudit action;
+  private final ActionExecutionAudit action;
 
-    private final Logger log;
+  private final Logger log;
+  public static Map<String, List<Integer>> qrObjectMap = new HashMap<>();
+  public static Boolean hasMember = false;
 
-    private final EpisodeOfCoverage episodeOfCoverage;
+  private final EpisodeOfCoverage episodeOfCoverage;
 
-    private final Marker aMarker;
+  private final Marker aMarker;
 
-    public EpisodeOfCoverageAction(final ActionExecutionAudit action, final Logger log,
-                                   final Object episodeOfCoverage) {
-        this.episodeOfCoverage = (EpisodeOfCoverage) episodeOfCoverage;
-        this.action = action;
-        this.log = log;
-        this.aMarker = MarkerFactory.getMarker(" EpisodeOfCoverage:" + this.episodeOfCoverage.getName());
-    }
+  public EpisodeOfCoverageAction(final ActionExecutionAudit action, final Logger log,
+                                 final Object episodeOfCoverage) {
+    this.episodeOfCoverage = (EpisodeOfCoverage) episodeOfCoverage;
+    this.action = action;
+    this.log = log;
+    this.aMarker = MarkerFactory.getMarker(" EpisodeOfCoverage:" + this.episodeOfCoverage.getName());
+  }
 
-    @Override
-    public void execute() throws Exception {
+  @Override
+  public void execute() throws Exception {
 
-        log.info(aMarker, "<-------Episode of coverage Action for {} with group by eoc-id has started------->" + episodeOfCoverage.getName());
-        final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(episodeOfCoverage.getResourceConn());
+    log.info(aMarker, "<-------Episode of coverage Action for {} with group by eoc-id has started------->" + episodeOfCoverage.getName());
+    final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(episodeOfCoverage.getResourceConn());
 
 
-        try {
-            EocIdCoverage eocIdCoverage = new EocIdCoverage(log, episodeOfCoverage, aMarker, action);
-            Map<String, List<Integer>> sorIdPageNumbers = eocIdCoverage.SplitByEocId(jdbi, "eoc_id");
-            OutputQueryExecutor(jdbi, "EID", sorIdPageNumbers);
+    try {
 
-            if (sorIdPageNumbers.isEmpty()) {
-                QrCodeCoverage qrCodeCoverage = new QrCodeCoverage(log, episodeOfCoverage, aMarker, action);
-                Map<String, List<Integer>> qrPageNumbers = qrCodeCoverage.splitByQrcode(jdbi, "qr_code");
-                OutputQueryExecutor(jdbi, "QID", qrPageNumbers);
+      if (Integer.parseInt(episodeOfCoverage.getEocIdCount()) > 0) {
+        log.info("patient instance check for Eoc id in aggregation");
+        EocIdCoverage eocIdCoverage = new EocIdCoverage(log, episodeOfCoverage, aMarker, action);
+        Map<String, List<Integer>> sorIdPageNumbers = eocIdCoverage.SplitByEocId(jdbi, "patient_eoc");
+        OutputQueryExecutor(jdbi, "EID", sorIdPageNumbers);
+        log.info("patient instance checked for Eoc id in aggregation and the output result is {}", sorIdPageNumbers);
 
-                if (qrPageNumbers.isEmpty()) {
-                    SorItemCoverage sorItemMemberIdCoverage = new SorItemCoverage(log, episodeOfCoverage, aMarker, action);
-                    Map<String, List<Integer>> patientMemberNumbers = sorItemMemberIdCoverage.splitBySorItem(jdbi, "patient_member_id");
-                    OutputQueryExecutor(jdbi, "PID", patientMemberNumbers);
+      } else if (Integer.parseInt(episodeOfCoverage.getEocIdCount()) <= 0) {
+        log.info("patient instance extract QR code from source of truth table");
+        QrCodeCoverage qrCodeCoverage = new QrCodeCoverage(log, episodeOfCoverage, aMarker, action);
+        Map<String, List<Integer>> qrPagenumbers = qrCodeCoverage.splitByQrcode(jdbi, "qr_code");
+        OutputQueryExecutor(jdbi, "QID", qrPagenumbers);
 
-                    if (patientMemberNumbers.isEmpty()) {
-                        SorItemCoverage sorItemPatientNameCoverage = new SorItemCoverage(log, episodeOfCoverage, aMarker, action);
-                        Map<String, List<Integer>> patientNameNumbers = sorItemPatientNameCoverage.splitBySorItem(jdbi, "patient_name");
-                        OutputQueryExecutor(jdbi, "PND", patientNameNumbers);
+        log.info("patient instance checked for Qrcode from source of truth and the output result is {}", qrPagenumbers);
 
-                    }
-                }
-            }
+        if (qrPagenumbers.isEmpty()) {
+          log.info("patient instance check for member_id from aggregation");
+          SorItemCoverage sorItemMemberIdCoverage = new SorItemCoverage(log, episodeOfCoverage, aMarker, action);
+          Map<String, List<Integer>> patientMemberPageNumbers = sorItemMemberIdCoverage.splitBySorItem(jdbi, "patient_member_id");
+          OutputQueryExecutor(jdbi, "PID", patientMemberPageNumbers);
+          log.info("patient instance check for member_id from aggregation and the output result is {}", patientMemberPageNumbers);
 
-        } catch (Exception e) {
-            log.info(aMarker, "<-------Episode of coverage Action for {} with group by eoc-id has failes------->" + episodeOfCoverage.getName());
+          if (patientMemberPageNumbers.isEmpty()) {
+            log.info("patient instance check for patient_name and patient_dob from aggregation");
+            SorItemCoverage sorItemPatientNameCoverage = new SorItemCoverage(log, episodeOfCoverage, aMarker, action);
+            Map<String, List<Integer>> patientNamePageNumbers = sorItemPatientNameCoverage.splitBySorItem(jdbi, "patient_name");
+            OutputQueryExecutor(jdbi, "PND", patientNamePageNumbers);
+            log.info("patient instance checked for patient_name and patient_dob from aggregation and the output result is {}", patientNamePageNumbers);
+
+          }
 
         }
+      }
+
+    } catch (Exception e) {
+      log.error(aMarker, "<-------Episode of coverage Action for {} with group by eoc-id has failed for {}------->" + episodeOfCoverage.getName(), e);
 
     }
 
-    @Override
-    public boolean executeIf() throws Exception {
-        return episodeOfCoverage.getCondition();
-    }
+  }
 
-    public void OutputQueryExecutor(Jdbi jdbi, String sorItem, Map<String, List<Integer>> stringListMap) {
+  @Override
+  public boolean executeIf() throws Exception {
+    return episodeOfCoverage.getCondition();
+  }
 
-        stringListMap.forEach((s, integers) -> {
-            for (Integer integer : integers) {
-                CoverageEntity coverageEntity = CoverageEntity.builder()
-                        .paperNo(integer)
-                        .pahubId(s)
-                        .originId(episodeOfCoverage.getOriginId())
-                        .sourceOfPahub(sorItem)
-                        .build();
-                try {
-                    jdbi.useTransaction(handle -> {
-                        handle.createUpdate("INSERT INTO " + episodeOfCoverage.getOutputTable() +
-                                        "(pahub_id, origin_id, source_of_pahub, paper_no)" +
-                                        "VALUES (:pahubId , :originId, :sourceOfPahub , :paperNo)")
-                                .bindBean(coverageEntity).execute();
-                    });
 
-                } catch (Exception e) {
-                    log.info(aMarker, "Failed in executed formated query {} for this sor item {}", e, sorItem);
-                }
-            }
-        });
-    }
+  public void OutputQueryExecutor(Jdbi jdbi, String sorItem, Map<String, List<Integer>> stringListMap) {
 
-//  public List<Map<String, Object>> queryExecutor(Jdbi jdbi,String sorItem,String unFormattedQueryString){
-//    final List<Map<String, Object>> requestInfos = new ArrayList<>();
-//      try{
-//        jdbi.useTransaction(handle -> {
-//          final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(unFormattedQueryString);
-//          formattedQuery.forEach(sqlToExecute -> {
-//            requestInfos.addAll(handle.createQuery(sqlToExecute).mapToMap().stream().collect(Collectors.toList()));
-//          });
-//        });
-//
-//      }catch(Exception e){
-//        log.info(aMarker, "Failed in executed formated query {} for this sor item {}", e,sorItem);
-//      }
-//      return requestInfos;
-//  }
-//  public Map<String,List<Integer>> splitPageNumbersByEocId(Jdbi jdbi, String sorItem) {
-//    Map<String,List<Integer>> eocObjectMap=new HashMap<>();
-//
-//    if(Objects.equals(sorItem,"eoc_id")){
-//
-//
-//        List<Map<String, Object>> eocIdRequestInfo=queryExecutor(jdbi,sorItem,episodeOfCoverage.getEocGroupingItem());
-//      if (!eocIdRequestInfo.isEmpty()) {
-//
-//        List<Map<String, Object>> eocGroupingEocIdRequestInfos=queryExecutor(jdbi,sorItem,episodeOfCoverage.getValue());
-//        List<Integer> breakPointsList = new ArrayList<>();
-//        eocGroupingEocIdRequestInfos.forEach(eocGroupingEocIdRequestInfo -> {
-//          final Integer startNoString = (Integer) Optional.ofNullable(eocGroupingEocIdRequestInfo.get("start_no")).orElse(0);
-//          breakPointsList.add(startNoString);
-//        });
-//        Collections.sort(breakPointsList);
-//
-//
-//        for (var eocGroupingEocIdRequestInfo : eocGroupingEocIdRequestInfos) {
-//          List<Integer> paperList = new ArrayList<>();
-//          Integer startNoInt = (Integer) Optional.ofNullable(eocGroupingEocIdRequestInfo.get("start_no")).orElse(0);
-//          final String answerString = Optional.ofNullable(eocGroupingEocIdRequestInfo.get("answer")).map(String::valueOf).orElse("");
-//          int totalPageInt = Integer.parseInt(episodeOfCoverage.getTotalPages());
-//          int endPoint = 0;
-//
-//          try {
-//            endPoint = breakPointsList.get(breakPointsList.indexOf(startNoInt) + 1);
-//          } catch (Exception e) {
-//            endPoint = totalPageInt + 1;
-//          }
-//          if (breakPointsList.indexOf(startNoInt) == 0 && eocObjectMap.isEmpty()) {
-//            startNoInt = 1;
-//          }
-//
-//          for (int i = startNoInt; i < endPoint; i++) {
-//            paperList.add(i);
-//          }
-//          //thic code will save the result as a map with string as key and list as value
-//          eocObjectMap.put(answerString, paperList);
-//        }
-//      }
-//    }
-//
-//    return eocObjectMap;
-//  }
-//
-//
-//  public Map<String,List<Integer>> splitPageNumbersByQrCode(Jdbi jdbi, String sorItem) {
-//    Map<String,List<Integer>> qrObjectMap = new HashMap<>();
-//    List<Map<String, Object>> eocGroupingQrItemRequestInfos= queryExecutor(jdbi,sorItem,episodeOfCoverage.getFilepath());
-//
-//    for (var eocGroupingQrItemRequestInfo : eocGroupingQrItemRequestInfos){
-//
-//      final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
-//      final String inputFilePathString= Optional.ofNullable(eocGroupingQrItemRequestInfo.get("file_path")).map(String::valueOf).orElse("");
-//      final String pageNoString= Optional.ofNullable(eocGroupingQrItemRequestInfo.get("paper_no")).map(String::valueOf).orElse("");
-//      int pageNoInt=Integer.parseInt(pageNoString);
-//
-//      log.info(aMarker, " Input variables id : {}", action.getActionId());
-//      final ObjectNode objectNode = mapper.createObjectNode();
-//      objectNode.put("inputFilePath", inputFilePathString);
-//      log.info(aMarker, " Input variables id : {}", action.getActionId());
-//      Request request = new Request.Builder().url(URI)
-//              .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-//      String name = episodeOfCoverage.getName();
-//      log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n Input-File-Path : {} \n", URI,inputFilePathString );
-//      log.info(aMarker, "The Request Details : {}", request);
-//
-//      try (Response response = httpclient.newCall(request).execute()) {
-//        String responseBody = response.body().string();
-//        //This map for store filepath and qr output
-//
-//
-//        if (response.isSuccessful()) {
-//          log.info(aMarker, "The Successful Response for {} --> {}", name, responseBody);
-//
-//          QrReader qrResponse=mapper.readValue(responseBody,QrReader.class);
-//          if(!qrResponse.getQr().isEmpty()){
-//            if(qrObjectMap.containsKey(qrResponse.getQr().get(0))){
-//              List<Integer> list=qrObjectMap.get(qrResponse.getQr().get(0));
-//              list.add(pageNoInt);
-//              qrObjectMap.put(qrResponse.getQr().get(0),list);
-//            }else {
-//              List<Integer> list=new ArrayList<>();
-//              list.add(pageNoInt);
-//              qrObjectMap.put(qrResponse.getQr().get(0),list);
-//            }
-//          }
-//
-//          log.info(aMarker, "The successed output for eoc splitting with QR code {} --> {}", name, qrObjectMap);
-//        } else {
-//          log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
-//          action.getContext().put(name.concat(".error"), "true");
-//          action.getContext().put(name.concat(".errorMessage"), responseBody);
-//        }
-//
-//        action.getContext().put(name + ".isSuccessful", String.valueOf(response.isSuccessful()));
-//      } catch (Exception e) {
-//        log.error(aMarker, "The Exception occurred for group by qr code ", e);
-//        action.getContext().put(name + ".isSuccessful", "false");
-//        throw new HandymanException("Failed to execute", e);
-//      }
-//      log.info(aMarker, "<-------Episode of coverage Action for {} with group by qr-code has completed------->" + episodeOfCoverage.getName());
-//    }
-//
-//    return qrObjectMap;
-//  }
-//
-//
-//  public Map<String,List<Integer>> splitPageNumbersByItem(Jdbi jdbi, String sorItem) {
-//
-//    Map<String, List<Integer>> stringObjectMap = new HashMap<>();
-//
-//    try {
-//      String UnformattedQueryString="SELECT predicted_value as answer,min(paper_no) as start_no,max(paper_no) as end_no \n" +
-//              "          FROM score.aggregation_evaluator\n" +
-//              "          WHERE origin_id= '" + episodeOfCoverage.getOriginId() +
-//              "' AND sor_item_name='" +sorItem+
-//              "'         group by predicted_value;" ;
-//      List<Map<String, Object>> eocGroupingMemberItemRequestInfos = queryExecutor(jdbi,sorItem,UnformattedQueryString);
-//
-//      List<Integer> breakPointsList = new ArrayList<>();
-//      eocGroupingMemberItemRequestInfos.forEach(stringObjectMapInfo -> {
-//        final Integer startNoString = (Integer) Optional.ofNullable(stringObjectMapInfo.get("start_no")).orElse(0);
-//        breakPointsList.add(startNoString);
-//      });
-//      Collections.sort(breakPointsList);
-//
-//      //this logic needs start_page_no and total page numbers list
-//      for (var eocGroupingMemberItemRequestInfo : eocGroupingMemberItemRequestInfos) {
-//        List<Integer> paperList = new ArrayList<>();
-//        Integer startNoInt = (Integer) Optional.ofNullable(eocGroupingMemberItemRequestInfo.get("start_no")).orElse(0);
-//        final String answerString = Optional.ofNullable(eocGroupingMemberItemRequestInfo.get("answer")).map(String::valueOf).orElse("");
-//        int totalPageInt = Integer.parseInt(episodeOfCoverage.getTotalPages());
-//        int endPoint = 0;
-//
-//        try {
-//          endPoint = breakPointsList.get(breakPointsList.indexOf(startNoInt) + 1);
-//        } catch (Exception e) {
-//          endPoint = totalPageInt + 1;
-//        }
-//        if (breakPointsList.indexOf(startNoInt) == 0 && stringObjectMap.isEmpty()) {
-//          startNoInt = 1;
-//        }
-//
-//        for (int i = startNoInt; i < endPoint; i++) {
-//          paperList.add(i);
-//        }
-//        //thic code will save the result as a map with string as key and list as value
-//        stringObjectMap.put(answerString, paperList);
-//      }
-//
-//    } catch (Exception e) {
-//      log.info(aMarker, "<-------Episode of coverage Action for member id filter {} has failed------->" + episodeOfCoverage.getName());
-//
-//    }
-//    return stringObjectMap;
-//  }
+    stringListMap.forEach((s, integers) -> {
+      for (Integer integer : integers) {
+        CoverageEntity coverageEntity = CoverageEntity.builder()
+                .paperNo(integer)
+                .pahubId(s)
+                .originId(episodeOfCoverage.getOriginId())
+                .groupId(Integer.valueOf(episodeOfCoverage.getGroupId()))
+                .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                .sourceOfPahub(sorItem)
+                .build();
+        try {
+          jdbi.useTransaction(handle -> {
+            handle.createUpdate("INSERT INTO " + episodeOfCoverage.getOutputTable() +
+                            "(pahub_id, origin_id, source_of_pahub,group_id,created_on, paper_no,status,stage,message)" +
+                            "VALUES (:pahubId , :originId, :sourceOfPahub ,:groupId,:createdOn, :paperNo, 'COMPLETED', 'SOR_GROUPING', 'sor grouping completed')")
+                    .bindBean(coverageEntity).execute();
+          });
+          log.info(aMarker, "Completed insert for the patient instance {}", coverageEntity);
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class CoverageEntity {
-        private String pahubId;
+        } catch (Exception e) {
+          log.error(aMarker, "Failed in executed formated query {} for this sor item {}", e, sorItem);
+        }
+      }
+    });
+  }
 
-        private String originId;
 
-        private String sourceOfPahub;
+  @Data
+  @AllArgsConstructor
+  @NoArgsConstructor
+  @Builder
+  public static class CoverageEntity {
+    private String pahubId;
 
-        private Integer paperNo;
-    }
+    private String originId;
+    private Integer groupId;
+    private String fileId;
+    private Timestamp createdOn;
+    private String sourceOfPahub;
+
+    private Integer paperNo;
+  }
+
+
 }
