@@ -31,9 +31,9 @@ public class SorItemCoverage {
         Map<String, List<Integer>> stringObjectMap = new HashMap<>();
 
         try {
-            String inputSorItem="AND sor_item_name IN ('patient_member_id') ";
+            String inputSorItem="AND sor_item_name IN ('patient_member_id') group by predicted_value,paper_no ;";
             if(Objects.equals("patient_name",sorItem)){
-                inputSorItem=" AND sor_item_name IN ('patient_name' , 'patient_dob') ";
+                inputSorItem=" AND sor_item_name IN ('patient_name' , 'patient_dob')  group by paper_no;";
             }
             String inputQuery=episodeOfCoverage.getValue().replace(";"," ").concat(inputSorItem);
             List<Map<String, Object>> eocGroupingMemberItemRequestInfos = queryExecutor(jdbi,sorItem,inputQuery);
