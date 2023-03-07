@@ -239,7 +239,7 @@ public class DonutDocQaAction implements IActionExecution {
             final ObjectNode objectNode = MAPPER.createObjectNode();
             objectNode.put("inputFilePath", inputPath);
             objectNode.putPOJO("attributes", questions);
-            objectNode.put("outputDir", outputDir);
+//            objectNode.put("outputDir", outputDir);
             final Request request = new Request.Builder().url(node)
                     .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
             log.info("Request URL : {} Question List size {}", node, questions.size());

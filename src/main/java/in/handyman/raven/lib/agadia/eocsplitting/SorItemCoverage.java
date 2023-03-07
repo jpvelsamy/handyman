@@ -31,9 +31,9 @@ public class SorItemCoverage {
         Map<String, List<Integer>> stringObjectMap = new HashMap<>();
 
         try {
-            String inputSorItem="AND sor_item_name IN ('patient_member_id')";
+            String inputSorItem="AND sor_item_name IN ('patient_member_id') ";
             if(Objects.equals("patient_name",sorItem)){
-                inputSorItem=" AND sor_item_name IN ('patient_name' , 'patient_dob')";
+                inputSorItem=" AND sor_item_name IN ('patient_name' , 'patient_dob') ";
             }
             String inputQuery=episodeOfCoverage.getValue().replace(";"," ").concat(inputSorItem);
             List<Map<String, Object>> eocGroupingMemberItemRequestInfos = queryExecutor(jdbi,sorItem,inputQuery);
@@ -53,20 +53,22 @@ public class SorItemCoverage {
                 int totalPageInt = Integer.parseInt(episodeOfCoverage.getTotalPages());
                 int endPoint = 0;
 
-                try {
-                    endPoint = breakPointsList.get(breakPointsList.indexOf(startNoInt) + 1);
-                } catch (Exception e) {
-                    endPoint = totalPageInt + 1;
-                }
-                if (breakPointsList.indexOf(startNoInt) == 0 ) {
-                    startNoInt = 1;
-                }
+                if(!answerString.isBlank() && !answerString.isBlank()){
+                    try {
+                        endPoint = breakPointsList.get(breakPointsList.indexOf(startNoInt) + 1);
+                    } catch (Exception e) {
+                        endPoint = totalPageInt + 1;
+                    }
+                    if (breakPointsList.indexOf(startNoInt) == 0 ) {
+                        startNoInt = 1;
+                    }
 
-                for (int i = startNoInt; i < endPoint; i++) {
-                    paperList.add(i);
+                    for (int i = startNoInt; i < endPoint; i++) {
+                        paperList.add(i);
+                    }
+                    //thic code will save the result as a map with string as key and list as value
+                    stringObjectMap.put(answerString, paperList);
                 }
-                //thic code will save the result as a map with string as key and list as value
-                stringObjectMap.put(answerString, paperList);
             }
 
         } catch (Exception e) {

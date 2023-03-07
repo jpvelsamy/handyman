@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Types;
@@ -118,7 +119,7 @@ public class DataExtractionAction implements IActionExecution {
           JSONObject parentResponseObject = new JSONObject(responseBody);
 
           parentObj.add(DataExtractionOutputTable.builder()
-                  .filePath(Optional.ofNullable(parentResponseObject.get("filePath")).map(String::valueOf).orElse(null))
+                  .filePath(new File(entity.getFilePath()).getAbsolutePath())
                   .extractedText(Optional.ofNullable(parentResponseObject.get("pageContent")).map(String::valueOf).orElse(null))
                   .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                   .groupId(entity.getGroupId())

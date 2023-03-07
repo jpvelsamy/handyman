@@ -71,7 +71,7 @@ public class QrExtractionAction implements IActionExecution {
     log.info("Urls for the qr attribution for sor grouping {}", urls);
 
     //5. build insert prepare statement with output table columns
-    final String insertQuery = "INSERT INTO qr_extraction.qr_extraction_result_138971395735140128" +
+    final String insertQuery = "INSERT INTO " +qrExtraction.getOutputTable()+
             "            (origin_id, group_id, paper_no, created_on,   qr_format, qr_format_id, extracted_value,   file_id, b_box, angle, confidence_score, status, stage, message)" +
             "VALUES(?,?,?,?,  ?,?,? ,?,?,  ?,?,?, ?,?)";
     final CoproProcessor<CoverageInputEntity, CoverageOutputEntity> coproProcessor =
