@@ -1,24 +1,12 @@
 package in.handyman.raven.lib.agadia.eocsplitting;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.EpisodeOfCoverage;
 import in.handyman.raven.util.CommonQueryUtil;
-import in.handyman.raven.util.InstanceUtil;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import okhttp3.*;
 import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,7 +18,9 @@ public class QrCodeCoverage {
 
     private final Marker aMarker;
 
-    private final ActionExecutionAudit action;
+
+
+   private final ActionExecutionAudit action;
 
     public QrCodeCoverage(Logger log, EpisodeOfCoverage episodeOfCoverage, Marker aMarker, ActionExecutionAudit action) {
         this.log = log;
@@ -39,69 +29,51 @@ public class QrCodeCoverage {
         this.action = action;
     }
 
-    public Map<String, List<Integer>> splitByQrcode(Jdbi jdbi,String sorItem){
-        Map<String,List<Integer>> qrObjectMap = new HashMap<>();
-        List<Map<String, Object>> eocGroupingQrItemRequestInfos= queryExecutor(jdbi,sorItem,episodeOfCoverage.getFilepath());
-        final ObjectMapper mapper = new ObjectMapper();
-        final String URI = action.getContext().get("copro.qr-attribution.url");
-        final MediaType MediaTypeJSON = MediaType
-                .parse("application/json; charset=utf-8");
+    public Map<String, List<Integer>> splitByQrcode(Jdbi jdbi,String sorItem) throws InterruptedException {
 
-        for (var eocGroupingQrItemRequestInfo : eocGroupingQrItemRequestInfos){
+        Map<String,List<Integer>> eocObjectMap=new HashMap<>();
 
-            final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
-            final String inputFilePathString= Optional.ofNullable(eocGroupingQrItemRequestInfo.get("file_path")).map(String::valueOf).orElse("");
-            final String pageNoString= Optional.ofNullable(eocGroupingQrItemRequestInfo.get("paper_no")).map(String::valueOf).orElse("");
-            int pageNoInt=Integer.parseInt(pageNoString);
+        if(Objects.equals(sorItem,"qr_code")){
 
-            log.info(aMarker, " Input variables id : {}", action.getActionId());
-            final ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("inputFilePath", inputFilePathString);
-            log.info(aMarker, " Input variables id : {}", action.getActionId());
-            Request request = new Request.Builder().url(URI)
-                    .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-            String name = episodeOfCoverage.getName();
-            log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n Input-File-Path : {} \n", URI,inputFilePathString );
-            log.info(aMarker, "The Request Details : {}", request);
+            List<Map<String, Object>> eocIdRequestInfo=queryExecutor(jdbi,sorItem,episodeOfCoverage.getQrInput());
+            if (!eocIdRequestInfo.isEmpty()) {
 
-            try (Response response = httpclient.newCall(request).execute()) {
-                String responseBody = response.body().string();
-                //This map for store filepath and qr output
+                List<Integer> breakPointsList = new ArrayList<>();
+                eocIdRequestInfo.forEach(eocGroupingEocIdRequestInfo -> {
+                    final Integer startNoString = (Integer) Optional.ofNullable(eocGroupingEocIdRequestInfo.get("start_no")).orElse(0);
+                    breakPointsList.add(startNoString);
+                });
+                Collections.sort(breakPointsList);
 
-                if (response.isSuccessful()) {
-                    log.info(aMarker, "The Successful Response for {} --> {}", name, responseBody);
 
-                    QrReader qrResponse=mapper.readValue(responseBody, QrReader.class);
-                    if(!qrResponse.getQr().isEmpty()){
-                        if(qrObjectMap.containsKey(qrResponse.getQr().get(0))){
-                            List<Integer> list=qrObjectMap.get(qrResponse.getQr().get(0));
-                            list.add(pageNoInt);
-                            qrObjectMap.put(qrResponse.getQr().get(0),list);
-                        }else {
-                            List<Integer> list=new ArrayList<>();
-                            list.add(pageNoInt);
-                            qrObjectMap.put(qrResponse.getQr().get(0),list);
-                        }
+                for (var eocGroupingEocIdRequestInfo : eocIdRequestInfo) {
+                    List<Integer> paperList = new ArrayList<>();
+                    Integer startNoInt = (Integer) Optional.ofNullable(eocGroupingEocIdRequestInfo.get("start_no")).orElse(0);
+                    final String answerString = Optional.ofNullable(eocGroupingEocIdRequestInfo.get("answer")).map(String::valueOf).orElse("");
+                    int totalPageInt = Integer.parseInt(episodeOfCoverage.getTotalPages());
+                    int endPoint = 0;
+
+                    try {
+                        endPoint = breakPointsList.get(breakPointsList.indexOf(startNoInt) + 1);
+                    } catch (Exception e) {
+                        endPoint = totalPageInt + 1;
+                    }
+                    if (breakPointsList.indexOf(startNoInt) == 0 ) {
+                        startNoInt = 1;
                     }
 
-                    log.info(aMarker, "The successed output for eoc splitting with QR code {} --> {}", name, qrObjectMap);
-                } else {
-                    log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
-                    action.getContext().put(name.concat(".error"), "true");
-                    action.getContext().put(name.concat(".errorMessage"), responseBody);
+                    for (int i = startNoInt; i < endPoint; i++) {
+                        paperList.add(i);
+                    }
+                    //thic code will save the result as a map with string as key and list as value
+                    eocObjectMap.put(answerString, paperList);
                 }
-
-                action.getContext().put(name + ".isSuccessful", String.valueOf(response.isSuccessful()));
-            } catch (Exception e) {
-                log.error(aMarker, "The Exception occurred for group by qr code ", e);
-                action.getContext().put(name + ".isSuccessful", "false");
-                throw new HandymanException("Failed to execute", e);
             }
-            log.info(aMarker, "<-------Episode of coverage Action for {} with group by qr-code has completed------->" + episodeOfCoverage.getName());
         }
-
-        return qrObjectMap;
+        return eocObjectMap;
     }
+
+
     public List<Map<String, Object>> queryExecutor(Jdbi jdbi, String sorItem, String unFormattedQueryString){
         final List<Map<String, Object>> requestInfos = new ArrayList<>();
         try{
@@ -111,6 +83,7 @@ public class QrCodeCoverage {
                     requestInfos.addAll(handle.createQuery(sqlToExecute).mapToMap().stream().collect(Collectors.toList()));
                 });
             });
+            log.info(aMarker, "complete executed formated query {} for this sor item {}",unFormattedQueryString, sorItem);
 
         }catch(Exception e){
             log.info(aMarker, "Failed in executed formated query {} for this sor item {}", e,sorItem);
@@ -118,36 +91,5 @@ public class QrCodeCoverage {
         return requestInfos;
     }
 
-    public static String getSecurePassword(String password, byte[] salt) {
 
-        String generatedPassword = null;
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(salt);
-            byte[] bytes = md.digest(password.getBytes());
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < bytes.length; i++) {
-                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
-            }
-            generatedPassword = sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return generatedPassword;
-    }
-
-    private static byte[] getSalt() throws NoSuchAlgorithmException {
-        SecureRandom random = new SecureRandom();
-        byte[] salt = new byte[16];
-        random.nextBytes(salt);
-        return salt;
-    }
-    @Builder
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class QrReader{
-        private List<String> qr;
-        private List<String> barcode;
-    }
 }

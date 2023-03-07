@@ -140,7 +140,7 @@ public class AssetInfoAction implements IActionExecution {
                 .file_checksum(sha1Hex)
                 .file_extension(FilenameUtils.getExtension(file.getName()))
                 .file_name(FilenameUtils.removeExtension(file.getName()))
-                .file_path(file.getPath())
+                .file_path(file.getAbsolutePath())
                 .file_size(String.valueOf(fileSize))
                 .root_pipeline_id(action.getContext().get("pipeline-id"))
                 .process_id(action.getContext().get("process-id"))

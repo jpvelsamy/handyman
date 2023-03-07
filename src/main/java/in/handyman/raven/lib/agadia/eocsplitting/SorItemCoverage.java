@@ -31,12 +31,12 @@ public class SorItemCoverage {
         Map<String, List<Integer>> stringObjectMap = new HashMap<>();
 
         try {
-            String UnformattedQueryString="SELECT predicted_value as answer,min(paper_no) as start_no,max(paper_no) as end_no \n" +
-                    "          FROM score.aggregation_evaluator\n" +
-                    "          WHERE origin_id= '" + episodeOfCoverage.getOriginId() +
-                    "' AND sor_item_name='" +sorItem+
-                    "' AND  sor_item_name='patient_dob'    group by predicted_value;" ;
-            List<Map<String, Object>> eocGroupingMemberItemRequestInfos = queryExecutor(jdbi,sorItem,UnformattedQueryString);
+            String inputSorItem="AND sor_item_name IN ('patient_member_id')";
+            if(Objects.equals("patient_name",sorItem)){
+                inputSorItem=" AND sor_item_name IN ('patient_name' , 'patient_dob')";
+            }
+            String inputQuery=episodeOfCoverage.getValue().replace(";"," ").concat(inputSorItem);
+            List<Map<String, Object>> eocGroupingMemberItemRequestInfos = queryExecutor(jdbi,sorItem,inputQuery);
 
             List<Integer> breakPointsList = new ArrayList<>();
             eocGroupingMemberItemRequestInfos.forEach(stringObjectMapInfo -> {
