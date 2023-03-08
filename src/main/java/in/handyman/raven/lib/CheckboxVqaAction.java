@@ -140,7 +140,7 @@ public class CheckboxVqaAction implements IActionExecution {
                   .lastUpdatedUserId(Optional.ofNullable(entity.getLastUpdatedUserId()).map(String::valueOf).orElse(null))
                   .tenantId(Optional.ofNullable(entity.getTenantId()).map(String::valueOf).orElse(null))
                   .modelScore(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).map(Double::parseDouble).orElse(null))
-                  .processId(Optional.ofNullable(checkboxVqa.getProcessID()).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .processId(Optional.ofNullable(entity.getProcessId()).map(String::valueOf).map(Long::parseLong).orElse(null))
                   .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                   .paperNo(Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null))
@@ -160,7 +160,7 @@ public class CheckboxVqaAction implements IActionExecution {
                   .lastUpdatedUserId(Optional.ofNullable(entity.getLastUpdatedUserId()).map(String::valueOf).orElse(null))
                   .tenantId(Optional.ofNullable(entity.getTenantId()).map(String::valueOf).orElse(null))
                   .modelScore(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).map(Double::parseDouble).orElse(null))
-                  .processId(Optional.ofNullable(checkboxVqa.getProcessID()).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .processId(Optional.ofNullable(checkboxVqa.getProcessID()).map(String::valueOf).map(Long::parseLong).orElse(null))
                   .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                   .paperNo(Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null))
@@ -178,7 +178,7 @@ public class CheckboxVqaAction implements IActionExecution {
                 .lastUpdatedUserId(Optional.ofNullable(entity.getLastUpdatedUserId()).map(String::valueOf).orElse(null))
                 .tenantId(Optional.ofNullable(entity.getTenantId()).map(String::valueOf).orElse(null))
                 .modelScore(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).map(Double::parseDouble).orElse(null))
-                .processId(Optional.ofNullable(checkboxVqa.getProcessID()).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                .processId(Optional.ofNullable(checkboxVqa.getProcessID()).map(String::valueOf).map(Long::parseLong).orElse(null))
                 .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                 .paperNo(Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null))
@@ -203,7 +203,7 @@ public class CheckboxVqaAction implements IActionExecution {
     private String lastUpdatedUserId;
     private String tenantId;
     private Double modelScore;
-    private Integer processId;
+    private Long processId;
     private Integer groupId;
     private String originId;
     private Integer paperNo;
@@ -228,7 +228,7 @@ public class CheckboxVqaAction implements IActionExecution {
     private String lastUpdatedUserId;
     private String tenantId;
     private Double modelScore;
-    private Integer processId;
+    private Long processId;
     private Integer groupId;
     private String originId;
     private Integer paperNo;

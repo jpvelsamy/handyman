@@ -113,6 +113,7 @@ public class HwUrgencyTriageAction implements IActionExecution {
     public List<HwUrgencyTriageOutputTable> process(URL endpoint, HwUrgencyTriageInputTable entity) throws Exception {
 
       List<HwUrgencyTriageOutputTable> parentObj = new ArrayList<>();
+      System.out.println("Hi");
       final ObjectNode objectNode = mapper.createObjectNode();
       objectNode.put("inputFilePath", entity.getFilePath());
       objectNode.put("binaryClassifierModelFilePath", hwUrgencyTriage.getBinaryClassifierModelFilePath());
@@ -146,11 +147,11 @@ public class HwUrgencyTriageAction implements IActionExecution {
                   .lastUpdatedUserId(Optional.ofNullable(entity.getLastUpdatedUserId()).map(String::valueOf).orElse(null))
                   .tenantId(Optional.ofNullable(entity.getTenantId()).map(String::valueOf).orElse(null))
                   .modelScore(Optional.ofNullable(entity.getModelScore()).map(String::valueOf).map(Double::parseDouble).orElse(null))
-                  .processId(Optional.ofNullable(hwUrgencyTriage.getProcessID()).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .processId(Optional.ofNullable(entity.getProcessId()).map(String::valueOf).map(Long::parseLong).orElse(null))
                   .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                   .paperNo(Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                  .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
                   .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .binaryModel(binaryModelOutput)
                   .multiClassModel(multiClassModelOutput)
@@ -166,11 +167,11 @@ public class HwUrgencyTriageAction implements IActionExecution {
                   .lastUpdatedUserId(Optional.ofNullable(entity.getLastUpdatedUserId()).map(String::valueOf).orElse(null))
                   .tenantId(Optional.ofNullable(entity.getTenantId()).map(String::valueOf).orElse(null))
                   .modelScore(Optional.ofNullable(entity.getModelScore()).map(String::valueOf).map(Double::parseDouble).orElse(null))
-                  .processId(Optional.ofNullable(hwUrgencyTriage.getProcessID()).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .processId(Optional.ofNullable(entity.getProcessId()).map(String::valueOf).map(Long::parseLong).orElse(null))
                   .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                   .paperNo(Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                  .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
                   .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .status("FAILED")
                   .stage("TRIAGE-HANDWRITTEN")
@@ -185,10 +186,10 @@ public class HwUrgencyTriageAction implements IActionExecution {
                 .tenantId(Optional.ofNullable(entity.getTenantId()).map(String::valueOf).orElse(null))
                 .modelScore(Optional.ofNullable(entity.getModelScore()).map(String::valueOf).map(Double::parseDouble).orElse(null))
                 .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                .processId(Optional.ofNullable(hwUrgencyTriage.getProcessID()).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                .processId(Optional.ofNullable(entity.getProcessId()).map(String::valueOf).map(Long::parseLong).orElse(null))
                 .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                 .paperNo(Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
                 .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .status("FAILED")
                 .stage("TRIAGE-HANDWRITTEN")
@@ -208,7 +209,7 @@ public class HwUrgencyTriageAction implements IActionExecution {
     private String createdUserId;
     private String lastUpdatedUserId;
     private String tenantId;
-    private Integer processId;
+    private Long processId;
     private Integer groupId;
     private Double modelScore;
     private String originId;
@@ -230,13 +231,13 @@ public class HwUrgencyTriageAction implements IActionExecution {
   public static class HwUrgencyTriageOutputTable implements CoproProcessor.Entity {
     private String createdUserId;
     private String lastUpdatedUserId;
-    private Integer processId;
+    private Long processId;
     private Integer groupId;
     private String tenantId;
     private Double modelScore;
     private String originId;
     private Integer paperNo;
-    private Integer templateId;
+    private String templateId;
     private Integer modelRegistryId;
     private String binaryModel;
     private String multiClassModel;
