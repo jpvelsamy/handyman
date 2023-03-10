@@ -9,6 +9,7 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.ZeroShotClassifierPaperFilter;
+import in.handyman.raven.util.ExceptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -138,7 +139,7 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
                 log.debug(aMarker, "The Request Details: {}", request);
                 coproAPIProcessor(entity, parentObj, request);
             } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
+                log.error("error in the zeroshot classifier paper filter copro api call {}",e.toString());
             }
             return parentObj;
         }
@@ -186,9 +187,9 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
                                 .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).orElse(null))
                                 .status("FAILED")
                                 .stage(actionName)
-                                .message("Exception due to input payload")
+                                .message(ExceptionUtil.toString(e))
                                 .build());
-                throw new HandymanException("Failed to execute", e);
+
             }
         }
 
