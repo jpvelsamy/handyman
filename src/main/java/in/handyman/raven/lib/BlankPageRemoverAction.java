@@ -9,6 +9,7 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.BlankPageRemover;
+import in.handyman.raven.util.ExceptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -157,7 +158,7 @@ public class BlankPageRemoverAction implements IActionExecution {
                                     .groupId(entity.getGroupId())
                                     .status("FAILED")
                                     .stage("BLANK_PAGE_REMOVAL")
-                                    .message("Blankpage removal failed in copro api respose")
+                                    .message(response.message())
                                     .build());
                     log.info(aMarker, "The Exception occurred in blank page remover ");
                 }
@@ -169,11 +170,10 @@ public class BlankPageRemoverAction implements IActionExecution {
                                 .groupId(entity.getGroupId())
                                 .status("FAILED")
                                 .stage("BLANK_PAGE_REMOVAL")
-                                .message("Blankpage removal failed in copro api request")
+                                .message(ExceptionUtil.toString(e))
                                 .build());
                 log.info(aMarker, "The Exception occurred in blank page remover ", e);
                 //TODO  insert query for error queue
-                throw new HandymanException("Failed to execute", e);
             }
             return parentObj;
         }

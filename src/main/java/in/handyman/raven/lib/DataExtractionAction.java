@@ -10,6 +10,7 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.DataExtraction;
+import in.handyman.raven.util.ExceptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -136,7 +137,7 @@ public class DataExtractionAction implements IActionExecution {
                   .paperNo(entity.paperNo)
                   .status("FAILED")
                   .stage("DATA_EXTRACTION")
-                  .message("Data extraction failed in copro api response")
+                  .message(response.message())
                   .build());
           log.info(aMarker, "The Exception occurred ");
         }
@@ -147,11 +148,11 @@ public class DataExtractionAction implements IActionExecution {
                 .paperNo(entity.paperNo)
                 .status("FAILED")
                 .stage("DATA_EXTRACTION")
-                .message("Data extraction failed in copro api request")
+                .message(ExceptionUtil.toString(e))
                 .build());
 
         log.info(aMarker, "The Exception occurred ", e);
-        throw new HandymanException("Failed to execute", e);
+
       }
       return parentObj;
     }

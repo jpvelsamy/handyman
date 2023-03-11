@@ -210,7 +210,6 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
                                 throw new RuntimeException(e);
                             } finally {
                                 if (handle != null && handle.isInTransaction()) {
-                                    System.out.println("Commit");
 //                                    handle.commit();
                                 }
 //                                handle.commit();

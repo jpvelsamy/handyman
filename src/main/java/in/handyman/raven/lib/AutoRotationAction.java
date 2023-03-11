@@ -9,6 +9,7 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.AutoRotation;
+import in.handyman.raven.util.ExceptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -156,7 +157,7 @@ public class AutoRotationAction implements IActionExecution {
                                     .paperNo(atomicInteger.incrementAndGet())
                                     .status("FAILED")
                                     .stage("AUTO_ROTATION")
-                                    .message("Auto rotation failed in copro api response")
+                                    .message(response.message())
                                     .build());
                     log.info(aMarker, "The Exception occurred ");
                 }
@@ -169,10 +170,9 @@ public class AutoRotationAction implements IActionExecution {
                                 .paperNo(atomicInteger.incrementAndGet())
                                 .status("FAILED")
                                 .stage("AUTO_ROTATION")
-                                .message("Auto rotation failed in copro api request")
+                                .message(ExceptionUtil.toString(e))
                                 .build());
                 log.info(aMarker, "The Exception occurred ", e);
-                throw new HandymanException("Failed to execute", e);
             }
             atomicInteger.set(0);
             return parentObj;

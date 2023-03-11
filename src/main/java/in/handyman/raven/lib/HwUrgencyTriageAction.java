@@ -113,7 +113,6 @@ public class HwUrgencyTriageAction implements IActionExecution {
     public List<HwUrgencyTriageOutputTable> process(URL endpoint, HwUrgencyTriageInputTable entity) throws Exception {
 
       List<HwUrgencyTriageOutputTable> parentObj = new ArrayList<>();
-      System.out.println("Hi");
       final ObjectNode objectNode = mapper.createObjectNode();
       objectNode.put("inputFilePath", entity.getFilePath());
       objectNode.put("binaryClassifierModelFilePath", hwUrgencyTriage.getBinaryClassifierModelFilePath());
