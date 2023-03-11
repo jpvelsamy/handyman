@@ -168,11 +168,12 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
                     }).collect(Collectors.toList()));
                 } else {
                     parentObj.add(
-                            ZeroShotClassifierPaperFilterAction.PaperFilteringZeroShotClassifierOutputTable
+                            PaperFilteringZeroShotClassifierOutputTable
                                     .builder()
                                     .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                                     .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).orElse(null))
                                     .status("FAILED")
+                                    .paperNo(entity.paperNo)
                                     .stage(actionName)
                                     .message(Optional.of(responseBody).map(String::valueOf).orElse(null))
                                     .build());
@@ -186,6 +187,7 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
                                 .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                                 .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).orElse(null))
                                 .status("FAILED")
+                                .paperNo(entity.paperNo)
                                 .stage(actionName)
                                 .message(ExceptionUtil.toString(e))
                                 .build());

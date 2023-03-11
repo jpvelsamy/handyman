@@ -163,6 +163,7 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
                                     .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                                     .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).orElse(null))
                                     .status("FAILED")
+                                    .paperNo(entity.paperNo)
                                     .stage(actionName)
                                     .message(Optional.of(responseBody).map(String::valueOf).orElse(null))
                                     .build());
@@ -176,6 +177,7 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
                                 .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                                 .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).orElse(null))
                                 .status("FAILED")
+                                .paperNo(entity.paperNo)
                                 .stage(actionName)
                                 .message(ExceptionUtil.toString(e))
                                 .build());
