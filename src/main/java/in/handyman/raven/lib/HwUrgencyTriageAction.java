@@ -8,6 +8,7 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.HwUrgencyTriage;
+import in.handyman.raven.util.ExceptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -174,11 +175,11 @@ public class HwUrgencyTriageAction implements IActionExecution {
                   .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .status("FAILED")
                   .stage("TRIAGE-HANDWRITTEN")
-                  .message("Handwritten Urgency Triage Failed due to Copro API Response")
+                  .message(response.message())
                   .build());
           log.error(aMarker, "The Exception occurred in handwritten urgency triage",response);
         }
-      } catch (Throwable throwable) {
+      } catch (Exception e) {
         parentObj.add(HwUrgencyTriageOutputTable.builder()
                 .createdUserId(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).orElse(null))
                 .lastUpdatedUserId(Optional.ofNullable(entity.getLastUpdatedUserId()).map(String::valueOf).orElse(null))
@@ -192,9 +193,9 @@ public class HwUrgencyTriageAction implements IActionExecution {
                 .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .status("FAILED")
                 .stage("TRIAGE-HANDWRITTEN")
-                .message("Handwritten Urgency Triage Failed due to Copro API Request")
+                .message(ExceptionUtil.toString(e))
                 .build());
-        log.error(aMarker, "The Exception occurred in handwritten urgency triage", throwable);
+        log.error(aMarker, "The Exception occurred in handwritten urgency triage", e);
       }
       return parentObj;
     }

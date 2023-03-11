@@ -9,6 +9,7 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.HwDetection;
+import in.handyman.raven.util.ExceptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -158,7 +159,7 @@ public class HwDetectionAction implements IActionExecution {
                   .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .status("FAILED")
                   .stage("HW_CLASSIFICATION")
-                  .message("Handwritten Classification Failed due to Copro API Response")
+                  .message(response.message())
                   .build());
           log.info(aMarker, "The Exception occurred in handwritten classification");
         }
@@ -174,10 +175,10 @@ public class HwDetectionAction implements IActionExecution {
                 .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .status("FAILED")
                 .stage("HW_CLASSIFICATION")
-                .message("Handwritten Classification Failed due to Copro API Request")
+                .message(ExceptionUtil.toString(e))
                 .build());
         log.info(aMarker, "The Exception occurred in handwritten classification", e);
-        throw new HandymanException("Failed to execute",e);
+
       }
       return parentObj;
     }
