@@ -83,18 +83,24 @@ public class AssetInfoAction implements IActionExecution {
             List<FileInfo> fileInfos = new ArrayList<>();
             tableInfos.forEach(tableInfo -> {
                 try {
+                    log.info(aMarker, "executing  for the file", tableInfo);
                     final String filePathString = Optional.ofNullable(tableInfo.getFile_path()).map(String::valueOf).orElse("[]");
                     File file = new File(filePathString);
                     if (file.isDirectory()) {
+                        log.info(aMarker, "File is a directory", file);
                         try (var files = Files.walk(Path.of(filePathString)).filter(Files::isRegularFile)) {
+                            log.info(aMarker, "Iterating each file in directory", files);
                             files.forEach(pathList::add);
                         } catch (IOException e) {
+                            log.error(aMarker, "error occured in directory iteration", e);
                             throw new RuntimeException(e);
                         }
                         pathList.forEach(path -> {
+                            log.info(aMarker, "insert query for each file from dir", path);
                             fileInfos.add(insertQuery(path.toFile()));
                         });
                     } else if (file.isFile()) {
+                        log.info(aMarker, "insert query for file", file);
                         fileInfos.add(insertQuery(file));
                     }
 
@@ -128,12 +134,14 @@ public class AssetInfoAction implements IActionExecution {
     }
 
     public FileInfo insertQuery(File file) {
+        log.info(aMarker, "insert query main caller for the file", file);
         String sha1Hex;
         try (InputStream is = Files.newInputStream(Path.of(file.getPath()))) {
             sha1Hex = org.apache.commons.codec.digest.DigestUtils.sha1Hex(is);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        log.info(aMarker, "checksum for file {} and its {}", file,sha1Hex);
         var fileSize = file.length() / 1024;
         return FileInfo.builder()
                 .file_id(FilenameUtils.removeExtension(file.getName()) + "_" + ((int) (900000 * random() + 100000)))
