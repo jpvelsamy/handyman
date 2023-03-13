@@ -67,7 +67,7 @@ public class DataExtractionAction implements IActionExecution {
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
       log.info(aMarker, "<-------Data Extraction Action for {} has been started------->", dataExtraction.getName());
 
-      final String insertQuery = "INSERT INTO info.data_extraction_"+dataExtraction.getProcessId()+ "(origin_id,group_id, file_path, extracted_text,paper_no,file_name, status,stage,message, created_on) " + " VALUES(?,?,?,?,?,?, ?,?,?,now())";
+      final String insertQuery = "INSERT INTO info.data_extraction_"+dataExtraction.getProcessId()+ "(origin_id,group_id, file_path, extracted_text,paper_no,file_name, status,stage,message, created_on,is_blank_page) " + " VALUES(?,?,?,?,?,?, ?,?,?,now(),?)";
       final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.data-extraction.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
         try {
           return new URL(s1);
@@ -119,7 +119,7 @@ public class DataExtractionAction implements IActionExecution {
         if (response.isSuccessful()) {
           JSONObject parentResponseObject = new JSONObject(responseBody);
           final String contentString=Optional.ofNullable(parentResponseObject.get("pageContent")).map(String::valueOf).orElse(null);
-
+          final String flag=(!Objects.isNull(contentString) && contentString.length() > 5 ) ? "no" : "yes";
           parentObj.add(DataExtractionOutputTable.builder()
                   .filePath(new File(entity.getFilePath()).getAbsolutePath())
                   .extractedText(contentString)
@@ -130,7 +130,7 @@ public class DataExtractionAction implements IActionExecution {
                           .status("COMPLETED")
                           .stage("DATA_EXTRACTION")
                           .message("Data extraction completed")
-                          .isBlankPage((!Objects.isNull(contentString) && contentString.length() > 5 ) ? "no" : "yes")
+                          .isBlankPage(flag)
                   .build());
         }else{
           parentObj.add(DataExtractionOutputTable.builder()
