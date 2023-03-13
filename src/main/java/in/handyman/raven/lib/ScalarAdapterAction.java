@@ -224,8 +224,8 @@ public class ScalarAdapterAction implements IActionExecution {
                 jdbi.useTransaction(handle -> {
                   try {
                     Update update = handle.createUpdate("  INSERT INTO sor_transaction.adapter_result_" + scalarAdapter.getProcessID() +
-                            " ( origin_id, paper_no, group_id, process_id, sor_id, sor_item_id, sor_item_name,question, answer, created_user_id, tenant_id, created_on, word_score, char_score, validator_score_allowed, validator_score_negative, confidence_score,validation_name,b_box) " +
-                            " VALUES( :originId, :paperNo, :groupId, :processId , :sorId, :sorItemId, :sorKey, :question ,:inputValue, :createdUserId, :tenantId, NOW(), :wordScore , :charScore , :validatorScore, :validatorNegativeScore, :confidenceScore,:allowedAdapter,:bbox);" +
+                            " ( origin_id, paper_no, group_id, process_id, sor_id, sor_item_id, sor_item_name,question, answer, weight, created_user_id, tenant_id, created_on, word_score, char_score, validator_score_allowed, validator_score_negative, confidence_score,validation_name,b_box) " +
+                            " VALUES( :originId, :paperNo, :groupId, :processId , :sorId, :sorItemId, :sorKey, :question ,:inputValue, :weight, :createdUserId, :tenantId, NOW(), :wordScore , :charScore , :validatorScore, :validatorNegativeScore, :confidenceScore,:allowedAdapter,:bbox);" +
                             "   ");
                     Update bindBean = update.bindBean(insert);
                     bindBean.execute();
@@ -336,5 +336,6 @@ public class ScalarAdapterAction implements IActionExecution {
     private double validatorNegativeScore;
     private double confidenceScore;
     private String sorItemName;
+    private int weight;
   }
 }
