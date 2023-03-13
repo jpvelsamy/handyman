@@ -114,7 +114,7 @@ public class DataExtractionAction implements IActionExecution {
       Request request = new Request.Builder().url(endpoint).post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
       log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n page content : {} \n key-filters : {} ");
       log.debug(aMarker, "The Request Details: {}", request);
-      try (Response response = httpclient.newCall(request).execute()) {
+        try (Response response = httpclient.newCall(request).execute()) {
         String responseBody = Objects.requireNonNull(response.body()).string();
         if (response.isSuccessful()) {
           JSONObject parentResponseObject = new JSONObject(responseBody);
@@ -203,7 +203,7 @@ public class DataExtractionAction implements IActionExecution {
 
     @Override
     public List<Object> getRowData() {
-      return Stream.of(this.originId, this.groupId, this.filePath, this.extractedText,this.paperNo,this.fileName,this.status,this.stage,this.message).collect(Collectors.toList());
+      return Stream.of(this.originId, this.groupId, this.filePath, this.extractedText,this.paperNo,this.fileName,this.status,this.stage,this.message,this.isBlankPage).collect(Collectors.toList());
     }
   }
 
