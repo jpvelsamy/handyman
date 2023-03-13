@@ -118,10 +118,11 @@ public class DataExtractionAction implements IActionExecution {
         String responseBody = Objects.requireNonNull(response.body()).string();
         if (response.isSuccessful()) {
           JSONObject parentResponseObject = new JSONObject(responseBody);
+          final String contentString=Optional.ofNullable(parentResponseObject.get("pageContent")).map(String::valueOf).orElse(null);
 
           parentObj.add(DataExtractionOutputTable.builder()
                   .filePath(new File(entity.getFilePath()).getAbsolutePath())
-                  .extractedText(Optional.ofNullable(parentResponseObject.get("pageContent")).map(String::valueOf).orElse(null))
+                  .extractedText(contentString)
                   .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                   .groupId(entity.getGroupId())
                   .fileName(Optional.ofNullable(parentResponseObject.get("fileName")).map(String::valueOf).orElse(null))
@@ -129,6 +130,7 @@ public class DataExtractionAction implements IActionExecution {
                           .status("COMPLETED")
                           .stage("DATA_EXTRACTION")
                           .message("Data extraction completed")
+                          .isBlankPage((!Objects.isNull(contentString) && contentString.length() > 5 ) ? "no" : "yes")
                   .build());
         }else{
           parentObj.add(DataExtractionOutputTable.builder()
@@ -196,6 +198,7 @@ public class DataExtractionAction implements IActionExecution {
     private String status;
     private String stage;
     private String message;
+    private String isBlankPage;
 
 
     @Override
