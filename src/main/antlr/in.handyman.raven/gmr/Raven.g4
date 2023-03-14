@@ -117,7 +117,8 @@ action:
     |intellimatch
     |checkboxVqa
     |hwUrgencyTriage
-    |qrExtraction);
+    |qrExtraction
+    |paperItemizer);
 
 
 multitude:
@@ -758,6 +759,16 @@ qrExtraction:
 	'process-id' processId=STRING
 	'output-table' outputTable=STRING
 	'using' '{' querySet=STRING '}' ('on-condition' condition=expression)* ;
+
+paperItemizer:
+	'paperItemizer' 'as' name=STRING
+	'outputDir' outputDir=STRING
+	'result-table' resultTable=STRING
+	'processId' processId=STRING
+	'resource-conn' resourceConn=STRING
+	'using' '{'
+		querySet=STRING
+	'}' ('on-condition' condition=expression)* ;
 
 resource : STRING;
 

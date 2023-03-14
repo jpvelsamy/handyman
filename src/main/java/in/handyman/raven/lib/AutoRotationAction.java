@@ -24,9 +24,12 @@ import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.sql.Types;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -68,8 +71,8 @@ public class AutoRotationAction implements IActionExecution {
             jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
             log.info(aMarker, "<-------Auto Rotation Action for {} has been started------->", autoRotation.getName());
             final String outputDir = Optional.ofNullable(autoRotation.getOutputDir()).map(String::valueOf).orElse(null);
-            final String insertQuery = "INSERT INTO info.auto_rotation_" + autoRotation.getProcessId() + "(origin_id,group_id,processed_file_path,paper_no, status,stage,message,created_on) " +
-                    " VALUES(?,?,?,?, ?,?,?,now())";
+            final String insertQuery = "INSERT INTO info.auto_rotation(origin_id,group_id,tenant_id,template_id,process_id, processed_file_path,paper_no, status,stage,message,created_on) " +
+                    " VALUES(?,?, ?,?,?, ?,?, ?,?,?,?)";
             final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.autorotation.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
                 try {
                     return new URL(s1);
@@ -121,60 +124,71 @@ public class AutoRotationAction implements IActionExecution {
         public List<AutoRotationAction.AutoRotationOutputTable> process(URL endpoint, AutoRotationAction.AutoRotationInputTable entity) throws JsonProcessingException {
             List<AutoRotationAction.AutoRotationOutputTable> parentObj = new ArrayList<>();
             final ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("inputFilePath", entity.processedFilePath);
+            objectNode.put("inputFilePath", entity.filePath);
             objectNode.put("outputDir", outputDir);
             log.info(aMarker, " Input variables id : {}", action.getActionId());
             Request request = new Request.Builder().url(endpoint)
                     .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
             log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n page content : {} \n key-filters : {} ");
             log.debug(aMarker, "The Request Details: {}", request);
-            AtomicInteger atomicInteger = new AtomicInteger();
+
             try (Response response = httpclient.newCall(request).execute()) {
                 if (response.isSuccessful()) {
                     var responseParse = Objects.requireNonNull(response.body().string());
                     JSONObject parentResponse = new JSONObject(responseParse);
-                    JSONArray filePathArray = new JSONArray(parentResponse.get("processedFilePaths").toString());
+                    final String ProcessedFilePathString=Optional.ofNullable(parentResponse.get("processedFilePaths")).map(String::valueOf).orElse(null);
 
-                    filePathArray.forEach(s -> {
                         parentObj.add(
                                 AutoRotationAction.AutoRotationOutputTable
                                         .builder()
-                                        .processedFilePath(String.valueOf(s))
+                                        .processedFilePath(ProcessedFilePathString)
                                         .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                                         .groupId(entity.getGroupId())
-                                        .paperNo(atomicInteger.incrementAndGet())
+                                        .processId(entity.processId)
+                                        .tenantId(entity.tenantId)
+                                        .templateId(entity.templateId)
+                                        .paperNo(entity.paperNo)
                                         .status("COMPLETED")
                                         .stage("AUTO_ROTATION")
-                                        .message("Auto rotation completed")
+                                        .message("Auto rotation macro completed")
+                                        .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                                         .build());
-                    });
+
                 }else{
                     parentObj.add(
                             AutoRotationAction.AutoRotationOutputTable
                                     .builder()
                                     .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                                     .groupId(entity.getGroupId())
-                                    .paperNo(atomicInteger.incrementAndGet())
+                                    .processId(entity.processId)
+                                    .tenantId(entity.tenantId)
+                                    .templateId(entity.templateId)
+                                    .paperNo(entity.paperNo)
                                     .status("FAILED")
                                     .stage("AUTO_ROTATION")
                                     .message(response.message())
+                                    .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                                     .build());
                     log.info(aMarker, "The Exception occurred ");
                 }
             } catch (Exception e) {
                 parentObj.add(
-                        AutoRotationAction.AutoRotationOutputTable
+                        AutoRotationOutputTable
                                 .builder()
                                 .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                                 .groupId(entity.getGroupId())
-                                .paperNo(atomicInteger.incrementAndGet())
+                                .processId(entity.processId)
+                                .tenantId(entity.tenantId)
+                                .templateId(entity.templateId)
+                                .paperNo(entity.paperNo)
                                 .status("FAILED")
                                 .stage("AUTO_ROTATION")
                                 .message(ExceptionUtil.toString(e))
+                                .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                                 .build());
                 log.info(aMarker, "The Exception occurred ", e);
             }
-            atomicInteger.set(0);
+
             return parentObj;
         }
 
@@ -191,9 +205,12 @@ public class AutoRotationAction implements IActionExecution {
     @Builder
     public static class AutoRotationInputTable implements CoproProcessor.Entity {
         private String originId;
+        private Integer paperNo;
         private Integer groupId;
         private String filePath;
-        private String processedFilePath;
+        private String tenantId;
+        private String templateId;
+        private Long processId;
         private String outputDir;
 
         @Override
@@ -219,15 +236,19 @@ public class AutoRotationAction implements IActionExecution {
 
         private String originId;
         private Integer groupId;
+        private String tenantId;
+        private String templateId;
+        private Long processId;
         private String processedFilePath;
         private Integer paperNo;
         private String status;
         private String stage;
         private String message;
+        private Timestamp createdOn;
 
         @Override
         public List<Object> getRowData() {
-            return Stream.of(this.originId, this.groupId, this.processedFilePath, this.paperNo,this.status,this.stage,this.message).collect(Collectors.toList());
+            return Stream.of(this.originId, this.groupId,this.tenantId,this.templateId,this.processId, this.processedFilePath, this.paperNo,this.status,this.stage,this.message,this.createdOn).collect(Collectors.toList());
         }
     }
 

@@ -27,7 +27,9 @@ import org.slf4j.MarkerFactory;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.sql.Types;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -67,7 +69,8 @@ public class DataExtractionAction implements IActionExecution {
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
       log.info(aMarker, "<-------Data Extraction Action for {} has been started------->", dataExtraction.getName());
 
-      final String insertQuery = "INSERT INTO info.data_extraction_"+dataExtraction.getProcessId()+ "(origin_id,group_id, file_path, extracted_text,paper_no,file_name, status,stage,message, created_on,is_blank_page) " + " VALUES(?,?,?,?,?,?, ?,?,?,now(),?)";
+      final String insertQuery = "INSERT INTO info.data_extraction(origin_id,group_id,tenant_id,template_id,process_id, file_path, extracted_text,paper_no,file_name, status,stage,message,is_blank_page, created_on) " + "" +
+              " VALUES(?,? ,?,?,? ,?,?,?,?, ?,?,?,?,?)";
       final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.data-extraction.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
         try {
           return new URL(s1);
@@ -129,7 +132,11 @@ public class DataExtractionAction implements IActionExecution {
                   .paperNo(entity.paperNo)
                           .status("COMPLETED")
                           .stage("DATA_EXTRACTION")
-                          .message("Data extraction completed")
+                          .message("Data extraction macro completed")
+                          .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                          .tenantId(entity.tenantId)
+                          .templateId(entity.templateId)
+                          .processId(entity.processId)
                           .isBlankPage(flag)
                   .build());
         }else{
@@ -139,7 +146,11 @@ public class DataExtractionAction implements IActionExecution {
                   .paperNo(entity.paperNo)
                   .status("FAILED")
                   .stage("DATA_EXTRACTION")
+                  .tenantId(entity.tenantId)
+                  .templateId(entity.templateId)
+                  .processId(entity.processId)
                   .message(response.message())
+                  .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                   .build());
           log.info(aMarker, "The Exception occurred ");
         }
@@ -150,6 +161,10 @@ public class DataExtractionAction implements IActionExecution {
                 .paperNo(entity.paperNo)
                 .status("FAILED")
                 .stage("DATA_EXTRACTION")
+                .tenantId(entity.tenantId)
+                .templateId(entity.templateId)
+                .processId(entity.processId)
+                .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                 .message(ExceptionUtil.toString(e))
                 .build());
 
@@ -175,6 +190,9 @@ public class DataExtractionAction implements IActionExecution {
     private Integer groupId;
     private String filePath;
     private Integer paperNo;
+    private String tenantId;
+    private String templateId;
+    private Long processId;
 
     @Override
     public List<Object> getRowData() {
@@ -191,6 +209,9 @@ public class DataExtractionAction implements IActionExecution {
 
     private String originId;
     private Integer groupId;
+    private String tenantId;
+    private String templateId;
+    private Long processId;
     private String filePath;
     private String extractedText;
     private String fileName;
@@ -199,11 +220,12 @@ public class DataExtractionAction implements IActionExecution {
     private String stage;
     private String message;
     private String isBlankPage;
+    private Timestamp createdOn;
 
 
     @Override
     public List<Object> getRowData() {
-      return Stream.of(this.originId, this.groupId, this.filePath, this.extractedText,this.paperNo,this.fileName,this.status,this.stage,this.message,this.isBlankPage).collect(Collectors.toList());
+      return Stream.of(this.originId, this.groupId, this.tenantId,this.templateId,this.processId,this.filePath, this.extractedText,this.paperNo,this.fileName,this.status,this.stage,this.message,this.isBlankPage,this.createdOn).collect(Collectors.toList());
     }
   }
 

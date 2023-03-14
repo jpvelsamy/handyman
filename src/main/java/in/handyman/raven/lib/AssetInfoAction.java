@@ -144,14 +144,14 @@ public class AssetInfoAction implements IActionExecution {
         log.info(aMarker, "checksum for file {} and its {}", file,sha1Hex);
         var fileSize = file.length() / 1024;
         return FileInfo.builder()
-                .file_id(FilenameUtils.removeExtension(file.getName()) + "_" + ((int) (900000 * random() + 100000)))
+                .file_id(FilenameUtils.removeExtension(file.getName().toUpperCase()) + "_" + ((int) (900000 * random() + 100000)))
                 .file_checksum(sha1Hex)
                 .file_extension(FilenameUtils.getExtension(file.getName()))
                 .file_name(FilenameUtils.removeExtension(file.getName()))
                 .file_path(file.getAbsolutePath())
                 .file_size(String.valueOf(fileSize))
-                .root_pipeline_id(action.getContext().get("pipeline-id"))
-                .process_id(action.getContext().get("process-id"))
+                .root_pipeline_id(Long.valueOf(action.getContext().get("pipeline-id")))
+                .process_id(Long.valueOf(action.getContext().get("process-id")))
                 .build();
     }
 
@@ -211,8 +211,8 @@ public class AssetInfoAction implements IActionExecution {
     @Builder
     public static class FileInfo {
         private String file_id;
-        private String process_id;
-        private String root_pipeline_id;
+        private Long process_id;
+        private Long root_pipeline_id;
         private String file_checksum;
         private String file_extension;
         private String file_name;
