@@ -51,12 +51,11 @@ public class EpisodeOfCoverageAction implements IActionExecution {
   @Override
   public void execute() throws Exception {
 
-    log.info(aMarker, "<-------Episode of coverage Action for {} with group by eoc-id has started------->" + episodeOfCoverage.getName());
-    final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(episodeOfCoverage.getResourceConn());
 
 
     try {
-
+      log.info(aMarker, "<-------Episode of coverage Action for {} with group by eoc-id has started------->" + episodeOfCoverage.getName());
+      final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(episodeOfCoverage.getResourceConn());
       if (Integer.parseInt(episodeOfCoverage.getEocIdCount()) > 0) {
         log.info("patient instance check for Eoc id in aggregation");
         EocIdCoverage eocIdCoverage = new EocIdCoverage(log, episodeOfCoverage, aMarker, action);
