@@ -1,6 +1,8 @@
 package in.handyman.raven.lib;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import in.handyman.raven.exception.HandymanException;
@@ -134,14 +136,13 @@ public class AutoRotationAction implements IActionExecution {
 
             try (Response response = httpclient.newCall(request).execute()) {
                 if (response.isSuccessful()) {
-                    var responseParse = Objects.requireNonNull(response.body().string());
-                    JSONObject parentResponse = new JSONObject(responseParse);
-                    final String ProcessedFilePathString=Optional.ofNullable(parentResponse.get("processedFilePaths")).map(String::valueOf).orElse(null);
-
+                    AutoRotationResponse autoRotationResponse=mapper.readValue(response.body().string(), new TypeReference<>() {
+                    });
+                    for (String processedFilepath : autoRotationResponse.getProcessedFilePaths()) {
                         parentObj.add(
                                 AutoRotationAction.AutoRotationOutputTable
                                         .builder()
-                                        .processedFilePath(ProcessedFilePathString)
+                                        .processedFilePath(processedFilepath)
                                         .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                                         .groupId(entity.getGroupId())
                                         .processId(entity.processId)
@@ -153,7 +154,7 @@ public class AutoRotationAction implements IActionExecution {
                                         .message("Auto rotation macro completed")
                                         .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                                         .build());
-
+                    }
                 }else{
                     parentObj.add(
                             AutoRotationAction.AutoRotationOutputTable
@@ -225,7 +226,7 @@ public class AutoRotationAction implements IActionExecution {
     @Builder
     public static class AutoRotationResponse {
 
-        private List<String> processedFilePath;
+        private List<String> processedFilePaths;
     }
 
     @Data
