@@ -138,23 +138,42 @@ public class AutoRotationAction implements IActionExecution {
                 if (response.isSuccessful()) {
                     AutoRotationResponse autoRotationResponse=mapper.readValue(response.body().string(), new TypeReference<>() {
                     });
-                    for (String processedFilepath : autoRotationResponse.getProcessedFilePaths()) {
-                        parentObj.add(
-                                AutoRotationAction.AutoRotationOutputTable
-                                        .builder()
-                                        .processedFilePath(processedFilepath)
-                                        .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                                        .groupId(entity.getGroupId())
-                                        .processId(entity.processId)
-                                        .tenantId(entity.tenantId)
-                                        .templateId(entity.templateId)
-                                        .paperNo(entity.paperNo)
-                                        .status("COMPLETED")
-                                        .stage("AUTO_ROTATION")
-                                        .message("Auto rotation macro completed")
-                                        .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                                        .build());
+                    if(!(autoRotationResponse.getProcessedFilePaths()==null)){
+                        for (String processedFilepath : autoRotationResponse.getProcessedFilePaths()) {
+                            parentObj.add(
+                                    AutoRotationAction.AutoRotationOutputTable
+                                            .builder()
+                                            .processedFilePath(processedFilepath)
+                                            .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
+                                            .groupId(entity.getGroupId())
+                                            .processId(entity.processId)
+                                            .tenantId(entity.tenantId)
+                                            .templateId(entity.templateId)
+                                            .paperNo(entity.paperNo)
+                                            .status("COMPLETED")
+                                            .stage("AUTO_ROTATION")
+                                            .message("Auto rotation macro completed")
+                                            .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                                            .build());
+                        }
+                    }else{
+                            parentObj.add(
+                                    AutoRotationAction.AutoRotationOutputTable
+                                            .builder()
+                                            .processedFilePath(entity.filePath)
+                                            .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
+                                            .groupId(entity.getGroupId())
+                                            .processId(entity.processId)
+                                            .tenantId(entity.tenantId)
+                                            .templateId(entity.templateId)
+                                            .paperNo(entity.paperNo)
+                                            .status("COMPLETED")
+                                            .stage("AUTO_ROTATION")
+                                            .message("Auto rotation macro completed")
+                                            .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                                            .build());
                     }
+
                 }else{
                     parentObj.add(
                             AutoRotationAction.AutoRotationOutputTable
