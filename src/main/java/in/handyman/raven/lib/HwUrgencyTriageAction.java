@@ -131,6 +131,8 @@ public class HwUrgencyTriageAction implements IActionExecution {
       objectNode.put("checkboxImageWidth", hwUrgencyTriage.getCheckboxImageWidth());
       objectNode.put("checkboxImageHeight", hwUrgencyTriage.getCheckboxImageHeight());
 
+      log.info("request builder object node {}",objectNode);
+
       Request request = new Request.Builder().url(endpoint)
               .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
       log.debug(aMarker, "The Request Details: {}", request);
@@ -139,6 +141,7 @@ public class HwUrgencyTriageAction implements IActionExecution {
       try (Response response = httpclient.newCall(request).execute()) {
         String responseBody = Objects.requireNonNull(response.body()).string();
         if (response.isSuccessful()) {
+          log.info("Response Details: {}",response);
           String binaryModelOutput = Optional.ofNullable(mapper.readTree(responseBody).get("binary_model")).map(JsonNode::asText).orElseThrow();
           String multiClassModelOutput = Optional.ofNullable(mapper.readTree(responseBody).get("multiclass_model")).map(JsonNode::asText).orElseThrow();
           String checkboxModelOutput = Optional.ofNullable(mapper.readTree(responseBody).get("checkbox_model")).map(JsonNode::asText).orElseThrow();
@@ -157,10 +160,10 @@ public class HwUrgencyTriageAction implements IActionExecution {
                   .multiClassModel(multiClassModelOutput)
                   .checkboxModel(checkboxModelOutput)
                   .status("COMPLETED")
-                  .stage("TRIAGE-HANDWRITTEN")
+                  .stage("TRIAGE_HANDWRITTEN")
                   .message("Handwritten Urgency Triage Finished")
                   .build());
-          log.info(aMarker, "Execute for handwritten urgency triage",response);
+          log.info(aMarker, "Execute for handwritten urgency triage {}",response);
         } else {
           parentObj.add(HwUrgencyTriageOutputTable.builder()
                   .createdUserId(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).orElse(null))
@@ -174,10 +177,10 @@ public class HwUrgencyTriageAction implements IActionExecution {
                   .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
                   .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .status("FAILED")
-                  .stage("TRIAGE-HANDWRITTEN")
+                  .stage("TRIAGE_HANDWRITTEN")
                   .message(response.message())
                   .build());
-          log.error(aMarker, "The Exception occurred in handwritten urgency triage",response);
+          log.error(aMarker, "The Exception occurred in handwritten urgency triage {}",response);
         }
       } catch (Exception e) {
         parentObj.add(HwUrgencyTriageOutputTable.builder()
@@ -192,7 +195,7 @@ public class HwUrgencyTriageAction implements IActionExecution {
                 .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
                 .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .status("FAILED")
-                .stage("TRIAGE-HANDWRITTEN")
+                .stage("TRIAGE_HANDWRITTEN")
                 .message(ExceptionUtil.toString(e))
                 .build());
         log.error(aMarker, "The Exception occurred in handwritten urgency triage", e);

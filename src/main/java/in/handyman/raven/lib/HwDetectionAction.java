@@ -72,7 +72,7 @@ public class HwDetectionAction implements IActionExecution {
           throw new RuntimeException(e);
         }
       }).collect(Collectors.toList())).orElse(Collections.emptyList());
-
+      log.info("urls used in hw detection macro {}",urls);
       final CoproProcessor<HwClassificationInputTable, HwClassificationOutputTable> coproProcessor =
               new CoproProcessor<>(new LinkedBlockingQueue<>(),
                       HwClassificationOutputTable.class,
@@ -80,6 +80,7 @@ public class HwDetectionAction implements IActionExecution {
                       jdbi,log,
                       new HwClassificationInputTable(),urls,action);
       coproProcessor.startProducer(hwDetection.getQuerySet(),Integer.valueOf(action.getContext().get("read.batch.size")));
+      log.info("hwdetection read batch size {} and queryset from macro {} ",Integer.valueOf(action.getContext().get("read.batch.size")),hwDetection.getQuerySet());
       Thread.sleep(1000);
       coproProcessor.startConsumer(insertQuery, Integer.valueOf(action.getContext().get("consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")), new HwClassificationConsumerProcess(log, aMarker, action));
       log.info(aMarker, " Handwritten Classification has been completed {}  ", hwDetection.getName());
@@ -122,15 +123,17 @@ public class HwDetectionAction implements IActionExecution {
       objectNode.put("modelPath", hwDetection.getModelPath());
       objectNode.put("outputDir", hwDetection.getDirectoryPath());
       log.info(aMarker, "Request List {}", objectNode);
-
+      log.info("request object node {}",objectNode);
       Request request = new Request.Builder().url(endpoint)
               .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
       log.debug(aMarker, "The Request Details: {}", request);
 
+      log.info("request builder object {}",request);
 
       try (Response response = httpclient.newCall(request).execute()){
         String responseBody = Objects.requireNonNull(response.body()).string();
         if (response.isSuccessful()) {
+          log.info("copro api response body {}",responseBody);
           String documentStatus = Optional.ofNullable(mapper.readTree(responseBody).get("document_status")).map(JsonNode::asText).orElseThrow();
           parentObj.add(HwClassificationOutputTable.builder()
                   .createdUserId(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).orElse(null))

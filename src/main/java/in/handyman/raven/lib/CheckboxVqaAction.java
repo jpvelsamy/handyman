@@ -151,7 +151,7 @@ public class CheckboxVqaAction implements IActionExecution {
                   .triageState(checkboxState)
                   .paperType(paperFinalResult)
                   .status("COMPLETED")
-                  .stage("TRIAGE-CHECKBOX")
+                  .stage("TRIAGE_CHECKBOX")
                   .message("Urgency Triage Finished")
                   .build());
           log.info(aMarker, "Execute for urgency triage",response);
@@ -168,7 +168,7 @@ public class CheckboxVqaAction implements IActionExecution {
                   .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
                   .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .status("FAILED")
-                  .stage("TRIAGE-CHECKBOX")
+                  .stage("TRIAGE_CHECKBOX")
                   .message(response.message())
                   .build());
           log.error(aMarker, "The Exception occurred in urgency triage",response);
@@ -186,7 +186,7 @@ public class CheckboxVqaAction implements IActionExecution {
                 .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
                 .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .status("FAILED")
-                .stage("TRIAGE-CHECKBOX")
+                .stage("TRIAGE_CHECKBOX")
                 .message(ExceptionUtil.toString(e))
                 .build());
         log.error(aMarker, "The Exception occurred in urgency triage", e);
