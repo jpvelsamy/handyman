@@ -131,7 +131,7 @@ public class AutoRotationAction implements IActionExecution {
             log.info(aMarker, " Input variables id : {}", action.getActionId());
             Request request = new Request.Builder().url(endpoint)
                     .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-            log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n page content : {} \n key-filters : {} ");
+            log.debug(aMarker, "Request has been build with the parameters \n URI : {} ",endpoint);
             log.debug(aMarker, "The Request Details: {}", request);
 
             try (Response response = httpclient.newCall(request).execute()) {
