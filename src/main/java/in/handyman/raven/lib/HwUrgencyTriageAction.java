@@ -76,7 +76,7 @@ public class HwUrgencyTriageAction implements IActionExecution {
                       HwUrgencyTriageInputTable.class,
                       jdbi, log,
                       new HwUrgencyTriageInputTable(), urls, action);
-      coproProcessor.startProducer(hwUrgencyTriage.getQuerySet(), 1);
+      coproProcessor.startProducer(hwUrgencyTriage.getQuerySet(), Integer.valueOf(action.getContext().get("read.batch.size")));
       Thread.sleep(1000);
       coproProcessor.startConsumer(insertQuery, 1, 1, new HwUrgencyTriageConsumerProcess(log, aMarker, action));
       log.info(aMarker, " Handwritten Urgency Triage has been completed {}  ", hwUrgencyTriage.getName());
