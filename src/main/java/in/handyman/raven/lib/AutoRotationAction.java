@@ -139,11 +139,10 @@ public class AutoRotationAction implements IActionExecution {
                     AutoRotationResponse autoRotationResponse=mapper.readValue(response.body().string(), new TypeReference<>() {
                     });
                     if(!(autoRotationResponse.getProcessedFilePaths()==null)){
-                        for (String processedFilepath : autoRotationResponse.getProcessedFilePaths()) {
                             parentObj.add(
                                     AutoRotationAction.AutoRotationOutputTable
                                             .builder()
-                                            .processedFilePath(processedFilepath)
+                                            .processedFilePath(autoRotationResponse.getProcessedFilePaths())
                                             .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                                             .groupId(entity.getGroupId())
                                             .processId(entity.processId)
@@ -155,7 +154,7 @@ public class AutoRotationAction implements IActionExecution {
                                             .message("Auto rotation macro completed")
                                             .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                                             .build());
-                        }
+
                     }else{
                             parentObj.add(
                                     AutoRotationAction.AutoRotationOutputTable
@@ -245,7 +244,7 @@ public class AutoRotationAction implements IActionExecution {
     @Builder
     public static class AutoRotationResponse {
 
-        private List<String> processedFilePaths;
+        private String processedFilePaths;
     }
 
     @Data
