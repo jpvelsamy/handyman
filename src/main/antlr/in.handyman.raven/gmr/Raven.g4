@@ -118,7 +118,8 @@ action:
     |checkboxVqa
     |hwUrgencyTriage
     |qrExtraction
-    |paperItemizer);
+    |paperItemizer
+    |nerAdapter);
 
 
 multitude:
@@ -770,6 +771,13 @@ paperItemizer:
 		querySet=STRING
 	'}' ('on-condition' condition=expression)* ;
 
+nerAdapter:
+      'nerAdapter' 'as' name=STRING
+      'on-resource-conn' resourceConn=STRING
+      'result-table' resultTable=STRING
+      'using-docnut-result'
+      '{' resultSet=STRING  '}'
+       ('on-condition' condition=expression)*;
 resource : STRING;
 
 //rules
