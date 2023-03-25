@@ -890,6 +890,76 @@ public interface RavenListener extends ParseTreeListener {
 	 */
 	void exitZipContentList(RavenParser.ZipContentListContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link RavenParser#hwDetection}.
+	 * @param ctx the parse tree
+	 */
+	void enterHwDetection(RavenParser.HwDetectionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#hwDetection}.
+	 * @param ctx the parse tree
+	 */
+	void exitHwDetection(RavenParser.HwDetectionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#intellimatch}.
+	 * @param ctx the parse tree
+	 */
+	void enterIntellimatch(RavenParser.IntellimatchContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#intellimatch}.
+	 * @param ctx the parse tree
+	 */
+	void exitIntellimatch(RavenParser.IntellimatchContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#checkboxVqa}.
+	 * @param ctx the parse tree
+	 */
+	void enterCheckboxVqa(RavenParser.CheckboxVqaContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#checkboxVqa}.
+	 * @param ctx the parse tree
+	 */
+	void exitCheckboxVqa(RavenParser.CheckboxVqaContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#hwUrgencyTriage}.
+	 * @param ctx the parse tree
+	 */
+	void enterHwUrgencyTriage(RavenParser.HwUrgencyTriageContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#hwUrgencyTriage}.
+	 * @param ctx the parse tree
+	 */
+	void exitHwUrgencyTriage(RavenParser.HwUrgencyTriageContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#qrExtraction}.
+	 * @param ctx the parse tree
+	 */
+	void enterQrExtraction(RavenParser.QrExtractionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#qrExtraction}.
+	 * @param ctx the parse tree
+	 */
+	void exitQrExtraction(RavenParser.QrExtractionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#paperItemizer}.
+	 * @param ctx the parse tree
+	 */
+	void enterPaperItemizer(RavenParser.PaperItemizerContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#paperItemizer}.
+	 * @param ctx the parse tree
+	 */
+	void exitPaperItemizer(RavenParser.PaperItemizerContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#nerAdapter}.
+	 * @param ctx the parse tree
+	 */
+	void enterNerAdapter(RavenParser.NerAdapterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#nerAdapter}.
+	 * @param ctx the parse tree
+	 */
+	void exitNerAdapter(RavenParser.NerAdapterContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link RavenParser#resource}.
 	 * @param ctx the parse tree
 	 */
@@ -899,6 +969,26 @@ public interface RavenListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitResource(RavenParser.ResourceContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#coproStart}.
+	 * @param ctx the parse tree
+	 */
+	void enterCoproStart(RavenParser.CoproStartContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#coproStart}.
+	 * @param ctx the parse tree
+	 */
+	void exitCoproStart(RavenParser.CoproStartContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#coproStop}.
+	 * @param ctx the parse tree
+	 */
+	void enterCoproStop(RavenParser.CoproStopContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#coproStop}.
+	 * @param ctx the parse tree
+	 */
+	void exitCoproStop(RavenParser.CoproStopContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link RavenParser#json}.
 	 * @param ctx the parse tree
