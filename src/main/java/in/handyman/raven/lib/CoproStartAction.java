@@ -48,14 +48,14 @@ public class CoproStartAction implements IActionExecution {
         this.action = action;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker(" CoproStart:" + this.coproStart.getName());
-        this.URI = action.getContext().get("copro.admin.server.url");
+        this.URI = action.getContext().get("copro.admin.start.server.url");
 
     }
 
     @Override
     public void execute() throws Exception {
         final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(coproStart.getResourceConn());
-        log.info(aMarker, "<-------copro admin API call for {} has been started------->" + coproStart.getName());
+        log.info(aMarker, "<-------copro admin API call for {} has been started------->", coproStart.getName());
         final OkHttpClient httpclient = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.MINUTES)
                 .writeTimeout(10, TimeUnit.MINUTES)
