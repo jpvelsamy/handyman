@@ -120,7 +120,8 @@ action:
     |qrExtraction
     |paperItemizer
     |nerAdapter
-    |coproStart);
+    |coproStart
+    |coproStop);
 
 
 multitude:
@@ -779,7 +780,13 @@ resource : STRING;
 
 coproStart:
     'coproStart' 'as' name=STRING 'for' moduleName=STRING
-    'process-id' processID=STRING
+    'process-id' processID=STRING  'resource-conn' resourceConn=STRING
+    'using'
+    '{'  command=STRING  '}' ('on-condition' condition=expression)*;
+
+coproStop:
+    'coproStop' 'as' name=STRING 'for' moduleName=STRING
+    'process-id' processID=STRING 'resource-conn' resourceConn=STRING
     'using'
     '{'  command=STRING  '}' ('on-condition' condition=expression)*;
 
