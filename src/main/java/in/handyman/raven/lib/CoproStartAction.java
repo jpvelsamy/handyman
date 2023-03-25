@@ -62,7 +62,8 @@ public class CoproStartAction implements IActionExecution {
                 .readTimeout(10, TimeUnit.MINUTES)
                 .build();
         final ObjectNode objectNode = mapper.createObjectNode();
-        objectNode.put("command", coproStart.getCommand());
+        objectNode.put("processStartCommand", coproStart.getCommand());
+        objectNode.put("exportCommand","CORPO_ZERO_SHOT_CLASSIFIER_ENABLE");
         log.info(aMarker, " Input variables id : {}", action.getActionId());
         Request request = new Request.Builder().url(URI)
                 .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
@@ -70,21 +71,21 @@ public class CoproStartAction implements IActionExecution {
         String name = coproStart.getName() + "_response";
         log.debug(aMarker, "The Request Details: {} ", request);
         try (Response response = httpclient.newCall(request).execute()) {
-            String responseBody = Optional.ofNullable(response.body()).map(String::valueOf).orElse(null);
+            String responseBody = response.body().string();
             if (response.isSuccessful()) {
-                JSONObject responseObj = new JSONObject();
+                JSONObject responseObj = new JSONObject(responseBody);
                 CoproStartAction.coproStartActionEntity coproStartActionEntity = CoproStartAction.coproStartActionEntity
                         .builder()
-                        .processId(Optional.ofNullable(coproStart.getProcessID()).map(String::valueOf).orElse(null))
-                        .actionId(Optional.ofNullable(action.getActionId()).map(String::valueOf).orElse(null))
-                        .rootPipelineId(Optional.ofNullable(action.getRootPipelineId()).map(String::valueOf).orElse(null))
+                        .processId(Optional.ofNullable(coproStart.getProcessID()).map(Integer::valueOf).orElse(null))
+                        .actionId(Optional.ofNullable(action.getActionId()).map(Long::valueOf).orElse(null))
+                        .rootPipelineId(Optional.ofNullable(action.getRootPipelineId()).map(Long::valueOf).orElse(null))
                         .coproActionName(Optional.ofNullable(coproStart.getModuleName()).map(String::valueOf).orElse(null))
                         .command(Optional.ofNullable(coproStart.getCommand()).map(String::valueOf).orElse(null))
                         .coproProcessId(Optional.ofNullable(responseObj.get("pid")).map(String::valueOf).orElse(null))
-                        .cpu(Optional.ofNullable(responseObj.get("cpu")).map(String::valueOf).orElse(null))
-                        .gpu(Optional.ofNullable(responseObj.get("gpu")).map(String::valueOf).orElse(null))
+//                        .cpu(Optional.ofNullable(responseObj.get("cpu")).map(String::valueOf).orElse(null))
+//                        .gpu(Optional.ofNullable(responseObj.get("gpu")).map(String::valueOf).orElse(null))
                         .ram(Optional.ofNullable(responseObj.get("ram")).map(String::valueOf).orElse(null))
-                        .gpuRam(Optional.ofNullable(responseObj.get("gpu_ram")).map(String::valueOf).orElse(null))
+                        .gpuRam(Optional.ofNullable(responseObj.get("gpuRam")).map(String::valueOf).orElse(null))
                         .build();
                 jdbi.useTransaction(handle -> handle.createUpdate("INSERT INTO info.resource_utilization_details (process_id, action_id, root_pipeline_id, copro_action_name, copro_pid, created_on, command_exec, cpu, gpu, ram, gpu_ram)" +
                                 " select :processId,:actionId,:rootPipelineId,:coproActionName,:coproProcessId,now(),:command,:cpu,:gpu,:ram,:gpuRam;")
@@ -94,7 +95,7 @@ public class CoproStartAction implements IActionExecution {
             } else {
                 log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
             }
-            log.info(aMarker, "<--------copro admin API call for {} has been completed------->" + coproStart.getName());
+            log.info(aMarker, "<--------copro admin API call for {} has been completed------->" , coproStart.getName());
         } catch (Exception e) {
             action.getContext().put(name.concat(".error"), "true");
             action.getContext().put(name.concat(".errorMessage"), e.getMessage());
@@ -114,9 +115,9 @@ public class CoproStartAction implements IActionExecution {
     @NoArgsConstructor
     @Builder
     public static class coproStartActionEntity {
-        private String processId;
-        private String actionId;
-        private String rootPipelineId;
+        private Integer processId;
+        private Long actionId;
+        private Long rootPipelineId;
         private String command;
         private String coproActionName;
         private String coproProcessId;
