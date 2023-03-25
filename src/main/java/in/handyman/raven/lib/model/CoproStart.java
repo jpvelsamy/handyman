@@ -31,5 +31,7 @@ public class CoproStart implements IActionContext {
   private String command;
 
   private String resourceConn;
+
+  private String coproServerUrl;
   private Boolean condition = true;
 }

@@ -41,7 +41,7 @@ public class CoproStopAction implements IActionExecution {
   private final Marker aMarker;
 
   private final ObjectMapper mapper = new ObjectMapper();
-  private final String URI;
+//  private final String URI;
   private static final MediaType MediaTypeJSON = MediaType
           .parse("application/json; charset=utf-8");
 
@@ -51,7 +51,7 @@ public class CoproStopAction implements IActionExecution {
     this.action = action;
     this.log = log;
     this.aMarker = MarkerFactory.getMarker(" CoproStop:"+this.coproStop.getName());
-    this.URI = action.getContext().get("copro.admin.stop.server.url");
+//    this.URI = action.getContext().get("copro.admin.stop.server.url");
 
   }
 
@@ -68,9 +68,9 @@ public class CoproStopAction implements IActionExecution {
     objectNode.put("processStartCommand", coproStop.getCommand());
     objectNode.put("processName","gunicorn");
     log.info(aMarker, " Input variables id : {}", action.getActionId());
-    Request request = new Request.Builder().url(URI)
+    Request request = new Request.Builder().url(coproStop.getCoproServerUrl())
             .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-    log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n command : {} ", URI, coproStop.getCommand());
+    log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n command : {} ", coproStop.getCoproServerUrl(), coproStop.getCommand());
     String name = coproStop.getName() + "_response";
     log.debug(aMarker, "The Request Details: {} ", request);
     try (Response response = httpclient.newCall(request).execute()) {
@@ -90,6 +90,7 @@ public class CoproStopAction implements IActionExecution {
                 .ram(Optional.ofNullable(responseObj.get("ram")).map(String::valueOf).orElse(null))
                 .gpuRam(Optional.ofNullable(responseObj.get("gpuRam")).map(String::valueOf).orElse(null))
                 .build();
+        Thread.sleep(5000);
         jdbi.useTransaction(handle -> handle.createUpdate("INSERT INTO info.resource_utilization_details (process_id, action_id, root_pipeline_id, copro_action_name, copro_pid, created_on, command_exec, cpu, gpu, ram, gpu_ram)" +
                         " select :processId,:actionId,:rootPipelineId,:coproActionName,:coproProcessId,now(),:command,:cpu,:gpu,:ram,:gpuRam;")
                 .bindBean(coproStopActionEntity)

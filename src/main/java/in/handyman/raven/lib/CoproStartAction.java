@@ -38,7 +38,7 @@ public class CoproStartAction implements IActionExecution {
     private final Marker aMarker;
 
     private final ObjectMapper mapper = new ObjectMapper();
-    private final String URI;
+//    private final String URI;
     private static final MediaType MediaTypeJSON = MediaType
             .parse("application/json; charset=utf-8");
 
@@ -48,7 +48,7 @@ public class CoproStartAction implements IActionExecution {
         this.action = action;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker(" CoproStart:" + this.coproStart.getName());
-        this.URI = action.getContext().get("copro.admin.start.server.url");
+//        this.URI = action.getContext().get("copro.admin.start.server.url");
 
     }
 
@@ -65,9 +65,9 @@ public class CoproStartAction implements IActionExecution {
         objectNode.put("processStartCommand", coproStart.getCommand());
         objectNode.put("exportCommand","CORPO_ZERO_SHOT_CLASSIFIER_ENABLE");
         log.info(aMarker, " Input variables id : {}", action.getActionId());
-        Request request = new Request.Builder().url(URI)
+        Request request = new Request.Builder().url(coproStart.getCoproServerUrl())
                 .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-        log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n command : {} ", URI, coproStart.getCommand());
+        log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n command : {} ", coproStart.getCoproServerUrl(), coproStart.getCommand());
         String name = coproStart.getName() + "_response";
         log.debug(aMarker, "The Request Details: {} ", request);
         try (Response response = httpclient.newCall(request).execute()) {

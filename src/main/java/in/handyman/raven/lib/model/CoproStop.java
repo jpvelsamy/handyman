@@ -29,4 +29,5 @@ public class CoproStop implements IActionContext {
 
   private String resourceConn;
   private Boolean condition = true;
+  private String coproServerUrl;
 }
