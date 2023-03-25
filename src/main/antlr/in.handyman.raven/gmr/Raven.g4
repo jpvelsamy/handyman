@@ -119,7 +119,8 @@ action:
     |hwUrgencyTriage
     |qrExtraction
     |paperItemizer
-    |nerAdapter);
+    |nerAdapter
+    |coproStart);
 
 
 multitude:
@@ -779,6 +780,15 @@ nerAdapter:
       '{' resultSet=STRING  '}'
        ('on-condition' condition=expression)*;
 resource : STRING;
+
+
+coproStart:
+    'coproStart' 'as' name=STRING 'for' moduleName=STRING
+    'process-id' processID=STRING
+    'using'
+    '{'  command=STRING  '}' ('on-condition' condition=expression)*;
+
+
 
 //rules
 
