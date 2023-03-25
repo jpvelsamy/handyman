@@ -25,7 +25,7 @@ class CoproStartActionTest {
         final ActionExecutionAudit action = ActionExecutionAudit.builder()
                 .build();
         action.setRootPipelineId(11011L);
-        action.getContext().put("copro.admin.server.url", "http://localhost:10189/copro/filtering/zero_shot_classifier");
+        action.getContext().put("copro.admin.server.url", "http://localhost:8999/copro/admin/process-start");
         final CoproStartAction coproStartAction = new CoproStartAction(action, log, build);
         coproStartAction.execute();
     }
