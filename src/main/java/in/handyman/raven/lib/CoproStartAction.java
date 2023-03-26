@@ -55,7 +55,7 @@ public class CoproStartAction implements IActionExecution {
     @Override
     public void execute() throws Exception {
         final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(coproStart.getResourceConn());
-        log.info(aMarker, "<-------copro admin API call for {} has been started------->", coproStart.getName());
+        log.info(aMarker, "copro admin API call for {} has been started------->", coproStart.getName());
         final OkHttpClient httpclient = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.MINUTES)
                 .writeTimeout(10, TimeUnit.MINUTES)
@@ -76,7 +76,7 @@ public class CoproStartAction implements IActionExecution {
                 JSONObject responseObj = new JSONObject(responseBody);
                 CoproStartAction.coproStartActionEntity coproStartActionEntity = CoproStartAction.coproStartActionEntity
                         .builder()
-                        .processId(Optional.ofNullable(coproStart.getProcessID()).map(Integer::valueOf).orElse(null))
+                        .processId(Optional.ofNullable(coproStart.getProcessID()).map(Long::valueOf).orElse(null))
                         .actionId(Optional.ofNullable(action.getActionId()).map(Long::valueOf).orElse(null))
                         .rootPipelineId(Optional.ofNullable(action.getRootPipelineId()).map(Long::valueOf).orElse(null))
                         .coproActionName(Optional.ofNullable(coproStart.getModuleName()).map(String::valueOf).orElse(null))
@@ -115,7 +115,7 @@ public class CoproStartAction implements IActionExecution {
     @NoArgsConstructor
     @Builder
     public static class coproStartActionEntity {
-        private Integer processId;
+        private Long processId;
         private Long actionId;
         private Long rootPipelineId;
         private String command;
