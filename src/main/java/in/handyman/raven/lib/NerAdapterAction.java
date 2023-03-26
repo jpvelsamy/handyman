@@ -176,7 +176,8 @@ public class NerAdapterAction implements IActionExecution {
                                 .processId(result.processId)
                                 .paperNo(result.paperNo)
                                 .sorItemId(result.sorItemId)
-                                .sorItemName(result.sorItemName)
+                                .sorItemName(result.sorKey)
+                                .weight(result.weight)
                                 .question(result.question)
                                 .answer(result.inputValue)
                                 .createdUserId(result.createdUserId)
@@ -204,7 +205,8 @@ public class NerAdapterAction implements IActionExecution {
                                 .processId(result.processId)
                                 .paperNo(result.paperNo)
                                 .sorItemId(result.sorItemId)
-                                .sorItemName(result.sorItemName)
+                                .weight(result.weight)
+                                .sorItemName(result.sorKey)
                                 .question(result.question)
                                 .answer(result.inputValue)
                                 .createdUserId(result.createdUserId)
@@ -316,6 +318,7 @@ public class NerAdapterAction implements IActionExecution {
         private int sorId;
         private int sorItemId;
         private String sorItemName;
+        private int weight;
         private String question;
         private String answer;
         private String createdUserId;
@@ -335,7 +338,7 @@ public class NerAdapterAction implements IActionExecution {
         @Override
         public List<Object> getRowData() {
             return Stream.of(this.originId, this.paperNo, this.groupId, this.processId, this.sorId, this.sorItemId, this.sorItemName,
-                    this.question, this.answer, this.createdUserId, this.tenantId, this.createdOn, this.wordScore, this.charScore,
+                    this.weight,this.question, this.answer, this.createdUserId, this.tenantId, this.createdOn, this.wordScore, this.charScore,
                     this.validatorScoreAllowed, this.validatorScoreNegative, this.confidenceScore, this.validationName, this.bBox,
                     this.status, this.stage, this.message
             ).collect(Collectors.toList());
