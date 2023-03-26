@@ -39,7 +39,6 @@ import java.util.stream.Collectors;
         actionName = "ScalarAdapter"
 )
 public class ScalarAdapterAction implements IActionExecution {
-  public static final String NER = "ner";
   private final ActionExecutionAudit action;
 
   private final Logger log;
@@ -53,10 +52,9 @@ public class ScalarAdapterAction implements IActionExecution {
   private final NumericvalidatorAction numericAction;
   private final AlphanumericvalidatorAction alphaNumericAction;
   private final DatevalidatorAction dateAction;
-  private final NervalidatorAction nerAction;
   private final WordcountAction wordcountAction;
   private final CharactercountAction charactercountAction;
-
+  String URI;
 
   public ScalarAdapterAction(final ActionExecutionAudit action, final Logger log,
                              final Object scalarAdapter) {
@@ -70,7 +68,6 @@ public class ScalarAdapterAction implements IActionExecution {
     this.numericAction = new NumericvalidatorAction(action, log, Numericvalidator.builder().build());
     this.alphaNumericAction = new AlphanumericvalidatorAction(action, log, Alphanumericvalidator.builder().build());
     this.dateAction = new DatevalidatorAction(action, log, Datevalidator.builder().build());
-    this.nerAction = new NervalidatorAction(action, log, Nervalidator.builder().build());
   }
 
   @Override
@@ -80,6 +77,7 @@ public class ScalarAdapterAction implements IActionExecution {
 
       final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(scalarAdapter.getResourceConn());
       final List<ValidatorConfigurationDetail> validatorConfigurationDetails = new ArrayList<>();
+      URI = action.getContext().get("copro.text-validation.url");
 
       jdbi.useTransaction(handle -> {
         final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(scalarAdapter.getResultSet());
@@ -254,10 +252,6 @@ public class ScalarAdapterAction implements IActionExecution {
           break;
         case "numeric":
           confidenceScore = this.numericAction.getNumericScore(inputDetail);
-          break;
-        case NER:
-          final String URI = action.getContext().get("copro.text-validation.url");
-          confidenceScore = this.nerAction.getNerScore(inputDetail, URI);
           break;
         case "date":
           confidenceScore = this.dateAction.getDateScore(inputDetail);

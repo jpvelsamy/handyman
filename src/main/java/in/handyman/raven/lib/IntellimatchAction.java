@@ -100,7 +100,8 @@ public class IntellimatchAction implements IActionExecution {
                     if (response.isSuccessful()) {
                         List<IntelliMatchCopro> output = MAPPER.readValue(responseBody, new TypeReference<>() {
                         });
-                        result.setIntelliMatch(output.get(0).getSimilarityPercent());
+                        double matchPercent = output.get(0) != null ? Math.round(output.get(0).getSimilarityPercent() * 100.0) / 100.0: 0.0 ;
+                        result.setIntelliMatch(matchPercent);
                         resultQueue.add(result);
 
                     } else {
