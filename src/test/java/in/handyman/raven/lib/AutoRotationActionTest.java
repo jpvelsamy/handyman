@@ -20,13 +20,11 @@ class AutoRotationActionTest {
                 .resourceConn("intics_agadia_db_conn")
                 .outputDir("/home/anandh.andrews@zucisystems.com/Downloads/QA_PAIR_OUTPUT/")
                 .condition(true)
-                .querySet("select origin_id,group_id,processed_file_path as file_path,paper_no,tenant_id,template_id,process_id\n" +
-                        "\t\t            from info.paper_itemizer where status='COMPLETED'\n" +
-                        "\t\t            and process_id='138980744174170252'\n")
+                .querySet("select 'INT-1' as origin_id,1 as group_id,'/home/anandh.andrews@zucisystems.com/W-space/pr1-lambdas/agadia/agadia_output/2/preprocess/autorotation/pdf_to_image/Humana_Form_4_merged/Humana_Form_4_merged_4.jpg' as file_path,1 as paper_no,'TND-1' as tenant_id,'TMP-1' as template_id,'138980744174170252' as process_id\n" )
                 .build();
 
         ActionExecutionAudit actionExecutionAudit=new ActionExecutionAudit();
-        actionExecutionAudit.getContext().put("copro.autorotation.url","http://localhost:10183/copro/denoise/autorotation");
+        actionExecutionAudit.getContext().put("copro.autorotation.url","http://localhost:10181/copro/preprocess/autorotation");
         actionExecutionAudit.setProcessId(138980079308730208L);
         actionExecutionAudit.getContext().putAll(Map.ofEntries(Map.entry("read.batch.size","5"),
                 Map.entry("consumer.API.count","1"),

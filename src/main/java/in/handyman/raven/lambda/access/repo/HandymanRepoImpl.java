@@ -123,7 +123,8 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
         JDBI.useHandle(handle -> {
             audit.setLastModifiedDate(LocalDateTime.now());
             var repo = handle.attach(PipelineExecutionAuditRepo.class);
-            repo.insert(audit);
+            Long pipelineId=repo.insert(audit);
+            audit.setPipelineId(pipelineId);
         });
     }
 
@@ -133,7 +134,8 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
         JDBI.useHandle(handle -> {
             audit.setLastModifiedDate(LocalDateTime.now());
             var repo = handle.attach(ActionExecutionAuditRepo.class);
-            repo.insert(audit);
+             Long actionId= repo.insert(audit);
+            audit.setActionId(actionId);
         });
 
     }
@@ -169,21 +171,21 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
     @Override
     public void insertStatement(final StatementExecutionAudit audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
-        JDBI.useHandle(handle -> handle.createUpdate("INSERT INTO " + DoaConstant.AUDIT_SCHEMA_NAME + DOT + DoaConstant.SEA_TABLE_NAME + " (statement_id, created_by, created_date, last_modified_by, last_modified_date, action_id, rows_processed, rows_read, rows_written, statement_content, time_taken,root_pipeline_id) VALUES(:statementId, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :actionId, :rowsProcessed, :rowsRead, :rowsWritten, :statementContent, :timeTaken,:rootPipelineId);")
+        JDBI.useHandle(handle -> handle.createUpdate("INSERT INTO " + DoaConstant.AUDIT_SCHEMA_NAME + DOT + DoaConstant.SEA_TABLE_NAME + " ( created_by, created_date, last_modified_by, last_modified_date, action_id, rows_processed, rows_read, rows_written, statement_content, time_taken,root_pipeline_id) VALUES( :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :actionId, :rowsProcessed, :rowsRead, :rowsWritten, :statementContent, :timeTaken,:rootPipelineId);")
                 .bindBean(audit).execute());
     }
 
     @Override
     public void save(final PipelineExecutionStatusAudit audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
-        JDBI.useHandle(handle -> handle.createUpdate("INSERT INTO " + DoaConstant.AUDIT_SCHEMA_NAME + DOT + DoaConstant.PESA_TABLE_NAME + " (id, created_by, created_date, last_modified_by, last_modified_date, execution_status_id, pipeline_id,root_pipeline_id) VALUES(:id, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :executionStatusId, :pipelineId,:rootPipelineId);")
+        JDBI.useHandle(handle -> handle.createUpdate("INSERT INTO " + DoaConstant.AUDIT_SCHEMA_NAME + DOT + DoaConstant.PESA_TABLE_NAME + " ( created_by, created_date, last_modified_by, last_modified_date, execution_status_id, pipeline_id,root_pipeline_id) VALUES( :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :executionStatusId, :pipelineId,:rootPipelineId);")
                 .bindBean(audit).execute());
     }
 
     @Override
     public void save(final ActionExecutionStatusAudit audit) {
         audit.setLastModifiedDate(LocalDateTime.now());
-        JDBI.useHandle(handle -> handle.createUpdate("INSERT INTO " + DoaConstant.AUDIT_SCHEMA_NAME + DOT + DoaConstant.AESA_TABLE_NAME + " (id, created_by, created_date, last_modified_by, last_modified_date, action_id, execution_status_id, pipeline_id,root_pipeline_id) VALUES(:id, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :actionId, :executionStatusId, :pipelineId,:rootPipelineId);")
+        JDBI.useHandle(handle -> handle.createUpdate("INSERT INTO " + DoaConstant.AUDIT_SCHEMA_NAME + DOT + DoaConstant.AESA_TABLE_NAME + " ( created_by, created_date, last_modified_by, last_modified_date, action_id, execution_status_id, pipeline_id,root_pipeline_id) VALUES( :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate, :actionId, :executionStatusId, :pipelineId,:rootPipelineId);")
                 .bindBean(audit).execute());
     }
 
