@@ -79,7 +79,7 @@ public class CoproStopAction implements IActionExecution {
         JSONObject responseObj = new JSONObject(responseBody);
         CoproStopAction.coproStopActionEntity coproStopActionEntity = CoproStopAction.coproStopActionEntity
                 .builder()
-                .processId(Optional.ofNullable(coproStop.getProcessID()).map(Integer::valueOf).orElse(null))
+                .processId(Optional.ofNullable(coproStop.getProcessID()).map(Long::valueOf).orElse(null))
                 .actionId(Optional.ofNullable(action.getActionId()).map(Long::valueOf).orElse(null))
                 .rootPipelineId(Optional.ofNullable(action.getRootPipelineId()).map(Long::valueOf).orElse(null))
                 .coproActionName(Optional.ofNullable(coproStop.getModuleName()).map(String::valueOf).orElse(null))
@@ -118,7 +118,7 @@ public class CoproStopAction implements IActionExecution {
   @NoArgsConstructor
   @Builder
   public static class coproStopActionEntity {
-    private Integer processId;
+    private Long processId;
     private Long actionId;
     private Long rootPipelineId;
     private String command;
