@@ -687,12 +687,7 @@ authToken:
 eocJsonGenerator:
           'eocJsonGenerator' 'as' name=STRING
           'on-resource-conn' resourceConn=STRING
-          'document-id' documentId=STRING
-          'eoc-id' eocId=STRING
-          'origin-id' originId=STRING
-          'group-id' groupId=STRING
-          'auth-token' authtoken=STRING
-          'using'  '{' '}' ('on-condition' condition=expression)* ;
+          'using'  '{' querySet=STRING '}' ('on-condition' condition=expression)* ;
 
 zipContentList:
             'zipContentList' 'as' name=STRING
