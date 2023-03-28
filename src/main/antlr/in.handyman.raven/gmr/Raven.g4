@@ -121,7 +121,8 @@ action:
     |paperItemizer
     |nerAdapter
     |coproStart
-    |coproStop);
+    |coproStop
+    |outboundDeliveryNotify);
 
 
 multitude:
@@ -789,6 +790,14 @@ coproStop:
     'process-id' processID=STRING 'resource-conn' resourceConn=STRING
     'using'
     '{'  command=STRING  '}' ('on-condition' condition=expression)*;
+
+ outboundDeliveryNotify:
+     'outbound-delivery-notify' 'as' name=STRING
+     'document-id' documentId=STRING
+     'intics-zip-uri' inticsZipUri=STRING
+     'checksum' zipChecksum=STRING
+     'resource-conn' resourceConn=STRING
+     'using'  '{'  querySet=STRING  '}' ('on-condition' condition=expression)*;
 
 
 
