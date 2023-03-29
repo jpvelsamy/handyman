@@ -156,8 +156,8 @@ public class AssetInfoAction implements IActionExecution {
                     .file_name(FilenameUtils.removeExtension(file.getName()))
                     .file_path(file.getAbsolutePath())
                     .file_size(String.valueOf(fileSize))
-                    .root_pipeline_id(action.getContext().get("pipeline-id"))
-                    .process_id(action.getContext().get("process-id"))
+                    .root_pipeline_id(Long.valueOf(action.getContext().get("pipeline-id")))
+                    .process_id(Long.valueOf(action.getContext().get("process-id")))
                     .build();
             log.info(aMarker, "File Info Builder {}", fileInfoBuilder);
         } catch (Exception ex){
@@ -223,8 +223,8 @@ public class AssetInfoAction implements IActionExecution {
     @Builder
     public static class FileInfo {
         private String file_id;
-        private String process_id;
-        private String root_pipeline_id;
+        private Long process_id;
+        private Long root_pipeline_id;
         private String file_checksum;
         private String file_extension;
         private String file_name;

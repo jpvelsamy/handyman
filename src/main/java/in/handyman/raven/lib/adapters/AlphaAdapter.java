@@ -27,12 +27,14 @@ public class AlphaAdapter implements AdapterInterface {
                 input = input.replace(chars, targetChar);
             }
         }*/
-        for (int i = 0; i < specialCharacters.length(); i++) {
-            if (input.contains(Character.toString(specialCharacters.charAt(i)))) {
-                input = input.replace(Character.toString(specialCharacters.charAt(i)), "");
+        if (specialCharacters != null) {
+            for (int i = 0; i < specialCharacters.length(); i++) {
+                if (input.contains(Character.toString(specialCharacters.charAt(i)))) {
+                    input = input.replace(Character.toString(specialCharacters.charAt(i)), "");
+                }
             }
         }
-            return input;
+        return input;
     }
 
     @Override

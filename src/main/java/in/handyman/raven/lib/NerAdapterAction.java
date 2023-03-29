@@ -74,8 +74,8 @@ public class NerAdapterAction implements IActionExecution {
             jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
             // build insert prepare statement with output table columns
             final String insertQuery = "INSERT INTO " + nerAdapter.getResultTable() +
-                    "(origin_id, paper_no, group_id, process_id, sor_id, sor_item_id, sor_item_name, question, answer, created_user_id, tenant_id, created_on, word_score, char_score, validator_score_allowed, validator_score_negative, confidence_score, validation_name, b_box,status,stage,message)" +
-                    " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, ?, ?,?,?,?);";
+                    "(origin_id, paper_no, group_id, process_id, sor_id, sor_item_id, sor_item_name, question, answer,weight, created_user_id, tenant_id, created_on, word_score, char_score, validator_score_allowed, validator_score_negative, confidence_score, validation_name, b_box,status,stage,message)" +
+                    " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?,?, ?, ?, ?, ?, ?,?,?,?);";
             log.info(aMarker, "ner adpater Insert query {}", insertQuery);
 
             //3. initiate copro processor and copro urls
@@ -176,9 +176,10 @@ public class NerAdapterAction implements IActionExecution {
                                 .processId(result.processId)
                                 .paperNo(result.paperNo)
                                 .sorItemId(result.sorItemId)
-                                .sorItemName(result.sorItemName)
+                                .sorItemName(result.sorKey)
                                 .question(result.question)
                                 .answer(result.inputValue)
+                                .weight(result.weight)
                                 .createdUserId(result.createdUserId)
                                 .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                                 .wordScore(wordScore)
@@ -204,9 +205,10 @@ public class NerAdapterAction implements IActionExecution {
                                 .processId(result.processId)
                                 .paperNo(result.paperNo)
                                 .sorItemId(result.sorItemId)
-                                .sorItemName(result.sorItemName)
+                                .sorItemName(result.sorKey)
                                 .question(result.question)
                                 .answer(result.inputValue)
+                                .weight(result.weight)
                                 .createdUserId(result.createdUserId)
                                 .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                                 .wordScore(wordScore)
@@ -316,6 +318,7 @@ public class NerAdapterAction implements IActionExecution {
         private int sorId;
         private int sorItemId;
         private String sorItemName;
+        private int weight;
         private String question;
         private String answer;
         private String createdUserId;
@@ -335,7 +338,7 @@ public class NerAdapterAction implements IActionExecution {
         @Override
         public List<Object> getRowData() {
             return Stream.of(this.originId, this.paperNo, this.groupId, this.processId, this.sorId, this.sorItemId, this.sorItemName,
-                    this.question, this.answer, this.createdUserId, this.tenantId, this.createdOn, this.wordScore, this.charScore,
+                    this.question, this.answer, this.weight,this.createdUserId, this.tenantId, this.createdOn, this.wordScore, this.charScore,
                     this.validatorScoreAllowed, this.validatorScoreNegative, this.confidenceScore, this.validationName, this.bBox,
                     this.status, this.stage, this.message
             ).collect(Collectors.toList());
