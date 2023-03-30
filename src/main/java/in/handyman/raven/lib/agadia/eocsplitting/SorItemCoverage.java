@@ -49,7 +49,7 @@ public class SorItemCoverage {
             for (var eocGroupingMemberItemRequestInfo : eocGroupingMemberItemRequestInfos) {
                 List<Integer> paperList = new ArrayList<>();
                 Integer startNoInt = (Integer) Optional.ofNullable(eocGroupingMemberItemRequestInfo.get("start_no")).orElse(0);
-                final String answerString = Optional.ofNullable(eocGroupingMemberItemRequestInfo.get("answer")).map(String::valueOf).orElse("");
+                String answerString = Optional.ofNullable(eocGroupingMemberItemRequestInfo.get("answer")).map(String::valueOf).orElse("");
                 int totalPageInt = Integer.parseInt(episodeOfCoverage.getTotalPages());
                 int endPoint = 0;
 
@@ -67,6 +67,7 @@ public class SorItemCoverage {
                         paperList.add(i);
                     }
                     //thic code will save the result as a map with string as key and list as value
+                    answerString =answerString.replaceAll("[-/]","_");
                     stringObjectMap.put(answerString, paperList);
                 }
             }
