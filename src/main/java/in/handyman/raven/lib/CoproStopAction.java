@@ -84,13 +84,13 @@ public class CoproStopAction implements IActionExecution {
                 .rootPipelineId(Optional.ofNullable(action.getRootPipelineId()).map(Long::valueOf).orElse(null))
                 .coproActionName(Optional.ofNullable(coproStop.getModuleName()).map(String::valueOf).orElse(null))
                 .command(Optional.ofNullable(coproStop.getCommand()).map(String::valueOf).orElse(null))
-                .coproProcessId(Optional.ofNullable(responseObj.get("killedPid")).map(String::valueOf).orElse(null))
+                .coproProcessId(Optional.ofNullable(responseObj.get("Pid")).map(String::valueOf).orElse(null))
 //                        .cpu(Optional.ofNullable(responseObj.get("cpu")).map(String::valueOf).orElse(null))
 //                        .gpu(Optional.ofNullable(responseObj.get("gpu")).map(String::valueOf).orElse(null))
-                .ram(Optional.ofNullable(responseObj.get("ram")).map(String::valueOf).orElse(null))
-                .gpuRam(Optional.ofNullable(responseObj.get("gpuRam")).map(String::valueOf).orElse(null))
+                .ram(Optional.ofNullable(responseObj.get("cpuUtitlize")).map(String::valueOf).orElse(null))
+                .gpuRam(Optional.ofNullable(responseObj.get("gpuUtilize")).map(String::valueOf).orElse(null))
                 .build();
-        Thread.sleep(5000);
+        Thread.sleep(10000);
         jdbi.useTransaction(handle -> handle.createUpdate("INSERT INTO info.resource_utilization_details (process_id, action_id, root_pipeline_id, copro_action_name, copro_pid, created_on, command_exec, cpu, gpu, ram, gpu_ram)" +
                         " select :processId,:actionId,:rootPipelineId,:coproActionName,:coproProcessId,now(),:command,:cpu,:gpu,:ram,:gpuRam;")
                 .bindBean(coproStopActionEntity)
