@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -123,7 +124,10 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
         JDBI.useHandle(handle -> {
             audit.setLastModifiedDate(LocalDateTime.now());
             var repo = handle.attach(PipelineExecutionAuditRepo.class);
-            Long pipelineId=repo.insert(audit);
+            Long pipelineId = repo.insert(audit);
+            if (Objects.equals(audit.getPipelineId(), audit.getRootPipelineId())) {
+                audit.setRootPipelineId(pipelineId);
+            }
             audit.setPipelineId(pipelineId);
         });
     }
@@ -134,7 +138,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
         JDBI.useHandle(handle -> {
             audit.setLastModifiedDate(LocalDateTime.now());
             var repo = handle.attach(ActionExecutionAuditRepo.class);
-             Long actionId= repo.insert(audit);
+            Long actionId = repo.insert(audit);
             audit.setActionId(actionId);
         });
 
