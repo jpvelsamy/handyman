@@ -84,7 +84,7 @@ public class CoproStartAction implements IActionExecution {
                         .coproProcessId(Optional.ofNullable(responseObj.get("Pid")).map(String::valueOf).orElse(null))
 //                        .cpu(Optional.ofNullable(responseObj.get("cpu")).map(String::valueOf).orElse(null))
 //                        .gpu(Optional.ofNullable(responseObj.get("gpu")).map(String::valueOf).orElse(null))
-                        .ram(Optional.ofNullable(responseObj.get("cpuUtilize")).map(String::valueOf).orElse(null))
+                        .ram(Optional.ofNullable(responseObj.get("cpuUtitlize")).map(String::valueOf).orElse(null))
                         .gpuRam(Optional.ofNullable(responseObj.get("gpuUtilize")).map(String::valueOf).orElse(null))
                         .build();
                 Thread.sleep(10000);
