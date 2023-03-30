@@ -69,7 +69,6 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
         final StatementExecutionAudit audit = StatementExecutionAudit.builder()
                 .rootPipelineId(actionExecutionAudit.getRootPipelineId())
                 .actionId(actionExecutionAudit.getActionId())
-                .statementId(UniqueID.getId())
                 .statementContent("CoproProcessor created for " + actionExecutionAudit.getActionName())
                 .build();
         addAudit(audit);
@@ -90,7 +89,6 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
         final StatementExecutionAudit audit = StatementExecutionAudit.builder()
                 .rootPipelineId(actionExecutionAudit.getRootPipelineId())
                 .actionId(actionExecutionAudit.getActionId())
-                .statementId(UniqueID.getId())
                 .statementContent("CoproProcessor started producer for " + actionExecutionAudit.getActionName())
                 .build();
         addAudit(audit);
@@ -105,7 +103,6 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
                         final StatementExecutionAudit audit2 = StatementExecutionAudit.builder()
                                 .rootPipelineId(actionExecutionAudit.getRootPipelineId())
                                 .actionId(actionExecutionAudit.getActionId())
-                                .statementId(UniqueID.getId())
                                 .statementContent("CoproProcessor producer for " + actionExecutionAudit.getActionName())
                                 .rowsRead(ts.size())
                                 .build();
@@ -122,7 +119,6 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
                     final StatementExecutionAudit audit3 = StatementExecutionAudit.builder()
                             .rootPipelineId(actionExecutionAudit.getRootPipelineId())
                             .actionId(actionExecutionAudit.getActionId())
-                            .statementId(UniqueID.getId())
                             .statementContent("CoproProcessor producer completed " + actionExecutionAudit.getActionName())
                             .timeTaken((double) ChronoUnit.SECONDS.between(startTime, LocalDateTime.now()))
                             .build();

@@ -67,15 +67,18 @@ public class LambdaEngine {
                 .modeOfExecution(RAVEN_VM)
                 .threadName(Thread.currentThread().getName())
                 .build();
-        if (lContext.getRootPipelineId() == null) {
-            lContext.setRootPipelineId(UniqueID.getId());
-            log.info("LContext rootID => {} ", lContext.getRootPipelineId());
-            pipelineExecutionAudit.setPipelineId(lContext.getRootPipelineId());
-        }
-        pipelineExecutionAudit.setRootPipelineId(lContext.getRootPipelineId());
         pipelineExecutionAudit.setProcessId(ProcessHandle.current().pid());
-
-        HandymanActorSystemAccess.insert(pipelineExecutionAudit);
+        if (lContext.getRootPipelineId() == null) {
+            final Long id = UniqueID.getId();
+            pipelineExecutionAudit.setRootPipelineId(id);
+            pipelineExecutionAudit.setPipelineId(id);
+            HandymanActorSystemAccess.insert(pipelineExecutionAudit);
+            lContext.setRootPipelineId(pipelineExecutionAudit.getRootPipelineId());
+        } else {
+            pipelineExecutionAudit.setRootPipelineId(lContext.getRootPipelineId());
+            HandymanActorSystemAccess.insert(pipelineExecutionAudit);
+        }
+        log.info("LContext rootID => {} ", lContext.getRootPipelineId());
         pipelineExecutionAudit.updateExecutionStatusId(ExecutionStatus.STAGED.getId());
         log.info("Started building the pipeline context");
         try {
