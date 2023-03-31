@@ -123,7 +123,8 @@ action:
     |coproStart
     |coproStop
     |outboundDeliveryNotify
-    |masterdataComparison);
+    |masterdataComparison
+    |zipBatch);
 
 
 multitude:
@@ -811,6 +812,13 @@ coproStop:
      'match-result' matchResult=STRING
      'audit-table' auditTable=STRING
      'using' '{' inputSet=STRING '}' ('on-condition' condition=expression)*;
+
+zipBatch:
+    'zipBatch' 'as' name=STRING
+    'group-id' groupId=STRING
+    'output-dir' outputDir=STRING
+    'on-resource-conn' resourceConn=STRING
+    'using'  '{' '}' ('on-condition' condition=expression)* ;
 
 
 
