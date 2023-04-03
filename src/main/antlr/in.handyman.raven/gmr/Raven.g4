@@ -122,7 +122,8 @@ action:
     |nerAdapter
     |coproStart
     |coproStop
-    |outboundDeliveryNotify);
+    |outboundDeliveryNotify
+    |masterdataComparison);
 
 
 multitude:
@@ -799,7 +800,12 @@ coproStop:
      'resource-conn' resourceConn=STRING
      'using'  '{'  querySet=STRING  '}' ('on-condition' condition=expression)*;
 
-
+masterdataComparison:
+    'masterdataComparison' 'as' name=STRING
+    'on-resource-conn' resourceConn=STRING
+    'match-result' matchResult=STRING
+    'audit-table' auditTable=STRING
+    'using' '{' inputSet=STRING '}' ('on-condition' condition=expression)*;
 
 //rules
 
