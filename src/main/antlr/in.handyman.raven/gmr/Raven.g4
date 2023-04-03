@@ -123,7 +123,8 @@ action:
     |coproStart
     |coproStop
     |outboundDeliveryNotify
-    |masterdataComparison);
+    |masterdataComparison
+    |zipBatch);
 
 
 multitude:
@@ -692,7 +693,12 @@ authToken:
 eocJsonGenerator:
           'eocJsonGenerator' 'as' name=STRING
           'on-resource-conn' resourceConn=STRING
-          'using'  '{' querySet=STRING '}' ('on-condition' condition=expression)* ;
+          'document-id' documentId=STRING
+          'eoc-id' eocId=STRING
+          'origin-id' originId=STRING
+          'group-id' groupId=STRING
+          'auth-token' authtoken=STRING
+          'using'  '{' '}' ('on-condition' condition=expression)* ;
 
 zipContentList:
             'zipContentList' 'as' name=STRING
@@ -800,12 +806,21 @@ coproStop:
      'resource-conn' resourceConn=STRING
      'using'  '{'  querySet=STRING  '}' ('on-condition' condition=expression)*;
 
-masterdataComparison:
-    'masterdataComparison' 'as' name=STRING
+ masterdataComparison:
+     'masterdataComparison' 'as' name=STRING
+     'on-resource-conn' resourceConn=STRING
+     'match-result' matchResult=STRING
+     'audit-table' auditTable=STRING
+     'using' '{' inputSet=STRING '}' ('on-condition' condition=expression)*;
+
+zipBatch:
+    'zipBatch' 'as' name=STRING
+    'group-id' groupId=STRING
+    'output-dir' outputDir=STRING
     'on-resource-conn' resourceConn=STRING
-    'match-result' matchResult=STRING
-    'audit-table' auditTable=STRING
-    'using' '{' inputSet=STRING '}' ('on-condition' condition=expression)*;
+    'using'  '{' '}' ('on-condition' condition=expression)* ;
+
+
 
 //rules
 
