@@ -19,9 +19,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "HwUrgencyTriage"
+    actionName = "PixelClassifierUrgencyTriage"
 )
-public class HwUrgencyTriage implements IActionContext {
+public class PixelClassifierUrgencyTriage implements IActionContext {
   private String name;
 
   private String resourceConn;
