@@ -6,6 +6,7 @@ import in.handyman.raven.lambda.process.HRequestResolver;
 import in.handyman.raven.lambda.process.LContext;
 import in.handyman.raven.lambda.process.LambdaEngine;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
@@ -63,7 +64,7 @@ class RestApiActionTestExecutionAudit {
     @Test
     public void denoiseMainCaller() {
         LContext request = LContext.builder()
-                .pipelineName("denoise.main.caller")
+                .pipelineName("master.data.caller")
                 .processLoadType(HRequestResolver.LoadType.FILE.name())
                 .build();
         log.info(request.toString());
