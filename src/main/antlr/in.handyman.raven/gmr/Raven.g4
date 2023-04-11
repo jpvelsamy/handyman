@@ -116,7 +116,7 @@ action:
     |hwDetection
     |intellimatch
     |checkboxVqa
-    |hwUrgencyTriage
+    |pixelClassifierUrgencyTriage
     |qrExtraction
     |paperItemizer
     |nerAdapter
@@ -739,8 +739,8 @@ checkboxVqa:
     'output-dir' outputDir=STRING
     'using' '{' querySet=STRING '}' ('on-condition' condition=expression)*;
 
-hwUrgencyTriage:
-    'hwUrgency-triage' 'as' name=STRING
+pixelClassifierUrgencyTriage:
+    'pixel-classifier-urgency-triage' 'as' name=STRING
     'on-resource-conn' resourceConn=STRING
     'process-id' processID=STRING
     'binary-classifier-model-file-path' binaryClassifierModelFilePath=STRING
