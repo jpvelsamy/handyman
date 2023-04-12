@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
@@ -55,44 +56,51 @@ public class QrExtractionAction implements IActionExecution {
 
   @Override
   public void execute() throws Exception {
-    log.info(aMarker, "<-------qr extraction Action for {} with group by eoc-id has started------->" + qrExtraction.getName());
-    final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(qrExtraction.getResourceConn());
+    try{
+      log.info(aMarker, "<-------qr extraction Action for {} with group by eoc-id has started------->" + qrExtraction.getName());
+      final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(qrExtraction.getResourceConn());
 
-    //3. initiate copro processor and copro urls
-    final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.qr-attribution.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
-      try {
-        return new URL(s1);
-      } catch (MalformedURLException e) {
-        log.error("Error in processing the URL ", e);
-        throw new RuntimeException(e);
-      }
-    }).collect(Collectors.toList())).orElse(Collections.emptyList());
+      //3. initiate copro processor and copro urls
+      final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.qr-attribution.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
+        try {
+          return new URL(s1);
+        } catch (MalformedURLException e) {
+          log.error("Error in processing the URL ", e);
+          throw new RuntimeException(e);
+        }
+      }).collect(Collectors.toList())).orElse(Collections.emptyList());
 
-    log.info("Urls for the qr attribution for sor grouping {}", urls);
+      log.info("Urls for the qr attribution for sor grouping {}", urls);
 
-    //5. build insert prepare statement with output table columns
-    final String insertQuery = "INSERT INTO " +qrExtraction.getOutputTable()+
-            "            (origin_id, group_id, paper_no, created_on,   qr_format, qr_format_id, extracted_value,   file_id, b_box, angle, confidence_score, status, stage, message)" +
-            "VALUES(?,?,?,?,  ?,?,? ,?,?,  ?,?,?, ?,?)";
-    final CoproProcessor<CoverageInputEntity, CoverageOutputEntity> coproProcessor =
-            new CoproProcessor<>(new LinkedBlockingQueue<>(),
-                    CoverageOutputEntity.class,
-                    CoverageInputEntity.class,
-                    jdbi, log,
-                    new CoverageInputEntity(), urls, action);
-    //4. call the method start producer from coproprocessor
-    coproProcessor.startProducer(qrExtraction.getQuerySet(), Integer.valueOf(action.getContext().get("read.batch.size")));
-    log.info("start producer method from copro processor ");
-    Thread.sleep(1000);
-    //8. call the method start consumer from coproprocessor
-    coproProcessor.startConsumer(insertQuery, Integer.valueOf(action.getContext().get("consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")), new QrConsumerProcess(log, aMarker, action));
-    log.info("start consumer method from copro processor ");
+      //5. build insert prepare statement with output table columns
+      final String insertQuery = "INSERT INTO " +qrExtraction.getOutputTable()+
+              "            (origin_id, group_id, paper_no, created_on,   qr_format, qr_format_id, extracted_value,   file_id, b_box, angle, confidence_score, status, stage, message)" +
+              "VALUES(?,?,?,?,  ?,?,? ,?,?,  ?,?,?, ?,?)";
+      final CoproProcessor<QrInputEntity, QrOutputEntity> coproProcessor =
+              new CoproProcessor<>(new LinkedBlockingQueue<>(),
+                      QrOutputEntity.class,
+                      QrInputEntity.class,
+                      jdbi, log,
+                      new QrInputEntity(), urls, action);
+      //4. call the method start producer from coproprocessor
+      coproProcessor.startProducer(qrExtraction.getQuerySet(), Integer.valueOf(action.getContext().get("read.batch.size")));
+      log.info("start producer method from copro processor ");
+      Thread.sleep(1000);
+      //8. call the method start consumer from coproprocessor
+      coproProcessor.startConsumer(insertQuery, Integer.valueOf(action.getContext().get("consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")), new QrConsumerProcess(log, aMarker, action));
+      log.info("start consumer method from copro processor ");
+
+    }catch (Exception e){
+      log.error("Error in the Qr extraction action ", e);
+      throw new HandymanException("QR extraction action failed ", e);
+
+    }
 
   }
 
 
   //6. write consumer process class which implements CoproProcessor.ConsumerProcess
-  public static class QrConsumerProcess implements CoproProcessor.ConsumerProcess<CoverageInputEntity, CoverageOutputEntity> {
+  public static class QrConsumerProcess implements CoproProcessor.ConsumerProcess<QrInputEntity, QrOutputEntity> {
 
     private final Logger log;
     private final Marker aMarker;
@@ -116,10 +124,10 @@ public class QrExtractionAction implements IActionExecution {
 
     //7. overwrite the method process in coproprocessor, write copro api logic inside this method
     @Override
-    public List<CoverageOutputEntity> process(URL endpoint, CoverageInputEntity entity) throws Exception {
+    public List<QrOutputEntity> process(URL endpoint, QrInputEntity entity) throws Exception {
       log.info("copro consumer process started");
 
-      List<CoverageOutputEntity> coverageOutputEntities = new ArrayList<>();
+      List<QrOutputEntity> qrOutputEntities = new ArrayList<>();
       final ObjectNode objectNode = mapper.createObjectNode();
       objectNode.put("inputFilePath", entity.filePath);
       log.info("input object node in the consumer process {}", objectNode);
@@ -129,32 +137,46 @@ public class QrExtractionAction implements IActionExecution {
       try (Response response = httpclient.newCall(request).execute()) {
         String responseBody = Objects.requireNonNull(response.body()).string();
         if (response.isSuccessful()) {
-          List<QrReader> donutLineItems = mapper.readValue(responseBody, new TypeReference<>() {
+          List<QrReader> qrLineItems = mapper.readValue(responseBody, new TypeReference<>() {
           });
-          AtomicInteger atomicInteger = new AtomicInteger();
-          donutLineItems.forEach(qrReader -> {
 
-            coverageOutputEntities.add(CoverageOutputEntity.builder()
-                    .angle(qrReader.getAngle())
+          AtomicInteger atomicInteger = new AtomicInteger();
+          if(!qrLineItems.isEmpty()){
+            qrLineItems.forEach(qrReader -> {
+
+              qrOutputEntities.add(QrOutputEntity.builder()
+                      .angle(qrReader.getAngle())
+                      .originId(entity.getOriginId())
+                      .paperNo(entity.getPaperNo())
+                      .groupId(entity.getGroupId())
+                      .fileId(entity.getFileId())
+                      .qrFormat(qrReader.getType())
+                      .qrFormatId(atomicInteger.incrementAndGet())
+                      .extractedValue(qrReader.getValue())
+                      .confidenceScore(qrReader.getConfidenceScore())
+                      .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                      .b_box(qrReader.getBoundingBox().toString())
+                      .status("COMPLETED")
+                      .stage("QR_EXTRACTION")
+                      .message("qr extraction completed")
+                      .build());
+
+            });
+          }else{
+            qrOutputEntities.add(QrOutputEntity.builder()
                     .originId(entity.getOriginId())
                     .paperNo(entity.getPaperNo())
                     .groupId(entity.getGroupId())
                     .fileId(entity.getFileId())
-                    .qrFormat(qrReader.getType())
-                    .qrFormatId(atomicInteger.incrementAndGet())
-                    .extractedValue(qrReader.getValue())
-                    .confidenceScore(qrReader.getConfidenceScore())
                     .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                    .b_box(qrReader.getBoundingBox().toString())
-                    .status("COMPLETED")
+                    .status("ABSENT")
                     .stage("QR_EXTRACTION")
-                    .message("qr extraction completed")
+                    .message("qr code absent in the given file")
                     .build());
-
-          });
+          }
 
         } else {
-          coverageOutputEntities.add(CoverageOutputEntity.builder()
+          qrOutputEntities.add(QrOutputEntity.builder()
                   .originId(entity.getOriginId())
                   .paperNo(entity.getPaperNo())
                   .groupId(entity.getGroupId())
@@ -169,7 +191,7 @@ public class QrExtractionAction implements IActionExecution {
         }
 
       } catch (Exception e) {
-        coverageOutputEntities.add(CoverageOutputEntity.builder()
+        qrOutputEntities.add(QrOutputEntity.builder()
                 .originId(entity.getOriginId())
                 .paperNo(entity.getPaperNo())
                 .groupId(entity.getGroupId())
@@ -180,8 +202,9 @@ public class QrExtractionAction implements IActionExecution {
                 .message(e.toString())
                 .build());
         log.error("Error in the copro process api hit {}", request);
+        throw new HandymanException("QR extraction action failed in copro processor ", e);
       }
-      return coverageOutputEntities;
+      return qrOutputEntities;
     }
   }
 
@@ -203,7 +226,7 @@ public class QrExtractionAction implements IActionExecution {
   @AllArgsConstructor
   @NoArgsConstructor
   @Builder
-  public static class CoverageInputEntity implements CoproProcessor.Entity {
+  public static class QrInputEntity implements CoproProcessor.Entity {
     private String filePath;
     private Integer groupId;
     private String originId;
@@ -221,7 +244,7 @@ public class QrExtractionAction implements IActionExecution {
   @AllArgsConstructor
   @NoArgsConstructor
   @Builder
-  public static class CoverageOutputEntity implements CoproProcessor.Entity {
+  public static class QrOutputEntity implements CoproProcessor.Entity {
     private String originId;
     private Integer groupId;
     private Integer paperNo;
