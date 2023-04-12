@@ -87,7 +87,7 @@ public class CoproStartAction implements IActionExecution {
                         .ram(Optional.ofNullable(responseObj.get("cpuUtitlize")).map(String::valueOf).orElse(null))
                         .gpuRam(Optional.ofNullable(responseObj.get("gpuUtilize")).map(String::valueOf).orElse(null))
                         .build();
-                Thread.sleep(10000);
+                Thread.sleep(Long.parseLong(action.getContext().get("macro.copro.stop.action")));
                 jdbi.useTransaction(handle -> handle.createUpdate("INSERT INTO info.resource_utilization_details (process_id, action_id, root_pipeline_id, copro_action_name, copro_pid, created_on, command_exec, cpu, gpu, ram, gpu_ram)" +
                                 " select :processId,:actionId,:rootPipelineId,:coproActionName,:coproProcessId,now(),:command,:cpu,:gpu,:ram,:gpuRam;")
                         .bindBean(coproStartActionEntity)
