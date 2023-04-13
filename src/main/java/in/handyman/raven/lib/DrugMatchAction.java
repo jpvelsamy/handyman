@@ -2,6 +2,7 @@ package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
@@ -133,7 +134,7 @@ public class DrugMatchAction implements IActionExecution {
             log.info(aMarker, "coproProcessor consumer process started with endpoint {} and entity {}", endpoint, result);
             List<DrugMatchOutputTable> parentObj = new ArrayList<>();
             AtomicInteger atomicInteger = new AtomicInteger();
-            final String requestString;
+            String requestString;
             ObjectMapper mapper = new ObjectMapper();
             if (result.getDrugName() != null) {
                 DrugNameRequest drugNameRequest = DrugNameRequest.builder()
@@ -147,26 +148,30 @@ public class DrugMatchAction implements IActionExecution {
                     throw new HandymanException(e.toString());
                 }
 
-                final Request request = new Request.Builder().url(URI).header("appId", appId).header("appKeyId", appKeyId)
-                        .post(RequestBody.create(requestString, MediaTypeJSON)).build();
+                final Request request = new Request.Builder().url(URI).header("appId", appId)
+                        .header("appKeyId", appKeyId)
+                        .post(RequestBody.create(requestString, MediaTypeJSON))
+                        .build();
                 try (Response response = httpclient.newCall(request).execute()) {
                     String responseBody = Objects.requireNonNull(response.body()).string();
                     if (response.isSuccessful()) {
-                        JSONObject responseObject = new JSONObject(responseBody);
-                        parentObj.add(
-                                DrugMatchOutputTable
-                                        .builder()
-                                        .originId(Optional.ofNullable(result.getOriginId()).map(String::valueOf).orElse(null))
-                                        .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                                        .eocIdentifier(result.eocIdentifier).paperNo(result.paperNo)
-                                        .documentId(result.documentId)
-                                        .drugJCode(result.getJCode())
-                                        .drugName(result.getDrugName())
-                                        .actualValue(responseObject.getString("drug_name"))
-                                        .status("COMPLETED")
-                                        .stage("PAHUB-DRUGNAME")
-                                        .message("Drug name master data extracted")
-                                        .build());
+                        List<drugNameResponse> output = mapper.readValue(responseBody, new TypeReference<>() {
+                        });
+                        output.forEach(drugNameResponse -> {
+                            parentObj.add(
+                                    DrugMatchOutputTable.builder()
+                                            .originId(result.getOriginId())
+                                            .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                                            .eocIdentifier(result.eocIdentifier).paperNo(result.paperNo)
+                                            .documentId(result.documentId)
+                                            .drugJCode(result.getJCode())
+                                            .drugName(result.getDrugName())
+                                            .actualValue(drugNameResponse.getDrugName())
+                                            .status("COMPLETED")
+                                            .stage("PAHUB-DRUGNAME")
+                                            .message("Drug name master data extracted").build());
+                        });
+
                     } else {
                         parentObj.add(
                                 DrugMatchOutputTable
