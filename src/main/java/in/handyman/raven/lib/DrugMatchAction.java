@@ -94,11 +94,11 @@ public class DrugMatchAction implements IActionExecution {
 
             //4. call the method start producer from coproprocessor
             coproProcessor.startProducer(drugMatch.getInputSet(), Integer.valueOf(action.getContext().get("read.batch.size")));
-            log.info(aMarker, "Drug Match copro coproProcessor startProducer called read batch size {}", action.getContext().get("read.batch.size"));
+            log.info(aMarker, "Drug Match coproProcessor startProducer called read batch size {}", action.getContext().get("read.batch.size"));
             Thread.sleep(1000);
             coproProcessor.startConsumer(insertQuery, Integer.valueOf(action.getContext().get("consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")),
                     new DrugMatchConsumerProcess(log, aMarker, action));
-            log.info(aMarker, "Drug Match copro coproProcessor startConsumer called consumer count {} write batch count {} ", Integer.valueOf(action.getContext().get("consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")));
+            log.info(aMarker, "Drug Match coproProcessor startConsumer called consumer count {} write batch count {} ", Integer.valueOf(action.getContext().get("consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")));
 
 
         } catch (Exception ex) {
@@ -162,7 +162,8 @@ public class DrugMatchAction implements IActionExecution {
                                     DrugMatchOutputTable.builder()
                                             .originId(result.getOriginId())
                                             .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                                            .eocIdentifier(result.eocIdentifier).paperNo(result.paperNo)
+                                            .eocIdentifier(result.eocIdentifier)
+                                            .paperNo(result.paperNo)
                                             .documentId(result.documentId)
                                             .drugJCode(result.getJCode())
                                             .drugName(result.getDrugName())
@@ -178,7 +179,8 @@ public class DrugMatchAction implements IActionExecution {
                                         .builder()
                                         .originId(Optional.ofNullable(result.getOriginId()).map(String::valueOf).orElse(null))
                                         .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                                        .eocIdentifier(result.eocIdentifier).paperNo(result.paperNo)
+                                        .eocIdentifier(result.eocIdentifier)
+                                        .paperNo(result.paperNo)
                                         .documentId(result.documentId)
                                         .drugJCode(result.getJCode())
                                         .drugName(result.getDrugName())
@@ -196,7 +198,8 @@ public class DrugMatchAction implements IActionExecution {
                                     .builder()
                                     .originId(Optional.ofNullable(result.getOriginId()).map(String::valueOf).orElse(null))
                                     .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                                    .eocIdentifier(result.eocIdentifier).paperNo(result.paperNo)
+                                    .eocIdentifier(result.eocIdentifier)
+                                    .paperNo(result.paperNo)
                                     .documentId(result.documentId)
                                     .drugJCode(result.getJCode())
                                     .drugName(result.getDrugName())
@@ -267,32 +270,24 @@ public class DrugMatchAction implements IActionExecution {
             ).collect(Collectors.toList());
         }
     }
-
-
     @AllArgsConstructor
     @NoArgsConstructor
     @Data
     @Builder
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class DrugNameRequest {
-
         private String drugName;
         private String jCode;
-
     }
-
     @AllArgsConstructor
     @NoArgsConstructor
     @Data
     @Builder
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class drugNameResponse {
-
         private String drugName;
         private String ndc;
         private String jCode;
-
-
     }
 }
 
