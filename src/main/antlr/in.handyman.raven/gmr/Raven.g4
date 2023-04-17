@@ -125,7 +125,8 @@ action:
     |outboundDeliveryNotify
     |masterdataComparison
     |zipBatch
-    |drugMatch);
+    |drugMatch
+    );
 
 
 multitude:
@@ -826,6 +827,7 @@ drugMatch:
     'on-resource-conn' resourceConn=STRING
     'drug-compare' drugCompare=STRING
     'using' '{' inputSet=STRING '}' ('on-condition' condition=expression)* ;
+
 
 
 
