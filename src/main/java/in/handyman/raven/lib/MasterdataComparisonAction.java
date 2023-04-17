@@ -86,8 +86,8 @@ public class MasterdataComparisonAction implements IActionExecution {
             jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
             // build insert prepare statement with output table columns
             final String insertQuery = "INSERT INTO " + masterdataComparison.getMatchResult() +
-                    " ( origin_id, paper_no,eoc_identifier,created_on, actual_value, extracted_value, similarity,levenshtein,intelli_match,status,stage,message)" +
-                    " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);";
+                    " ( origin_id, paper_no,eoc_identifier,created_on, actual_value, extracted_value,intelli_match,status,stage,message)" +
+                    " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
             log.info(aMarker, "master data comparison Insert query {}", insertQuery);
 
             //3. initiate copro processor and copro urls
@@ -168,10 +168,6 @@ public class MasterdataComparisonAction implements IActionExecution {
                                         .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                                         .extractedValue(result.extractedValue)
                                         .actualValue(result.actualValue)
-                                       // .similarity(Double.parseDouble("similarity(lower(" + result.actualValue + ")," + result.extractedValue + ")"))
-                                       // .levenshtein(Double.parseDouble("levenshtein(" + result.actualValue + "," + result.extractedValue + ")"))
-                                        .similarity(0)
-                                        .levenshtein(0)
                                         .intelliMatch(matchPercent)
                                         .status("COMPLETED")
                                         .stage("MASTER-DATA-COMPARISON")
@@ -187,8 +183,6 @@ public class MasterdataComparisonAction implements IActionExecution {
                                         .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                                         .extractedValue(result.extractedValue)
                                         .actualValue(result.actualValue)
-                                        .similarity(0)
-                                        .levenshtein(0)
                                         .intelliMatch(0)
                                         .status("FAILED")
                                         .stage("MASTER-DATA-COMPARISON")
@@ -207,8 +201,6 @@ public class MasterdataComparisonAction implements IActionExecution {
                                     .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                                     .extractedValue(result.extractedValue)
                                     .actualValue(result.actualValue)
-                                    .similarity(0)
-                                    .levenshtein(0)
                                     .intelliMatch(0)
                                     .status("FAILED")
                                     .stage("MASTER-DATA-COMPARISON")
@@ -227,8 +219,6 @@ public class MasterdataComparisonAction implements IActionExecution {
                                 .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                                 .extractedValue(result.extractedValue)
                                 .actualValue(result.actualValue)
-                                .similarity(0)
-                                .levenshtein(0)
                                 .intelliMatch(0)
                                 .status("COMPLETED")
                                 .stage("MASTER-DATA-COMPARISON")
@@ -289,8 +279,7 @@ public class MasterdataComparisonAction implements IActionExecution {
         private Timestamp createdOn;
         String extractedValue;
         String actualValue;
-        double similarity;
-        double levenshtein;
+
         double intelliMatch;
         String status;
         String stage;
@@ -299,8 +288,8 @@ public class MasterdataComparisonAction implements IActionExecution {
         @Override
         public List<Object> getRowData() {
             return Stream.of(this.originId, this.paperNo, this.eocIdentifier, this.createdOn, this.actualValue,
-                    this.extractedValue, this.similarity,
-                    this.levenshtein, this.intelliMatch, this.status, this.stage, this.message
+                    this.extractedValue,
+                     this.intelliMatch, this.status, this.stage, this.message
             ).collect(Collectors.toList());
         }
     }
