@@ -148,23 +148,25 @@ public class DonutDocQaAction implements IActionExecution {
                 final String node = nodes.get(counter.incrementAndGet() % nodeSize);
 
                 log.info(aMarker, "preparing {} for rest api call", questions.size());
-                final List<DonutResultLineItem> lineItems = new DonutApiCaller(node).compute(filePath, donutDocQa.getOutputDir(), questions);
-                log.info(aMarker, "completed {}", lineItems.size());
+                final DonutResultLineItem lineItems = new DonutApiCaller(node).compute(filePath, donutDocQa.getOutputDir(), questions);
+                log.info(aMarker, "completed {}", lineItems.attributes.size());
 
                 jdbi.useTransaction(handle -> {
-                    final PreparedBatch batch = handle.prepareBatch("INSERT INTO macro." + donutDocQa.getResponseAs() + " (process_id,file_path,question, predicted_attribution_value,b_box, image_dpi int4 null, image_width int4 null, image_height int4 null, extracted_image_unit varchar null, action_id, root_pipeline_id) VALUES(" + action.getPipelineId() + ",:filePath,:question,:predictedAttributionValue, :bBoxes::json, :imageDpi, :imageWidth, :imageHeight , :extractedImageUnit" + action.getActionId() + ", " + action.getRootPipelineId() + ");");
-                    Lists.partition(lineItems, 100).forEach(resultLineItems -> {
+                    final PreparedBatch batch = handle.prepareBatch("INSERT INTO macro." + donutDocQa.getResponseAs() + " (process_id,file_path,question, predicted_attribution_value,b_box, image_dpi , image_width , image_height , extracted_image_unit , action_id, root_pipeline_id) VALUES(" + action.getPipelineId() + ",:filePath,:question,:predictedAttributionValue, :bBoxes::json, :imageDpi, :imageWidth, :imageHeight , :extractedImageUnit, "+ action.getActionId()+","+ action.getRootPipelineId()+");");
+
+                    Lists.partition(lineItems.attributes, 100).forEach(resultLineItems -> {
                         log.info(aMarker, "inserting into donut_docqa_action {}", resultLineItems.size());
                         resultLineItems.forEach(resultLineItem -> {
-                            batch.bind("filePath", filePath)
-                                    .bind("question", resultLineItem.question)
-                                    .bind("predictedAttributionValue", resultLineItem.predictedAttributionValue)
-                                    .bind("bBoxes", String.valueOf(resultLineItem.bBoxes))
-                                    .bind("imageDpi", resultLineItem.imageDpi)
-                                    .bind("imageWidth", resultLineItem.imageWidth)
-                                    .bind("imageHeight", resultLineItem.imageHeight)
-                                    .bind("extractedImageUnit", resultLineItem.extractedImageUnit)
-                                    .add();
+                                batch.bind("filePath", filePath)
+                                        .bind("question", resultLineItem.question)
+                                        .bind("predictedAttributionValue", resultLineItem.predictedAttributionValue)
+                                        .bind("bBoxes", String.valueOf(resultLineItem.bBoxes))
+                                        .bind("imageDpi", lineItems.imageDpi)
+                                        .bind("imageWidth", lineItems.imageWidth)
+                                        .bind("imageHeight", lineItems.imageHeight)
+                                        .bind("extractedImageUnit", lineItems.extractedImageUnit)
+                                        .add();
+
                         });
                         int[] counts = batch.execute();
                         log.info(aMarker, " persisted {} in donut_docqa_action", counts);
@@ -218,13 +220,25 @@ public class DonutDocQaAction implements IActionExecution {
     @Builder
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class DonutResultLineItem {
+        //private String question;
+        //private String predictedAttributionValue;
+        //private JsonNode bBoxes;
+        private List<DonutResult> attributes;
+        private double imageDpi;
+        private double imageWidth;
+        private double imageHeight;
+        private String extractedImageUnit;
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    @Builder
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class DonutResult {
         private String question;
         private String predictedAttributionValue;
         private JsonNode bBoxes;
-        private Long imageDpi;
-        private Long imageWidth;
-        private Long imageHeight;
-        private String extractedImageUnit;
     }
 
 
@@ -240,7 +254,7 @@ public class DonutDocQaAction implements IActionExecution {
             this.node = node;
         }
 
-        protected List<DonutResultLineItem> compute(final String inputPath, final String outputDir, final List<String> questions) {
+        protected DonutResultLineItem compute(final String inputPath, final String outputDir, final List<String> questions) {
             final ObjectNode objectNode = MAPPER.createObjectNode();
             objectNode.put("inputFilePath", inputPath);
             objectNode.putPOJO("attributes", questions);
@@ -252,9 +266,9 @@ public class DonutDocQaAction implements IActionExecution {
                 String responseBody = Objects.requireNonNull(response.body()).string();
                 if (response.isSuccessful()) {
 
-                    List<DonutResultLineItem> donutLineItems = MAPPER.readValue(responseBody, new TypeReference<>() {
+                    DonutResultLineItem donutLineItems = MAPPER.readValue(responseBody, new TypeReference<>() {
                     });
-                    log.info("DonutLineItem size {}", donutLineItems.size());
+                    log.info("DonutLineItem size {}", donutLineItems.attributes.size());
                     return donutLineItems;
                 } else {
                     throw new HandymanException(responseBody);
