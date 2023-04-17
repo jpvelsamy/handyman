@@ -17,12 +17,16 @@ import in.handyman.raven.lib.model.MasterdataComparison;
 import java.lang.Exception;
 import java.lang.Object;
 import java.lang.Override;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import in.handyman.raven.util.CommonQueryUtil;
 import in.handyman.raven.util.InstanceUtil;
@@ -32,6 +36,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import okhttp3.*;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.argument.Arguments;
+import org.jdbi.v3.core.argument.NullArgument;
 import org.jdbi.v3.core.result.ResultIterable;
 import org.jdbi.v3.core.statement.Query;
 import org.jdbi.v3.core.statement.Update;
@@ -73,136 +79,174 @@ public class MasterdataComparisonAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-        log.info(aMarker, "<-------intelli match process for {} has been started------->" + masterdataComparison.getName());
-        final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(masterdataComparison.getResourceConn());
-
-        final List<MatchResultSet> inputResult = new ArrayList<>();
-        jdbi.useTransaction(handle -> {
-            final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(masterdataComparison.getInputSet());
-            AtomicInteger i = new AtomicInteger(0);
-            formattedQuery.forEach(sqlToExecute -> {
-                log.info(aMarker, "executing  query {} from index {}", sqlToExecute, i.getAndIncrement());
-                Query query = handle.createQuery(sqlToExecute);
-                ResultIterable<MatchResultSet> resultIterable = query.mapToBean(MatchResultSet.class);
-                List<MatchResultSet> detailList = resultIterable.stream().collect(Collectors.toList());
-                inputResult.addAll(detailList);
-                log.info(aMarker, "executed query from index {}", i.get());
-            });
-        });
-
-        List<MatchResultSet> resultQueue = new ArrayList<>();
-        if (inputResult.size() > 0) {
-            inputResult.forEach(result -> {
-                if (result.getActualValue() != null) {
-                    final ObjectNode objectNode = MAPPER.createObjectNode();
-                    List<String> comparableSentence = Arrays.asList(result.getExtractedValue());
-                    objectNode.put("inputSentence", result.getActualValue());
-                    objectNode.putPOJO("sentences", comparableSentence);
-                    final Request request = new Request.Builder().url(URI)
-                            .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-                    try (Response response = httpclient.newCall(request).execute()) {
-                        String responseBody = Objects.requireNonNull(response.body()).string();
-                        if (response.isSuccessful()) {
-                            List<IntelliMatchCopro> output = MAPPER.readValue(responseBody, new TypeReference<>() {
-                            });
-                            double matchPercent = output.get(0) != null ? Math.round(output.get(0).getSimilarityPercent() * 100.0) / 100.0 : 0.0;
-                            result.setIntelliMatch(matchPercent);
-                            resultQueue.add(result);
-
-                        } else {
-                            insertSummaryAudit(jdbi, 0, 0, 1, "failed on" + result.getOriginId());
-                            throw new HandymanException(responseBody);
-                        }
-                    } catch (Throwable t) {
-                        log.error(aMarker, "error inserting row {}", result, t);
-                    }
-                } else {
-                    result.setIntelliMatch(0);
-                    resultQueue.add(result);
-                }
-                if (resultQueue.size() == this.writeBatchSize) {
-                    log.info(aMarker, "executing  batch {}", resultQueue.size());
-                    consumerBatch(jdbi, resultQueue);
-                    log.info(aMarker, "executed  batch {}", resultQueue.size());
-                    insertSummaryAudit(jdbi, inputResult.size(), resultQueue.size(), 0, "batch inserted");
-                    resultQueue.clear();
-                    log.info(aMarker, "cleared batch {}", resultQueue.size());
-                }
-            });
-
-            if (!resultQueue.isEmpty()) {
-                log.info(aMarker, "executing final batch {}", resultQueue.size());
-                consumerBatch(jdbi, resultQueue);
-                log.info(aMarker, "executed final batch {}", resultQueue.size());
-                insertSummaryAudit(jdbi, inputResult.size(), resultQueue.size(), 0, "final batch inserted");
-                resultQueue.clear();
-                log.info(aMarker, "cleared final batch {}", resultQueue.size());
-            }
-        } else {
-            insertSummaryAudit(jdbi, inputResult.size(), resultQueue.size(), 0, "no data found for input set");
-        }
-
-    }
-
-
-    void consumerBatch(final Jdbi jdbi, List<MatchResultSet> resultQueue) {
+        log.info(aMarker, "master data comparison process for {} has been started" + masterdataComparison.getName());
         try {
-            resultQueue.forEach(insert -> {
-                        jdbi.useTransaction(handle -> {
-                            try {
-                                Update update = handle.createUpdate(" INSERT INTO " + masterdataComparison.getMatchResult() +
-                                        " ( origin_id, paper_no,eoc_identifier,created_on, actual_value, extracted_value, similarity,levenshtein,intelli_match)" +
-                                        " VALUES( :originId,:paperNo,:eocIdentifier, NOW(), :actualValue, :extractedValue,  " +
-                                        " similarity(lower(:actualValue),:extractedValue), " +
-                                        " levenshtein(:actualValue,:extractedValue), " +
-                                        "  :intelliMatch )");
-                                Update bindBean = update.bindBean(insert);
-                                bindBean.execute();
-                            } catch (Throwable t) {
-                                insertSummaryAudit(jdbi, 0, 0, 1, "failed in bactch for " + insert.getOriginId());
-                                log.error(aMarker, "error inserting result {}", resultQueue, t);
-                            }
+
+            final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(masterdataComparison.getResourceConn());
+            jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
+            // build insert prepare statement with output table columns
+            final String insertQuery = "INSERT INTO " + masterdataComparison.getMatchResult() +
+                    " ( origin_id, paper_no,eoc_identifier,created_on, actual_value, extracted_value, similarity,levenshtein,intelli_match,status,stage,message)" +
+                    " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);";
+            log.info(aMarker, "master data comparison Insert query {}", insertQuery);
+
+            //3. initiate copro processor and copro urls
+            final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.masterdata-comparison.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
+                try {
+                    return new URL(s1);
+                } catch (MalformedURLException e) {
+                    log.error("Error in processing the URL ", e);
+                    throw new RuntimeException(e);
+                }
+            }).collect(Collectors.toList())).orElse(Collections.emptyList());
+            log.info(aMarker, "master data comparison copro urls {}", urls);
+
+            final CoproProcessor<MasterDataInputTable, MasterDataOutputTable> coproProcessor =
+                    new CoproProcessor<>(new LinkedBlockingQueue<>(),
+                            MasterDataOutputTable.class,
+                            MasterDataInputTable.class,
+                            jdbi, log,
+                            new MasterDataInputTable(), urls, action);
+            log.info(aMarker, "master data comparison copro Processor initialization  {}", coproProcessor);
+
+            //4. call the method start producer from coproprocessor
+            coproProcessor.startProducer(masterdataComparison.getInputSet(), Integer.valueOf(action.getContext().get("read.batch.size")));
+            log.info(aMarker, "master data comparison coproProcessor startProducer called read batch size {}", action.getContext().get("read.batch.size"));
+            Thread.sleep(1000);
+            coproProcessor.startConsumer(insertQuery, Integer.valueOf(action.getContext().get("consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")),
+                    new MasterdataComparisonProcess(log, aMarker, action));
+            log.info(aMarker, "master data comparison coproProcessor startConsumer called consumer count {} write batch count {} ", Integer.valueOf(action.getContext().get("consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")));
+
+        } catch (Exception ex) {
+            log.error(aMarker, "error in execute method for Drug Match  ", ex);
+        }
+        log.info(aMarker, "master data comparison process for {} has been completed" + masterdataComparison.getName());
+    }
+
+    public static class MasterdataComparisonProcess implements CoproProcessor.ConsumerProcess<MasterDataInputTable, MasterDataOutputTable> {
+        private final Logger log;
+        private final Marker aMarker;
+        public final ActionExecutionAudit action;
+        final ObjectMapper mapper;
+        final OkHttpClient httpclient;
+        String URI;
+
+        public MasterdataComparisonProcess(Logger log, Marker aMarker, ActionExecutionAudit action) {
+            this.log = log;
+            this.aMarker = aMarker;
+            this.mapper = new ObjectMapper();
+            this.action = action;
+            this.httpclient = InstanceUtil.createOkHttpClient();
+        }
+
+        @Override
+        public List<MasterDataOutputTable> process(URL endpoint, MasterDataInputTable result) throws Exception {
+            URI = String.valueOf(endpoint);
+            log.info(aMarker, "coproProcessor consumer process started with endpoint {} and entity {}", endpoint, result);
+            List<MasterDataOutputTable> parentObj = new ArrayList<>();
+            AtomicInteger atomicInteger = new AtomicInteger();
+
+            if (result.getActualValue() != null) {
+                final ObjectNode objectNode = mapper.createObjectNode();
+                List<String> comparableSentence = Arrays.asList(result.getExtractedValue());
+                objectNode.put("inputSentence", result.getActualValue());
+                objectNode.putPOJO("sentences", comparableSentence);
+                final Request request = new Request.Builder().url(URI)
+                        .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
+                try (Response response = httpclient.newCall(request).execute()) {
+                    String responseBody = Objects.requireNonNull(response.body()).string();
+                    if (response.isSuccessful()) {
+                        List<IntelliMatchCopro> output = mapper.readValue(responseBody, new TypeReference<>() {
                         });
+                        double matchPercent = output.get(0) != null ? Math.round(output.get(0).getSimilarityPercent() * 100.0) / 100.0 : 0.0;
+                        parentObj.add(
+                                MasterDataOutputTable
+                                        .builder()
+                                        .originId(result.originId)
+                                        .eocIdentifier(result.eocIdentifier)
+                                        .paperNo(result.paperNo)
+                                        .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                                        .extractedValue(result.extractedValue)
+                                        .actualValue(result.actualValue)
+                                       // .similarity(Double.parseDouble("similarity(lower(" + result.actualValue + ")," + result.extractedValue + ")"))
+                                       // .levenshtein(Double.parseDouble("levenshtein(" + result.actualValue + "," + result.extractedValue + ")"))
+                                        .similarity(0)
+                                        .levenshtein(0)
+                                        .intelliMatch(matchPercent)
+                                        .status("COMPLETED")
+                                        .stage("MASTER-DATA-COMPARISON")
+                                        .message("Master data comparison macro completed")
+                                        .build());
+
+                    } else {
+                        parentObj.add(
+                                MasterDataOutputTable.builder()
+                                        .originId(Optional.ofNullable(result.getOriginId()).map(String::valueOf).orElse(null))
+                                        .eocIdentifier(result.eocIdentifier)
+                                        .paperNo(result.paperNo)
+                                        .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                                        .extractedValue(result.extractedValue)
+                                        .actualValue(result.actualValue)
+                                        .similarity(0)
+                                        .levenshtein(0)
+                                        .intelliMatch(0)
+                                        .status("FAILED")
+                                        .stage("MASTER-DATA-COMPARISON")
+                                        .message("Master data comparison macro failed")
+                                        .build()
+                        );
+                        log.error(aMarker, "The Exception occurred in master data comparison by {} ", response);
+                        throw new HandymanException(responseBody);
                     }
-            );
-        } catch (Throwable t) {
-            insertSummaryAudit(jdbi, 0, 0, resultQueue.size(), "failed in batch insert");
-            log.error(aMarker, "error inserting result {}", resultQueue, t);
+                } catch (Throwable t) {
+                    parentObj.add(
+                            MasterDataOutputTable.builder()
+                                    .originId(Optional.ofNullable(result.getOriginId()).map(String::valueOf).orElse(null))
+                                    .eocIdentifier(result.eocIdentifier)
+                                    .paperNo(result.paperNo)
+                                    .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                                    .extractedValue(result.extractedValue)
+                                    .actualValue(result.actualValue)
+                                    .similarity(0)
+                                    .levenshtein(0)
+                                    .intelliMatch(0)
+                                    .status("FAILED")
+                                    .stage("MASTER-DATA-COMPARISON")
+                                    .message("Master data comparison macro failed")
+                                    .build()
+                    );
+                    log.error(aMarker, "The Exception occurred in copro api for master data comparison - {} ", t.toString());
+                    throw new HandymanException(t.toString());
+                }
+            } else {
+                parentObj.add(
+                        MasterDataOutputTable.builder()
+                                .originId(Optional.ofNullable(result.getOriginId()).map(String::valueOf).orElse(null))
+                                .eocIdentifier(result.eocIdentifier)
+                                .paperNo(result.paperNo)
+                                .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                                .extractedValue(result.extractedValue)
+                                .actualValue(result.actualValue)
+                                .similarity(0)
+                                .levenshtein(0)
+                                .intelliMatch(0)
+                                .status("COMPLETED")
+                                .stage("MASTER-DATA-COMPARISON")
+                                .message("Master data comparison macro completed")
+                                .build()
+                );
+                log.info(aMarker, "coproProcessor consumer process with empty actual value entity {}", result);
+            }
+            atomicInteger.set(0);
+            log.info(aMarker, "coproProcessor consumer process with output entity {}", parentObj);
+            return parentObj;
         }
     }
 
-    void insertSummaryAudit(final Jdbi jdbi, int rowCount, int executeCount, int errorCount, String comments) {
-        SanitarySummary summary = new SanitarySummary().builder()
-                .rowCount(rowCount)
-                .correctRowCount(executeCount)
-                .errorRowCount(errorCount)
-                .comments(comments)
-                .build();
-        jdbi.useTransaction(handle -> {
-            Update update = handle.createUpdate("  INSERT INTO " + masterdataComparison.getAuditTable() +
-                    " ( row_count, correct_row_count, error_row_count,comments, created_at) " +
-                    " VALUES(:rowCount, :correctRowCount, :errorRowCount, :comments, NOW());");
-            Update bindBean = update.bindBean(summary);
-            bindBean.execute();
-        });
-    }
 
     @Override
     public boolean executeIf() throws Exception {
         return masterdataComparison.getCondition();
-    }
-
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Data
-    @Builder
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class SanitarySummary {
-        int rowCount;
-        int correctRowCount;
-        int errorRowCount;
-        String comments;
-
     }
 
     @AllArgsConstructor
@@ -220,16 +264,44 @@ public class MasterdataComparisonAction implements IActionExecution {
     @Data
     @Builder
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class MatchResultSet {
-
+    public static class MasterDataInputTable implements CoproProcessor.Entity {
         String originId;
         Integer paperNo;
         String eocIdentifier;
         String extractedValue;
         String actualValue;
+
+        @Override
+        public List<Object> getRowData() {
+            return null;
+        }
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    @Builder
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class MasterDataOutputTable implements CoproProcessor.Entity {
+        String originId;
+        Integer paperNo;
+        String eocIdentifier;
+        private Timestamp createdOn;
+        String extractedValue;
+        String actualValue;
         double similarity;
         double levenshtein;
-
         double intelliMatch;
+        String status;
+        String stage;
+        String message;
+
+        @Override
+        public List<Object> getRowData() {
+            return Stream.of(this.originId, this.paperNo, this.eocIdentifier, this.createdOn, this.actualValue,
+                    this.extractedValue, this.similarity,
+                    this.levenshtein, this.intelliMatch, this.status, this.stage, this.message
+            ).collect(Collectors.toList());
+        }
     }
 }

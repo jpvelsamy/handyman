@@ -124,7 +124,9 @@ action:
     |coproStop
     |outboundDeliveryNotify
     |masterdataComparison
-    |zipBatch);
+    |zipBatch
+    |drugMatch
+    );
 
 
 multitude:
@@ -819,6 +821,13 @@ zipBatch:
     'output-dir' outputDir=STRING
     'on-resource-conn' resourceConn=STRING
     'using'  '{' '}' ('on-condition' condition=expression)* ;
+
+drugMatch:
+    'drugMatch' 'as' name=STRING
+    'on-resource-conn' resourceConn=STRING
+    'drug-compare' drugCompare=STRING
+    'using' '{' inputSet=STRING '}' ('on-condition' condition=expression)* ;
+
 
 
 
