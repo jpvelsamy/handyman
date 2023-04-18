@@ -114,7 +114,6 @@ public class DrugMatchAction implements IActionExecution {
         public final ActionExecutionAudit action;
         private String appId;
         private String appKeyId;
-        String URI;
         final OkHttpClient httpclient;
 
         private final MediaType MediaTypeJSON = MediaType.parse("application/json; charset=utf-8");
@@ -130,7 +129,6 @@ public class DrugMatchAction implements IActionExecution {
 
         @Override
         public List<DrugMatchOutputTable> process(URL endpoint, DrugMatchInputTable result) throws Exception {
-            URI = String.valueOf(endpoint);
             log.info(aMarker, "coproProcessor consumer process started with endpoint {} and entity {}", endpoint, result);
             List<DrugMatchOutputTable> parentObj = new ArrayList<>();
             AtomicInteger atomicInteger = new AtomicInteger();
@@ -148,7 +146,7 @@ public class DrugMatchAction implements IActionExecution {
                     throw new HandymanException(e.toString());
                 }
 
-                final Request request = new Request.Builder().url(URI).header("appId", appId)
+                final Request request = new Request.Builder().url(endpoint).header("appId", appId)
                         .header("appKeyId", appKeyId)
                         .post(RequestBody.create(requestString, MediaTypeJSON))
                         .build();

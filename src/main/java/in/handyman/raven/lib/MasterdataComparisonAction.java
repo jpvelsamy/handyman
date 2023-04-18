@@ -141,7 +141,6 @@ public class MasterdataComparisonAction implements IActionExecution {
 
         @Override
         public List<MasterDataOutputTable> process(URL endpoint, MasterDataInputTable result) throws Exception {
-            URI = String.valueOf(endpoint);
             log.info(aMarker, "coproProcessor consumer process started with endpoint {} and entity {}", endpoint, result);
             List<MasterDataOutputTable> parentObj = new ArrayList<>();
             AtomicInteger atomicInteger = new AtomicInteger();
@@ -151,7 +150,7 @@ public class MasterdataComparisonAction implements IActionExecution {
                 List<String> comparableSentence = Arrays.asList(result.getExtractedValue());
                 objectNode.put("inputSentence", result.getActualValue());
                 objectNode.putPOJO("sentences", comparableSentence);
-                final Request request = new Request.Builder().url(URI)
+                final Request request = new Request.Builder().url(endpoint)
                         .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
                 try (Response response = httpclient.newCall(request).execute()) {
                     String responseBody = Objects.requireNonNull(response.body()).string();
