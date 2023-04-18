@@ -161,7 +161,7 @@ public class DonutDocQaAction implements IActionExecution {
                                         .bind("question", resultLineItem.question)
                                         .bind("predictedAttributionValue", resultLineItem.predictedAttributionValue)
                                         .bind("bBoxes", String.valueOf(resultLineItem.bBoxes))
-                                        .bind("imageDpi", lineItems.imageDpi)
+                                        .bind("imageDpi", lineItems.imageDPI)
                                         .bind("imageWidth", lineItems.imageWidth)
                                         .bind("imageHeight", lineItems.imageHeight)
                                         .bind("extractedImageUnit", lineItems.extractedImageUnit)
@@ -224,7 +224,7 @@ public class DonutDocQaAction implements IActionExecution {
         //private String predictedAttributionValue;
         //private JsonNode bBoxes;
         private List<DonutResult> attributes;
-        private double imageDpi;
+        private double imageDPI;
         private double imageWidth;
         private double imageHeight;
         private String extractedImageUnit;
