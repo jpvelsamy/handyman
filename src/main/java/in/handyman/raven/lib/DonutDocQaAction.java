@@ -161,7 +161,7 @@ public class DonutDocQaAction implements IActionExecution {
                                         .bind("question", resultLineItem.question)
                                         .bind("predictedAttributionValue", resultLineItem.predictedAttributionValue)
                                         .bind("bBoxes", String.valueOf(resultLineItem.bBoxes))
-                                        .bind("imageDpi", lineItems.imageDPI)
+                                            .bind("imageDpi", lineItems.imageDPI)
                                         .bind("imageWidth", lineItems.imageWidth)
                                         .bind("imageHeight", lineItems.imageHeight)
                                         .bind("extractedImageUnit", lineItems.extractedImageUnit)

@@ -98,6 +98,7 @@ public class HwDetectionAction implements IActionExecution {
   public static class HwClassificationConsumerProcess implements CoproProcessor.ConsumerProcess<HwClassificationInputTable,HwClassificationOutputTable> {
     private final Logger log;
     private final Marker aMarker;
+    private final String STAGE="PAPER_CLASSIFICATION";
     private final ObjectMapper mapper = new ObjectMapper();
     private static final MediaType MediaTypeJSON = MediaType
             .parse("application/json; charset=utf-8");
@@ -146,7 +147,7 @@ public class HwDetectionAction implements IActionExecution {
                   .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .documentType(documentStatus)
                   .status("COMPLETED")
-                  .stage("HW_CLASSIFICATION")
+                  .stage(STAGE)
                   .message("Handwritten Classification Finished")
                   .build());
         }
@@ -161,7 +162,7 @@ public class HwDetectionAction implements IActionExecution {
                   .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
                   .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .status("FAILED")
-                  .stage("HW_CLASSIFICATION")
+                  .stage(STAGE)
                   .message(response.message())
                   .build());
           log.info(aMarker, "The Exception occurred in handwritten classification");
@@ -177,10 +178,10 @@ public class HwDetectionAction implements IActionExecution {
                 .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
                 .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .status("FAILED")
-                .stage("HW_CLASSIFICATION")
+                .stage(STAGE)
                 .message(ExceptionUtil.toString(e))
                 .build());
-        log.info(aMarker, "The Exception occurred in handwritten classification", e);
+        log.error(aMarker, "The Exception occurred in handwritten classification", e);
 
       }
       return parentObj;
