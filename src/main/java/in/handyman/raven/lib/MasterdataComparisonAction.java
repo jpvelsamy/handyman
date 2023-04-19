@@ -24,11 +24,13 @@ import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import in.handyman.raven.util.CommonQueryUtil;
+import in.handyman.raven.util.ExceptionUtil;
 import in.handyman.raven.util.InstanceUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -128,7 +130,11 @@ public class MasterdataComparisonAction implements IActionExecution {
         private final Marker aMarker;
         public final ActionExecutionAudit action;
         final ObjectMapper mapper;
-        final OkHttpClient httpclient;
+        final OkHttpClient httpclient = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.MINUTES)
+                .writeTimeout(10, TimeUnit.MINUTES)
+                .readTimeout(10, TimeUnit.MINUTES)
+                .build();
         String URI;
 
         public MasterdataComparisonProcess(Logger log, Marker aMarker, ActionExecutionAudit action) {
@@ -136,7 +142,7 @@ public class MasterdataComparisonAction implements IActionExecution {
             this.aMarker = aMarker;
             this.mapper = new ObjectMapper();
             this.action = action;
-            this.httpclient = InstanceUtil.createOkHttpClient();
+
         }
 
         @Override
@@ -152,7 +158,9 @@ public class MasterdataComparisonAction implements IActionExecution {
                 objectNode.putPOJO("sentences", comparableSentence);
                 final Request request = new Request.Builder().url(endpoint)
                         .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
+                log.info("master data comparison reqest body {}",request);
                 try (Response response = httpclient.newCall(request).execute()) {
+                    log.info("master data comparison response body {}",response.body());
                     String responseBody = Objects.requireNonNull(response.body()).string();
                     if (response.isSuccessful()) {
                         List<IntelliMatchCopro> output = mapper.readValue(responseBody, new TypeReference<>() {
@@ -191,7 +199,7 @@ public class MasterdataComparisonAction implements IActionExecution {
                         log.error(aMarker, "The Exception occurred in master data comparison by {} ", response);
                         throw new HandymanException(responseBody);
                     }
-                } catch (Throwable t) {
+                } catch (Exception t) {
                     parentObj.add(
                             MasterDataOutputTable.builder()
                                     .originId(Optional.ofNullable(result.getOriginId()).map(String::valueOf).orElse(null))
@@ -206,7 +214,8 @@ public class MasterdataComparisonAction implements IActionExecution {
                                     .message("Master data comparison macro failed")
                                     .build()
                     );
-                    log.error(aMarker, "The Exception occurred in copro api for master data comparison - {} ", t.toString());
+
+                    log.error(aMarker, "The Exception occurred in copro api for master data comparison - {} ", ExceptionUtil.toString(t));
                     throw new HandymanException(t.toString());
                 }
             } else {

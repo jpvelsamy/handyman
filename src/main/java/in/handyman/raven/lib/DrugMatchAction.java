@@ -21,6 +21,7 @@ import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -114,7 +115,11 @@ public class DrugMatchAction implements IActionExecution {
         public final ActionExecutionAudit action;
         private String appId;
         private String appKeyId;
-        final OkHttpClient httpclient;
+        final OkHttpClient httpclient = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.MINUTES)
+                .writeTimeout(10, TimeUnit.MINUTES)
+                .readTimeout(10, TimeUnit.MINUTES)
+                .build();
 
         private final MediaType MediaTypeJSON = MediaType.parse("application/json; charset=utf-8");
 
@@ -124,7 +129,6 @@ public class DrugMatchAction implements IActionExecution {
             this.action = action;
             this.appId = action.getContext().get("agadia.appId");
             this.appKeyId = action.getContext().get("agadia.appKeyId");
-            this.httpclient = InstanceUtil.createOkHttpClient();
         }
 
         @Override
