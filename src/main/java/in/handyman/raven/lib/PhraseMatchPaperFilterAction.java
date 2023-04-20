@@ -118,15 +118,15 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
             final ObjectNode objectNode = mapper.createObjectNode();
             try {
                 objectNode.put("pageContent", entity.pageContent);
-                objectNode.put("truthEntity", entity.truthEntity);
-                objectNode.set("keysToFilter", mapper.readTree(entity.keysToFilter));
+//                objectNode.put("truthEntity", entity.truthEntity);
+                objectNode.set("keysToFilter", mapper.readTree(entity.truthPlaceholder));
                 objectNode.put("originId", entity.originId);
                 objectNode.put("groupId", entity.groupId);
                 objectNode.put("paperNo", entity.paperNo);
                 log.info(aMarker, " Input variables id : {}", action.getActionId());
                 Request request = new Request.Builder().url(endpoint)
                         .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-                log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n page content : {} \n key-filters : {} ", endpoint, entity.getPageContent(), entity.getKeysToFilter());
+                log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n page content : {} \n key-filters : {} ", endpoint, entity.getPageContent(), entity.getTruthPlaceholder());
                 log.debug(aMarker, "The Request Details: {}", request);
                 coproAPIProcessor(entity, parentObj, request);
             } catch (JsonProcessingException e) {
@@ -195,9 +195,9 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
         private Integer paperNo;
         private String groupId;
         private String pageContent;
-        private String keysToFilter;
+        private String truthPlaceholder;
         private String processId;
-        private String truthEntity;
+//        private String truthEntity;
 
         @Override
         public List<Object> getRowData() {

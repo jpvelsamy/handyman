@@ -3,7 +3,6 @@ package in.handyman.raven.lib;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
@@ -14,14 +13,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import okhttp3.*;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.argument.Arguments;
 import org.jdbi.v3.core.argument.NullArgument;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -30,12 +26,7 @@ import org.slf4j.MarkerFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -127,19 +118,19 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
             final ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("pageContent", entity.pageContent);
             try {
-                objectNode.put("truthEntity", entity.truthEntity);
-                objectNode.set("keysToFilter", mapper.readTree(entity.keysToFilter));
+//                objectNode.put("truthEntity", entity.truthEntity);
+                objectNode.set("keysToFilter", mapper.readTree(entity.truthPlaceholder));
                 objectNode.put("originId", entity.originId);
                 objectNode.put("groupId", entity.groupId);
                 objectNode.put("paperNo", entity.paperNo);
                 log.info(aMarker, " Input variables id : {}", action.getActionId());
                 Request request = new Request.Builder().url(endpoint)
                         .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-                log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n page content : {} \n key-filters : {} ", endpoint, entity.getPageContent(), entity.getKeysToFilter());
+                log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n page content : {} \n key-filters : {} ", endpoint, entity.getPageContent(), entity.getTruthPlaceholder());
                 log.debug(aMarker, "The Request Details: {}", request);
                 coproAPIProcessor(entity, parentObj, request);
             } catch (JsonProcessingException e) {
-                log.error("error in the zeroshot classifier paper filter copro api call {}",e.toString());
+                log.error("error in the zero-shot classifier paper filter copro api call {}",e.toString());
             }
             return parentObj;
         }
@@ -150,22 +141,22 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
                 if (response.isSuccessful()) {
                     JSONObject parentResponseObject = new JSONObject(responseBody);
                     final Integer paperNo = Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null);
-                    JSONObject responseObject = new JSONObject(String.valueOf(parentResponseObject.get("entity_confidence_score")));
-                    parentObj.addAll(responseObject.toMap().entrySet().stream().map(stringObjectEntry -> {
-                        final String key = stringObjectEntry.getKey();
-                        return PaperFilteringZeroShotClassifierOutputTable
+                    JSONArray responseObject = new JSONArray(String.valueOf(parentResponseObject.get("entity_confidence_score")));
+                    responseObject.forEach(entry->{
+                        final JSONObject childObj = new JSONObject(entry.toString());
+                        parentObj.add(PaperFilteringZeroShotClassifierOutputTable
                                 .builder()
                                 .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                                 .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).orElse(null))
-                                .truthEntity(Optional.ofNullable(entity.getTruthEntity()).map(String::valueOf).orElse(null))
-                                .entity(Optional.ofNullable(key).map(String::valueOf).orElse(null))
-                                .confidenceScore(Optional.ofNullable(stringObjectEntry.getValue()).map(String::valueOf).orElse(null))
+                                .truthEntity(Optional.ofNullable(childObj.get("truthEntity")).map(String::valueOf).orElse(null))
+                                .entity(Optional.ofNullable(childObj.get("key")).map(String::valueOf).orElse(null))
+                                .confidenceScore(Optional.ofNullable(childObj.get("score")).map(String::valueOf).orElse(null))
                                 .paperNo(paperNo)
                                 .status("COMPLETED")
                                 .stage(actionName)
                                 .message("Completed API call zero shot classifier")
-                                .build();
-                    }).collect(Collectors.toList()));
+                                .build());
+                    });
                 } else {
                     parentObj.add(
                             PaperFilteringZeroShotClassifierOutputTable
@@ -191,7 +182,6 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
                                 .stage(actionName)
                                 .message(ExceptionUtil.toString(e))
                                 .build());
-
             }
         }
 
@@ -206,11 +196,9 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
         private Integer paperNo;
         private String groupId;
         private String pageContent;
-
-        private String truthEntity;
-        private String keysToFilter;
+//        private String truthEntity;
+        private String truthPlaceholder;
         private String processId;
-
         @Override
         public List<Object> getRowData() {
             return null;
