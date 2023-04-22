@@ -60,6 +60,7 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
         this.logger = log;
         this.actionExecutionAudit = actionExecutionAudit;
         this.nodeSize = coproNodes.size();
+        final LocalDateTime startTime = LocalDateTime.now();
         if (nodeSize > 0) {
             this.logger.info("Copro processor created for copro coproNodes {}", nodeSize);
         } else {
@@ -71,13 +72,13 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
                 .actionId(actionExecutionAudit.getActionId())
                 .statementContent("CoproProcessor created for " + actionExecutionAudit.getActionName())
                 .build();
-        addAudit(audit);
+        addAudit(audit, startTime);
     }
 
-    private void addAudit(final StatementExecutionAudit audit) {
+    private void addAudit(final StatementExecutionAudit audit, final LocalDateTime startTime) {
         audit.setCreatedBy(actionExecutionAudit.getCreatedBy());
         audit.setLastModifiedBy(actionExecutionAudit.getLastModifiedBy());
-        audit.setCreatedDate(LocalDateTime.now());
+        audit.setCreatedDate(startTime);
         audit.setLastModifiedDate(LocalDateTime.now());
         HandymanActorSystemAccess.insert(audit);
     }
@@ -86,12 +87,12 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
 
         final LocalDateTime startTime = LocalDateTime.now();
         final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(sqlQuery);
-        final StatementExecutionAudit audit = StatementExecutionAudit.builder()
-                .rootPipelineId(actionExecutionAudit.getRootPipelineId())
-                .actionId(actionExecutionAudit.getActionId())
-                .statementContent("CoproProcessor started producer for " + actionExecutionAudit.getActionName())
-                .build();
-        addAudit(audit);
+//        final StatementExecutionAudit audit = StatementExecutionAudit.builder()
+//                .rootPipelineId(actionExecutionAudit.getRootPipelineId())
+//                .actionId(actionExecutionAudit.getActionId())
+//                .statementContent("CoproProcessor started producer for " + actionExecutionAudit.getActionName())
+//                .build();
+//        addAudit(audit, startTime);
         formattedQuery.forEach(sql -> jdbi.useTransaction(handle -> handle.createQuery(sql).mapToBean(inputTargetClass).useStream(stream -> {
             final AtomicInteger counter = new AtomicInteger();
             final Map<Integer, List<I>> partitions = stream.collect(Collectors.groupingBy(it -> counter.getAndIncrement() / readBatchSize));
@@ -104,9 +105,10 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
                                 .rootPipelineId(actionExecutionAudit.getRootPipelineId())
                                 .actionId(actionExecutionAudit.getActionId())
                                 .statementContent("CoproProcessor producer for " + actionExecutionAudit.getActionName())
+                                .timeTaken((double) ChronoUnit.SECONDS.between(startTime, LocalDateTime.now()))
                                 .rowsRead(ts.size())
                                 .build();
-                        addAudit(audit2);
+                        addAudit(audit2,startTime);
                         logger.info("Partition {} added to the queue", integer);
                         try {
                             Thread.sleep(10);
@@ -122,7 +124,7 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
                             .statementContent("CoproProcessor producer completed " + actionExecutionAudit.getActionName())
                             .timeTaken((double) ChronoUnit.SECONDS.between(startTime, LocalDateTime.now()))
                             .build();
-                    addAudit(audit3);
+                    addAudit(audit3,startTime);
                 } finally {
                     queue.add(stoppingSeed);
                     logger.info("Added stopping seed to the queue");
@@ -135,7 +137,7 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
 
     public void startConsumer(final String insertSql, final Integer consumerCount, final Integer writeBatchSize,
                               final ConsumerProcess<I, O> callable) {
-
+        final LocalDateTime startTime = LocalDateTime.now();
         final Predicate<I> tPredicate = t -> !Objects.equals(t, stoppingSeed);
         final CountDownLatch countDownLatch = new CountDownLatch(consumerCount);
         for (int consumer = 0; consumer < consumerCount; consumer++) {
@@ -148,7 +150,6 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
                             if (tPredicate.test(take)) {
                                 final int index = nodeCount.incrementAndGet() % nodeSize;//Round robin
                                 final List<O> results = new ArrayList<>();
-
                                 try {
                                     final List<O> list = callable.process(nodes.get(index), take);
                                     results.addAll(list);
@@ -169,6 +170,14 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
                                         int[] execute = preparedBatch.execute();
                                         logger.info("Consumer persisted {}", execute);
                                     });
+                                    final StatementExecutionAudit audit = StatementExecutionAudit.builder()
+                                            .rootPipelineId(actionExecutionAudit.getRootPipelineId())
+                                            .actionId(actionExecutionAudit.getActionId())
+                                            .timeTaken((double) ChronoUnit.SECONDS.between(startTime, LocalDateTime.now()))
+                                            .rowsProcessed(processedEntity.size())
+                                            .statementContent("CoproProcessor consumer for " + actionExecutionAudit.getActionName())
+                                            .build();
+                                    addAudit(audit,startTime);
                                     processedEntity.clear();
                                 }
                             } else {
@@ -199,6 +208,14 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
                                         preparedStatement.addBatch();
                                     }
                                     rowCount = (int) Arrays.stream(preparedStatement.executeBatch()).count();
+                                    final StatementExecutionAudit audit = StatementExecutionAudit.builder()
+                                            .rootPipelineId(actionExecutionAudit.getRootPipelineId())
+                                            .actionId(actionExecutionAudit.getActionId())
+                                            .timeTaken((double) ChronoUnit.SECONDS.between(startTime, LocalDateTime.now()))
+                                            .rowsProcessed(processedEntity.size())
+                                            .statementContent("CoproProcessor consumer for " + actionExecutionAudit.getActionName())
+                                            .build();
+                                    addAudit(audit,startTime);
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
