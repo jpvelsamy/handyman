@@ -2,6 +2,7 @@ package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
@@ -61,7 +62,7 @@ public class PaperItemizerAction implements IActionExecution {
   }
 
   @Override
-  public void execute() throws Exception {
+  public void execute(){
     try {
       log.info(aMarker, "paper itemizer Action has been started {}",paperItemizer);
 
@@ -81,7 +82,7 @@ public class PaperItemizerAction implements IActionExecution {
           return new URL(s1);
         } catch (MalformedURLException e) {
           log.error("Error in processing the URL ", e);
-          throw new RuntimeException(e);
+          throw new HandymanException("Error in processing the URL",e, action);
         }
       }).collect(Collectors.toList())).orElse(Collections.emptyList());
       log.info(aMarker, "paper itemizer copro urls {}", urls);
@@ -105,6 +106,7 @@ public class PaperItemizerAction implements IActionExecution {
 
     }catch(Exception ex){
       log.error(aMarker,"error in execute method for paper itemizer  ",ex);
+      throw new HandymanException("error in execute method for paper itemizer",ex, action);
     }
   }
 
@@ -185,7 +187,7 @@ public class PaperItemizerAction implements IActionExecution {
                           .message(response.message())
                           .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                           .build());
-          log.error(aMarker, "The Exception occurred in response {}",response.message());
+          log.error(aMarker, "Error in response {}",response.message());
         }
       }catch (Exception e) {
         parentObj.add(

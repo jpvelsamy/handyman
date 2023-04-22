@@ -49,7 +49,7 @@ public class PixelClassifierAction implements IActionExecution {
     @Override
     public void execute() throws Exception {
 
-        log.info(aMarker, "<-------Pixel Classifier Action for {} has been started------->" + pixelClassifier.getName());
+        log.info(aMarker, "Pixel Classifier Action for {} has been started" + pixelClassifier.getName());
         final OkHttpClient httpclient = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.MINUTES)
                 .writeTimeout(10, TimeUnit.MINUTES)
@@ -83,7 +83,7 @@ public class PixelClassifierAction implements IActionExecution {
                 action.getContext().put(name.concat(".errorMessage"), responseBody);
                 log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
             }
-            log.info(aMarker, "<-------Pixel Classifier Action for {} has been completed------->" + pixelClassifier.getName());
+            log.info(aMarker, "Pixel Classifier Action for {} has been completed------->" + pixelClassifier.getName());
         } catch (Exception e) {
             action.getContext().put(name.concat(".error"), "true");
             action.getContext().put(name.concat(".errorMessage"), e.getMessage());

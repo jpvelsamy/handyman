@@ -46,18 +46,18 @@ public class CharactercountAction implements IActionExecution {
     @Override
     public void execute() throws Exception {
         try {
-            log.info(aMarker, "<-------Character Count Action for {} has been started------->" + charactercount.getName());
+            log.info(aMarker, "Character Count Action for {} has been started" , charactercount.getName());
             AdapterInterface charCountAdapter = new CharacterCountAdapter();
             int wordCount = charCountAdapter.getThresholdScore(charactercount.getInputValue());
             int confidenceScore = wordCount <= Integer.parseInt(charactercount.getCountLimit())
                     ? Integer.parseInt(charactercount.getThresholdValue()) : 0;
             action.getContext().put(charactercount.getName().concat(".score"), String.valueOf(confidenceScore));
-            log.info(aMarker, "<-------Character Count Action for {} has been completed------->" + charactercount.getName());
+            log.info(aMarker, "Character Count Action for {} has been completed" , charactercount.getName());
 
         } catch (Exception ex) {
             action.getContext().put(charactercount.getName().concat(".error"), "true");
             log.info(aMarker, "The Exception occurred ", ex);
-            throw new HandymanException("Failed to execute", ex);
+            throw new HandymanException("Failed to execute", ex, action);
         }
     }
 

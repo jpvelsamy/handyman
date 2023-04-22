@@ -1,5 +1,6 @@
 package in.handyman.raven.lib;
 
+import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
@@ -38,17 +39,21 @@ public class ChecksumAction implements IActionExecution {
     @Override
     public void execute() throws Exception {
 
-        log.info(aMarker, "<-------Checksum Action for {} has been started------->" + checksum.getName());
-        String filePath = checksum.getFilePath();
-        Thread.sleep(5000);
-        log.info(aMarker, "FilePath and Checksum details -> {} {}", filePath, checksum);
+        log.info(aMarker, "Checksum Action for {} has been started", checksum.getName());
+        try {
+            String filePath = checksum.getFilePath();
+            Thread.sleep(5000);
+            log.info(aMarker, "FilePath and Checksum details -> {} {}", filePath, checksum);
 
-        try (InputStream is = Files.newInputStream(Paths.get(filePath))) {
-            String sha1Hex = org.apache.commons.codec.digest.DigestUtils.sha1Hex(is);
-            log.debug("MD5 CHECKSUM details {} for file {} ", sha1Hex, filePath);
-            action.getContext().put(checksum.getName(), sha1Hex);
+            try (InputStream is = Files.newInputStream(Paths.get(filePath))) {
+                String sha1Hex = org.apache.commons.codec.digest.DigestUtils.sha1Hex(is);
+                log.debug("MD5 CHECKSUM details {} for file {} ", sha1Hex, filePath);
+                action.getContext().put(checksum.getName(), sha1Hex);
+            }
+            log.info(aMarker, "Checksum Action for {} has been Completed", checksum.getName());
+        } catch (Exception e) {
+            throw new HandymanException("Error in generating checksum", e, action);
         }
-        log.info(aMarker, "<-------Checksum Action for {} has been Completed------->" + checksum.getName());
     }
 
     @Override

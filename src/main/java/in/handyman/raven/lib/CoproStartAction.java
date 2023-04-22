@@ -8,6 +8,7 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.CoproStart;
+import in.handyman.raven.util.ExceptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -55,7 +57,7 @@ public class CoproStartAction implements IActionExecution {
     @Override
     public void execute() throws Exception {
         final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(coproStart.getResourceConn());
-        log.info(aMarker, "copro admin API call for {} has been started------->", coproStart.getName());
+        log.info(aMarker, "copro admin API call for {} has been started", coproStart.getName());
         final OkHttpClient httpclient = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.MINUTES)
                 .writeTimeout(10, TimeUnit.MINUTES)
@@ -71,14 +73,14 @@ public class CoproStartAction implements IActionExecution {
         String name = coproStart.getName() + "_response";
         log.debug(aMarker, "The Request Details: {} ", request);
         try (Response response = httpclient.newCall(request).execute()) {
-            String responseBody = response.body().string();
+            String responseBody = Objects.requireNonNull(response.body()).string();
             if (response.isSuccessful()) {
                 JSONObject responseObj = new JSONObject(responseBody);
                 CoproStartAction.coproStartActionEntity coproStartActionEntity = CoproStartAction.coproStartActionEntity
                         .builder()
                         .processId(Optional.ofNullable(coproStart.getProcessID()).map(Long::valueOf).orElse(null))
-                        .actionId(Optional.ofNullable(action.getActionId()).map(Long::valueOf).orElse(null))
-                        .rootPipelineId(Optional.ofNullable(action.getRootPipelineId()).map(Long::valueOf).orElse(null))
+                        .actionId(action.getActionId())
+                        .rootPipelineId(action.getRootPipelineId())
                         .coproActionName(Optional.ofNullable(coproStart.getModuleName()).map(String::valueOf).orElse(null))
                         .command(Optional.ofNullable(coproStart.getCommand()).map(String::valueOf).orElse(null))
                         .coproProcessId(Optional.ofNullable(responseObj.get("Pid")).map(String::valueOf).orElse(null))
@@ -96,12 +98,12 @@ public class CoproStartAction implements IActionExecution {
             } else {
                 log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
             }
-            log.info(aMarker, "<--------copro admin API call for {} has been completed------->" , coproStart.getName());
+            log.info(aMarker, "copro admin API call for {} has been completed" , coproStart.getName());
         } catch (Exception e) {
             action.getContext().put(name.concat(".error"), "true");
             action.getContext().put(name.concat(".errorMessage"), e.getMessage());
-            log.info(aMarker, "The Exception occurred ", e);
-            throw new HandymanException("Failed to execute", e);
+            log.info(aMarker, "The Exception occurred {}", ExceptionUtil.toString(e));
+            throw new HandymanException("Failed to execute", e, action);
         }
     }
 

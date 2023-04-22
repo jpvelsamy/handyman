@@ -67,16 +67,16 @@ public class DataExtractionAction implements IActionExecution {
       final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(dataExtraction.getResourceConn());
 
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
-      log.info(aMarker, "<-------Data Extraction Action for {} has been started------->", dataExtraction.getName());
+      log.info(aMarker, "Data Extraction Action for {} has been started", dataExtraction.getName());
 
-      final String insertQuery = "INSERT INTO info.data_extraction(origin_id,group_id,tenant_id,template_id,process_id, file_path, extracted_text,paper_no,file_name, status,stage,message,is_blank_page, created_on) " + "" +
+      final String insertQuery = "INSERT INTO info.data_extraction(origin_id,group_id,tenant_id,template_id,process_id, file_path, extracted_text,paper_no,file_name, status,stage,message,is_blank_page, created_on) " +
               " VALUES(?,? ,?,?,? ,?,?,?,?, ?,?,?,?,?)";
       final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.data-extraction.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
         try {
           return new URL(s1);
         } catch (MalformedURLException e) {
           log.error("Error in processing the URL ", e);
-          throw new RuntimeException(e);
+          throw new HandymanException("Error in processing the URL",e, action);
         }
       }).collect(Collectors.toList())).orElse(Collections.emptyList());
 
@@ -88,6 +88,7 @@ public class DataExtractionAction implements IActionExecution {
     }catch (Exception e){
       action.getContext().put(dataExtraction.getName() + ".isSuccessful", "false");
       log.error(aMarker,"error in execute method in data extraction", e);
+      throw new HandymanException("error in execute method in data extraction", e, action);
     }
 
   }
@@ -115,7 +116,7 @@ public class DataExtractionAction implements IActionExecution {
       objectNode.put("inputFilePath", entity.filePath);
       log.info(aMarker, " Input variables id : {}", action.getActionId());
       Request request = new Request.Builder().url(endpoint).post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-      log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n page content : {} \n key-filters : {} ");
+      log.debug(aMarker, "Request has been build with the parameters \n URI :  \n page content : \n key-filters :{}", request.body());
       log.debug(aMarker, "The Request Details: {}", request);
         try (Response response = httpclient.newCall(request).execute()) {
         String responseBody = Objects.requireNonNull(response.body()).string();

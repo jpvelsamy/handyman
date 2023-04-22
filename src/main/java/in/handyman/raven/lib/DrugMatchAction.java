@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import in.handyman.raven.util.ExceptionUtil;
 import in.handyman.raven.util.InstanceUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -62,7 +63,7 @@ public class DrugMatchAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-        log.info(aMarker, "drug match process for {} has been started" + drugMatch.getName());
+        log.info(aMarker, "drug match process for {} has been started" , drugMatch.getName());
         try {
 
             final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(drugMatch.getResourceConn());
@@ -79,7 +80,7 @@ public class DrugMatchAction implements IActionExecution {
                     return new URL(s1);
                 } catch (MalformedURLException e) {
                     log.error("Error in processing the URL ", e);
-                    throw new RuntimeException(e);
+                    throw new HandymanException("Error in processing the URL", e, action);
                 }
             }).collect(Collectors.toList())).orElse(Collections.emptyList());
             log.info(aMarker, "Drug Match copro urls {}", urls);
@@ -104,8 +105,9 @@ public class DrugMatchAction implements IActionExecution {
 
         } catch (Exception ex) {
             log.error(aMarker, "error in execute method for Drug Match  ", ex);
+            throw new HandymanException("error in execute method for Drug Match", ex, action);
         }
-        log.info(aMarker, "drug match process for {} has been completed" + drugMatch.getName());
+        log.info(aMarker, "drug match process for {} has been completed" , drugMatch.getName());
     }
 
 
@@ -146,8 +148,8 @@ public class DrugMatchAction implements IActionExecution {
                 try {
                     requestString = mapper.writeValueAsString(drugNameRequest);
                 } catch (JsonProcessingException e) {
-                    log.error(aMarker, "error in mapper value {}", e);
-                    throw new HandymanException(e.toString());
+                    log.error(aMarker, "error in mapper value {}", ExceptionUtil.toString(e));
+                    throw new HandymanException(e.toString(), e, action);
                 }
 
                 final Request request = new Request.Builder().url(endpoint).header("appId", appId)

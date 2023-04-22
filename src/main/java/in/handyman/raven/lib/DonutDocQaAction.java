@@ -72,29 +72,34 @@ public class DonutDocQaAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-        log.info(aMarker, "<-------Donut Attribution Action for {} has been started------->" + donutDocQa.getName());
-        final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(donutDocQa.getResourceConn());
-        final List<DonutQueryResult> donutQueryResults = new ArrayList<>();
-        jdbi.useTransaction(handle -> {
-            final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(donutDocQa.getQuestionSql());
-            formattedQuery.forEach(sqlToExecute -> donutQueryResults.addAll(handle.createQuery(sqlToExecute)
-                    .mapToBean(DonutQueryResult.class)
-                    .stream().collect(Collectors.toList())));
-        });
+        try {
+            log.info(aMarker, "Donut Attribution Action for {} has been started", donutDocQa.getName());
+            final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(donutDocQa.getResourceConn());
+            final List<DonutQueryResult> donutQueryResults = new ArrayList<>();
+            jdbi.useTransaction(handle -> {
+                final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(donutDocQa.getQuestionSql());
+                formattedQuery.forEach(sqlToExecute -> donutQueryResults.addAll(handle.createQuery(sqlToExecute)
+                        .mapToBean(DonutQueryResult.class)
+                        .stream().collect(Collectors.toList())));
+            });
 
-        // Create DDL
+            // Create DDL
 
-        jdbi.useTransaction(handle -> handle.execute("create table if not exists macro." + donutDocQa.getResponseAs() + " ( id bigserial not null, file_path text,question text, predicted_attribution_value text,b_box json null, image_dpi int8 null, image_width int8 null, image_height int8 null, extracted_image_unit varchar null, action_id bigint, root_pipeline_id bigint,process_id bigint, created_date timestamp not null default now() );"));
-        jdbi.useTransaction(handle -> handle.execute("create table if not exists macro." + donutDocQa.getResponseAs() + "_error ( id bigserial not null, file_path text,error_message text,  action_id bigint, root_pipeline_id bigint,process_id bigint, created_date timestamp not null default now() );"));
+            jdbi.useTransaction(handle -> handle.execute("create table if not exists macro." + donutDocQa.getResponseAs() + " ( id bigserial not null, file_path text,question text, predicted_attribution_value text,b_box json null, image_dpi int8 null, image_width int8 null, image_height int8 null, extracted_image_unit varchar null, action_id bigint, root_pipeline_id bigint,process_id bigint, created_date timestamp not null default now() );"));
+            jdbi.useTransaction(handle -> handle.execute("create table if not exists macro." + donutDocQa.getResponseAs() + "_error ( id bigserial not null, file_path text,error_message text,  action_id bigint, root_pipeline_id bigint,process_id bigint, created_date timestamp not null default now() );"));
 
-        final List<DonutLineItem> donutLineItems = new ArrayList<>();
+            final List<DonutLineItem> donutLineItems = new ArrayList<>();
 
-        donutQueryResults.stream().collect(Collectors.groupingBy(DonutQueryResult::getFilePath))
-                .forEach((s, donutQueryResults1) -> donutLineItems.add(DonutLineItem.builder()
-                        .filePath(s).questions(donutQueryResults1.stream().map(DonutQueryResult::getQuestion).collect(Collectors.toList()))
-                        .build()));
+            donutQueryResults.stream().collect(Collectors.groupingBy(DonutQueryResult::getFilePath))
+                    .forEach((s, donutQueryResults1) -> donutLineItems.add(DonutLineItem.builder()
+                            .filePath(s).questions(donutQueryResults1.stream().map(DonutQueryResult::getQuestion).collect(Collectors.toList()))
+                            .build()));
 
-        doProcess(donutLineItems);
+            doProcess(donutLineItems);
+        } catch (Exception e) {
+            log.error(aMarker, "Error in donut attribution action", e);
+            throw new HandymanException("Error in donut attribution action", e, action);
+        }
 
 
     }
@@ -134,6 +139,7 @@ public class DonutDocQaAction implements IActionExecution {
         } catch (Exception e) {
             log.error(aMarker, "The Failure Response {} --> {}", donutDocQa.getResponseAs(), e.getMessage(), e);
             action.getContext().put(donutDocQa.getResponseAs().concat(".error"), "true");
+            throw new HandymanException("Failure in donut response", e, action);
         }
     }
 
@@ -152,20 +158,20 @@ public class DonutDocQaAction implements IActionExecution {
                 log.info(aMarker, "completed {}", lineItems.attributes.size());
 
                 jdbi.useTransaction(handle -> {
-                    final PreparedBatch batch = handle.prepareBatch("INSERT INTO macro." + donutDocQa.getResponseAs() + " (process_id,file_path,question, predicted_attribution_value,b_box, image_dpi , image_width , image_height , extracted_image_unit , action_id, root_pipeline_id) VALUES(" + action.getPipelineId() + ",:filePath,:question,:predictedAttributionValue, :bBoxes::json, :imageDpi, :imageWidth, :imageHeight , :extractedImageUnit, "+ action.getActionId()+","+ action.getRootPipelineId()+");");
+                    final PreparedBatch batch = handle.prepareBatch("INSERT INTO macro." + donutDocQa.getResponseAs() + " (process_id,file_path,question, predicted_attribution_value,b_box, image_dpi , image_width , image_height , extracted_image_unit , action_id, root_pipeline_id) VALUES(" + action.getPipelineId() + ",:filePath,:question,:predictedAttributionValue, :bBoxes::json, :imageDpi, :imageWidth, :imageHeight , :extractedImageUnit, " + action.getActionId() + "," + action.getRootPipelineId() + ");");
 
                     Lists.partition(lineItems.attributes, 100).forEach(resultLineItems -> {
                         log.info(aMarker, "inserting into donut_docqa_action {}", resultLineItems.size());
                         resultLineItems.forEach(resultLineItem -> {
-                                batch.bind("filePath", filePath)
-                                        .bind("question", resultLineItem.question)
-                                        .bind("predictedAttributionValue", resultLineItem.predictedAttributionValue)
-                                        .bind("bBoxes", String.valueOf(resultLineItem.bBoxes))
-                                            .bind("imageDpi", lineItems.imageDPI)
-                                        .bind("imageWidth", lineItems.imageWidth)
-                                        .bind("imageHeight", lineItems.imageHeight)
-                                        .bind("extractedImageUnit", lineItems.extractedImageUnit)
-                                        .add();
+                            batch.bind("filePath", filePath)
+                                    .bind("question", resultLineItem.question)
+                                    .bind("predictedAttributionValue", resultLineItem.predictedAttributionValue)
+                                    .bind("bBoxes", String.valueOf(resultLineItem.bBoxes))
+                                    .bind("imageDpi", lineItems.imageDPI)
+                                    .bind("imageWidth", lineItems.imageWidth)
+                                    .bind("imageHeight", lineItems.imageHeight)
+                                    .bind("extractedImageUnit", lineItems.extractedImageUnit)
+                                    .add();
 
                         });
                         int[] counts = batch.execute();
@@ -173,12 +179,10 @@ public class DonutDocQaAction implements IActionExecution {
                     });
                 });
             } catch (Exception e) {
-                jdbi.useTransaction(handle -> {
-                    handle.createUpdate("INSERT INTO macro." + donutDocQa.getResponseAs() + "_error (file_path,error_message, action_id, root_pipeline_id,process_id) VALUES(:filePath,:errorMessage, " + action.getActionId() + ", " + action.getRootPipelineId() + "," + action.getPipelineId() + ");")
-                            .bind("filePath", filePath)
-                            .bind("errorMessage", e.getMessage())
-                            .execute();
-                });
+                jdbi.useTransaction(handle -> handle.createUpdate("INSERT INTO macro." + donutDocQa.getResponseAs() + "_error (file_path,error_message, action_id, root_pipeline_id,process_id) VALUES(:filePath,:errorMessage, " + action.getActionId() + ", " + action.getRootPipelineId() + "," + action.getPipelineId() + ");")
+                        .bind("filePath", filePath)
+                        .bind("errorMessage", e.getMessage())
+                        .execute());
             }
 
         });
@@ -274,6 +278,7 @@ public class DonutDocQaAction implements IActionExecution {
                     throw new HandymanException(responseBody);
                 }
             } catch (Exception e) {
+                log.error("Failed to execute the rest api call");
                 throw new HandymanException("Failed to execute the rest api call " + node, e);
             }
         }

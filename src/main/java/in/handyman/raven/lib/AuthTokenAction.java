@@ -50,7 +50,7 @@ public class AuthTokenAction implements IActionExecution {
 
   @Override
   public void execute() throws Exception {
-    log.info(aMarker, "<-------Auth Token Generation Action for {} has been started------->" + authToken.getName());
+    log.info(aMarker, "Auth Token Generation Action for {} has been started" , authToken.getName());
     final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
 
     final ObjectNode objectNode = mapper.createObjectNode();
@@ -84,9 +84,9 @@ public class AuthTokenAction implements IActionExecution {
     } catch (Exception e) {
       log.error(aMarker, "The Exception occurred ", e);
       action.getContext().put(name + ".isSuccessful", "false");
-      throw new HandymanException("Failed to execute", e);
+      throw new HandymanException("Failed to execute", e, action);
     }
-    log.info(aMarker, "<-------Auth Token Generation Action for {} has been completed------->" + authToken.getName());
+    log.info(aMarker, "Auth Token Generation Action for {} has been completed" , authToken.getName());
 
   }
 
