@@ -1,5 +1,6 @@
 package in.handyman.raven.lib;
 
+import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
@@ -9,6 +10,7 @@ import in.handyman.raven.lib.agadia.eocsplitting.OriginCoverage;
 import in.handyman.raven.lib.agadia.eocsplitting.QrCodeCoverage;
 import in.handyman.raven.lib.agadia.eocsplitting.SorItemCoverage;
 import in.handyman.raven.lib.model.EpisodeOfCoverage;
+import in.handyman.raven.util.ExceptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -52,10 +54,8 @@ public class EpisodeOfCoverageAction implements IActionExecution {
   @Override
   public void execute() throws Exception {
 
-
-
     try {
-      log.info(aMarker, "<-------Episode of coverage Action for {} with group by eoc-id has started------->" + episodeOfCoverage.getName());
+      log.info(aMarker, "Episode of coverage Action for {} with group by eoc-id has started" , episodeOfCoverage.getName());
       final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(episodeOfCoverage.getResourceConn());
       if (Integer.parseInt(episodeOfCoverage.getEocIdCount()) > 0) {
         log.info("patient instance check for Eoc id in aggregation");
@@ -99,8 +99,8 @@ public class EpisodeOfCoverageAction implements IActionExecution {
       }
 
     } catch (Exception e) {
-      log.error(aMarker, "<-------Episode of coverage Action for {} with group by eoc-id has failed for {}------->" + episodeOfCoverage.getName(), e);
-
+      log.error(aMarker, "Episode of coverage Action for {} with group by eoc-id has failed for {}" , episodeOfCoverage.getName(), ExceptionUtil.toString(e));
+      throw new HandymanException("Error in sor grouping", e, action);
     }
 
   }
@@ -134,6 +134,7 @@ public class EpisodeOfCoverageAction implements IActionExecution {
 
         } catch (Exception e) {
           log.error(aMarker, "Failed in executed formated query {} for this sor item {}", e, sorItem);
+          throw new HandymanException("Failed in executed formated query {} for this sor item {}", e, action);
         }
       }
     });

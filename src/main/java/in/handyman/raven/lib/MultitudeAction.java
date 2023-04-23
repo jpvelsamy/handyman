@@ -68,7 +68,7 @@ public class MultitudeAction implements IActionExecution {
                                     try {
                                         actionCallable.run();
                                     } catch (Exception e) {
-                                        throw new HandymanException("Failed to execute", e);
+                                        throw new HandymanException("Failed to execute", e, actionExecutionAudit);
                                     } finally {
                                         countDown.countDown();
                                     }
@@ -81,7 +81,7 @@ public class MultitudeAction implements IActionExecution {
                             log.info(aMarker, "Completed execution of multitude");
                         }
                     } catch (Exception e) {
-                        throw new HandymanException("Failed to execute", e);
+                        throw new HandymanException("Failed to execute", e, actionExecutionAudit);
                     } finally {
                         try {
                             countDown.await();

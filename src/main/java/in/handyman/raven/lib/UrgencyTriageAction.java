@@ -49,7 +49,7 @@ public class UrgencyTriageAction implements IActionExecution {
     @Override
     public void execute() throws Exception {
         try {
-            log.info(aMarker, "<-------Urgency Triage Action for {} has been started------->" + urgencyTriage.getName());
+            log.info(aMarker, "Urgency Triage Action for {} has been started" , urgencyTriage.getName());
             final OkHttpClient httpclient = new OkHttpClient.Builder()
                     .connectTimeout(10, TimeUnit.MINUTES)
                     .writeTimeout(10, TimeUnit.MINUTES)
@@ -79,12 +79,11 @@ public class UrgencyTriageAction implements IActionExecution {
                     .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
             log.info(aMarker, "The Request Details : {}", request);
             try (Response response = httpclient.newCall(request).execute()) {
-                String sdkjn = response.body().toString();
                 String responseBody = Objects.requireNonNull(response.body()).string();
                 JsonNode actualObj = mapper.readTree(responseBody);
                 ObjectNode result = mapper.createObjectNode();
-                result.put("file_name", actualObj.get("file_name"));
-                result.put("binary_model", actualObj.get("binary_model"));
+                result.set("file_name", actualObj.get("file_name"));
+                result.set("binary_model", actualObj.get("binary_model"));
 
                 // responseBody = responseBody.replaceAll(""\","");
                 if (response.isSuccessful()) {
@@ -100,15 +99,15 @@ public class UrgencyTriageAction implements IActionExecution {
             } catch (Exception e) {
                 log.error(aMarker, "The Exception occurred ", e);
                 action.getContext().put(urgencyTriage.getName().concat(".error"), "true");
-                throw new HandymanException("Failed to execute", e);
+                throw new HandymanException("Failed to execute", e, action);
             }
 
         } catch (Exception e) {
             action.getContext().put(urgencyTriage.getName().concat(".error"), "true");
             log.info(aMarker, "The Exception occurred ", e);
-            throw new HandymanException("Failed to execute", e);
+            throw new HandymanException("Failed to execute", e, action);
         }
-        log.info(aMarker, "<-------Urgency Triage Action for {} has been completed------->" + urgencyTriage.getName());
+        log.info(aMarker, "Urgency Triage Action for {} has been completed" , urgencyTriage.getName());
 
 
     }

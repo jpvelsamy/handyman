@@ -82,7 +82,7 @@ public class PaperItemizerAction implements IActionExecution {
           return new URL(s1);
         } catch (MalformedURLException e) {
           log.error("Error in processing the URL ", e);
-          throw new HandymanException("Error in processing the URL",e, action);
+          throw new HandymanException("Error in processing the URL", e, action);
         }
       }).collect(Collectors.toList())).orElse(Collections.emptyList());
       log.info(aMarker, "paper itemizer copro urls {}", urls);
@@ -106,7 +106,7 @@ public class PaperItemizerAction implements IActionExecution {
 
     }catch(Exception ex){
       log.error(aMarker,"error in execute method for paper itemizer  ",ex);
-      throw new HandymanException("error in execute method for paper itemizer",ex, action);
+      throw new HandymanException("error in execute method for paper itemizer", ex, action);
     }
   }
 

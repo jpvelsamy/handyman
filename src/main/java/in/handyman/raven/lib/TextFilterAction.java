@@ -48,7 +48,7 @@ public class TextFilterAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-        log.info(aMarker, "<-------Pixel Classifier Action for {} has been started------->", textFilter.getName());
+        log.info(aMarker, "Pixel Classifier Action for {} has been started", textFilter.getName());
         final OkHttpClient httpclient = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.MINUTES)
                 .writeTimeout(10, TimeUnit.MINUTES)
@@ -79,13 +79,14 @@ public class TextFilterAction implements IActionExecution {
                 action.getContext().put(name.concat(".error"), "true");
                 action.getContext().put(name.concat(".errorMessage"), responseBody);
                 log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
+                throw new HandymanException(responseBody);
             }
-            log.info(aMarker, "<-------Text Filtering Action for {} has been completed ------->", textFilter.getName());
+            log.info(aMarker, "Text Filtering Action for {} has been completed", textFilter.getName());
         } catch (Exception e) {
             action.getContext().put(name.concat(".error"), "true");
             action.getContext().put(name.concat(".errorMessage"), e.getMessage());
             log.info(aMarker, "The Exception occurred ", e);
-            throw new HandymanException("Failed to execute", e);
+            throw new HandymanException("Failed to execute", e, action);
         }
     }
 

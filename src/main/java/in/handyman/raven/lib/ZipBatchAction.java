@@ -11,7 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,7 +54,7 @@ public class ZipBatchAction implements IActionExecution {
     @Override
     public void execute() throws Exception {
         try {
-            log.info(aMarker, "<-------Zip Batch Action for {} has been started------->" + zipBatch.getName());
+            log.info(aMarker, "Zip Batch Action for {} has been started", zipBatch.getName());
             final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(zipBatch.getResourceConn());
             List<String> zipFilePathList = jdbi.withHandle(handle ->
                     handle.createQuery("select zip_file_path from outbound.outbound_zip_file_details where group_id = '" + zipBatch.getGroupId() + "' ")
@@ -72,14 +75,13 @@ public class ZipBatchAction implements IActionExecution {
                         Files.copy(zipPath, zipBatchFolderFile.toPath().resolve(zipFile.getName()));
                     } catch (IOException e) {
                         log.error("Failed to copy Zip file");
-                        throw new HandymanException("Failed to copy zip file", e);
+                        throw new HandymanException("Failed to copy zip file", e, action);
                     }
                 });
 
-                if (zipBatchFolderFile.listFiles() == null || Objects.requireNonNull(zipBatchFolderFile.listFiles()).length == 0){
+                if (zipBatchFolderFile.listFiles() == null || Objects.requireNonNull(zipBatchFolderFile.listFiles()).length == 0) {
                     log.info(aMarker, "<-------Folder is Empty------->");
-                }
-                else{
+                } else {
                     FileOutputStream fos = new FileOutputStream(zipBatchFolderPath + ".zip");
                     ZipOutputStream zos = new ZipOutputStream(fos);
 
@@ -93,33 +95,40 @@ public class ZipBatchAction implements IActionExecution {
                 log.info("target directory path {} not found", zipBatch.getOutputDir());
                 throw new HandymanException("target directory path not found");
             }
-            log.info(aMarker, "<-------Zip Batch Action for {} has been completed------->" + zipBatch.getName());
+            log.info(aMarker, "Zip Batch Action for {} has been completed", zipBatch.getName());
         } catch (Exception e) {
-            log.info(aMarker, "<-------Zip Batch Action for {} has failed------->" + zipBatch.getName());
-            throw new HandymanException("", e);
+            log.info(aMarker, "Zip Batch Action for {} has failed", zipBatch.getName());
+            throw new HandymanException("Zip Batch Action has failed", e, action);
         }
 
     }
 
-    private static void addFolderToZip(String folderPath, ZipOutputStream zos) throws IOException {
-        File folder = new File(folderPath);
-        File[] files = folder.listFiles();
+    private static void addFolderToZip(String folderPath, ZipOutputStream zos) {
+        try {
+            File folder = new File(folderPath);
+            File[] files = folder.listFiles();
 
-        for (File file : files) {
-            if (file.isDirectory()) {
-                addFolderToZip(file.getAbsolutePath(), zos);
-            } else {
-                byte[] buffer = new byte[1024];
-                FileInputStream fis = new FileInputStream(file);
-                zos.putNextEntry(new ZipEntry(file.getName()));
-                int length;
-                while ((length = fis.read(buffer)) > 0) {
-                    zos.write(buffer, 0, length);
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        addFolderToZip(file.getAbsolutePath(), zos);
+                    } else {
+                        byte[] buffer = new byte[1024];
+                        FileInputStream fis = new FileInputStream(file);
+                        zos.putNextEntry(new ZipEntry(file.getName()));
+                        int length;
+                        while ((length = fis.read(buffer)) > 0) {
+                            zos.write(buffer, 0, length);
+                        }
+                        zos.closeEntry();
+                        fis.close();
+                    }
                 }
-                zos.closeEntry();
-                fis.close();
             }
+        } catch (Exception e) {
+            throw new HandymanException("Error in adding folder to zip", e);
         }
+
     }
 
     private void createDirectory(String folderPath) {
@@ -135,6 +144,7 @@ public class ZipBatchAction implements IActionExecution {
             throw new RuntimeException(e);
         }
     }
+
     private boolean deleteFolder(File folder) {
         if (folder.isDirectory()) {
             // recursively delete all contents of the folder

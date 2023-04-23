@@ -44,7 +44,7 @@ public class JsonToFileAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-        log.info(aMarker, "<-------Json toFile Action for {} has been started------->" + jsonToFile.getName());
+        log.info(aMarker, "Json toFile Action for {} has been started" , jsonToFile.getName());
         final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(jsonToFile.getResourceConn());
         final List<String> results = new ArrayList<>();
         jdbi.useTransaction(handle -> {
@@ -61,11 +61,11 @@ public class JsonToFileAction implements IActionExecution {
                 file.write(prettyJson);
             } catch (Exception e) {
                 log.info(aMarker, "The Exception occurred ", e);
-                throw new HandymanException("Failed to execute", e);
+                throw new HandymanException("Failed to execute", e, action);
             }
             //mapper.writeValue(new File(jsonToFile.getFilePath()), mapper.readTree(results.get(0)));
         }
-        log.info(aMarker, "<-------Json toFile Action for {} has been completed------->" + jsonToFile.getName());
+        log.info(aMarker, "Json toFile Action for {} has been completed" , jsonToFile.getName());
     }
 
     @Override

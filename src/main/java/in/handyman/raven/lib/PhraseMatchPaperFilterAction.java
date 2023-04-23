@@ -55,34 +55,39 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-        final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(phraseMatchPaperFilter.getResourceConn());
-        jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
-        log.info(aMarker, "<-------Phrase match paper filter Action for {} has been started------->", phraseMatchPaperFilter.getName());
-        final String processId = Optional.ofNullable(phraseMatchPaperFilter.getProcessID()).map(String::valueOf).orElse(null);
-        final String insertQuery = "INSERT INTO paper.phrase_match_filtering_result_" + processId + "(origin_id,group_id,paper_no,truth_entity, synonym, is_key_present,status,stage,message, created_on) " +
-                " VALUES(?,?,?,?,?,?,?,?,?,now())";
-        final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.paper-filtering-phrase-match.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
-            try {
-                return new URL(s1);
-            } catch (MalformedURLException e) {
-                log.error("Error in processing the URL ", e);
-                throw new RuntimeException(e);
-            }
-        }).collect(Collectors.toList())).orElse(Collections.emptyList());
+        try {
+            final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(phraseMatchPaperFilter.getResourceConn());
+            jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
+            log.info(aMarker, "<-------Phrase match paper filter Action for {} has been started------->", phraseMatchPaperFilter.getName());
+            final String processId = Optional.ofNullable(phraseMatchPaperFilter.getProcessID()).map(String::valueOf).orElse(null);
+            final String insertQuery = "INSERT INTO paper.phrase_match_filtering_result_" + processId + "(origin_id,group_id,paper_no,truth_entity, synonym, is_key_present,status,stage,message, created_on) " +
+                    " VALUES(?,?,?,?,?,?,?,?,?,now())";
+            final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.paper-filtering-phrase-match.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
+                try {
+                    return new URL(s1);
+                } catch (MalformedURLException e) {
+                    log.error("Error in processing the URL ", e);
+                    throw new HandymanException("Error in processing the URL", e, action);
+                }
+            }).collect(Collectors.toList())).orElse(Collections.emptyList());
 
-        final CoproProcessor<PhraseMatchPaperFilterAction.PhraseMatchInputTable, PhraseMatchPaperFilterAction.PhraseMatchOutputTable> coproProcessor =
-                new CoproProcessor<>(new LinkedBlockingQueue<>(),
-                        PhraseMatchPaperFilterAction.PhraseMatchOutputTable.class,
-                        PhraseMatchPaperFilterAction.PhraseMatchInputTable.class,
-                        jdbi, log,
-                        new PhraseMatchPaperFilterAction.PhraseMatchInputTable(), urls, action);
-        coproProcessor.startProducer(phraseMatchPaperFilter.getQuerySet(), Integer.parseInt(phraseMatchPaperFilter.getReadBatchSize()));
-        Thread.sleep(1000);
-        coproProcessor.startConsumer(insertQuery, Integer.parseInt(phraseMatchPaperFilter.getThreadCount()),
-                Integer.parseInt(phraseMatchPaperFilter.getWriteBatchSize()),
-                new PhraseMatchPaperFilterAction.PhraseMatchConsumerProcess(log, aMarker, action));
-        log.info(aMarker, " Zero shot classifier has been completed {}  ", phraseMatchPaperFilter.getName());
+            final CoproProcessor<PhraseMatchPaperFilterAction.PhraseMatchInputTable, PhraseMatchPaperFilterAction.PhraseMatchOutputTable> coproProcessor =
+                    new CoproProcessor<>(new LinkedBlockingQueue<>(),
+                            PhraseMatchPaperFilterAction.PhraseMatchOutputTable.class,
+                            PhraseMatchPaperFilterAction.PhraseMatchInputTable.class,
+                            jdbi, log,
+                            new PhraseMatchPaperFilterAction.PhraseMatchInputTable(), urls, action);
+            coproProcessor.startProducer(phraseMatchPaperFilter.getQuerySet(), Integer.parseInt(phraseMatchPaperFilter.getReadBatchSize()));
+            Thread.sleep(1000);
+            coproProcessor.startConsumer(insertQuery, Integer.parseInt(phraseMatchPaperFilter.getThreadCount()),
+                    Integer.parseInt(phraseMatchPaperFilter.getWriteBatchSize()),
+                    new PhraseMatchPaperFilterAction.PhraseMatchConsumerProcess(log, aMarker, action));
+            log.info(aMarker, " Zero shot classifier has been completed {}  ", phraseMatchPaperFilter.getName());
 
+        } catch (Exception e) {
+            log.error(aMarker, "Error in phrase match with exception {}", ExceptionUtil.toString(e));
+            throw new HandymanException("Error in phrase match action", e, action);
+        }
 
     }
 
@@ -130,7 +135,7 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
                 log.debug(aMarker, "The Request Details: {}", request);
                 coproAPIProcessor(entity, parentObj, request);
             } catch (JsonProcessingException e) {
-                log.error("error in the phrase match paper filter copro api call {}",e.toString());
+                log.error("error in the phrase match paper filter copro api call {}", e.toString());
             }
             return parentObj;
         }

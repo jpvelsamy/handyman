@@ -9,6 +9,7 @@ import in.handyman.raven.lib.adapters.NameAdapter;
 import in.handyman.raven.lib.interfaces.AdapterInterface;
 import in.handyman.raven.lib.model.Nervalidator;
 import in.handyman.raven.lib.model.Validator;
+import in.handyman.raven.util.ExceptionUtil;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -50,7 +51,8 @@ public class NervalidatorAction implements IActionExecution {
                 confidenceScore = validator ? adapter.getThreshold() : 0;
             }
         } catch (Exception ex) {
-            throw new HandymanException("Failed to execute", ex);
+            log.error("Error in getting ner score {}", ExceptionUtil.toString(ex));
+            throw new HandymanException("Failed to execute", ex, action);
         }
         return confidenceScore;
     }
@@ -58,17 +60,17 @@ public class NervalidatorAction implements IActionExecution {
     @Override
     public void execute() throws Exception {
         try {
-            log.info(aMarker, "<-------Ner Validator Count Action for {} has been started------->" + nervalidator.getName());
+            log.info(aMarker, "Ner Validator Count Action for {} has been started" , nervalidator.getName());
             AdapterInterface nameAdapter = new NameAdapter();
             boolean validator = nameAdapter.getValidationModel(nervalidator.getInputValue(), URI);
             int confidenceScore = validator ? Integer.parseInt(nervalidator.getNerThreshold()) : 0;
             action.getContext().put("validator.score", String.valueOf(confidenceScore));
-            log.info(aMarker, "<-------Ner Validator Action for {} has been completed------->" + nervalidator.getName());
+            log.info(aMarker, "Ner Validator Action for {} has been completed" , nervalidator.getName());
 
         } catch (Exception ex) {
             action.getContext().put(nervalidator.getName().concat(".error"), "true");
-            log.info(aMarker, "The Exception occurred ", ex);
-            throw new HandymanException("Failed to execute", ex);
+            log.info(aMarker, "The Exception occurred {} ", ExceptionUtil.toString(ex));
+            throw new HandymanException("Failed to execute", ex, action);
         }
     }
 
