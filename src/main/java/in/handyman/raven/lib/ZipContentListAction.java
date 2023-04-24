@@ -1,10 +1,12 @@
 package in.handyman.raven.lib;
 
+import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.ZipContentList;
+import in.handyman.raven.util.ExceptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -78,7 +80,8 @@ public class ZipContentListAction implements IActionExecution {
         try {
           fileChecksum = getSHA256Checksum(zipFilePath, zipEntry.getName());
         } catch (IOException | NoSuchAlgorithmException e) {
-          throw new RuntimeException(e);
+          log.error(aMarker, "Error in generating checksum for the file {} with the exception {}", contentFile.toPath(), ExceptionUtil.toString(e));
+          throw new HandymanException("Error in generating checksum for the file", e, action);
         }
 
         ZipContentListDetail zipContentListDetail = ZipContentListDetail.builder()
@@ -100,8 +103,8 @@ public class ZipContentListAction implements IActionExecution {
         });
       });
     } catch (Exception e) {
-      log.error("Error creating zip file");
-      throw new RuntimeException("Error creating zip file", e);
+      log.error(aMarker, "Error creating zip file with exception {}", ExceptionUtil.toString(e));
+      throw new HandymanException("Error creating zip file", e, action);
     }
     log.info(aMarker, "Zip File List Action for {} has been completed" , zipContentList.getName());
 

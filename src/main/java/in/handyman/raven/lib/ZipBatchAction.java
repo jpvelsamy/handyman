@@ -6,6 +6,7 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.ZipBatch;
+import in.handyman.raven.util.ExceptionUtil;
 import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -141,7 +142,8 @@ public class ZipBatchAction implements IActionExecution {
                 log.info("{} Directory already exists", filepath);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error(aMarker, "Error in creating the directory {}", ExceptionUtil.toString(e));
+            throw new HandymanException("Error in creating directory", e, action);
         }
     }
 
