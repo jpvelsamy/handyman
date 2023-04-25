@@ -59,8 +59,8 @@ public class CheckboxVqaAction implements IActionExecution {
       final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(checkboxVqa.getResourceConn());
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
       log.info(aMarker, "<-------Urgency Triage Action for {} has been started------->", checkboxVqa.getName());
-      final String insertQuery = "INSERT INTO urgency_triage.chk_triage_transaction_"+checkboxVqa.getProcessID()+"(created_on, created_user_id, last_updated_on, last_updated_user_id, process_id, group_id, tenant_id, model_score, origin_id, paper_no, template_id, model_registry_id, triage_label, triage_state, paper_type, status, stage, message)" +
-              "values(now(),?,now(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      final String insertQuery = "INSERT INTO urgency_triage.chk_triage_transaction_"+checkboxVqa.getProcessID()+"(created_on, created_user_id, last_updated_on, last_updated_user_id, process_id, group_id, tenant_id, model_score, origin_id, paper_no, template_id, model_registry_id, triage_label, triage_state, paper_type, status, stage, message, checkbox_bbox)" +
+              "values(now(),?,now(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
       final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.checkbox-vqa.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
         try {
           return new URL(s1);
@@ -133,14 +133,15 @@ public class CheckboxVqaAction implements IActionExecution {
       try (Response response = httpclient.newCall(request).execute()) {
         String responseBody = Objects.requireNonNull(response.body()).string();
         if (response.isSuccessful()) {
-          String checkboxState = Optional.ofNullable(mapper.readTree(responseBody).get("checkbox_state")).map(JsonNode::asText).orElseThrow();
-          String extractedPrintedText = Optional.ofNullable(mapper.readTree(responseBody).get("extracted_printed_text")).map(JsonNode::asText).orElseThrow();
-          String paperFinalResult = Optional.ofNullable(mapper.readTree(responseBody).get("paper_type")).map(JsonNode::asText).orElseThrow();
+          String checkboxState = Optional.ofNullable(mapper.readTree(responseBody).get("checkbox_state")).map(JsonNode::asText).orElse(null);
+          String extractedPrintedText = Optional.ofNullable(mapper.readTree(responseBody).get("extracted_printed_text")).map(JsonNode::asText).orElse(null);
+          String paperFinalResult = Optional.ofNullable(mapper.readTree(responseBody).get("paper_type")).map(JsonNode::asText).orElse(null);
+          final String checkboxBoundingBox = Optional.ofNullable(mapper.readTree(responseBody).get("bbox")).map(JsonNode::toString).orElse(null);
           parentObj.add(CheckboxVqaOutputTable.builder()
                   .createdUserId(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).orElse(null))
                   .lastUpdatedUserId(Optional.ofNullable(entity.getLastUpdatedUserId()).map(String::valueOf).orElse(null))
                   .tenantId(Optional.ofNullable(entity.getTenantId()).map(String::valueOf).orElse(null))
-                  .modelScore(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).map(Double::parseDouble).orElse(null))
+                  .modelScore(Optional.ofNullable(entity.getModelScore()).map(String::valueOf).map(Double::parseDouble).orElse(null))
                   .processId(Optional.ofNullable(entity.getProcessId()).map(String::valueOf).map(Long::parseLong).orElse(null))
                   .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
@@ -148,6 +149,7 @@ public class CheckboxVqaAction implements IActionExecution {
                   .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
                   .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .triageLabel(extractedPrintedText)
+                  .bBox(checkboxBoundingBox)
                   .triageState(checkboxState)
                   .paperType(paperFinalResult)
                   .status("COMPLETED")
@@ -160,7 +162,7 @@ public class CheckboxVqaAction implements IActionExecution {
                   .createdUserId(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).orElse(null))
                   .lastUpdatedUserId(Optional.ofNullable(entity.getLastUpdatedUserId()).map(String::valueOf).orElse(null))
                   .tenantId(Optional.ofNullable(entity.getTenantId()).map(String::valueOf).orElse(null))
-                  .modelScore(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).map(Double::parseDouble).orElse(null))
+                  .modelScore(Optional.ofNullable(entity.getModelScore()).map(String::valueOf).map(Double::parseDouble).orElse(null))
                   .processId(Optional.ofNullable(checkboxVqa.getProcessID()).map(String::valueOf).map(Long::parseLong).orElse(null))
                   .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
@@ -178,7 +180,7 @@ public class CheckboxVqaAction implements IActionExecution {
                 .createdUserId(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).orElse(null))
                 .lastUpdatedUserId(Optional.ofNullable(entity.getLastUpdatedUserId()).map(String::valueOf).orElse(null))
                 .tenantId(Optional.ofNullable(entity.getTenantId()).map(String::valueOf).orElse(null))
-                .modelScore(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).map(Double::parseDouble).orElse(null))
+                .modelScore(Optional.ofNullable(entity.getModelScore()).map(String::valueOf).map(Double::parseDouble).orElse(null))
                 .processId(Optional.ofNullable(checkboxVqa.getProcessID()).map(String::valueOf).map(Long::parseLong).orElse(null))
                 .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
@@ -241,12 +243,13 @@ public class CheckboxVqaAction implements IActionExecution {
     private String status;
     private String stage;
     private String message;
+    private String bBox;
 
     @Override
     public List<Object> getRowData() {
       return Stream.of(this.createdUserId, this.lastUpdatedUserId, this.processId, this.groupId, this.tenantId, this.modelScore,
-              this.originId, this.paperNo, this.templateId, this.modelRegistryId, this.triageState,
-              this.triageLabel, this.paperType, this.status, this.stage, this.message
+              this.originId, this.paperNo, this.templateId, this.modelRegistryId, this.triageLabel, this.triageState,
+              this.paperType, this.status, this.stage, this.message, this.bBox
       ).collect(Collectors.toList());
     }
   }
