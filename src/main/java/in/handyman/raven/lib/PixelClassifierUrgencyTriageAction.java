@@ -144,9 +144,9 @@ public class PixelClassifierUrgencyTriageAction implements IActionExecution {
         String responseBody = Objects.requireNonNull(response.body()).string();
         if (response.isSuccessful()) {
           log.info("Response Details: {}",response);
-          String binaryModelOutput = Optional.ofNullable(mapper.readTree(responseBody).get("binary_model")).map(JsonNode::asText).orElseThrow();
-          String multiClassModelOutput = Optional.ofNullable(mapper.readTree(responseBody).get("multiclass_model")).map(JsonNode::asText).orElseThrow();
-          String checkboxModelOutput = Optional.ofNullable(mapper.readTree(responseBody).get("checkbox_model")).map(JsonNode::asText).orElseThrow();
+          String binaryModelOutput = Optional.ofNullable(mapper.readTree(responseBody).get("binary_model")).map(JsonNode::asText).orElse(null);
+          String multiClassModelOutput = Optional.ofNullable(mapper.readTree(responseBody).get("multiclass_model")).map(JsonNode::asText).orElse(null);
+          String checkboxModelOutput = Optional.ofNullable(mapper.readTree(responseBody).get("checkbox_model")).map(JsonNode::asText).orElse(null);
           parentObj.add(HwUrgencyTriageOutputTable.builder()
                   .createdUserId(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).orElse(null))
                   .lastUpdatedUserId(Optional.ofNullable(entity.getLastUpdatedUserId()).map(String::valueOf).orElse(null))

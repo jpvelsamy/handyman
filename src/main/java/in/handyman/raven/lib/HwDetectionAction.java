@@ -136,7 +136,7 @@ public class HwDetectionAction implements IActionExecution {
         String responseBody = Objects.requireNonNull(response.body()).string();
         if (response.isSuccessful()) {
           log.info("copro api response body {}",responseBody);
-          String documentStatus = Optional.ofNullable(mapper.readTree(responseBody).get("document_status")).map(JsonNode::asText).orElseThrow();
+          String documentStatus = Optional.ofNullable(mapper.readTree(responseBody).get("document_status")).map(JsonNode::asText).orElse(null);
           parentObj.add(HwClassificationOutputTable.builder()
                   .createdUserId(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).orElse(null))
                   .lastUpdatedUserId(Optional.ofNullable(entity.getLastUpdatedUserId()).map(String::valueOf).orElse(null))
