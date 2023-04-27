@@ -3,6 +3,7 @@ package in.handyman.raven.lib;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
@@ -58,7 +59,7 @@ public class CheckboxVqaAction implements IActionExecution {
     try {
       final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(checkboxVqa.getResourceConn());
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
-      log.info(aMarker, "<-------Urgency Triage Action for {} has been started------->", checkboxVqa.getName());
+      log.info(aMarker, "Urgency Triage Action for {} has been started", checkboxVqa.getName());
       final String insertQuery = "INSERT INTO urgency_triage.chk_triage_transaction_"+checkboxVqa.getProcessID()+"(created_on, created_user_id, last_updated_on, last_updated_user_id, process_id, group_id, tenant_id, model_score, origin_id, paper_no, template_id, model_registry_id, triage_label, triage_state, paper_type, status, stage, message, checkbox_bbox)" +
               "values(now(),?,now(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
       final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.checkbox-vqa.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
@@ -66,7 +67,7 @@ public class CheckboxVqaAction implements IActionExecution {
           return new URL(s1);
         } catch (MalformedURLException e) {
           log.error("Error in processing the URL ", e);
-          throw new RuntimeException(e);
+          throw new HandymanException("Error in processing the URL", e, action);
         }
       }).collect(Collectors.toList())).orElse(Collections.emptyList());
 
@@ -83,6 +84,8 @@ public class CheckboxVqaAction implements IActionExecution {
     } catch (Exception t) {
       action.getContext().put(checkboxVqa.getName() + ".isSuccessful", "false");
       log.error(aMarker, "Error at urgency triage execute method {}", ExceptionUtil.toString(t));
+      throw new HandymanException("error in execute method for urgency triage", t, action);
+
     }
   }
 
