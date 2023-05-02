@@ -126,6 +126,8 @@ action:
     |masterdataComparison
     |zipBatch
     |drugMatch
+    |urgencyTriageModel
+    |donutImpiraQa
     );
 
 
@@ -827,7 +829,21 @@ drugMatch:
     'drug-compare' drugCompare=STRING
     'using' '{' inputSet=STRING '}' ('on-condition' condition=expression)* ;
 
+urgencyTriageModel:
+    'urgencyTriageModel' 'as' name=STRING
+    'output-dir' outputDir=STRING
+    'resource-conn' resourceConn=STRING
+    'using'  '{'  querySet=STRING  '}' ('on-condition' condition=expression)*;
 
+
+donutImpiraQa:
+     'donut-impira-qa' 'as' name=STRING
+     'in-output-dir' outputDir=STRING
+     'on-resource-conn' resourceConn=STRING
+     'save-response-as' responseAs=STRING
+     'using'  '{' questionSql=STRING '}'
+     ('on-condition' condition=expression)*
+     ('on-parallel-fielding' forkBatchSize=STRING)*;
 
 
 //rules
