@@ -41,7 +41,7 @@ public class CoproStopAction implements IActionExecution {
   private final Marker aMarker;
 
   private final ObjectMapper mapper = new ObjectMapper();
-//  private final String URI;
+  //  private final String URI;
   private static final MediaType MediaTypeJSON = MediaType
           .parse("application/json; charset=utf-8");
 
@@ -65,7 +65,6 @@ public class CoproStopAction implements IActionExecution {
             .readTimeout(10, TimeUnit.MINUTES)
             .build();
     final ObjectNode objectNode = mapper.createObjectNode();
-    objectNode.put("processStartCommand", coproStop.getCommand());
     objectNode.put("processName","gunicorn");
     log.info(aMarker, " Input variables id : {}", action.getActionId());
     Request request = new Request.Builder().url(coproStop.getCoproServerUrl())
@@ -87,7 +86,7 @@ public class CoproStopAction implements IActionExecution {
                 .coproProcessId(Optional.ofNullable(responseObj.get("Pid")).map(String::valueOf).orElse(null))
 //                        .cpu(Optional.ofNullable(responseObj.get("cpu")).map(String::valueOf).orElse(null))
 //                        .gpu(Optional.ofNullable(responseObj.get("gpu")).map(String::valueOf).orElse(null))
-                .ram(Optional.ofNullable(responseObj.get("cpuUtitlize")).map(String::valueOf).orElse(null))
+                .ram(Optional.ofNullable(responseObj.get("cpuUtilize")).map(String::valueOf).orElse(null))
                 .gpuRam(Optional.ofNullable(responseObj.get("gpuUtilize")).map(String::valueOf).orElse(null))
                 .build();
         Thread.sleep(Long.parseLong(action.getContext().get("macro.copro.start.action")));

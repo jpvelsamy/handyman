@@ -26,12 +26,15 @@ public class CoproStart implements IActionContext {
 
   private String moduleName;
 
-  private String processID;
+  private String coproServerUrl;
 
-  private String command;
+  private String exportCommand;
+
+  private String processID;
 
   private String resourceConn;
 
-  private String coproServerUrl;
+  private String command;
+
   private Boolean condition = true;
 }

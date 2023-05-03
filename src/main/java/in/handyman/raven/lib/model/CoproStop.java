@@ -23,11 +23,16 @@ import lombok.NoArgsConstructor;
 )
 public class CoproStop implements IActionContext {
   private String name;
+
   private String moduleName;
+
+  private String coproServerUrl;
+
   private String processID;
-  private String command;
 
   private String resourceConn;
+
+  private String command;
+
   private Boolean condition = true;
-  private String coproServerUrl;
 }

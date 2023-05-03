@@ -29,103 +29,104 @@ import java.util.concurrent.TimeUnit;
         actionName = "CoproStart"
 )
 public class CoproStartAction implements IActionExecution {
-    private final ActionExecutionAudit action;
+  private final ActionExecutionAudit action;
 
-    private final Logger log;
+  private final Logger log;
 
-    private final CoproStart coproStart;
+  private final CoproStart coproStart;
 
-    private final Marker aMarker;
+  private final Marker aMarker;
 
-    private final ObjectMapper mapper = new ObjectMapper();
-//    private final String URI;
-    private static final MediaType MediaTypeJSON = MediaType
-            .parse("application/json; charset=utf-8");
+  private final ObjectMapper mapper = new ObjectMapper();
+  //    private final String URI;
+  private static final MediaType MediaTypeJSON = MediaType
+          .parse("application/json; charset=utf-8");
 
-    public CoproStartAction(final ActionExecutionAudit action, final Logger log,
-                            final Object coproStart) {
-        this.coproStart = (CoproStart) coproStart;
-        this.action = action;
-        this.log = log;
-        this.aMarker = MarkerFactory.getMarker(" CoproStart:" + this.coproStart.getName());
+  public CoproStartAction(final ActionExecutionAudit action, final Logger log,
+                          final Object coproStart) {
+    this.coproStart = (CoproStart) coproStart;
+    this.action = action;
+    this.log = log;
+    this.aMarker = MarkerFactory.getMarker(" CoproStart:" + this.coproStart.getName());
 //        this.URI = action.getContext().get("copro.admin.start.server.url");
 
-    }
+  }
 
-    @Override
-    public void execute() throws Exception {
-        final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(coproStart.getResourceConn());
-        log.info(aMarker, "copro admin API call for {} has been started------->", coproStart.getName());
-        final OkHttpClient httpclient = new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.MINUTES)
-                .writeTimeout(10, TimeUnit.MINUTES)
-                .readTimeout(10, TimeUnit.MINUTES)
-                .build();
-        final ObjectNode objectNode = mapper.createObjectNode();
-        objectNode.put("processStartCommand", coproStart.getCommand());
-        objectNode.put("exportCommand","CORPO_ZERO_SHOT_CLASSIFIER_ENABLE");
-        log.info(aMarker, " Input variables id : {}", action.getActionId());
-        Request request = new Request.Builder().url(coproStart.getCoproServerUrl())
-                .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-        log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n command : {} ", coproStart.getCoproServerUrl(), coproStart.getCommand());
-        String name = coproStart.getName() + "_response";
-        log.debug(aMarker, "The Request Details: {} ", request);
-        try (Response response = httpclient.newCall(request).execute()) {
-            String responseBody = response.body().string();
-            if (response.isSuccessful()) {
-                JSONObject responseObj = new JSONObject(responseBody);
-                CoproStartAction.coproStartActionEntity coproStartActionEntity = CoproStartAction.coproStartActionEntity
-                        .builder()
-                        .processId(Optional.ofNullable(coproStart.getProcessID()).map(Long::valueOf).orElse(null))
-                        .actionId(Optional.ofNullable(action.getActionId()).map(Long::valueOf).orElse(null))
-                        .rootPipelineId(Optional.ofNullable(action.getRootPipelineId()).map(Long::valueOf).orElse(null))
-                        .coproActionName(Optional.ofNullable(coproStart.getModuleName()).map(String::valueOf).orElse(null))
-                        .command(Optional.ofNullable(coproStart.getCommand()).map(String::valueOf).orElse(null))
-                        .coproProcessId(Optional.ofNullable(responseObj.get("Pid")).map(String::valueOf).orElse(null))
+  @Override
+  public void execute() throws Exception {
+    final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(coproStart.getResourceConn());
+    log.info(aMarker, "copro admin API call for {} has been started------->", coproStart.getName());
+    final OkHttpClient httpclient = new OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.MINUTES)
+            .writeTimeout(10, TimeUnit.MINUTES)
+            .readTimeout(10, TimeUnit.MINUTES)
+            .build();
+    final ObjectNode objectNode = mapper.createObjectNode();
+    objectNode.put("processStartCommand", coproStart.getCommand());
+    objectNode.put("exportCommand",coproStart.getExportCommand());
+    objectNode.put("processUp","1");
+    log.info(aMarker, " Input variables id : {}", action.getActionId());
+    Request request = new Request.Builder().url(coproStart.getCoproServerUrl())
+            .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
+    log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n command : {} ", coproStart.getCoproServerUrl(), coproStart.getCommand());
+    String name = coproStart.getName() + "_response";
+    log.debug(aMarker, "The Request Details: {} ", request);
+    try (Response response = httpclient.newCall(request).execute()) {
+      String responseBody = response.body().string();
+      if (response.isSuccessful()) {
+        JSONObject responseObj = new JSONObject(responseBody);
+        CoproStartAction.coproStartActionEntity coproStartActionEntity = CoproStartAction.coproStartActionEntity
+                .builder()
+                .processId(Optional.ofNullable(coproStart.getProcessID()).map(Long::valueOf).orElse(null))
+                .actionId(Optional.ofNullable(action.getActionId()).map(Long::valueOf).orElse(null))
+                .rootPipelineId(Optional.ofNullable(action.getRootPipelineId()).map(Long::valueOf).orElse(null))
+                .coproActionName(Optional.ofNullable(coproStart.getModuleName()).map(String::valueOf).orElse(null))
+                .command(Optional.ofNullable(coproStart.getCommand()).map(String::valueOf).orElse(null))
+                .coproProcessId(Optional.ofNullable(responseObj.get("Pid")).map(String::valueOf).orElse(null))
 //                        .cpu(Optional.ofNullable(responseObj.get("cpu")).map(String::valueOf).orElse(null))
 //                        .gpu(Optional.ofNullable(responseObj.get("gpu")).map(String::valueOf).orElse(null))
-                        .ram(Optional.ofNullable(responseObj.get("cpuUtitlize")).map(String::valueOf).orElse(null))
-                        .gpuRam(Optional.ofNullable(responseObj.get("gpuUtilize")).map(String::valueOf).orElse(null))
-                        .build();
-                Thread.sleep(Long.parseLong(action.getContext().get("macro.copro.stop.action")));
-                jdbi.useTransaction(handle -> handle.createUpdate("INSERT INTO info.resource_utilization_details (process_id, action_id, root_pipeline_id, copro_action_name, copro_pid, created_on, command_exec, cpu, gpu, ram, gpu_ram)" +
-                                " select :processId,:actionId,:rootPipelineId,:coproActionName,:coproProcessId,now(),:command,:cpu,:gpu,:ram,:gpuRam;")
-                        .bindBean(coproStartActionEntity)
-                        .execute());
-                log.info(aMarker, "The Successful Response for {} --> {}", name, responseBody);
-            } else {
-                log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
-            }
-            log.info(aMarker, "<--------copro admin API call for {} has been completed------->" , coproStart.getName());
-        } catch (Exception e) {
-            action.getContext().put(name.concat(".error"), "true");
-            action.getContext().put(name.concat(".errorMessage"), e.getMessage());
-            log.info(aMarker, "The Exception occurred ", e);
-            throw new HandymanException("Failed to execute", e);
-        }
+                .ram(Optional.ofNullable(responseObj.get("cpuUtilize")).map(String::valueOf).orElse(null))
+                .gpuRam(Optional.ofNullable(responseObj.get("gpuUtilize")).map(String::valueOf).orElse(null))
+                .build();
+        Thread.sleep(Long.parseLong(action.getContext().get("macro.copro.stop.action")));
+        jdbi.useTransaction(handle -> handle.createUpdate("INSERT INTO info.resource_utilization_details (process_id, action_id, root_pipeline_id, copro_action_name, copro_pid, created_on, command_exec, cpu, gpu, ram, gpu_ram)" +
+                        " select :processId,:actionId,:rootPipelineId,:coproActionName,:coproProcessId,now(),:command,:cpu,:gpu,:ram,:gpuRam;")
+                .bindBean(coproStartActionEntity)
+                .execute());
+        log.info(aMarker, "The Successful Response for {} --> {}", name, responseBody);
+      } else {
+        log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
+      }
+      log.info(aMarker, "<--------copro admin API call for {} has been completed------->" , coproStart.getName());
+    } catch (Exception e) {
+      action.getContext().put(name.concat(".error"), "true");
+      action.getContext().put(name.concat(".errorMessage"), e.getMessage());
+      log.info(aMarker, "The Exception occurred ", e);
+      throw new HandymanException("Failed to execute", e);
     }
+  }
 
-    @Override
-    public boolean executeIf() throws Exception {
-        return coproStart.getCondition();
-    }
+  @Override
+  public boolean executeIf() throws Exception {
+    return coproStart.getCondition();
+  }
 
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class coproStartActionEntity {
-        private Long processId;
-        private Long actionId;
-        private Long rootPipelineId;
-        private String command;
-        private String coproActionName;
-        private String coproProcessId;
-        private String cpu;
-        private String gpu;
-        private String ram;
-        private String gpuRam;
+  @Data
+  @AllArgsConstructor
+  @NoArgsConstructor
+  @Builder
+  public static class coproStartActionEntity {
+    private Long processId;
+    private Long actionId;
+    private Long rootPipelineId;
+    private String command;
+    private String coproActionName;
+    private String coproProcessId;
+    private String cpu;
+    private String gpu;
+    private String ram;
+    private String gpuRam;
 
-    }
+  }
 }
