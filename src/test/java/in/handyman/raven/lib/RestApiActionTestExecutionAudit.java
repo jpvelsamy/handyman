@@ -75,15 +75,15 @@ class RestApiActionTestExecutionAudit {
     public void performanceOpt()
     {
         LContext request = LContext.builder()
-                .pipelineName("root.processor")
+                .pipelineName("root.processor#1")
                 .processLoadType(HRequestResolver.LoadType.FILE.name())
                 .inheritedContext(Map.ofEntries(Map.entry("created_user_id", "-1"),
                         Map.entry("batch_id","TMP-AGD-001"),
                         Map.entry("tenant_id","TND-001"),
                         Map.entry("document_id","TMP-AGD-001"),
                         Map.entry("last_updated_user_id","-1"),
-                        Map.entry("dir_path","/home/anandh.andrews@zucisystems.com/W-space/pr1-lambdas/agadia/input/"),
-                        Map.entry("target_directory_path","/home/anandh.andrews@zucisystems.com/W-space/pr1-lambdas/agadia/agadia_output")))
+                        Map.entry("dir_path","/home/dineshkumar.anandan@zucisystems.com/Pipeline/2_pdf/"),
+                        Map.entry("target_directory_path","/home/dineshkumar.anandan@zucisystems.com/Pipeline/output")))
                 .build();
         log.info(request.toString());
         LambdaEngine.start(request);
