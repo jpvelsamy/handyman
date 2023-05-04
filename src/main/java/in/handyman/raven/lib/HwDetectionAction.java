@@ -61,8 +61,8 @@ public class HwDetectionAction implements IActionExecution {
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
 
       log.info(aMarker, "<-------Handwritten Classification Action for {} has been started------->", hwDetection.getName());
-      final String insertQuery = "INSERT INTO paper_classification.paper_classification_result(created_on, created_user_id, last_updated_on, last_updated_user_id, tenant_id, model_score, origin_id, paper_no, template_id, model_registry_id, document_type, status, stage, message)" +
-              "values(now(),?,now(),?,?,?,?,?,?,?,?,?,?,?)";
+      final String insertQuery = "INSERT INTO paper_classification.paper_classification_result(created_on, created_user_id, last_updated_on, last_updated_user_id, tenant_id, model_score, origin_id, paper_no, template_id, model_registry_id, document_type, status, stage, message, group_id)" +
+              "values(now(),?,now(),?,?,?,?,?,?,?,?,?,?,?,?)";
       final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.hw-detection.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
         try {
           return new URL(s1);
@@ -144,6 +144,7 @@ public class HwDetectionAction implements IActionExecution {
                   .paperNo(Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
                   .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .documentType(documentStatus)
                   .status("COMPLETED")
                   .stage(STAGE)
@@ -160,6 +161,7 @@ public class HwDetectionAction implements IActionExecution {
                   .paperNo(Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
                   .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .status("FAILED")
                   .stage(STAGE)
                   .message(response.message())
@@ -176,6 +178,7 @@ public class HwDetectionAction implements IActionExecution {
                 .paperNo(Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
                 .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .status("FAILED")
                 .stage(STAGE)
                 .message(ExceptionUtil.toString(e))
@@ -198,9 +201,11 @@ public class HwDetectionAction implements IActionExecution {
     private Double modelScore;
     private String originId;
     private Integer paperNo;
+    private Integer groupId;
     private String templateId;
     private String modelRegistryId;
     private String filePath;
+
 
     @Override
     public List<Object> getRowData() {
@@ -220,6 +225,7 @@ public class HwDetectionAction implements IActionExecution {
     private String tenantId;
     private Double modelScore;
     private String originId;
+    private Integer groupId;
     private Integer paperNo;
     private String templateId;
     private Integer modelRegistryId;
@@ -232,7 +238,7 @@ public class HwDetectionAction implements IActionExecution {
     public List<Object> getRowData() {
       return Stream.of(this.createdUserId,this.lastUpdatedUserId, this.tenantId, this.modelScore,
               this.originId, this.paperNo, this.templateId, this.modelRegistryId,
-              this.documentType, this.status, this.stage, this.message).collect(Collectors.toList());
+              this.documentType, this.status, this.stage, this.message, this.groupId).collect(Collectors.toList());
     }
   }
 
