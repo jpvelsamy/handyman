@@ -791,16 +791,25 @@ resource : STRING;
 
 
 coproStart:
-    'coproStart' 'as' name=STRING 'for' moduleName=STRING 'copro-server-url' coproServerUrl=STRING
-    'process-id' processID=STRING  'resource-conn' resourceConn=STRING
-    'using'
-    '{'  command=STRING  '}' ('on-condition' condition=expression)*;
+	'coproStart' 'as' name=STRING
+	'for' moduleName=STRING
+	'copro-server-url' coproServerUrl=STRING
+	'export-command' exportCommand=STRING
+	'process-id' processID=STRING
+	'resource-conn' resourceConn=STRING
+	'using'
+	'{' command=STRING '}'
+	('on-condition' condition=expression)*;
 
 coproStop:
-    'coproStop' 'as' name=STRING 'for' moduleName=STRING 'copro-server-url' coproServerUrl=STRING
-    'process-id' processID=STRING 'resource-conn' resourceConn=STRING
-    'using'
-    '{'  command=STRING  '}' ('on-condition' condition=expression)*;
+	'coproStop' 'as' name=STRING
+	'for' moduleName=STRING
+	'copro-server-url' coproServerUrl=STRING
+	'process-id' processID=STRING
+	'resource-conn' resourceConn=STRING
+	'using'
+	'{' command=STRING '}'
+	('on-condition' condition=expression)*;
 
  outboundDeliveryNotify:
      'outbound-delivery-notify' 'as' name=STRING
