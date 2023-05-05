@@ -1,0 +1,58 @@
+process "test.restapi"
+{
+
+	 try {
+
+             assign as "root" source "${intics_agadia}" using {
+
+                 "SELECT process_id as process_id,
+                  batch_id as batch_id,
+                  intics_reference_id as intics_reference_id,
+                  fax_reference_id as fax_reference_id
+                  FROM intics_agadia.add_fax_pipeline_audit;"
+
+             }
+
+             assign as "root2" source "${intics_agadia}" using {
+
+                "SELECT concat_ws ('/','${parent_dir}','${root.process_id}','${root.batch_id}','${root.intics_reference_id}','${root.fax_reference_id}') as target_directory_path;"
+
+             }
+
+
+             createDirectory as "creating directory" using {
+
+                 "${root2.target_directory_path}"
+
+             }
+
+
+             checksum
+             as "generating checksum for sample"
+             file-path "/home/bharath.k@zucisystems.com/Documents/cub-lambdas-Icarus/1/12/123/1234"
+             file-name "a.zip" using {
+
+                 "SELECT 1"
+
+             }
+
+             fileSize
+             as "generating filesize for sample"
+             file-path "/home/bharath.k@zucisystems.com/Documents/cub-lambdas-Icarus/1/12/123/1234"
+             file-name "a.zip" using {
+
+                 "SELECT 1"
+
+             }
+
+
+	}
+	
+	catch {
+
+	}
+
+	finally {
+
+	}
+} 
