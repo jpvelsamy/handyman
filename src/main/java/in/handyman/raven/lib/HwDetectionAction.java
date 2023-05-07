@@ -61,8 +61,8 @@ public class HwDetectionAction implements IActionExecution {
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
 
       log.info(aMarker, "<-------Handwritten Classification Action for {} has been started------->", hwDetection.getName());
-      final String insertQuery = "INSERT INTO paper_classification.paper_classification_result(created_on, created_user_id, last_updated_on, last_updated_user_id, tenant_id, model_score, origin_id, paper_no, template_id, model_registry_id, document_type, status, stage, message)" +
-              "values(now(),?,now(),?,?,?,?,?,?,?,?,?,?,?)";
+      final String insertQuery = "INSERT INTO paper_classification.paper_classification_result(created_on, created_user_id, last_updated_on, last_updated_user_id, tenant_id, model_score, origin_id, paper_no, template_id, model_registry_id, document_type, status, stage, message,group_id)" +
+              "values(now(),?,now(),?,?,?,?,?,?,?,?,?,?,?, ?)";
       final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.hw-detection.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
         try {
           return new URL(s1);
@@ -148,6 +148,7 @@ public class HwDetectionAction implements IActionExecution {
                   .status("COMPLETED")
                   .stage(STAGE)
                   .message("Paper Classification Finished")
+                  .groupId(entity.groupId)
                   .build());
         }
         else {
@@ -163,6 +164,7 @@ public class HwDetectionAction implements IActionExecution {
                   .status("FAILED")
                   .stage(STAGE)
                   .message(response.message())
+                  .groupId(entity.groupId)
                   .build());
           log.info(aMarker, "The Exception occurred in paper classification response");
         }
@@ -179,6 +181,7 @@ public class HwDetectionAction implements IActionExecution {
                 .status("FAILED")
                 .stage(STAGE)
                 .message(ExceptionUtil.toString(e))
+                        .groupId(entity.groupId)
                 .build());
         log.error(aMarker, "The Exception occurred in paper classification request", e);
 
@@ -201,6 +204,7 @@ public class HwDetectionAction implements IActionExecution {
     private String templateId;
     private String modelRegistryId;
     private String filePath;
+    private Integer groupId;
 
     @Override
     public List<Object> getRowData() {
@@ -227,12 +231,13 @@ public class HwDetectionAction implements IActionExecution {
     private String status;
     private String stage;
     private String message;
+    private Integer groupId;
 
     @Override
     public List<Object> getRowData() {
       return Stream.of(this.createdUserId,this.lastUpdatedUserId, this.tenantId, this.modelScore,
               this.originId, this.paperNo, this.templateId, this.modelRegistryId,
-              this.documentType, this.status, this.stage, this.message).collect(Collectors.toList());
+              this.documentType, this.status, this.stage, this.message,this.groupId).collect(Collectors.toList());
     }
   }
 
