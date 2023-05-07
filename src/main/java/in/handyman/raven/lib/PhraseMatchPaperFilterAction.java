@@ -59,8 +59,8 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
         jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
         log.info(aMarker, "<-------Phrase match paper filter Action for {} has been started------->", phraseMatchPaperFilter.getName());
         final String processId = Optional.ofNullable(phraseMatchPaperFilter.getProcessID()).map(String::valueOf).orElse(null);
-        final String insertQuery = "INSERT INTO paper.phrase_match_filtering_result_" + processId + "(origin_id,group_id,paper_no,truth_entity, synonym, is_key_present,status,stage,message, created_on) " +
-                " VALUES(?,?,?,?,?,?,?,?,?,now())";
+        final String insertQuery = "INSERT INTO paper.phrase_match_filtering_result_" + processId + "(origin_id,group_id,paper_no,truth_entity, synonym, is_key_present,status,stage,message, created_on,root_pipeline_id) " +
+                " VALUES(?,?,?,?,?,?,?,?,?,now(), ?)";
         final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.paper-filtering-phrase-match.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
             try {
                 return new URL(s1);
@@ -154,6 +154,7 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
                                 .status("COMPLETED")
                                 .stage(actionName)
                                 .message("Completed API call phrase match")
+                                .rootPipelineId(entity.rootPipelineId)
                                 .build());
                     });
                 } else {
@@ -166,6 +167,7 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
                                     .paperNo(entity.paperNo)
                                     .stage(actionName)
                                     .message(Optional.of(responseBody).map(String::valueOf).orElse(null))
+                                    .rootPipelineId(entity.rootPipelineId)
                                     .build());
                     log.info(aMarker, "The Exception occurred in Phrase match API call");
                 }
@@ -180,6 +182,7 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
                                 .paperNo(entity.paperNo)
                                 .stage(actionName)
                                 .message(ExceptionUtil.toString(e))
+                                .rootPipelineId(entity.rootPipelineId)
                                 .build());
 
             }
@@ -197,6 +200,7 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
         private String pageContent;
         private String truthPlaceholder;
         private String processId;
+        private Long rootPipelineId;
 //        private String truthEntity;
 
         @Override
@@ -223,11 +227,13 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
         private String stage;
 
         private String message;
+        private Long rootPipelineId;
 
 
         @Override
         public List<Object> getRowData() {
-            return Stream.of(this.originId, this.groupId, this.paperNo, this.truthEntity, this.entity, this.isKeyPresent, this.status, this.stage, this.message).collect(Collectors.toList());
+            return Stream.of(this.originId, this.groupId, this.paperNo, this.truthEntity, this.entity,
+                    this.isKeyPresent, this.status, this.stage, this.message,this.rootPipelineId).collect(Collectors.toList());
         }
     }
 

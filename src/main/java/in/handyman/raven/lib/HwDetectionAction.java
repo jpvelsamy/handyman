@@ -209,7 +209,6 @@ public class HwDetectionAction implements IActionExecution {
     private String templateId;
     private String modelRegistryId;
     private String filePath;
-    private Integer groupId;
 
 
     @Override
@@ -238,7 +237,6 @@ public class HwDetectionAction implements IActionExecution {
     private String status;
     private String stage;
     private String message;
-    private Integer groupId;
 
     @Override
     public List<Object> getRowData() {
