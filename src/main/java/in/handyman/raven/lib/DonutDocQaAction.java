@@ -84,8 +84,8 @@ public class DonutDocQaAction implements IActionExecution {
 
         // Create DDL
 
-        jdbi.useTransaction(handle -> handle.execute("create table if not exists macro." + donutDocQa.getResponseAs() + " ( id bigserial not null, file_path text,question text, predicted_attribution_value text,b_box json null, image_dpi int8 null, image_width int8 null, image_height int8 null, extracted_image_unit varchar null, action_id bigint, root_pipeline_id bigint,process_id bigint, created_date timestamp not null default now() );"));
-        jdbi.useTransaction(handle -> handle.execute("create table if not exists macro." + donutDocQa.getResponseAs() + "_error ( id bigserial not null, file_path text,error_message text,  action_id bigint, root_pipeline_id bigint,process_id bigint, created_date timestamp not null default now() );"));
+        jdbi.useTransaction(handle -> handle.execute("create table if not exists macro." + donutDocQa.getResponseAs() + " ( id bigserial not null, file_path text,question text, predicted_attribution_value text,b_box json null, image_dpi int8 null, image_width int8 null, image_height int8 null, extracted_image_unit varchar null, action_id bigint, root_pipeline_id bigint,process_id bigint, created_on timestamp not null default now(),status varchar NULL,stage varchar NULL );"));
+        jdbi.useTransaction(handle -> handle.execute("create table if not exists macro." + donutDocQa.getResponseAs() + "_error ( id bigserial not null, file_path text,error_message text,  action_id bigint, root_pipeline_id bigint,process_id bigint, created_on timestamp not null default now() );"));
 
         final List<DonutLineItem> donutLineItems = new ArrayList<>();
 
@@ -152,7 +152,7 @@ public class DonutDocQaAction implements IActionExecution {
                 log.info(aMarker, "completed {}", lineItems.attributes.size());
 
                 jdbi.useTransaction(handle -> {
-                    final PreparedBatch batch = handle.prepareBatch("INSERT INTO macro." + donutDocQa.getResponseAs() + " (process_id,file_path,question, predicted_attribution_value,b_box, image_dpi , image_width , image_height , extracted_image_unit , action_id, root_pipeline_id) VALUES(" + action.getPipelineId() + ",:filePath,:question,:predictedAttributionValue, :bBoxes::json, :imageDpi, :imageWidth, :imageHeight , :extractedImageUnit, "+ action.getActionId()+","+ action.getRootPipelineId()+");");
+                    final PreparedBatch batch = handle.prepareBatch("INSERT INTO macro." + donutDocQa.getResponseAs() + " (process_id,file_path,question, predicted_attribution_value,b_box, image_dpi , image_width , image_height , extracted_image_unit , action_id, root_pipeline_id,status,stage) VALUES(" + action.getPipelineId() + ",:filePath,:question,:predictedAttributionValue, :bBoxes::json, :imageDpi, :imageWidth, :imageHeight , :extractedImageUnit, "+ action.getActionId()+","+ action.getRootPipelineId()+",:status,:stage);");
 
                     Lists.partition(lineItems.attributes, 100).forEach(resultLineItems -> {
                         log.info(aMarker, "inserting into donut_docqa_action {}", resultLineItems.size());
@@ -161,10 +161,12 @@ public class DonutDocQaAction implements IActionExecution {
                                         .bind("question", resultLineItem.question)
                                         .bind("predictedAttributionValue", resultLineItem.predictedAttributionValue)
                                         .bind("bBoxes", String.valueOf(resultLineItem.bBoxes))
-                                            .bind("imageDpi", lineItems.imageDPI)
+                                        .bind("imageDpi", lineItems.imageDPI)
                                         .bind("imageWidth", lineItems.imageWidth)
                                         .bind("imageHeight", lineItems.imageHeight)
                                         .bind("extractedImageUnit", lineItems.extractedImageUnit)
+                                        .bind("status","COMPLETED")
+                                        .bind("stage","VQA_TRANSACTION")
                                         .add();
 
                         });
