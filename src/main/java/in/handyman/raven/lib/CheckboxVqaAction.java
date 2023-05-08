@@ -3,6 +3,7 @@ package in.handyman.raven.lib;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
@@ -58,7 +59,7 @@ public class CheckboxVqaAction implements IActionExecution {
     try {
       final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(checkboxVqa.getResourceConn());
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
-      log.info(aMarker, "<-------Urgency Triage Action for {} has been started------->", checkboxVqa.getName());
+      log.info(aMarker, "Urgency Triage Action for {} has been started", checkboxVqa.getName());
       final String insertQuery = "INSERT INTO urgency_triage.chk_triage_transaction_"+checkboxVqa.getProcessID()+"(created_on, created_user_id, last_updated_on, last_updated_user_id, process_id, group_id, tenant_id, model_score, origin_id, paper_no, template_id, model_registry_id, triage_label, triage_state, paper_type, status, stage, message, checkbox_bbox)" +
               "values(now(),?,now(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
       final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.checkbox-vqa.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
@@ -66,7 +67,7 @@ public class CheckboxVqaAction implements IActionExecution {
           return new URL(s1);
         } catch (MalformedURLException e) {
           log.error("Error in processing the URL ", e);
-          throw new RuntimeException(e);
+          throw new HandymanException("Error in processing the URL", e, action);
         }
       }).collect(Collectors.toList())).orElse(Collections.emptyList());
 
@@ -80,9 +81,11 @@ public class CheckboxVqaAction implements IActionExecution {
       Thread.sleep(1000);
       coproProcessor.startConsumer(insertQuery,  Integer.valueOf(action.getContext().get("consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")), new CheckboxVqaConsumerProcess(log, aMarker, action));
       log.info(aMarker, " Urgency Triage has been completed {}  ", checkboxVqa.getName());
-    } catch (Throwable t) {
+    } catch (Exception t) {
       action.getContext().put(checkboxVqa.getName() + ".isSuccessful", "false");
-      log.error(aMarker, "Error at urgency triage execute method {}", t);
+      log.error(aMarker, "Error at urgency triage execute method {}", ExceptionUtil.toString(t));
+      throw new HandymanException("error in execute method for urgency triage", t, action);
+
     }
   }
 
@@ -156,7 +159,7 @@ public class CheckboxVqaAction implements IActionExecution {
                   .stage("TRIAGE_CHECKBOX")
                   .message("Urgency Triage Finished")
                   .build());
-          log.info(aMarker, "Execute for urgency triage",response);
+          log.info(aMarker, "Execute for urgency triage {}",response);
         } else {
           parentObj.add(CheckboxVqaOutputTable.builder()
                   .createdUserId(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).orElse(null))
@@ -173,7 +176,7 @@ public class CheckboxVqaAction implements IActionExecution {
                   .stage("TRIAGE_CHECKBOX")
                   .message(response.message())
                   .build());
-          log.error(aMarker, "The Exception occurred in urgency triage",response);
+          log.error(aMarker, "The Exception occurred in urgency triage {}",response);
         }
       } catch (Exception e) {
         parentObj.add(CheckboxVqaOutputTable.builder()
@@ -191,7 +194,7 @@ public class CheckboxVqaAction implements IActionExecution {
                 .stage("TRIAGE_CHECKBOX")
                 .message(ExceptionUtil.toString(e))
                 .build());
-        log.error(aMarker, "The Exception occurred in urgency triage", e);
+        log.error(aMarker, "The Exception occurred in urgency triage {}", ExceptionUtil.toString(e));
       }
       return parentObj;
     }

@@ -3,6 +3,7 @@ package in.handyman.raven.lib;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
@@ -60,8 +61,7 @@ public class HwDetectionAction implements IActionExecution {
       final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(hwDetection.getResourceConn());
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
 
-      log.info(aMarker, "<-------Handwritten Classification Action for {} has been started------->", hwDetection.getName());
-
+      log.info(aMarker, "Handwritten Classification Action for {} has been started", hwDetection.getName());
       final String insertQuery = "INSERT INTO paper_classification.paper_classification_result(created_on, created_user_id, last_updated_on, last_updated_user_id, tenant_id, model_score, origin_id, paper_no, template_id, model_registry_id, document_type, status, stage, message, group_id, root_pipeline_id)" +
               "values(now(),?,now(),?,?,?,?,?,?,?,?,?,?,?,?, ?)";
       final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.hw-detection.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
@@ -84,9 +84,10 @@ public class HwDetectionAction implements IActionExecution {
       Thread.sleep(1000);
       coproProcessor.startConsumer(insertQuery, Integer.valueOf(action.getContext().get("consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")), new HwClassificationConsumerProcess(log, aMarker, action));
       log.info(aMarker, " Handwritten Classification has been completed {}  ", hwDetection.getName());
-    } catch (Throwable t){
+    } catch (Exception e){
       action.getContext().put(hwDetection.getName() + ".isSuccessful", "false");
-      log.error(aMarker, "Error at handwritten classification execute method {}", t);
+      log.error(aMarker, "Error at handwritten classification execute method {}", ExceptionUtil.toString(e));
+      throw new HandymanException("Error at handwritten classification execute method ", e, action);
     }
   }
 

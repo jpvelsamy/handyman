@@ -19,6 +19,7 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 import java.util.Map;
+import java.util.Objects;
 
 
 /**
@@ -63,7 +64,7 @@ public class PaperItemizationAction implements IActionExecution {
         log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n Input-File-Path : {} \n Output-Directory : {}", URI, paperItemization.getFilePath(), paperItemization.getOutputDir());
 
         try (Response response = httpclient.newCall(request).execute()) {
-            String responseBody = response.body().string();
+            String responseBody = Objects.requireNonNull(response.body()).string();
             log.info(aMarker, "The response received successfully for Asset ID and Attribution List {}", responseBody);
             String name = paperItemization.getName() + "-Paper-itemized-response";
             if (response.isSuccessful()) {
@@ -81,7 +82,7 @@ public class PaperItemizationAction implements IActionExecution {
             }
         } catch (Exception e) {
             log.info(aMarker, "The Exception occurred ", e);
-            throw new HandymanException("Failed to execute", e);
+            throw new HandymanException("Failed to execute", e, action);
         }
 
     }

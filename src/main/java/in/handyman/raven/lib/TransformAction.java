@@ -45,7 +45,7 @@ public class TransformAction implements IActionExecution {
 
     @Override
     public void execute() {
-        log.info(aMarker, "<-------Transform Action for {} has been started------->" + transform.getName());
+        log.info(aMarker, "Transform Action for {} has been started" , transform.getName());
         final String dbSrc = transform.getOn();
         log.info(aMarker, "Transform action input variables id: {}, name: {}, source-database: {} ", actionExecutionAudit.getActionId(), transform.getName(), dbSrc);
         log.debug(aMarker, "Sql input post parameter ingestion \n {}", transform.getValue());
@@ -69,28 +69,28 @@ public class TransformAction implements IActionExecution {
                             log.info(aMarker, "Transform id# {}, executed script {} rows returned {}", statementId, sqlToExecute, rowCount);
                             stmt.clearWarnings();
                         } catch (SQLSyntaxErrorException ex) {
-                            log.error(aMarker, "Stopping execution, General Error executing sql for {} with for {}", sqlToExecute, ex);
+                            log.error(aMarker, "Stopping execution, General Error executing sql for {} with for {}", sqlToExecute, ExceptionUtil.toString(ex));
                             log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
-                            throw new HandymanException("Process failed", ex);
+                            throw new HandymanException("Process failed", ex, actionExecutionAudit);
                         } catch (SQLException ex) {
                             log.error(aMarker, "Continuing to execute, even though SQL Error executing sql for {} ", sqlToExecute, ex);
                             log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
-                            throw new HandymanException("Process failed", ex);
+                            throw new HandymanException("Process failed", ex, actionExecutionAudit);
                         } catch (Exception ex) {
-                            log.error(aMarker, "Stopping execution, General Error executing sql for {} with for {}", sqlToExecute, ex);
+                            log.error(aMarker, "Stopping execution, General Error executing sql for {} with for {}", sqlToExecute, ExceptionUtil.toString(ex));
                             log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
-                            throw new HandymanException("Process failed", ex);
+                            throw new HandymanException("Process failed", ex, actionExecutionAudit);
                         }
                     }
                     connection.commit();
                     log.debug(aMarker, "Completed Transform id#{}, name#{}, dbSrc#{}, sqlList#{}", actionExecutionAudit.getActionId(), transform.getName()
                             , dbSrc, sqlList);
                 }
-                log.info(aMarker, "<-------Transform Action for {} has been completed------->" + transform.getName());
+                log.info(aMarker, "Transform Action for {} has been completed" , transform.getName());
             } catch (SQLException ex) {
                 log.error(aMarker, "Stopping execution, Fetching connection failed", ex);
                 log.info(aMarker, "connection.exception {}", ExceptionUtil.toString(ex));
-                throw new HandymanException("Process failed", ex);
+                throw new HandymanException("Process failed", ex, actionExecutionAudit);
             }
         });
 

@@ -8,6 +8,7 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.CoproStart;
+import in.handyman.raven.util.ExceptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -83,28 +85,26 @@ public class CoproStartAction implements IActionExecution {
                 .coproActionName(Optional.ofNullable(coproStart.getModuleName()).map(String::valueOf).orElse(null))
                 .command(Optional.ofNullable(coproStart.getCommand()).map(String::valueOf).orElse(null))
                 .coproProcessId(Optional.ofNullable(responseObj.get("Pid")).map(String::valueOf).orElse(null))
-//                        .cpu(Optional.ofNullable(responseObj.get("cpu")).map(String::valueOf).orElse(null))
-//                        .gpu(Optional.ofNullable(responseObj.get("gpu")).map(String::valueOf).orElse(null))
-                .ram(Optional.ofNullable(responseObj.get("cpuUtilize")).map(String::valueOf).orElse(null))
-                .gpuRam(Optional.ofNullable(responseObj.get("gpuUtilize")).map(String::valueOf).orElse(null))
-                .build();
-        Thread.sleep(Long.parseLong(action.getContext().get("macro.copro.stop.action")));
-        jdbi.useTransaction(handle -> handle.createUpdate("INSERT INTO info.resource_utilization_details (process_id, action_id, root_pipeline_id, copro_action_name, copro_pid, created_on, command_exec, cpu, gpu, ram, gpu_ram)" +
-                        " select :processId,:actionId,:rootPipelineId,:coproActionName,:coproProcessId,now(),:command,:cpu,:gpu,:ram,:gpuRam;")
-                .bindBean(coproStartActionEntity)
-                .execute());
-        log.info(aMarker, "The Successful Response for {} --> {}", name, responseBody);
-      } else {
-        log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
-      }
-      log.info(aMarker, "<--------copro admin API call for {} has been completed------->" , coproStart.getName());
-    } catch (Exception e) {
-      action.getContext().put(name.concat(".error"), "true");
-      action.getContext().put(name.concat(".errorMessage"), e.getMessage());
-      log.info(aMarker, "The Exception occurred ", e);
-      throw new HandymanException("Failed to execute", e);
+                        .ram(Optional.ofNullable(responseObj.get("cpuUtilize")).map(String::valueOf).orElse(null))
+                        .gpuRam(Optional.ofNullable(responseObj.get("gpuUtilize")).map(String::valueOf).orElse(null))
+                        .build();
+                Thread.sleep(Long.parseLong(action.getContext().get("macro.copro.stop.action")));
+                jdbi.useTransaction(handle -> handle.createUpdate("INSERT INTO info.resource_utilization_details (process_id, action_id, root_pipeline_id, copro_action_name, copro_pid, created_on, command_exec, cpu, gpu, ram, gpu_ram)" +
+                                " select :processId,:actionId,:rootPipelineId,:coproActionName,:coproProcessId,now(),:command,:cpu,:gpu,:ram,:gpuRam;")
+                        .bindBean(coproStartActionEntity)
+                        .execute());
+                log.info(aMarker, "The Successful Response for {} --> {}", name, responseBody);
+            } else {
+                log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
+            }
+            log.info(aMarker, "copro admin API call for {} has been completed" , coproStart.getName());
+        } catch (Exception e) {
+            action.getContext().put(name.concat(".error"), "true");
+            action.getContext().put(name.concat(".errorMessage"), e.getMessage());
+            log.info(aMarker, "The Exception occurred {}", ExceptionUtil.toString(e));
+            throw new HandymanException("Failed to execute", e, action);
+        }
     }
-  }
 
   @Override
   public boolean executeIf() throws Exception {

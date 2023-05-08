@@ -48,7 +48,7 @@ public class DownloadAssetAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-        log.info(aMarker, "<-------Download Action for {} has been started------->" + downloadAsset.getName());
+        log.info(aMarker, "Download Action for {} has been started" , downloadAsset.getName());
         final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
 
         // convert the book to JSON by Jackson
@@ -77,9 +77,9 @@ public class DownloadAssetAction implements IActionExecution {
         } catch (Exception e) {
             log.error(aMarker, "The Exception occurred ", e);
             action.getContext().put(name + ".isSuccessful", "false");
-            throw new HandymanException("Failed to execute", e);
+            throw new HandymanException("Failed to execute", e, action);
         }
-        log.info(aMarker, "<-------Download Action for {} has been Completed------->" + downloadAsset.getName());
+        log.info(aMarker, "Download Action for {} has been Completed" , downloadAsset.getName());
     }
 
     @Override

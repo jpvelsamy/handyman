@@ -8,6 +8,7 @@ import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.AssetInfo;
 import in.handyman.raven.util.CommonQueryUtil;
+import in.handyman.raven.util.ExceptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -62,7 +63,7 @@ public class AssetInfoAction implements IActionExecution {
     @Override
     public void execute() throws Exception {
         try {
-            log.info(aMarker, "Asset Info Action for {} has been started" + assetInfo.getName());
+            log.info(aMarker, "Asset Info Action for {} has been started" , assetInfo.getName());
 
             final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(assetInfo.getResourceConn());
             final List<inputResult> tableInfos = new ArrayList<>();
@@ -96,8 +97,8 @@ public class AssetInfoAction implements IActionExecution {
                             log.info(aMarker, "Iterating each file in directory {}", files);
                             files.forEach(pathList::add);
                         } catch (IOException e) {
-                            log.error(aMarker, "error occured in directory iteration {}", e);
-                            throw new RuntimeException(e);
+                            log.error(aMarker, "Exception occurred in directory iteration {}", ExceptionUtil.toString(e));
+                            throw new HandymanException("Exception occurred in directory iteration", e, action);
                         }
                         pathList.forEach(path -> {
                             log.info(aMarker, "insert query for each file from dir {}", path);
@@ -116,8 +117,8 @@ public class AssetInfoAction implements IActionExecution {
                         fileInfos.clear();
                         log.info(aMarker, "cleared batch {}", fileInfos.size());
                     }
-                } catch (Throwable t) {
-                    log.error(aMarker, "error in file info for {}", tableInfo, t);
+                } catch (Exception e) {
+                    log.error(aMarker, "Error in file info for {}", tableInfo, e);
                 }
             });
             if (!fileInfos.isEmpty()) {
@@ -132,9 +133,9 @@ public class AssetInfoAction implements IActionExecution {
         } catch (Exception e) {
             action.getContext().put(assetInfo.getName().concat(".error"), "true");
             log.error(aMarker, "The Exception occurred ", e);
-            throw new HandymanException("Failed to execute", e);
+            throw new HandymanException("Exception occurred in asset info execute", e, action);
         }
-        log.info(aMarker, "Asset Info Action for {} has been completed" + assetInfo.getName());
+        log.info(aMarker, "Asset Info Action for {} has been completed" , assetInfo.getName());
     }
 
     public FileInfo insertQuery(File file) {
@@ -145,7 +146,8 @@ public class AssetInfoAction implements IActionExecution {
             try (InputStream is = Files.newInputStream(Path.of(file.getPath()))) {
                 sha1Hex = org.apache.commons.codec.digest.DigestUtils.sha1Hex(is);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                log.error("Error in reading input stream {}", ExceptionUtil.toString(e));
+                throw new HandymanException("Error in reading input stream", e, action);
             }
             log.info(aMarker, "checksum for file {} and its {}", file, sha1Hex);
             var fileSize = file.length() / 1024;
@@ -161,8 +163,8 @@ public class AssetInfoAction implements IActionExecution {
                     .build();
             log.info(aMarker, "File Info Builder {}", fileInfoBuilder);
         } catch (Exception ex){
-            log.error(aMarker, "error occured in builder {}", ex);
-            throw new HandymanException("Failed to execute {} ", ex);
+            log.error(aMarker, "error occurred in builder {}", ExceptionUtil.toString(ex));
+            throw new HandymanException("Failed to execute {} ", ex, action);
         }
         return fileInfoBuilder;
     }
@@ -206,7 +208,7 @@ public class AssetInfoAction implements IActionExecution {
                 bindBean.execute();
             });
         } catch (Throwable t) {
-            log.error(aMarker, "error inserting into batch insert audit  {}", t);
+            log.error(aMarker, "error inserting into batch insert audit  {}", t.toString());
         }
     }
 

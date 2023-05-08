@@ -26,7 +26,7 @@ public class AlphavalidatorAction implements IActionExecution {
     private final Alphavalidator alphavalidator;
 
     private final Marker aMarker;
-    AdapterInterface alphaAdapter;
+    private final AdapterInterface alphaAdapter;
 
     public AlphavalidatorAction(final ActionExecutionAudit action, final Logger log,
                                 final Object alphavalidator) {
@@ -42,22 +42,23 @@ public class AlphavalidatorAction implements IActionExecution {
             boolean validator = alphaAdapter.getValidationModel(adapter.getInputValue(), adapter.getAllowedSpecialChar());
             return validator ? adapter.getThreshold() : 0;
         } catch (Exception ex) {
-            throw new HandymanException("Failed to execute", ex);
+            log.error("Exception occurred in getting alpha score", ex);
+            throw new HandymanException("Exception occurred in getting alpha score", ex, action);
         }
     }
 
     @Override
     public void execute() throws Exception {
         try {
-            log.info(aMarker, "Alpha Count Action for {} has been started" + alphavalidator.getName());
+            log.info(aMarker, "Alpha Count Action for {} has been started" , alphavalidator.getName());
             boolean validator = alphaAdapter.getValidationModel(alphavalidator.getInputValue(), alphavalidator.getAllowedSpecialCharacters());
-            int confidenceScore = validator ? Integer.valueOf(alphavalidator.getThresholdValue()) : 0;
+            int confidenceScore = validator ? Integer.parseInt(alphavalidator.getThresholdValue()) : 0;
             action.getContext().put("validator.score", String.valueOf(confidenceScore));
-            log.info(aMarker, "<-------Alpha Count Action for {} has been completed------->" + alphavalidator.getName());
+            log.info(aMarker, "Alpha Count Action for {} has been completed" , alphavalidator.getName());
         } catch (Exception ex) {
             action.getContext().put(alphavalidator.getName().concat(".error"), "true");
-            log.info(aMarker, "The Exception occurred ", ex);
-            throw new HandymanException("Failed to execute", ex);
+            log.error(aMarker, "The Exception occurred ", ex);
+            throw new HandymanException("Failed to execute", ex, action);
         }
     }
 

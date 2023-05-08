@@ -44,7 +44,7 @@ public class CallProcessAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-        log.info(aMarker, "<-------Call Process Action for {} has been started------->" + callProcess.getName());
+        log.info(aMarker, "Call Process Action for {} has been started" , callProcess.getName());
         final String fileRelativePath = callProcess.getSource();
         var targetProcess = callProcess.getTarget();
         var dbSrc = callProcess.getDatasource();
@@ -120,7 +120,7 @@ public class CallProcessAction implements IActionExecution {
             throw new HandymanException("Failed to execute", e);
         }
 
-        log.info(aMarker, "<-------Call Process Action for {} has been Completed------->" + callProcess.getName());
+        log.info(aMarker, "Call Process Action for {} has been Completed" , callProcess.getName());
     }
 
 

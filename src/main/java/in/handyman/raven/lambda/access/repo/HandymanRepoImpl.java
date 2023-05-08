@@ -1,5 +1,6 @@
 package in.handyman.raven.lambda.access.repo;
 
+import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.DoaConstant;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionStatusAudit;
@@ -10,7 +11,12 @@ import in.handyman.raven.lambda.doa.config.SpwCommonConfig;
 import in.handyman.raven.lambda.doa.config.SpwInstanceConfig;
 import in.handyman.raven.lambda.doa.config.SpwProcessConfig;
 import in.handyman.raven.lambda.doa.config.SpwResourceConfig;
+import in.handyman.raven.util.ExceptionUtil;
 import in.handyman.raven.util.PropertyHandler;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
@@ -381,5 +387,45 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
             var repo = handle.attach(SpwResourceConfigRepo.class);
             return repo.findAll();
         });
+    }
+    public void insertExceptionLog(ActionExecutionAudit actionExecutionAudit, Exception exception, String message) {
+        HandymanExceptionAuditDetails exceptionAuditDetails = HandymanExceptionAuditDetails.builder()
+                .groupId(Integer.parseInt(actionExecutionAudit.getContext().get("gen_group_id.group_id")))
+                .rootPipelineId(actionExecutionAudit.getRootPipelineId())
+                .rootPipelineName(actionExecutionAudit.getParentPipelineName())
+                .pipelineName(actionExecutionAudit.getPipelineName())
+                .actionId(actionExecutionAudit.getActionId())
+                .actionName(actionExecutionAudit.getActionName())
+                .exceptionInfo(ExceptionUtil.toString(exception))
+                .message(message)
+                .processId(actionExecutionAudit.getProcessId())
+                .createdBy(actionExecutionAudit.getCreatedBy())
+                .createdDate(actionExecutionAudit.getCreatedDate())
+                .lastModifiedBy(actionExecutionAudit.getLastModifiedBy())
+                .lastModifiedDate(actionExecutionAudit.getLastModifiedDate()).build();
+        JDBI.useHandle(handle -> handle.createUpdate("INSERT INTO audit.handyman_exception_audit (group_id, root_pipeline_id, root_pipeline_name, pipeline_name, action_id, action_name, exception_Info, message, process_id, created_by, created_date, last_modified_by, last_modified_date) " +
+                        "VALUES(:groupId, :rootPipelineId, :rootPipelineName, :pipelineName, :actionId, :actionName, :exceptionInfo, :message, :processId, :createdBy, :createdDate, :lastModifiedBy, :lastModifiedDate);")
+                .bindBean(exceptionAuditDetails).execute());
+        log.info("inserting exception audit details has been completed");
+
+    }
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class HandymanExceptionAuditDetails {
+        private Integer groupId;
+        private Long rootPipelineId;
+        private String rootPipelineName;
+        private String pipelineName;
+        private Long actionId;
+        private String actionName;
+        private String exceptionInfo;
+        private String message;
+        private Long processId;
+        private Long createdBy;
+        private LocalDateTime createdDate;
+        private Long lastModifiedBy;
+        private LocalDateTime lastModifiedDate;
     }
 }

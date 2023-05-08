@@ -65,7 +65,7 @@ public class FileMergerAction implements IActionExecution {
             }
         } catch (Exception e) {
             log.info(aMarker, "The Exception occurred ", e);
-            throw new HandymanException("Failed to execute", e);
+            throw new HandymanException("Failed to execute", e, action);
         }
     }
 

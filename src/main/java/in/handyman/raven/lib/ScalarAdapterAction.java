@@ -1,6 +1,7 @@
 package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
@@ -97,9 +98,10 @@ public class ScalarAdapterAction implements IActionExecution {
             doCompute(jdbi, validatorConfigurationDetails);
             //doProcess(jdbi, validatorConfigurationDetails);
             log.info(aMarker, "scalar has completed" + scalarAdapter.getName());
-        } catch (Throwable e) {
+        } catch (Exception e) {
             action.getContext().put(scalarAdapter.getName().concat(".error"), "true");
-            log.error(aMarker, "The Exception occuered in Scalar Adpater ", e);
+            log.error(aMarker, "The Exception occurred in Scalar Adapter ", e);
+            throw new HandymanException("The Exception occurred in Scalar Adapter", e, action);
         }
     }
 
@@ -166,7 +168,7 @@ public class ScalarAdapterAction implements IActionExecution {
                 String inputValue = result.getInputValue();
                 int wordScore = wordcountAction.getWordCount(inputValue,
                         result.getWordLimit(), result.getWordThreshold());
-                int charScore = charactercountAction.getCharCount(inputValue,
+                int charScore = CharactercountAction.getCharCount(inputValue,
                         result.getCharLimit(), result.getCharThreshold());
                 Validator configurationDetails = Validator.builder()
                         .inputValue(inputValue)
