@@ -73,8 +73,8 @@ public class AutoRotationAction implements IActionExecution {
             jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
             log.info(aMarker, "<-------Auto Rotation Action for {} has been started------->", autoRotation.getName());
             final String outputDir = Optional.ofNullable(autoRotation.getOutputDir()).map(String::valueOf).orElse(null);
-            final String insertQuery = "INSERT INTO info.auto_rotation(origin_id,group_id,tenant_id,template_id,process_id, processed_file_path,paper_no, status,stage,message,created_on) " +
-                    " VALUES(?,?, ?,?,?, ?,?, ?,?,?,?)";
+            final String insertQuery = "INSERT INTO info.auto_rotation(origin_id,group_id,tenant_id,template_id,process_id, processed_file_path,paper_no, status,stage,message,created_on,root_pipeline_id) " +
+                    " VALUES(?,?, ?,?,?, ?,?, ?,?,?,? , ?)";
             final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.autorotation.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
                 try {
                     return new URL(s1);
@@ -153,6 +153,7 @@ public class AutoRotationAction implements IActionExecution {
                                             .stage("AUTO_ROTATION")
                                             .message("Auto rotation macro completed")
                                             .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                                            .rootPipelineId(entity.rootPipelineId)
                                             .build());
 
                     }else{
@@ -170,6 +171,7 @@ public class AutoRotationAction implements IActionExecution {
                                             .stage("AUTO_ROTATION")
                                             .message("Auto rotation macro completed")
                                             .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                                            .rootPipelineId(entity.rootPipelineId)
                                             .build());
                     }
 
@@ -187,6 +189,7 @@ public class AutoRotationAction implements IActionExecution {
                                     .stage("AUTO_ROTATION")
                                     .message(response.message())
                                     .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                                    .rootPipelineId(entity.rootPipelineId)
                                     .build());
                     log.info(aMarker, "The Exception occurred ");
                 }
@@ -204,6 +207,7 @@ public class AutoRotationAction implements IActionExecution {
                                 .stage("AUTO_ROTATION")
                                 .message(ExceptionUtil.toString(e))
                                 .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                                .rootPipelineId(entity.rootPipelineId)
                                 .build());
                 log.info(aMarker, "The Exception occurred ", e);
             }
@@ -231,6 +235,7 @@ public class AutoRotationAction implements IActionExecution {
         private String templateId;
         private Long processId;
         private String outputDir;
+        private Long rootPipelineId;
 
         @Override
         public List<Object> getRowData() {
@@ -264,10 +269,12 @@ public class AutoRotationAction implements IActionExecution {
         private String stage;
         private String message;
         private Timestamp createdOn;
+        private Long rootPipelineId;
 
         @Override
         public List<Object> getRowData() {
-            return Stream.of(this.originId, this.groupId,this.tenantId,this.templateId,this.processId, this.processedFilePath, this.paperNo,this.status,this.stage,this.message,this.createdOn).collect(Collectors.toList());
+            return Stream.of(this.originId, this.groupId,this.tenantId,this.templateId,this.processId, this.processedFilePath
+                    , this.paperNo,this.status,this.stage,this.message,this.createdOn,this.rootPipelineId).collect(Collectors.toList());
         }
     }
 

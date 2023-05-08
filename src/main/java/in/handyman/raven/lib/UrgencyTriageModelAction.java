@@ -69,8 +69,8 @@ public class UrgencyTriageModelAction implements IActionExecution {
       final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(UrgencyTriageModel.getResourceConn());
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
       log.info(aMarker, "<-------Urgency Triage Action for {} has been started------->", UrgencyTriageModel.getName());
-      final String insertQuery = "INSERT INTO urgency_triage.ut_model_result(created_on, created_user_id, last_updated_on, last_updated_user_id, process_id, group_id, tenant_id, confidence_score, origin_id, paper_no, template_id, model_registry_id, status, stage, message, paper_type, bboxes)" +
-              "values(now(),?,now(),?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+      final String insertQuery = "INSERT INTO urgency_triage.ut_model_result(created_on, created_user_id, last_updated_on, last_updated_user_id, process_id, group_id, tenant_id, confidence_score, origin_id, paper_no, template_id, model_registry_id, status, stage, message, paper_type, bboxes, root_pipeline_id)" +
+              "values(now(),?,now(),?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?)";
       final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.urgency-triage-model.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
         try {
           return new URL(s1);
@@ -158,6 +158,7 @@ public class UrgencyTriageModelAction implements IActionExecution {
                   .status("COMPLETED")
                   .stage("URGENCY_TRIAGE_MODEL")
                   .message("Urgency Triage Finished")
+                  .rootPipelineId(entity.rootPipelineId)
                   .build());
           log.info(aMarker, "Execute for urgency triage {}",response);
         } else {
@@ -174,6 +175,7 @@ public class UrgencyTriageModelAction implements IActionExecution {
                   .status("FAILED")
                   .stage("URGENCY_TRIAGE_MODEL")
                   .message(response.message())
+                  .rootPipelineId(entity.rootPipelineId)
                   .build());
           log.error(aMarker, "The Exception occurred in urgency triage {}",response);
         }
@@ -191,6 +193,7 @@ public class UrgencyTriageModelAction implements IActionExecution {
                 .status("FAILED")
                 .stage("URGENCY_TRIAGE_MODEL")
                 .message(ExceptionUtil.toString(e))
+                .rootPipelineId(entity.rootPipelineId)
                 .build());
         log.error(aMarker, "The Exception occurred in urgency triage", e);
       }
@@ -213,6 +216,7 @@ public class UrgencyTriageModelAction implements IActionExecution {
     private String templateId;
     private String modelRegistryId;
     private String inputFilePath;
+    private Long rootPipelineId;
 
     @Override
     public List<Object> getRowData() {
@@ -240,11 +244,12 @@ public class UrgencyTriageModelAction implements IActionExecution {
     private String message;
     private String utResult;
     private String bbox;
+    private Long rootPipelineId;
 
     @Override
     public List<Object> getRowData() {
       return Stream.of(this.createdUserId, this.lastUpdatedUserId, this.processId, this.groupId, this.tenantId, this.confScore,
-              this.originId, this.paperNo, this.templateId, this.modelRegistryId, this.status, this.stage, this.message, this.utResult, this.bbox).collect(Collectors.toList());
+              this.originId, this.paperNo, this.templateId, this.modelRegistryId, this.status, this.stage, this.message, this.utResult, this.bbox, this.rootPipelineId).collect(Collectors.toList());
     }
   }
 }

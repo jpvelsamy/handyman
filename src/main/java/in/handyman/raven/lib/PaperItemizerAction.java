@@ -71,8 +71,8 @@ public class PaperItemizerAction implements IActionExecution {
       log.info(aMarker, "paper itemizer Action output directory {}",outputDir);
       //5. build insert prepare statement with output table columns
       final String insertQuery = "INSERT INTO " +paperItemizer.getResultTable()+
-              "(origin_id,group_id,tenant_id,template_id,processed_file_path,paper_no, status,stage,message,created_on,process_id) " +
-              " VALUES(?,?, ?,?, ?,?, ?,?,?,? ,?)";
+              "(origin_id,group_id,tenant_id,template_id,processed_file_path,paper_no, status,stage,message,created_on,process_id,root_pipeline_id) " +
+              " VALUES(?,?, ?,?, ?,?, ?,?,?,? ,?,  ?)";
       log.info(aMarker, "paper itemizer Insert query {}", insertQuery);
 
       //3. initiate copro processor and copro urls
@@ -168,6 +168,7 @@ public class PaperItemizerAction implements IActionExecution {
                             .stage("PAPER_ITEMIZER")
                             .message("Paper Itemizer macro completed")
                             .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                            .rootPipelineId(entity.rootPipelineId)
                             .build());
           });
         }else{
@@ -184,6 +185,7 @@ public class PaperItemizerAction implements IActionExecution {
                           .stage("PAPER_ITEMIZER")
                           .message(response.message())
                           .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                          .rootPipelineId(entity.rootPipelineId)
                           .build());
           log.error(aMarker, "The Exception occurred in response {}",response.message());
         }
@@ -201,6 +203,7 @@ public class PaperItemizerAction implements IActionExecution {
                         .stage("PAPER_ITEMIZER")
                         .message(ExceptionUtil.toString(e))
                         .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                        .rootPipelineId(entity.rootPipelineId)
                         .build());
         log.error(aMarker, "The Exception occurred in request ", e);
       }
@@ -226,6 +229,7 @@ public class PaperItemizerAction implements IActionExecution {
     private String templateId;
     private String filePath;
     private String outputDir;
+    private Long rootPipelineId;
 
     @Override
     public List<Object> getRowData() {
@@ -251,10 +255,12 @@ public class PaperItemizerAction implements IActionExecution {
     private String stage;
     private String message;
     private Timestamp createdOn;
+    private Long rootPipelineId;
 
     @Override
     public List<Object> getRowData() {
-      return Stream.of(this.originId, this.groupId,this.tenantId,this.templateId, this.processedFilePath, this.paperNo,this.status,this.stage,this.message,this.createdOn,this.processId).collect(Collectors.toList());
+      return Stream.of(this.originId, this.groupId,this.tenantId,this.templateId, this.processedFilePath,
+              this.paperNo,this.status,this.stage,this.message,this.createdOn,this.processId,this.rootPipelineId).collect(Collectors.toList());
     }
   }
 }

@@ -60,8 +60,8 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
         jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
         log.info(aMarker, "<-------Phrase match paper filter Action for {} has been started------->", zeroShotClassifierPaperFilter.getName());
         final String processId = Optional.ofNullable(zeroShotClassifierPaperFilter.getProcessID()).map(String::valueOf).orElse(null);
-        final String insertQuery = "INSERT INTO paper.zero_shot_classifier_filtering_result_" + processId + "(origin_id,group_id,paper_no,synonym,confidence_score,truth_entity,status,stage,message, created_on) " +
-                " VALUES(?,?,?,?,?,?,?,?,?,now())";
+        final String insertQuery = "INSERT INTO paper.zero_shot_classifier_filtering_result_" + processId + "(origin_id,group_id,paper_no,synonym,confidence_score,truth_entity,status,stage,message, created_on, root_pipeline_id) " +
+                " VALUES(?,?,?,?,?,?,?,?,?,now() ,?)";
         final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.paper-filtering-zero-shot-classifier.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
             try {
                 return new URL(s1);
@@ -155,6 +155,7 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
                                 .status("COMPLETED")
                                 .stage(actionName)
                                 .message("Completed API call zero shot classifier")
+                                .rootPipelineId(entity.rootPipelineId)
                                 .build());
                     });
                 } else {
@@ -167,6 +168,7 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
                                     .paperNo(entity.paperNo)
                                     .stage(actionName)
                                     .message(Optional.of(responseBody).map(String::valueOf).orElse(null))
+                                    .rootPipelineId(entity.rootPipelineId)
                                     .build());
                     log.info(aMarker, "The Exception occurred in zero shot classifier API call");
                 }
@@ -181,6 +183,7 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
                                 .paperNo(entity.paperNo)
                                 .stage(actionName)
                                 .message(ExceptionUtil.toString(e))
+                                .rootPipelineId(entity.rootPipelineId)
                                 .build());
             }
         }
@@ -199,6 +202,7 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
 //        private String truthEntity;
         private String truthPlaceholder;
         private String processId;
+        private Long rootPipelineId;
         @Override
         public List<Object> getRowData() {
             return null;
@@ -224,11 +228,13 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
         private String stage;
 
         private String message;
+        private Long rootPipelineId;
 
 
         @Override
         public List<Object> getRowData() {
-            return Stream.of(this.originId, this.groupId, this.paperNo, this.entity, this.confidenceScore, this.truthEntity, this.status, this.stage, this.message).collect(Collectors.toList());
+            return Stream.of(this.originId, this.groupId, this.paperNo, this.entity, this.confidenceScore,
+                    this.truthEntity, this.status, this.stage, this.message,this.rootPipelineId).collect(Collectors.toList());
         }
     }
 

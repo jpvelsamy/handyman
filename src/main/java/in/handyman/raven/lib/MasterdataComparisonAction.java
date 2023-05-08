@@ -88,8 +88,8 @@ public class MasterdataComparisonAction implements IActionExecution {
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
       // build insert prepare statement with output table columns
       final String insertQuery = "INSERT INTO " + masterdataComparison.getMatchResult() +
-              " ( origin_id, paper_no,eoc_identifier,created_on, actual_value, extracted_value,intelli_match,status,stage,message)" +
-              " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+              " ( origin_id, paper_no,eoc_identifier,created_on, actual_value, extracted_value,intelli_match,status,stage,message, root_pipeline_id)" +
+              " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?);";
       log.info(aMarker, "master data comparison Insert query {}", insertQuery);
 
       //3. initiate copro processor and copro urls
@@ -179,6 +179,7 @@ public class MasterdataComparisonAction implements IActionExecution {
                             .status("COMPLETED")
                             .stage("MASTER-DATA-COMPARISON")
                             .message("Master data comparison macro completed")
+                            .rootPipelineId(result.getRootPipelineId())
                             .build());
 
           } else {
@@ -194,6 +195,7 @@ public class MasterdataComparisonAction implements IActionExecution {
                             .status("FAILED")
                             .stage("MASTER-DATA-COMPARISON")
                             .message("Master data comparison macro failed")
+                            .rootPipelineId(result.getRootPipelineId())
                             .build()
             );
             log.error(aMarker, "The Exception occurred in master data comparison by {} ", response);
@@ -212,6 +214,7 @@ public class MasterdataComparisonAction implements IActionExecution {
                           .status("FAILED")
                           .stage("MASTER-DATA-COMPARISON")
                           .message("Master data comparison macro failed")
+                          .rootPipelineId(result.getRootPipelineId())
                           .build()
           );
 
@@ -231,6 +234,7 @@ public class MasterdataComparisonAction implements IActionExecution {
                         .status("COMPLETED")
                         .stage("MASTER-DATA-COMPARISON")
                         .message("Master data comparison macro completed")
+                        .rootPipelineId(result.getRootPipelineId())
                         .build()
         );
         log.info(aMarker, "coproProcessor consumer process with empty actual value entity {}", result);
@@ -268,6 +272,7 @@ public class MasterdataComparisonAction implements IActionExecution {
     String eocIdentifier;
     String extractedValue;
     String actualValue;
+    private Long rootPipelineId;
 
     @Override
     public List<Object> getRowData() {
@@ -292,12 +297,13 @@ public class MasterdataComparisonAction implements IActionExecution {
     String status;
     String stage;
     String message;
+    private Long rootPipelineId;
 
     @Override
     public List<Object> getRowData() {
       return Stream.of(this.originId, this.paperNo, this.eocIdentifier, this.createdOn, this.actualValue,
               this.extractedValue,
-              this.intelliMatch, this.status, this.stage, this.message
+              this.intelliMatch, this.status, this.stage, this.message, this.rootPipelineId
       ).collect(Collectors.toList());
     }
   }

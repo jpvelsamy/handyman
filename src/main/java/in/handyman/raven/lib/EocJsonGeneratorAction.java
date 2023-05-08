@@ -72,11 +72,11 @@ public class EocJsonGeneratorAction implements IActionExecution {
                 .eocId(eocJsonGenerator.getEocId())
                 .originId(eocJsonGenerator.getOriginId())
                 .groupId(Integer.valueOf(eocJsonGenerator.getGroupId()))
-                .eocResponse(responseBody).build();
+                .eocResponse(responseBody).rootPipelineId(action.getRootPipelineId()).build();
 
         jdbi.useTransaction(handle -> {
-          handle.createUpdate("INSERT INTO outbound.eoc_response_details (document_id, eoc_id, origin_id, group_id, eoc_response) " +
-                          "VALUES( :documentId, :eocId, :originId, :groupId, :eocResponse::json);")
+          handle.createUpdate("INSERT INTO outbound.eoc_response_details (document_id, eoc_id, origin_id, group_id, eoc_response, root_pipeline_id) " +
+                          "VALUES( :documentId, :eocId, :originId, :groupId, :eocResponse::json, :rootPipelineId);")
                   .bindBean(eocResponse).execute();
           log.debug(aMarker, "inserted {} into eoc response details", eocResponse);
         });
@@ -110,5 +110,6 @@ public class EocJsonGeneratorAction implements IActionExecution {
     private String originId;
     private Integer groupId;
     private String eocResponse;
+    private Long rootPipelineId;
   }
 }
