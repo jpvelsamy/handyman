@@ -68,7 +68,7 @@ public class UrgencyTriageModelAction implements IActionExecution {
     try {
       final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(UrgencyTriageModel.getResourceConn());
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
-      log.info(aMarker, "<-------Urgency Triage Action for {} has been started------->", UrgencyTriageModel.getName());
+      log.info(aMarker, "Urgency Triage Action for {} has been started", UrgencyTriageModel.getName());
       final String insertQuery = "INSERT INTO urgency_triage.ut_model_result(created_on, created_user_id, last_updated_on, last_updated_user_id, process_id, group_id, tenant_id, confidence_score, origin_id, paper_no, template_id, model_registry_id, status, stage, message, paper_type, bboxes, root_pipeline_id)" +
               "values(now(),?,now(),?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?)";
       final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.urgency-triage-model.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
@@ -90,9 +90,11 @@ public class UrgencyTriageModelAction implements IActionExecution {
       Thread.sleep(1000);
       coproProcessor.startConsumer(insertQuery, 1, 1, new UrgencyTriageConsumerProcess(log, aMarker, action));
       log.info(aMarker, "Urgency Triage has been completed {}  ", UrgencyTriageModel.getName());
-    } catch (Throwable t) {
+    } catch (Exception t) {
       action.getContext().put(UrgencyTriageModel.getName() + ".isSuccessful", "false");
       log.error(aMarker, "Error at urgency triage execute method {}", t);
+      throw new HandymanException("Error at Urgency triage model execute method ", t, action);
+
     }
   }
 

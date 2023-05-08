@@ -57,7 +57,7 @@ public class QrExtractionAction implements IActionExecution {
   @Override
   public void execute() throws Exception {
     try{
-      log.info(aMarker, "<-------qr extraction Action for {} with group by eoc-id has started------->" + qrExtraction.getName());
+      log.info(aMarker, "Qr extraction Action for {} with group by eoc-id has started" , qrExtraction.getName());
       final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(qrExtraction.getResourceConn());
 
       //3. initiate copro processor and copro urls
@@ -66,7 +66,7 @@ public class QrExtractionAction implements IActionExecution {
           return new URL(s1);
         } catch (MalformedURLException e) {
           log.error("Error in processing the URL ", e);
-          throw new RuntimeException(e);
+          throw new HandymanException("Error in processing the URL", e, action);
         }
       }).collect(Collectors.toList())).orElse(Collections.emptyList());
 
@@ -92,7 +92,7 @@ public class QrExtractionAction implements IActionExecution {
 
     }catch (Exception e){
       log.error("Error in the Qr extraction action ", e);
-      throw new HandymanException("QR extraction action failed ", e);
+      throw new HandymanException("QR extraction action failed ", e, action);
 
     }
 
@@ -202,7 +202,6 @@ public class QrExtractionAction implements IActionExecution {
                 .message(e.toString())
                 .build());
         log.error("Error in the copro process api hit {}", request);
-        throw new HandymanException("QR extraction action failed in copro processor ", e);
       }
       return qrOutputEntities;
     }

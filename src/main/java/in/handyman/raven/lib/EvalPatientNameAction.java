@@ -51,7 +51,7 @@ public class EvalPatientNameAction implements IActionExecution {
         } catch (Exception ex) {
             action.getContext().put(evalPatientName.getName().concat(".error"), "true");
             log.info(aMarker, "The Exception occurred ", ex);
-            throw new HandymanException("Failed to execute", ex);
+            throw new HandymanException("Failed to execute", ex, action);
         }
     }
 

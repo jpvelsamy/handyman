@@ -14,10 +14,7 @@ import in.handyman.raven.lib.model.Intellimatch;
 import java.lang.Exception;
 import java.lang.Object;
 import java.lang.Override;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -69,69 +66,73 @@ public class IntellimatchAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-        log.info(aMarker, "<-------intelli match process for {} has been started------->" + intellimatch.getName());
-        final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(intellimatch.getResourceConn());
+        try {
+            log.info(aMarker, "intelli match process for {} has been started", intellimatch.getName());
+            final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(intellimatch.getResourceConn());
 
-        final List<MatchResultSet> inputResult = new ArrayList<>();
-        jdbi.useTransaction(handle -> {
-            final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(intellimatch.getInputSet());
-            AtomicInteger i = new AtomicInteger(0);
-            formattedQuery.forEach(sqlToExecute -> {
-                log.info(aMarker, "executing  query {} from index {}", sqlToExecute, i.getAndIncrement());
-                Query query = handle.createQuery(sqlToExecute);
-                ResultIterable<MatchResultSet> resultIterable = query.mapToBean(MatchResultSet.class);
-                List<MatchResultSet> detailList = resultIterable.stream().collect(Collectors.toList());
-                inputResult.addAll(detailList);
-                log.info(aMarker, "executed query from index {}", i.get());
+            final List<MatchResultSet> inputResult = new ArrayList<>();
+            jdbi.useTransaction(handle -> {
+                final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(intellimatch.getInputSet());
+                AtomicInteger i = new AtomicInteger(0);
+                formattedQuery.forEach(sqlToExecute -> {
+                    log.info(aMarker, "executing  query {} from index {}", sqlToExecute, i.getAndIncrement());
+                    Query query = handle.createQuery(sqlToExecute);
+                    ResultIterable<MatchResultSet> resultIterable = query.mapToBean(MatchResultSet.class);
+                    List<MatchResultSet> detailList = resultIterable.stream().collect(Collectors.toList());
+                    inputResult.addAll(detailList);
+                    log.info(aMarker, "executed query from index {}", i.get());
+                });
             });
-        });
 
-        List<MatchResultSet> resultQueue = new ArrayList<>();
-        inputResult.forEach(result -> {
-            if (result.getActualValue() != null) {
-                final ObjectNode objectNode = MAPPER.createObjectNode();
-                List<String> comparableSentence = Arrays.asList(result.getExtractedValue());
-                objectNode.put("inputSentence", result.getActualValue());
-                objectNode.putPOJO("sentences", comparableSentence);
-                final Request request = new Request.Builder().url(URI)
-                        .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-                try (Response response = httpclient.newCall(request).execute()) {
-                    String responseBody = Objects.requireNonNull(response.body()).string();
-                    if (response.isSuccessful()) {
-                        List<IntelliMatchCopro> output = MAPPER.readValue(responseBody, new TypeReference<>() {
-                        });
-                        double matchPercent = output.get(0) != null ? Math.round(output.get(0).getSimilarityPercent() * 100.0) / 100.0: 0.0 ;
-                        result.setIntelliMatch(matchPercent);
-                        resultQueue.add(result);
+            List<MatchResultSet> resultQueue = new ArrayList<>();
+            inputResult.forEach(result -> {
+                if (result.getActualValue() != null) {
+                    final ObjectNode objectNode = MAPPER.createObjectNode();
+                    List<String> comparableSentence = Collections.singletonList(result.getExtractedValue());
+                    objectNode.put("inputSentence", result.getActualValue());
+                    objectNode.putPOJO("sentences", comparableSentence);
+                    final Request request = new Request.Builder().url(URI)
+                            .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
+                    try (Response response = httpclient.newCall(request).execute()) {
+                        String responseBody = Objects.requireNonNull(response.body()).string();
+                        if (response.isSuccessful()) {
+                            List<IntelliMatchCopro> output = MAPPER.readValue(responseBody, new TypeReference<>() {
+                            });
+                            double matchPercent = output.get(0) != null ? Math.round(output.get(0).getSimilarityPercent() * 100.0) / 100.0 : 0.0;
+                            result.setIntelliMatch(matchPercent);
+                            resultQueue.add(result);
 
-                    } else {
-                        insertSummaryAudit(jdbi, 0, 0, 1, "failed on" + result.getFileName());
-                        throw new HandymanException(responseBody);
+                        } else {
+                            insertSummaryAudit(jdbi, 0, 0, 1, "failed on" + result.getFileName());
+                            throw new HandymanException(responseBody);
+                        }
+                    } catch (Exception t) {
+                        log.error(aMarker, "error inserting row {}", result, t);
                     }
-                } catch (Throwable t) {
-                    log.error(aMarker, "error inserting row {}", result, t);
+                } else {
+                    result.setIntelliMatch(0);
+                    resultQueue.add(result);
                 }
-            } else {
-                result.setIntelliMatch(0);
-                resultQueue.add(result);
-            }
-            if (resultQueue.size() == this.writeBatchSize) {
-                log.info(aMarker, "executing  batch {}", resultQueue.size());
-                consumerBatch(jdbi, resultQueue);
-                log.info(aMarker, "executed  batch {}", resultQueue.size());
-                insertSummaryAudit(jdbi, inputResult.size(), resultQueue.size(), 0, "batch inserted");
-                resultQueue.clear();
-                log.info(aMarker, "cleared batch {}", resultQueue.size());
-            }
-        });
+                if (resultQueue.size() == this.writeBatchSize) {
+                    log.info(aMarker, "executing  batch {}", resultQueue.size());
+                    consumerBatch(jdbi, resultQueue);
+                    log.info(aMarker, "executed  batch {}", resultQueue.size());
+                    insertSummaryAudit(jdbi, inputResult.size(), resultQueue.size(), 0, "batch inserted");
+                    resultQueue.clear();
+                    log.info(aMarker, "cleared batch {}", resultQueue.size());
+                }
+            });
 
-        if (!resultQueue.isEmpty()) {
-            log.info(aMarker, "executing final batch {}", resultQueue.size());
-            consumerBatch(jdbi, resultQueue);
-            log.info(aMarker, "executed final batch {}", resultQueue.size());
-            insertSummaryAudit(jdbi, inputResult.size(), resultQueue.size(), 0, "final batch inserted");
-            resultQueue.clear();
-            log.info(aMarker, "cleared final batch {}", resultQueue.size());
+            if (!resultQueue.isEmpty()) {
+                log.info(aMarker, "executing final batch {}", resultQueue.size());
+                consumerBatch(jdbi, resultQueue);
+                log.info(aMarker, "executed final batch {}", resultQueue.size());
+                insertSummaryAudit(jdbi, inputResult.size(), resultQueue.size(), 0, "final batch inserted");
+                resultQueue.clear();
+                log.info(aMarker, "cleared final batch {}", resultQueue.size());
+            }
+        } catch (Exception e) {
+            throw new HandymanException("Error in intellimatch action", e, action);
         }
     }
 
@@ -159,7 +160,7 @@ public class IntellimatchAction implements IActionExecution {
                         });
                     }
             );
-        } catch (Throwable t) {
+        } catch (Exception t) {
             insertSummaryAudit(jdbi, 0, 0, resultQueue.size(), "failed in batch insert");
             log.error(aMarker, "error inserting result {}", resultQueue, t);
         }

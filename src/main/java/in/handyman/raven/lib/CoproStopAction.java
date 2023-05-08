@@ -11,6 +11,7 @@ import in.handyman.raven.lib.model.CoproStop;
 import java.lang.Exception;
 import java.lang.Object;
 import java.lang.Override;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -58,7 +59,7 @@ public class CoproStopAction implements IActionExecution {
   @Override
   public void execute() throws Exception {
     final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(coproStop.getResourceConn());
-    log.info(aMarker, "<-------copro admin API call for {} has been started------->", coproStop.getName());
+    log.info(aMarker, "copro admin API call for {} has been started", coproStop.getName());
     final OkHttpClient httpclient = new OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.MINUTES)
             .writeTimeout(10, TimeUnit.MINUTES)
@@ -73,14 +74,14 @@ public class CoproStopAction implements IActionExecution {
     String name = coproStop.getName() + "_response";
     log.debug(aMarker, "The Request Details: {} ", request);
     try (Response response = httpclient.newCall(request).execute()) {
-      String responseBody = response.body().string();
+      String responseBody = Objects.requireNonNull(response.body()).string();
       if (response.isSuccessful()) {
         JSONObject responseObj = new JSONObject(responseBody);
         CoproStopAction.coproStopActionEntity coproStopActionEntity = CoproStopAction.coproStopActionEntity
                 .builder()
                 .processId(Optional.ofNullable(coproStop.getProcessID()).map(Long::valueOf).orElse(null))
-                .actionId(Optional.ofNullable(action.getActionId()).map(Long::valueOf).orElse(null))
-                .rootPipelineId(Optional.ofNullable(action.getRootPipelineId()).map(Long::valueOf).orElse(null))
+                .actionId(action.getActionId())
+                .rootPipelineId(action.getRootPipelineId())
                 .coproActionName(Optional.ofNullable(coproStop.getModuleName()).map(String::valueOf).orElse(null))
                 .command(Optional.ofNullable(coproStop.getCommand()).map(String::valueOf).orElse(null))
                 .coproProcessId(Optional.ofNullable(responseObj.get("Pid")).map(String::valueOf).orElse(null))
@@ -98,12 +99,12 @@ public class CoproStopAction implements IActionExecution {
       } else {
         log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
       }
-      log.info(aMarker, "<--------copro admin API call for {} has been completed------->" , coproStop.getName());
+      log.info(aMarker, "copro admin API call for {} has been completed" , coproStop.getName());
     } catch (Exception e) {
       action.getContext().put(name.concat(".error"), "true");
       action.getContext().put(name.concat(".errorMessage"), e.getMessage());
       log.info(aMarker, "The Exception occurred ", e);
-      throw new HandymanException("Failed to execute", e);
+      throw new HandymanException("Failed to execute", e, action);
     }
   }
 

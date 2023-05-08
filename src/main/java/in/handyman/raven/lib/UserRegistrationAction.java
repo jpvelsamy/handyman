@@ -2,10 +2,12 @@ package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.UserRegistration;
+import in.handyman.raven.util.ExceptionUtil;
 import in.handyman.raven.util.InstanceUtil;
 import okhttp3.*;
 import org.slf4j.Logger;
@@ -46,7 +48,7 @@ public class UserRegistrationAction implements IActionExecution {
 
   @Override
   public void execute() throws Exception {
-    log.info(aMarker, "<-------Registration Action for {} has been started------->" + userRegistration.getName());
+    log.info(aMarker, "Registration Action for {} has been started" , userRegistration.getName());
     final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
 
     final ObjectNode objectNode = mapper.createObjectNode();
@@ -63,9 +65,10 @@ public class UserRegistrationAction implements IActionExecution {
       } else
         log.info(aMarker, "User Already Exists ");
     } catch (Exception e) {
-      log.error(aMarker, "Error in registering user ", e);
+      log.error(aMarker, "Error in registering user {} ", ExceptionUtil.toString(e));
+      throw new HandymanException("Error in registering user", e, action);
     }
-    log.info(aMarker, "<-------Registration Action for {} has been completed------->" + userRegistration.getName());
+    log.info(aMarker, "Registration Action for {} has been completed" , userRegistration.getName());
 
   }
 

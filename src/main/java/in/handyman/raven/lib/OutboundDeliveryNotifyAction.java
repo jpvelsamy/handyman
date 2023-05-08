@@ -72,14 +72,15 @@ public class OutboundDeliveryNotifyAction implements IActionExecution {
                 } else {
                     throw new HandymanException(responseBody);
                 }
-            } catch (Throwable t) {
-                log.error(aMarker, "error occured for document id {}", outboundDeliveryNotify.getDocumentId(), t);
+            } catch (Exception exception) {
+                log.error(aMarker, "Error occurred for document id {}", outboundDeliveryNotify.getDocumentId(), exception);
+                throw new HandymanException("Error occurred for document", exception, action);
             }
-
-
             log.info(aMarker, "Outbound Delivery Notification Action has been completed {}", outboundDeliveryNotify);
         } catch (Exception ex) {
-            log.error(aMarker, "error in execute method for Outbound Delivery Notification Action", ex);
+            log.error(aMarker, "Error in execute method for Outbound Delivery Notification Action", ex);
+            throw new HandymanException("Error in execute method for Outbound Delivery Notification Action", ex, action);
+
         }
     }
 

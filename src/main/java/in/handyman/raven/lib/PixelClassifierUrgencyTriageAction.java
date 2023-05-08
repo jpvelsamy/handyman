@@ -3,6 +3,7 @@ package in.handyman.raven.lib;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
@@ -58,7 +59,7 @@ public class PixelClassifierUrgencyTriageAction implements IActionExecution {
     try {
       final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(pixelClassifierUrgencyTriage.getResourceConn());
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
-      log.info(aMarker, "<-------Handwritten Urgency Triage Action for {} has been started------->", pixelClassifierUrgencyTriage.getName());
+      log.info(aMarker, "Handwritten Urgency Triage Action for {} has been started", pixelClassifierUrgencyTriage.getName());
       final String insertQuery = "INSERT INTO urgency_triage.pixel_classifier_triage_transaction_"+pixelClassifierUrgencyTriage.getProcessID()+"(created_on, created_user_id, last_updated_on, last_updated_user_id, process_id, group_id, tenant_id, model_score, origin_id, paper_no, template_id, model_registry_id, binary_model, multiclass_model, checkbox_model, status, stage, message)" +
               "values(now(),?,now(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
       final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.hw-urgency-triage.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
@@ -66,7 +67,7 @@ public class PixelClassifierUrgencyTriageAction implements IActionExecution {
           return new URL(s1);
         } catch (MalformedURLException e) {
           log.error("Error in processing the URL ", e);
-          throw new RuntimeException(e);
+          throw new HandymanException("Error in processing the URL", e, action);
         }
       }).collect(Collectors.toList())).orElse(Collections.emptyList());
 
@@ -80,9 +81,10 @@ public class PixelClassifierUrgencyTriageAction implements IActionExecution {
       Thread.sleep(1000);
       coproProcessor.startConsumer(insertQuery, 1, 1, new HwUrgencyTriageConsumerProcess(log, aMarker, action));
       log.info(aMarker, " Handwritten Urgency Triage has been completed {}  ", pixelClassifierUrgencyTriage.getName());
-    } catch (Throwable t) {
+    } catch (Exception e) {
       action.getContext().put(pixelClassifierUrgencyTriage.getName() + ".isSuccessful", "false");
-      log.error(aMarker, "Error at handwritten urgency triage execute method {}", t);
+      log.error(aMarker, "Error at handwritten urgency triage execute method {}", ExceptionUtil.toString(e));
+      throw new HandymanException("Error at handwritten urgency triage execute method", e, action);
     }
   }
 

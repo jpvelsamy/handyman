@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -48,7 +49,7 @@ public class DocumentClassificationAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-        log.info(aMarker, "<-------Document Classification Action for {} has been started------->" + documentClassification.getName());
+        log.info(aMarker, "Document Classification Action for {} has been started" , documentClassification.getName());
         final OkHttpClient httpclient = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.MINUTES)
                 .writeTimeout(10, TimeUnit.MINUTES)
@@ -68,9 +69,9 @@ public class DocumentClassificationAction implements IActionExecution {
 
         log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n Input-File-Path : {} \n Output-Directory : {} \n Model-Path : {} \n Path-Labels : {}", URI, documentClassification.getFilePath(), documentClassification.getOutputDir(), documentClassification.getModelFilePath(), documentClassification.getLabels());
         String name = documentClassification.getName() + "_response";
-        log.debug(aMarker, "The Request Details: ", request);
+        log.debug(aMarker, "The Request Details: {}", request);
         try (Response response = httpclient.newCall(request).execute()) {
-            String responseBody = response.body().string();
+            String responseBody = Objects.requireNonNull(response.body()).string();
             String labelName = documentClassification.getName() + "_label";
             if (response.isSuccessful()) {
                 action.getContext().put(name, responseBody);
@@ -80,14 +81,14 @@ public class DocumentClassificationAction implements IActionExecution {
             } else {
                 action.getContext().put(name.concat(".error"), "true");
                 action.getContext().put(name.concat(".errorMessage"), responseBody);
-                log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
+                log.error(aMarker, "The Failure Response {} --> {}", name, responseBody);
             }
-            log.info(aMarker, "<-------Document Classification Action for {} has been completed------->" + documentClassification.getName());
+            log.info(aMarker, "Document Classification Action for {} has been completed" , documentClassification.getName());
         } catch (Exception e) {
             action.getContext().put(name.concat(".error"), "true");
             action.getContext().put(name.concat(".errorMessage"), e.getMessage());
-            log.info(aMarker, "The Exception occurred ", e);
-            throw new HandymanException("Failed to execute", e);
+            log.error(aMarker, "The Exception occurred ", e);
+            throw new HandymanException("Failed to execute", e, action);
         }
     }
 

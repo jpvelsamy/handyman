@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -45,7 +46,7 @@ public class ClassificationTypeAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-        log.info(aMarker, "<-------Pixel Classifier Action for {} has been started------->" + classificationType.getName());
+        log.info(aMarker, "Pixel Classifier Action for {} has been started" , classificationType.getName());
         final OkHttpClient httpclient = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.MINUTES)
                 .writeTimeout(10, TimeUnit.MINUTES)
@@ -67,7 +68,7 @@ public class ClassificationTypeAction implements IActionExecution {
         String name = classificationType.getName() + "_response";
         log.debug(aMarker, "The Request Details: {}", request);
         try (Response response = httpclient.newCall(request).execute()) {
-            String responseBody = response.body().string();
+            String responseBody = Objects.requireNonNull(response.body()).string();
 //            String labelName = classificationType.getName() + "_label";
             if (response.isSuccessful()) {
                 action.getContext().put(name, responseBody);
@@ -79,12 +80,12 @@ public class ClassificationTypeAction implements IActionExecution {
                 action.getContext().put(name.concat(".errorMessage"), responseBody);
                 log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
             }
-            log.info(aMarker, "<-------Pixel Classifier Action for {} has been completed------->" + classificationType.getName());
+            log.info(aMarker, "Pixel Classifier Action for {} has been completed" , classificationType.getName());
         } catch (Exception e) {
             action.getContext().put(name.concat(".error"), "true");
             action.getContext().put(name.concat(".errorMessage"), e.getMessage());
             log.info(aMarker, "The Exception occurred ", e);
-            throw new HandymanException("Failed to execute", e);
+            throw new HandymanException("Failed to execute", e, action);
         }
     }
 

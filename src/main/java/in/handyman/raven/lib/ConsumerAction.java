@@ -92,7 +92,7 @@ public class ConsumerAction implements IActionExecution {
                 try {
                     downLatch.await();
                 } catch (InterruptedException e) {
-                    throw new HandymanException("Failed to execute the consumer", e);
+                    throw new HandymanException("Failed to execute the consumer", e, actionExecutionAudit);
                 }
                 log.info("completed all task to executors");
             }

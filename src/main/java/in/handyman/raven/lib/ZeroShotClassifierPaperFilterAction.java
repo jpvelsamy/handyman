@@ -3,6 +3,7 @@ package in.handyman.raven.lib;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
@@ -56,9 +57,10 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
+        try {
         final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(zeroShotClassifierPaperFilter.getResourceConn());
         jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
-        log.info(aMarker, "<-------Phrase match paper filter Action for {} has been started------->", zeroShotClassifierPaperFilter.getName());
+        log.info(aMarker, "Phrase match paper filter Action for {} has been started", zeroShotClassifierPaperFilter.getName());
         final String processId = Optional.ofNullable(zeroShotClassifierPaperFilter.getProcessID()).map(String::valueOf).orElse(null);
         final String insertQuery = "INSERT INTO paper.zero_shot_classifier_filtering_result_" + processId + "(origin_id,group_id,paper_no,synonym,confidence_score,truth_entity,status,stage,message, created_on, root_pipeline_id) " +
                 " VALUES(?,?,?,?,?,?,?,?,?,now() ,?)";
@@ -71,18 +73,23 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
             }
         }).collect(Collectors.toList())).orElse(Collections.emptyList());
 
-        final CoproProcessor<PaperFilteringZeroShotClassifierInputTable, PaperFilteringZeroShotClassifierOutputTable> coproProcessor =
-                new CoproProcessor<>(new LinkedBlockingQueue<>(),
-                        PaperFilteringZeroShotClassifierOutputTable.class,
-                        PaperFilteringZeroShotClassifierInputTable.class,
-                        jdbi, log,
-                        new PaperFilteringZeroShotClassifierInputTable(), urls, action);
-        coproProcessor.startProducer(zeroShotClassifierPaperFilter.getQuerySet(), Integer.parseInt(zeroShotClassifierPaperFilter.getReadBatchSize()));
-        Thread.sleep(1000);
-        coproProcessor.startConsumer(insertQuery, Integer.parseInt(zeroShotClassifierPaperFilter.getThreadCount()),
-                Integer.parseInt(zeroShotClassifierPaperFilter.getWriteBatchSize()),
-                new ZeroShotConsumerProcess(log, aMarker, action));
-        log.info(aMarker, " Zero shot classifier has been completed {}  ", zeroShotClassifierPaperFilter.getName());
+            final CoproProcessor<PaperFilteringZeroShotClassifierInputTable, PaperFilteringZeroShotClassifierOutputTable> coproProcessor =
+                    new CoproProcessor<>(new LinkedBlockingQueue<>(),
+                            PaperFilteringZeroShotClassifierOutputTable.class,
+                            PaperFilteringZeroShotClassifierInputTable.class,
+                            jdbi, log,
+                            new PaperFilteringZeroShotClassifierInputTable(), urls, action);
+            coproProcessor.startProducer(zeroShotClassifierPaperFilter.getQuerySet(), Integer.parseInt(zeroShotClassifierPaperFilter.getReadBatchSize()));
+            Thread.sleep(1000);
+            coproProcessor.startConsumer(insertQuery, Integer.parseInt(zeroShotClassifierPaperFilter.getThreadCount()),
+                    Integer.parseInt(zeroShotClassifierPaperFilter.getWriteBatchSize()),
+                    new ZeroShotConsumerProcess(log, aMarker, action));
+            log.info(aMarker, " Zero shot classifier has been completed {}  ", zeroShotClassifierPaperFilter.getName());
+
+        } catch (Exception e) {
+            log.error(aMarker, "Error in zero shot paper filter action", e);
+            throw new HandymanException("Error in zero shot paper filter action", e, action);
+        }
     }
 
     @Override
@@ -113,7 +120,7 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
         }
 
         @Override
-        public List<PaperFilteringZeroShotClassifierOutputTable> process(URL endpoint, PaperFilteringZeroShotClassifierInputTable entity) throws JsonProcessingException {
+        public List<PaperFilteringZeroShotClassifierOutputTable> process(URL endpoint, PaperFilteringZeroShotClassifierInputTable entity) {
             List<PaperFilteringZeroShotClassifierOutputTable> parentObj = new ArrayList<>();
             final ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("pageContent", entity.pageContent);
@@ -130,7 +137,7 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
                 log.debug(aMarker, "The Request Details: {}", request);
                 coproAPIProcessor(entity, parentObj, request);
             } catch (JsonProcessingException e) {
-                log.error("error in the zero-shot classifier paper filter copro api call {}",e.toString());
+                log.error("error in the zero-shot classifier paper filter copro api call {}", e.toString());
             }
             return parentObj;
         }
@@ -142,7 +149,7 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
                     JSONObject parentResponseObject = new JSONObject(responseBody);
                     final Integer paperNo = Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null);
                     JSONArray responseObject = new JSONArray(String.valueOf(parentResponseObject.get("entity_confidence_score")));
-                    responseObject.forEach(entry->{
+                    responseObject.forEach(entry -> {
                         final JSONObject childObj = new JSONObject(entry.toString());
                         parentObj.add(PaperFilteringZeroShotClassifierOutputTable
                                 .builder()
@@ -199,10 +206,11 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
         private Integer paperNo;
         private String groupId;
         private String pageContent;
-//        private String truthEntity;
+        //        private String truthEntity;
         private String truthPlaceholder;
         private String processId;
         private Long rootPipelineId;
+
         @Override
         public List<Object> getRowData() {
             return null;

@@ -95,9 +95,9 @@ public class BlankPageRemoverAction implements IActionExecution {
             //8. call the method start consumer from coproprocessor
             coproProcessor.startConsumer(insertQuery, Integer.valueOf(action.getContext().get("consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")), new BlankPageRemoverAction.BlankPageRemoverConsumerProcess(log, aMarker, action, outputDir));
             log.info(aMarker, " Blank Page Removal Action has been completed {}  ", blankPageRemover.getName());
-        } catch (Throwable t) {
+        } catch (Exception t) {
             action.getContext().put(blankPageRemover.getName() + ".isSuccessful", "false");
-            log.error(aMarker, "error at blank page removal execute method {}", t);
+            log.error(aMarker, "error at blank page removal execute method {}", ExceptionUtil.toString(t));
         }
     }
 
@@ -134,7 +134,7 @@ public class BlankPageRemoverAction implements IActionExecution {
             log.info(aMarker, " Input variables id : {}", action.getActionId());
             Request request = new Request.Builder().url(endpoint)
                     .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-            log.debug(aMarker, "Request has been build with the parameters \n URI : {} ");
+            log.debug(aMarker, "Request has been build with the parameters \n URI : {} ", request.body());
             log.debug(aMarker, "The Request Details: {}", request);
             try (Response response = httpclient.newCall(request).execute()) {
                 String responseBody = Objects.requireNonNull(response.body()).string();

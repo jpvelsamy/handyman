@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import in.handyman.raven.util.ExceptionUtil;
 import in.handyman.raven.util.InstanceUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -64,7 +65,6 @@ public class DrugMatchAction implements IActionExecution {
   public void execute() throws Exception {
     log.info(aMarker, "drug match process for {} has been started" + drugMatch.getName());
     try {
-
       final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(drugMatch.getResourceConn());
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
       // build insert prepare statement with output table columns
@@ -73,16 +73,16 @@ public class DrugMatchAction implements IActionExecution {
               " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
       log.info(aMarker, "Drug Match Insert query {}", insertQuery);
 
-      //3. initiate copro processor and copro urls
-      final List<URL> urls = Optional.ofNullable(action.getContext().get("drugname.api.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
-        try {
-          return new URL(s1);
-        } catch (MalformedURLException e) {
-          log.error("Error in processing the URL ", e);
-          throw new RuntimeException(e);
-        }
-      }).collect(Collectors.toList())).orElse(Collections.emptyList());
-      log.info(aMarker, "Drug Match copro urls {}", urls);
+            //3. initiate copro processor and copro urls
+            final List<URL> urls = Optional.ofNullable(action.getContext().get("drugname.api.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
+                try {
+                    return new URL(s1);
+                } catch (MalformedURLException e) {
+                    log.error("Error in processing the URL ", e);
+                    throw new HandymanException("Error in processing the URL", e, action);
+                }
+            }).collect(Collectors.toList())).orElse(Collections.emptyList());
+            log.info(aMarker, "Drug Match copro urls {}", urls);
 
       final CoproProcessor<DrugMatchInputTable, DrugMatchOutputTable> coproProcessor =
               new CoproProcessor<>(new LinkedBlockingQueue<>(),
@@ -102,11 +102,12 @@ public class DrugMatchAction implements IActionExecution {
       log.info(aMarker, "Drug Match coproProcessor startConsumer called consumer count {} write batch count {} ", Integer.valueOf(action.getContext().get("consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")));
 
 
-    } catch (Exception ex) {
-      log.error(aMarker, "error in execute method for Drug Match  ", ex);
+        } catch (Exception ex) {
+            log.error(aMarker, "error in execute method for Drug Match  ", ex);
+            throw new HandymanException("error in execute method for Drug Match", ex, action);
+        }
+        log.info(aMarker, "drug match process for {} has been completed" , drugMatch.getName());
     }
-    log.info(aMarker, "drug match process for {} has been completed" + drugMatch.getName());
-  }
 
 
   public static class DrugMatchConsumerProcess implements CoproProcessor.ConsumerProcess<DrugMatchInputTable, DrugMatchOutputTable> {

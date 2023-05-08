@@ -71,7 +71,7 @@ public class AutoRotationAction implements IActionExecution {
             final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(autoRotation.getResourceConn());
 
             jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
-            log.info(aMarker, "<-------Auto Rotation Action for {} has been started------->", autoRotation.getName());
+            log.info(aMarker, "Auto Rotation Action for {} has been started", autoRotation.getName());
             final String outputDir = Optional.ofNullable(autoRotation.getOutputDir()).map(String::valueOf).orElse(null);
             final String insertQuery = "INSERT INTO info.auto_rotation(origin_id,group_id,tenant_id,template_id,process_id, processed_file_path,paper_no, status,stage,message,created_on,root_pipeline_id) " +
                     " VALUES(?,?, ?,?,?, ?,?, ?,?,?,? , ?)";
@@ -80,7 +80,7 @@ public class AutoRotationAction implements IActionExecution {
                     return new URL(s1);
                 } catch (MalformedURLException e) {
                     log.error("Error in processing the URL ", e);
-                    throw new RuntimeException(e);
+                    throw new HandymanException("Error in processing the URL", e, action);
                 }
             }).collect(Collectors.toList())).orElse(Collections.emptyList());
 
@@ -97,6 +97,7 @@ public class AutoRotationAction implements IActionExecution {
         }catch(Exception e){
             action.getContext().put(autoRotation.getName() + ".isSuccessful", "false");
             log.error(aMarker,"error in execute method for auto rotation ",e);
+            throw new HandymanException("error in execute method for auto rotation", e, action);
         }
     }
 
@@ -191,7 +192,7 @@ public class AutoRotationAction implements IActionExecution {
                                     .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                                     .rootPipelineId(entity.rootPipelineId)
                                     .build());
-                    log.info(aMarker, "The Exception occurred ");
+                    log.info(aMarker, "Error in response {}", response.message());
                 }
             } catch (Exception e) {
                 parentObj.add(
@@ -209,7 +210,7 @@ public class AutoRotationAction implements IActionExecution {
                                 .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                                 .rootPipelineId(entity.rootPipelineId)
                                 .build());
-                log.info(aMarker, "The Exception occurred ", e);
+                log.error(aMarker, "The Exception occurred in getting response {}", ExceptionUtil.toString(e));
             }
 
             return parentObj;
