@@ -80,7 +80,7 @@ public class DonutImpiraQaAction implements IActionExecution {
 
     // Create DDL
 
-    jdbi.useTransaction(handle -> handle.execute("create table if not exists macro." + donutImpiraQa.getResponseAs() + " ( id bigserial not null, file_path text,question text, predicted_attribution_value text,b_box json null, image_dpi int8 null, image_width int8 null, image_height int8 null, extracted_image_unit varchar null, action_id bigint, root_pipeline_id bigint, process_id bigint, created_date timestamp not null default now() );"));
+    jdbi.useTransaction(handle -> handle.execute("create table if not exists macro." + donutImpiraQa.getResponseAs() + " ( id bigserial not null, file_path text,question text, predicted_attribution_value text NULL,confidence_score float8 NULL, b_box json null, image_dpi int8 null, image_width int8 null, image_height int8 null, extracted_image_unit varchar null, action_id bigint, root_pipeline_id bigint, process_id bigint, created_date timestamp not null default now() );"));
     jdbi.useTransaction(handle -> handle.execute("create table if not exists macro." + donutImpiraQa.getResponseAs() + "_error ( id bigserial not null, file_path text,error_message text,  action_id bigint, root_pipeline_id bigint,process_id bigint, created_date timestamp not null default now() );"));
 
     final List<DocnutImpiraLineItem> docnutImpiraLineItems = new ArrayList<>();
@@ -146,7 +146,7 @@ public class DonutImpiraQaAction implements IActionExecution {
         log.info(aMarker, "completed {}", donutImpiraResultLineItem.attributes.size());
 
         jdbi.useTransaction(handle -> {
-          final PreparedBatch batch = handle.prepareBatch("INSERT INTO macro." + donutImpiraQa.getResponseAs() + " (process_id,file_path,question, predicted_attribution_value,b_box, image_dpi , image_width , image_height , extracted_image_unit , action_id, root_pipeline_id) VALUES(" + action.getPipelineId() + ",:filePath,:question,:predictedAttributionValue, :bBoxes::json, :imageDpi, :imageWidth, :imageHeight , :extractedImageUnit, "+ action.getActionId()+","+ action.getRootPipelineId()+");");
+          final PreparedBatch batch = handle.prepareBatch("INSERT INTO macro." + donutImpiraQa.getResponseAs() + " (process_id,file_path,question, predicted_attribution_value,b_box, image_dpi , image_width , image_height , extracted_image_unit , action_id, root_pipeline_id,confidence_score) VALUES(" + action.getPipelineId() + ",:filePath,:question,:predictedAttributionValue, :bBoxes::json, :imageDpi, :imageWidth, :imageHeight , :extractedImageUnit, "+ action.getActionId()+","+ action.getRootPipelineId()+",:confidenceScore);");
 
           Lists.partition(donutImpiraResultLineItem.attributes, 100).forEach(resultLineItems -> {
             log.info(aMarker, "inserting into donut_docqa_action {}", resultLineItems.size());
@@ -159,6 +159,7 @@ public class DonutImpiraQaAction implements IActionExecution {
                       .bind("imageWidth", donutImpiraResultLineItem.imageWidth)
                       .bind("imageHeight", donutImpiraResultLineItem.imageHeight)
                       .bind("extractedImageUnit", donutImpiraResultLineItem.extractedImageUnit)
+                      .bind("confidenceScore",(resultLineItem.score * 100))
                       .add();
 
             });
@@ -233,6 +234,7 @@ public class DonutImpiraQaAction implements IActionExecution {
     private String question;
     private String predictedAttributionValue;
     private JsonNode bBoxes;
+    private float score;
   }
 
 
