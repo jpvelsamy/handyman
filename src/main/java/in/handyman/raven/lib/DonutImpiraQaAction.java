@@ -19,6 +19,7 @@ import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -54,6 +55,7 @@ public class DonutImpiraQaAction implements IActionExecution {
   private final Marker aMarker;
 
   private final List<String> nodes;
+  private static String httpClientTimeout = new String();
 
   private final AtomicInteger counter = new AtomicInteger();
 
@@ -64,6 +66,7 @@ public class DonutImpiraQaAction implements IActionExecution {
     this.log = log;
     this.nodes = Optional.ofNullable(action.getContext().get(ATTRIBUTION_URL)).map(s -> Arrays.asList(s.split(","))).orElse(Collections.emptyList());
     this.aMarker = MarkerFactory.getMarker(" DonutImpiraQa:"+this.donutImpiraQa.getName());
+    this.httpClientTimeout = action.getContext().get("okhttp.client.timeout");
   }
 
   @Override
@@ -243,7 +246,12 @@ public class DonutImpiraQaAction implements IActionExecution {
 
     private static final MediaType MediaTypeJSON = MediaType.parse("application/json; charset=utf-8");
     private static final ObjectMapper MAPPER = new ObjectMapper();
-    private final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
+
+    private final OkHttpClient httpclient = new OkHttpClient.Builder()
+            .connectTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
+            .writeTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
+            .readTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
+            .build();
     private final String node;
 
     public DocnutImpiraApiCaller(final String node) {
