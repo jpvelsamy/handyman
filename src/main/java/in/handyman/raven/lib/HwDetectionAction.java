@@ -62,8 +62,8 @@ public class HwDetectionAction implements IActionExecution {
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
 
       log.info(aMarker, "Handwritten Classification Action for {} has been started", hwDetection.getName());
-      final String insertQuery = "INSERT INTO paper_classification.paper_classification_result(created_on, created_user_id, last_updated_on, last_updated_user_id, tenant_id, model_score, origin_id, paper_no, template_id, model_registry_id, document_type, status, stage, message, group_id, root_pipeline_id)" +
-              "values(now(),?,now(),?,?,?,?,?,?,?,?,?,?,?,?, ?)";
+      final String insertQuery = "INSERT INTO paper_classification.paper_classification_result(created_on, created_user_id, last_updated_on, last_updated_user_id, tenant_id, origin_id, paper_no, template_id, model_registry_id, document_type, status, stage, message, group_id, root_pipeline_id, confidence_score)" +
+              "values(now(),?,now(),?,?,?,?,?,?,?,?,?,?,?,?,?)";
       final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.hw-detection.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
         try {
           return new URL(s1);
@@ -137,17 +137,19 @@ public class HwDetectionAction implements IActionExecution {
         if (response.isSuccessful()) {
           log.info("copro api response body {}",responseBody);
           String documentStatus = Optional.ofNullable(mapper.readTree(responseBody).get("document_status")).map(JsonNode::asText).orElse(null);
+          Long score = Optional.ofNullable(mapper.readTree(responseBody).get("confidence_score")).map(JsonNode::asLong).orElse(null);
+
           parentObj.add(HwClassificationOutputTable.builder()
                   .createdUserId(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).orElse(null))
                   .lastUpdatedUserId(Optional.ofNullable(entity.getLastUpdatedUserId()).map(String::valueOf).orElse(null))
                   .tenantId(Optional.ofNullable(entity.getTenantId()).map(String::valueOf).orElse(null))
-                  .modelScore(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).map(Double::parseDouble).orElse(null))
                   .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                   .paperNo(Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
                   .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .documentType(documentStatus)
+                  .confidenceScore(score)
                   .status("COMPLETED")
                   .stage(STAGE)
                   .message("Paper Classification Finished")
@@ -160,7 +162,6 @@ public class HwDetectionAction implements IActionExecution {
                   .createdUserId(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).orElse(null))
                   .lastUpdatedUserId(Optional.ofNullable(entity.getLastUpdatedUserId()).map(String::valueOf).orElse(null))
                   .tenantId(Optional.ofNullable(entity.getTenantId()).map(String::valueOf).orElse(null))
-                  .modelScore(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).map(Double::parseDouble).orElse(null))
                   .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                   .paperNo(Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
@@ -179,7 +180,6 @@ public class HwDetectionAction implements IActionExecution {
                 .createdUserId(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).orElse(null))
                 .lastUpdatedUserId(Optional.ofNullable(entity.getLastUpdatedUserId()).map(String::valueOf).orElse(null))
                 .tenantId(Optional.ofNullable(entity.getTenantId()).map(String::valueOf).orElse(null))
-                .modelScore(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).map(Double::parseDouble).orElse(null))
                 .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                 .paperNo(Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
@@ -232,13 +232,13 @@ public class HwDetectionAction implements IActionExecution {
     private String createdUserId;
     private String lastUpdatedUserId;
     private String tenantId;
-    private Double modelScore;
     private String originId;
     private Integer groupId;
     private Integer paperNo;
     private String templateId;
     private Integer modelRegistryId;
     private String documentType;
+    private Long confidenceScore;
     private String status;
     private String stage;
     private String message;
@@ -246,9 +246,9 @@ public class HwDetectionAction implements IActionExecution {
 
     @Override
     public List<Object> getRowData() {
-      return Stream.of(this.createdUserId,this.lastUpdatedUserId, this.tenantId, this.modelScore,
+      return Stream.of(this.createdUserId,this.lastUpdatedUserId, this.tenantId,
               this.originId, this.paperNo, this.templateId, this.modelRegistryId,
-              this.documentType, this.status, this.stage, this.message, this.groupId,this.rootPipelineId).collect(Collectors.toList());
+              this.documentType, this.status, this.stage, this.message, this.groupId,this.rootPipelineId, this.confidenceScore).collect(Collectors.toList());
 
     }
   }
