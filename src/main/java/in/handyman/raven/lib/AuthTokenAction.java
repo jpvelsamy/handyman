@@ -25,6 +25,9 @@ import java.util.Map;
 public class AuthTokenAction implements IActionExecution {
   private static final MediaType MediaTypeJSON = MediaType
           .parse("application/json; charset=utf-8");
+  public static final String GATEKEEPER_URL = "gatekeeper.url";
+  public static final String GATEKEEPER_APPID = "gatekeeper.appid";
+  public static final String GATEKEEPER_APISECRET = "gatekeeper.apisecret";
   private final ActionExecutionAudit action;
 
   private final Logger log;
@@ -43,9 +46,9 @@ public class AuthTokenAction implements IActionExecution {
     this.action = action;
     this.log = log;
     this.aMarker = MarkerFactory.getMarker(" AuthToken:" + this.authToken.getName());
-    this.URI = action.getContext().get("gatekeeper.url");
-    this.appId = action.getContext().get("gatekeeper.appid");
-    this.apiSecret = action.getContext().get("gatekeeper.apisecret");
+    this.URI = action.getContext().get(GATEKEEPER_URL);
+    this.appId = action.getContext().get(GATEKEEPER_APPID);
+    this.apiSecret = action.getContext().get(GATEKEEPER_APISECRET);
   }
 
   @Override
