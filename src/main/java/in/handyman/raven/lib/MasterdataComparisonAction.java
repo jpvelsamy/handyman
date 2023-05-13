@@ -59,6 +59,8 @@ public class MasterdataComparisonAction implements IActionExecution {
   private static final MediaType MediaTypeJSON = MediaType.parse("application/json; charset=utf-8");
 
   private final Integer writeBatchSize = 1000;
+  private static String httpClientTimeout = new String();
+
 
   public MasterdataComparisonAction(final ActionExecutionAudit action, final Logger log,
                                     final Object intellimatch) {
@@ -69,6 +71,7 @@ public class MasterdataComparisonAction implements IActionExecution {
     this.MAPPER = new ObjectMapper();
     this.httpclient = InstanceUtil.createOkHttpClient();
     this.aMarker = MarkerFactory.getMarker(" Intellimatch:" + this.masterdataComparison.getName());
+    this.httpClientTimeout = action.getContext().get("okhttp.client.timeout");
   }
 
   @Override
@@ -125,10 +128,10 @@ public class MasterdataComparisonAction implements IActionExecution {
     private final Marker aMarker;
     public final ActionExecutionAudit action;
     final ObjectMapper mapper;
-    final OkHttpClient httpclient = new OkHttpClient.Builder()
-            .connectTimeout(10, TimeUnit.MINUTES)
-            .writeTimeout(10, TimeUnit.MINUTES)
-            .readTimeout(10, TimeUnit.MINUTES)
+    private final OkHttpClient httpclient = new OkHttpClient.Builder()
+            .connectTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
+            .writeTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
+            .readTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
             .build();
     String URI;
 
