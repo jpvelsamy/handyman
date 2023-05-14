@@ -15,6 +15,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import in.handyman.raven.util.ExceptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -97,13 +98,13 @@ public class CoproStopAction implements IActionExecution {
                 .execute());
         log.info(aMarker, "The Successful Response for {} --> {}", name, responseBody);
       } else {
-        log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
+        log.error(aMarker, "The Failure Response {} --> {}", name, responseBody);
       }
       log.info(aMarker, "copro admin API call for {} has been completed" , coproStop.getName());
     } catch (Exception e) {
       action.getContext().put(name.concat(".error"), "true");
       action.getContext().put(name.concat(".errorMessage"), e.getMessage());
-      log.info(aMarker, "The Exception occurred ", e);
+      log.error(aMarker, "The Exception occurred {}", ExceptionUtil.toString(e));
       throw new HandymanException("Failed to execute", e, action);
     }
   }

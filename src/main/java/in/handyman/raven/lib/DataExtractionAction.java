@@ -118,7 +118,9 @@ public class DataExtractionAction implements IActionExecution {
       Request request = new Request.Builder().url(endpoint).post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
       log.debug(aMarker, "Request has been build with the parameters \n URI :  \n page content : \n key-filters :{}", request.body());
       log.debug(aMarker, "The Request Details: {}", request);
-        try (Response response = httpclient.newCall(request).execute()) {
+      String originId = entity.getOriginId();
+      Integer groupId = entity.getGroupId();
+      try (Response response = httpclient.newCall(request).execute()) {
         String responseBody = Objects.requireNonNull(response.body()).string();
         if (response.isSuccessful()) {
           JSONObject parentResponseObject = new JSONObject(responseBody);
@@ -127,8 +129,8 @@ public class DataExtractionAction implements IActionExecution {
           parentObj.add(DataExtractionOutputTable.builder()
                   .filePath(new File(entity.getFilePath()).getAbsolutePath())
                   .extractedText(contentString)
-                  .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                  .groupId(entity.getGroupId())
+                  .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                  .groupId(groupId)
                   .fileName(Optional.ofNullable(parentResponseObject.get("fileName")).map(String::valueOf).orElse(null))
                   .paperNo(entity.paperNo)
                           .status("COMPLETED")
@@ -143,8 +145,8 @@ public class DataExtractionAction implements IActionExecution {
                   .build());
         }else{
           parentObj.add(DataExtractionOutputTable.builder()
-                  .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                  .groupId(entity.getGroupId())
+                  .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                  .groupId(groupId)
                   .paperNo(entity.paperNo)
                   .status("FAILED")
                   .stage("DATA_EXTRACTION")
@@ -155,12 +157,12 @@ public class DataExtractionAction implements IActionExecution {
                   .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                   .rootPipelineId(entity.rootPipelineId)
                   .build());
-          log.info(aMarker, "The Exception occurred ");
+          log.error(aMarker, "The Exception occurred ");
         }
       } catch (Exception e) {
         parentObj.add(DataExtractionOutputTable.builder()
-                .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                .groupId(entity.getGroupId())
+                .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                .groupId(groupId)
                 .paperNo(entity.paperNo)
                 .status("FAILED")
                 .stage("DATA_EXTRACTION")
@@ -172,7 +174,9 @@ public class DataExtractionAction implements IActionExecution {
                 .rootPipelineId(entity.rootPipelineId)
                 .build());
 
-        log.info(aMarker, "The Exception occurred ", e);
+        log.error(aMarker, "The Exception occurred ", e);
+        HandymanException handymanException = new HandymanException(e);
+        HandymanException.insertException("Blank Page removal consumer failed for batch/group "+ groupId, handymanException, this.action);
 
       }
       return parentObj;

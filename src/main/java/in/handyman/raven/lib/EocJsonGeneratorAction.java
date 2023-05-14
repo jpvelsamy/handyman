@@ -6,6 +6,7 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.EocJsonGenerator;
+import in.handyman.raven.util.ExceptionUtil;
 import in.handyman.raven.util.InstanceUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -78,15 +79,15 @@ public class EocJsonGeneratorAction implements IActionExecution {
                           "VALUES( :documentId, :eocId, :originId, :groupId, :eocResponse::json, :rootPipelineId);")
                   .bindBean(eocResponse).execute();
           log.debug(aMarker, "inserted {} into eoc response details", eocResponse);
+          action.getContext().put(name + ".isSuccessful", String.valueOf(response.isSuccessful()));
         });
       } else {
-        log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
+        log.error(aMarker, "The Failure Response {} --> {}", name, responseBody);
         action.getContext().put(name.concat(".error"), "true");
         action.getContext().put(name.concat(".errorMessage"), responseBody);
       }
-      action.getContext().put(name + ".isSuccessful", String.valueOf(response.isSuccessful()));
     } catch (Exception e) {
-      log.error(aMarker, "The Exception occurred ", e);
+      log.error(aMarker, "Exception occurred with {}", ExceptionUtil.toString(e));
       action.getContext().put(name + ".isSuccessful", "false");
       throw new HandymanException("Failed to execute", e, action);
     }

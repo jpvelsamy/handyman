@@ -69,7 +69,7 @@ public class NervalidatorAction implements IActionExecution {
 
         } catch (Exception ex) {
             action.getContext().put(nervalidator.getName().concat(".error"), "true");
-            log.info(aMarker, "The Exception occurred {} ", ExceptionUtil.toString(ex));
+            log.error(aMarker, "The Exception occurred {} ", ExceptionUtil.toString(ex));
             throw new HandymanException("Failed to execute", ex, action);
         }
     }

@@ -44,7 +44,8 @@ public class NumericvalidatorAction implements IActionExecution {
             boolean validator = numericAdapter.getValidationModel(adapter.getInputValue(), adapter.getAllowedSpecialChar());
             return validator ? adapter.getThreshold() : 0;
         } catch (Exception ex) {
-            throw new HandymanException("Failed to execute", ex);
+            log.error(aMarker, "Error in getting numeric score");
+            throw new HandymanException("Failed to execute", ex, action);
         }
     }
 
@@ -61,7 +62,7 @@ public class NumericvalidatorAction implements IActionExecution {
 
         } catch (Exception ex) {
             action.getContext().put(numericvalidator.getName().concat(".error"), "true");
-            log.info(aMarker, "The Exception occurred {}", ExceptionUtil.toString(ex));
+            log.error(aMarker, "The Exception occurred {}", ExceptionUtil.toString(ex));
             throw new HandymanException("Failed to execute", ex, action);
         }
     }

@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import in.handyman.raven.util.ExceptionUtil;
-import in.handyman.raven.util.InstanceUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,7 +35,6 @@ import okhttp3.*;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.argument.Arguments;
 import org.jdbi.v3.core.argument.NullArgument;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -63,7 +61,7 @@ public class DrugMatchAction implements IActionExecution {
 
   @Override
   public void execute() throws Exception {
-    log.info(aMarker, "drug match process for {} has been started" + drugMatch.getName());
+    log.info(aMarker, "drug match process for {} has been started" , drugMatch.getName());
     try {
       final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(drugMatch.getResourceConn());
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
@@ -103,7 +101,7 @@ public class DrugMatchAction implements IActionExecution {
 
 
         } catch (Exception ex) {
-            log.error(aMarker, "error in execute method for Drug Match  ", ex);
+            log.error(aMarker, "error in execute method for Drug Match {}", ExceptionUtil.toString(ex));
             throw new HandymanException("error in execute method for Drug Match", ex, action);
         }
         log.info(aMarker, "drug match process for {} has been completed" , drugMatch.getName());
@@ -139,7 +137,8 @@ public class DrugMatchAction implements IActionExecution {
       AtomicInteger atomicInteger = new AtomicInteger();
       String requestString;
       ObjectMapper mapper = new ObjectMapper();
-      if (result.getDrugName() != null) {
+      String drugName = result.getDrugName();
+      if (drugName != null) {
         DrugNameRequest drugNameRequest = DrugNameRequest.builder()
                 .drugName(result.drugName)
                 .jCode(result.jCode)
@@ -147,14 +146,19 @@ public class DrugMatchAction implements IActionExecution {
         try {
           requestString = mapper.writeValueAsString(drugNameRequest);
         } catch (JsonProcessingException e) {
-          log.error(aMarker, "error in mapper value {}", e);
-          throw new HandymanException(e.toString());
+          log.error(aMarker, "error in mapper value {}", ExceptionUtil.toString(e));
+          throw new HandymanException("Error in mapper value", e, action);
         }
 
         final Request request = new Request.Builder().url(endpoint).header("appId", appId)
                 .header("appKeyId", appKeyId)
                 .post(RequestBody.create(requestString, MediaTypeJSON))
                 .build();
+        String originId = result.getOriginId();
+        String eocIdentifier = result.eocIdentifier;
+        Integer paperNo = result.paperNo;
+        String documentId = result.documentId;
+        String jCode = result.getJCode();
         try (Response response = httpclient.newCall(request).execute()) {
           String responseBody = Objects.requireNonNull(response.body()).string();
           if (response.isSuccessful()) {
@@ -163,13 +167,13 @@ public class DrugMatchAction implements IActionExecution {
             output.forEach(drugNameResponse -> {
               parentObj.add(
                       DrugMatchOutputTable.builder()
-                              .originId(result.getOriginId())
+                              .originId(originId)
                               .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                              .eocIdentifier(result.eocIdentifier)
-                              .paperNo(result.paperNo)
-                              .documentId(result.documentId)
-                              .drugJCode(result.getJCode())
-                              .drugName(result.getDrugName())
+                              .eocIdentifier(eocIdentifier)
+                              .paperNo(paperNo)
+                              .documentId(documentId)
+                              .drugJCode(jCode)
+                              .drugName(drugName)
                               .actualValue(drugNameResponse.getDrugName())
                               .status("COMPLETED")
                               .stage("PAHUB-DRUGNAME")
@@ -181,13 +185,13 @@ public class DrugMatchAction implements IActionExecution {
             parentObj.add(
                     DrugMatchOutputTable
                             .builder()
-                            .originId(Optional.ofNullable(result.getOriginId()).map(String::valueOf).orElse(null))
+                            .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                             .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                            .eocIdentifier(result.eocIdentifier)
-                            .paperNo(result.paperNo)
-                            .documentId(result.documentId)
-                            .drugJCode(result.getJCode())
-                            .drugName(result.getDrugName())
+                            .eocIdentifier(eocIdentifier)
+                            .paperNo(paperNo)
+                            .documentId(documentId)
+                            .drugJCode(jCode)
+                            .drugName(drugName)
                             .actualValue("")
                             .status("COMPLETED")
                             .stage("PAHUB-DRUGNAME")
@@ -197,24 +201,26 @@ public class DrugMatchAction implements IActionExecution {
             log.error(aMarker, "failed for request {} and response {}", request, response);
             throw new HandymanException(responseBody);
           }
-        } catch (Throwable t) {
+        } catch (Exception exception) {
           parentObj.add(
                   DrugMatchOutputTable
                           .builder()
-                          .originId(Optional.ofNullable(result.getOriginId()).map(String::valueOf).orElse(null))
+                          .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                           .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                          .eocIdentifier(result.eocIdentifier)
-                          .paperNo(result.paperNo)
-                          .documentId(result.documentId)
-                          .drugJCode(result.getJCode())
-                          .drugName(result.getDrugName())
+                          .eocIdentifier(eocIdentifier)
+                          .paperNo(paperNo)
+                          .documentId(documentId)
+                          .drugJCode(jCode)
+                          .drugName(drugName)
                           .actualValue("")
                           .status("FAILED")
                           .stage("PAHUB-DRUGNAME")
                           .message("Drug name with pahub instance has been failed")
                           .rootPipelineId(result.rootPipelineId)
                           .build());
-          log.error(aMarker, "error in hitting the file for mentioned request {}", request);
+          log.error(aMarker, "error in hitting the file for mentioned request {} with exception {}", request, ExceptionUtil.toString(exception));
+          HandymanException handymanException = new HandymanException(exception);
+          HandymanException.insertException("Blank Page removal consumer failed for originId"+ originId, handymanException, this.action);
         }
       }
 

@@ -89,7 +89,7 @@ public class TriageAttributionAction implements IActionExecution {
         } catch (Exception e) {
             action.getContext().put(triageAttribution.getTriageAttributionResponseName().concat(".error"), "true");
             action.getContext().put(triageAttribution.getTriageAttributionResponseName().concat(".errorMessage"), e.getMessage());
-            log.info(aMarker, "The Exception occurred {}", ExceptionUtil.toString(e));
+            log.error(aMarker, "The Exception occurred {}", ExceptionUtil.toString(e));
             throw new HandymanException("Failed to execute", e, action);
         }
     }

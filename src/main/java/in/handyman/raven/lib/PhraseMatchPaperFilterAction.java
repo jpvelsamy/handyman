@@ -62,12 +62,12 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
         final String processId = Optional.ofNullable(phraseMatchPaperFilter.getProcessID()).map(String::valueOf).orElse(null);
         final String insertQuery = "INSERT INTO paper.phrase_match_filtering_result_" + processId + "(origin_id,group_id,paper_no,truth_entity, synonym, is_key_present,status,stage,message, created_on,root_pipeline_id) " +
                 " VALUES(?,?,?,?,?,?,?,?,?,now(), ?)";
-        final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.paper-filtering-phrase-match.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
+        final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.paper-filtering-phrase-match.url")).map(s -> Arrays.stream(s.split(",")).map(url -> {
             try {
-                return new URL(s1);
+                return new URL(url);
             } catch (MalformedURLException e) {
-                log.error("Error in processing the URL ", e);
-                throw new RuntimeException(e);
+                log.error("Error in processing the URL {} ", url, e);
+                throw new HandymanException("Error in processing the URL", e, action);
             }
         }).collect(Collectors.toList())).orElse(Collections.emptyList());
 
@@ -121,31 +121,42 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
         public List<PhraseMatchPaperFilterAction.PhraseMatchOutputTable> process(URL endpoint, PhraseMatchPaperFilterAction.PhraseMatchInputTable entity) throws JsonProcessingException {
             List<PhraseMatchPaperFilterAction.PhraseMatchOutputTable> parentObj = new ArrayList<>();
             final ObjectNode objectNode = mapper.createObjectNode();
+            String groupId = entity.groupId;
+            String originId = entity.originId;
+            Integer paperNo = entity.paperNo;
+            String truthPlaceholder = entity.truthPlaceholder;
+
             try {
-                objectNode.put("pageContent", entity.pageContent);
+                String pageContent = entity.pageContent;
+                objectNode.put("pageContent", pageContent);
 //                objectNode.put("truthEntity", entity.truthEntity);
-                objectNode.set("keysToFilter", mapper.readTree(entity.truthPlaceholder));
-                objectNode.put("originId", entity.originId);
-                objectNode.put("groupId", entity.groupId);
-                objectNode.put("paperNo", entity.paperNo);
+                objectNode.set("keysToFilter", mapper.readTree(truthPlaceholder));
+                objectNode.put("originId", originId);
+
+                objectNode.put("groupId", groupId);
+                objectNode.put("paperNo", paperNo);
                 log.info(aMarker, " Input variables id : {}", action.getActionId());
                 Request request = new Request.Builder().url(endpoint)
                         .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
                 log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n page content : {} \n key-filters : {} ", endpoint, entity.getPageContent(), entity.getTruthPlaceholder());
                 log.debug(aMarker, "The Request Details: {}", request);
                 coproAPIProcessor(entity, parentObj, request);
-            } catch (JsonProcessingException e) {
-                log.error("error in the phrase match paper filter copro api call {}", e.toString());
+            } catch (JsonProcessingException exception) {
+                log.error("error in the phrase match paper filter copro api call {}", exception.toString());
+                HandymanException handymanException = new HandymanException(exception);
+                HandymanException.insertException("Paper Itemizer  consumer failed for groupId"+ groupId+ "and originId" + originId, handymanException, this.action);
+                log.error(aMarker, "The Exception occurred in phrase match paper filter", exception);
             }
             return parentObj;
         }
 
         private void coproAPIProcessor(PhraseMatchPaperFilterAction.PhraseMatchInputTable entity, List<PhraseMatchPaperFilterAction.PhraseMatchOutputTable> parentObj, Request request) {
+            final Integer paperNo = Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null);
+            Long rootPipelineId = entity.rootPipelineId;
             try (Response response = httpclient.newCall(request).execute()) {
                 String responseBody = Objects.requireNonNull(response.body()).string();
                 if (response.isSuccessful()) {
                     JSONArray responseArray = new JSONArray(responseBody);
-                    final Integer paperNo = Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null);
                     responseArray.forEach(entry -> {
                         JSONObject responseObject = new JSONObject(String.valueOf(entry));
                         parentObj.add(PhraseMatchOutputTable
@@ -159,7 +170,7 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
                                 .status("COMPLETED")
                                 .stage(actionName)
                                 .message("Completed API call phrase match")
-                                .rootPipelineId(entity.rootPipelineId)
+                                .rootPipelineId(rootPipelineId)
                                 .build());
                     });
                 } else {
@@ -169,26 +180,28 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
                                     .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                                     .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).orElse(null))
                                     .status("FAILED")
-                                    .paperNo(entity.paperNo)
+                                    .paperNo(paperNo)
                                     .stage(actionName)
                                     .message(Optional.of(responseBody).map(String::valueOf).orElse(null))
-                                    .rootPipelineId(entity.rootPipelineId)
+                                    .rootPipelineId(rootPipelineId)
                                     .build());
                     log.info(aMarker, "The Exception occurred in Phrase match API call");
                 }
-            } catch (Exception e) {
-                log.info(aMarker, "The Exception occurred ", e);
+            } catch (Exception exception) {
                 parentObj.add(
                         PhraseMatchOutputTable
                                 .builder()
                                 .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                                 .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).orElse(null))
                                 .status("FAILED")
-                                .paperNo(entity.paperNo)
+                                .paperNo(paperNo)
                                 .stage(actionName)
-                                .message(ExceptionUtil.toString(e))
-                                .rootPipelineId(entity.rootPipelineId)
+                                .message(exception.getMessage())
+                                .rootPipelineId(rootPipelineId)
                                 .build());
+                log.error(aMarker, "Exception occurred in the phrase match paper filter action {}", ExceptionUtil.toString(exception));
+                HandymanException handymanException = new HandymanException(exception);
+                HandymanException.insertException("Error in inserting Intellimatch result table", handymanException, this.action);
 
             }
         }

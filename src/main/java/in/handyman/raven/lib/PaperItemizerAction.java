@@ -145,6 +145,12 @@ public class PaperItemizerAction implements IActionExecution {
               .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
       log.info(aMarker,"coproProcessor Request builder {}",request);
       AtomicInteger atomicInteger = new AtomicInteger();
+      String originId = entity.getOriginId();
+      Integer groupId = entity.getGroupId();
+      String templateId = entity.templateId;
+      String tenantId = entity.tenantId;
+      Long processId = entity.processId;
+      Long rootPipelineId = entity.rootPipelineId;
       try(Response response=httpclient.newCall(request).execute()){
 
         log.info(aMarker,"coproProcessor consumer process response  {}",response);
@@ -160,54 +166,56 @@ public class PaperItemizerAction implements IActionExecution {
                     PaperItemizerOutputTable
                             .builder()
                             .processedFilePath(String.valueOf(s))
-                            .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                            .groupId(entity.getGroupId())
-                            .templateId(entity.templateId)
-                            .tenantId(entity.tenantId)
-                            .processId(entity.processId)
+                            .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                            .groupId(groupId)
+                            .templateId(templateId)
+                            .tenantId(tenantId)
+                            .processId(processId)
                             .paperNo(atomicInteger.incrementAndGet())
                             .status("COMPLETED")
                             .stage("PAPER_ITEMIZER")
                             .message("Paper Itemizer macro completed")
                             .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                            .rootPipelineId(entity.rootPipelineId)
+                            .rootPipelineId(rootPipelineId)
                             .build());
           });
         }else{
           parentObj.add(
                   PaperItemizerOutputTable
                           .builder()
-                          .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                          .groupId(entity.getGroupId())
-                          .processId(entity.processId)
-                          .templateId(entity.templateId)
-                          .tenantId(entity.tenantId)
+                          .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                          .groupId(groupId)
+                          .processId(processId)
+                          .templateId(templateId)
+                          .tenantId(tenantId)
                           .paperNo(atomicInteger.incrementAndGet())
                           .status("FAILED")
                           .stage("PAPER_ITEMIZER")
                           .message(response.message())
                           .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                          .rootPipelineId(entity.rootPipelineId)
+                          .rootPipelineId(rootPipelineId)
                           .build());
           log.error(aMarker, "Error in response {}",response.message());
         }
-      }catch (Exception e) {
+      }catch (Exception exception) {
         parentObj.add(
                         PaperItemizerOutputTable
                         .builder()
-                        .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                        .groupId(entity.getGroupId())
-                        .processId(entity.processId)
-                        .templateId(entity.templateId)
-                        .tenantId(entity.tenantId)
+                        .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                        .groupId(groupId)
+                        .processId(processId)
+                        .templateId(templateId)
+                        .tenantId(tenantId)
                         .paperNo(atomicInteger.incrementAndGet())
                         .status("FAILED")
                         .stage("PAPER_ITEMIZER")
-                        .message(ExceptionUtil.toString(e))
+                        .message(exception.getMessage())
                         .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                        .rootPipelineId(entity.rootPipelineId)
+                        .rootPipelineId(rootPipelineId)
                         .build());
-        log.error(aMarker, "The Exception occurred in request ", e);
+        HandymanException handymanException = new HandymanException(exception);
+        HandymanException.insertException("Paper Itemizer  consumer failed for originId "+ originId, handymanException, this.action);
+        log.error(aMarker, "The Exception occurred in request {}", request, exception);
       }
       atomicInteger.set(0);
       log.info(aMarker,"coproProcessor consumer process with output entity {}",parentObj);

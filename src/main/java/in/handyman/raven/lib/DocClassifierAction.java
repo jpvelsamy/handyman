@@ -7,6 +7,7 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.DocClassifier;
+import in.handyman.raven.util.ExceptionUtil;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -89,7 +90,7 @@ public class DocClassifierAction implements IActionExecution {
         } catch (Exception e) {
             action.getContext().put(name.concat(".error"), "true");
             action.getContext().put(name.concat(".errorMessage"), e.getMessage());
-            log.error(aMarker, "The Exception occurred ", e);
+            log.error(aMarker, "The Exception occurred {}", ExceptionUtil.toString(e));
             throw new HandymanException("Failed to execute", e, action);
         }
     }

@@ -104,7 +104,7 @@ public class UrgencyTriageAction implements IActionExecution {
 
         } catch (Exception e) {
             action.getContext().put(urgencyTriage.getName().concat(".error"), "true");
-            log.info(aMarker, "The Exception occurred ", e);
+            log.error(aMarker, "The Exception occurred ", e);
             throw new HandymanException("Failed to execute", e, action);
         }
         log.info(aMarker, "Urgency Triage Action for {} has been completed" , urgencyTriage.getName());

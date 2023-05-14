@@ -5,6 +5,7 @@ import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.audit.StatementExecutionAudit;
 import in.handyman.raven.util.CommonQueryUtil;
+import in.handyman.raven.util.ExceptionUtil;
 import in.handyman.raven.util.UniqueID;
 import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
@@ -114,7 +115,7 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
                             Thread.sleep(10);
                         } catch (InterruptedException e) {
                             logger.error("Error at Producer sleep", e);
-                            throw new RuntimeException(e);
+                            throw new HandymanException("Error at Producer sleep", e, actionExecutionAudit);
                         }
                     });
                     logger.info("Total Partition added to the queue: {} ", partitions.size());
@@ -187,10 +188,10 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
                             }
                         } catch (InterruptedException e) {
                             logger.error("Error at Consumer thread", e);
-                            throw new RuntimeException(e);
+                            throw new HandymanException("Error at Consumer thread", e, actionExecutionAudit);
                         } catch (Exception e) {
                             logger.error("Error at Consumer Process", e);
-                            throw new RuntimeException(e);
+                            throw new HandymanException("Error at Consumer Process", e, actionExecutionAudit);
                         }
                     }
                     if (!processedEntity.isEmpty()) {
@@ -218,9 +219,9 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
                                     addAudit(audit,startTime);
                                 }
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                logger.error("Error in executing prepared statement {}", ExceptionUtil.toString(e));
                                 handle.rollback();
-                                throw new RuntimeException(e);
+                                throw new HandymanException("Error in executing prepared statement ", e, actionExecutionAudit);
                             } finally {
                                 if (handle != null && handle.isInTransaction()) {
 //                                    handle.commit();

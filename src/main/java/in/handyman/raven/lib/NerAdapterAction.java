@@ -70,12 +70,12 @@ public class NerAdapterAction implements IActionExecution {
             log.info(aMarker, "ner adapter Insert query {}", insertQuery);
 
             //3. initiate copro processor and copro urls
-            final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.text-validation.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
+            final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.text-validation.url")).map(s -> Arrays.stream(s.split(",")).map(url -> {
                 try {
-                    return new URL(s1);
+                    return new URL(url);
                 } catch (MalformedURLException e) {
-                    log.error("Error in processing the URL ", e);
-                    throw new RuntimeException(e);
+                    log.error("Error in processing the URL {}", url, e);
+                    throw new HandymanException("Error in processing the URL", e, action);
                 }
             }).collect(Collectors.toList())).orElse(Collections.emptyList());
             log.info(aMarker, "ner adapter copro urls {}", urls);
@@ -158,22 +158,33 @@ public class NerAdapterAction implements IActionExecution {
             double confidenceScore = wordScore + charScore + validatorScore - validatorNegativeScore;
             AtomicInteger atomicInteger = new AtomicInteger();
             log.info(aMarker, "coproProcessor consumer confidence score  {}", confidenceScore);
+            String originId = result.getOriginId();
+            Integer groupId = result.getGroupId();
+            int sorId = result.getSorId();
+            String tenantId = result.getTenantId();
+            String processId = result.getProcessId();
+            int paperNo = result.getPaperNo();
+            int sorItemId = result.getSorItemId();
+            String sorKey = result.getSorKey();
+            String question = result.getQuestion();
+            int weight = result.weight;
+            String createdUserId = result.createdUserId;
             if (confidenceScore >= 0) {
                 parentObj.add(
                         NerOutputTable
                                 .builder()
-                                .originId(Optional.ofNullable(result.getOriginId()).map(String::valueOf).orElse(null))
-                                .groupId(result.getGroupId())
-                                .sorId(result.sorId)
-                                .tenantId(result.tenantId)
-                                .processId(result.processId)
-                                .paperNo(result.paperNo)
-                                .sorItemId(result.sorItemId)
-                                .sorItemName(result.sorKey)
-                                .question(result.question)
-                                .answer(result.inputValue)
-                                .weight(result.weight)
-                                .createdUserId(result.createdUserId)
+                                .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                                .groupId(groupId)
+                                .sorId(sorId)
+                                .tenantId(tenantId)
+                                .processId(processId)
+                                .paperNo(paperNo)
+                                .sorItemId(sorItemId)
+                                .sorItemName(sorKey)
+                                .question(question)
+                                .answer(inputValue)
+                                .weight(weight)
+                                .createdUserId(createdUserId)
                                 .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                                 .wordScore(wordScore)
                                 .charScore(charScore)
@@ -191,18 +202,18 @@ public class NerAdapterAction implements IActionExecution {
                 parentObj.add(
                         NerOutputTable
                                 .builder()
-                                .originId(Optional.ofNullable(result.getOriginId()).map(String::valueOf).orElse(null))
-                                .groupId(result.getGroupId())
-                                .sorId(result.sorId)
-                                .tenantId(result.tenantId)
-                                .processId(result.processId)
-                                .paperNo(result.paperNo)
-                                .sorItemId(result.sorItemId)
-                                .sorItemName(result.sorKey)
-                                .question(result.question)
-                                .answer(result.inputValue)
-                                .weight(result.weight)
-                                .createdUserId(result.createdUserId)
+                                .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                                .groupId(groupId)
+                                .sorId(sorId)
+                                .tenantId(tenantId)
+                                .processId(processId)
+                                .paperNo(paperNo)
+                                .sorItemId(sorItemId)
+                                .sorItemName(sorKey)
+                                .question(question)
+                                .answer(inputValue)
+                                .weight(weight)
+                                .createdUserId(createdUserId)
                                 .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                                 .wordScore(wordScore)
                                 .charScore(charScore)

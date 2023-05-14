@@ -93,7 +93,7 @@ public class MasterdataComparisonAction implements IActionExecution {
           return new URL(s1);
         } catch (MalformedURLException e) {
           log.error("Error in processing the URL ", e);
-            throw new HandymanException("Error in processing the URL", e, action);
+          throw new HandymanException("Error in processing the URL", e, action);
         }
       }).collect(Collectors.toList())).orElse(Collections.emptyList());
       log.info(aMarker, "master data comparison copro urls {}", urls);
@@ -149,6 +149,11 @@ public class MasterdataComparisonAction implements IActionExecution {
       List<MasterDataOutputTable> parentObj = new ArrayList<>();
       AtomicInteger atomicInteger = new AtomicInteger();
 
+      String eocIdentifier = result.eocIdentifier;
+      String extractedValue = result.extractedValue;
+      String actualValue = result.actualValue;
+      Integer paperNo = result.paperNo;
+      String originId = result.getOriginId();
       if (result.getActualValue() != null) {
         final ObjectNode objectNode = mapper.createObjectNode();
         List<String> comparableSentence = Arrays.asList(result.getExtractedValue());
@@ -167,12 +172,12 @@ public class MasterdataComparisonAction implements IActionExecution {
             parentObj.add(
                     MasterDataOutputTable
                             .builder()
-                            .originId(result.originId)
-                            .eocIdentifier(result.eocIdentifier)
-                            .paperNo(result.paperNo)
+                            .originId(originId)
+                            .eocIdentifier(eocIdentifier)
+                            .paperNo(paperNo)
                             .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                            .extractedValue(result.extractedValue)
-                            .actualValue(result.actualValue)
+                            .extractedValue(extractedValue)
+                            .actualValue(actualValue)
                             .intelliMatch(matchPercent)
                             .status("COMPLETED")
                             .stage("MASTER-DATA-COMPARISON")
@@ -183,12 +188,12 @@ public class MasterdataComparisonAction implements IActionExecution {
           } else {
             parentObj.add(
                     MasterDataOutputTable.builder()
-                            .originId(Optional.ofNullable(result.getOriginId()).map(String::valueOf).orElse(null))
-                            .eocIdentifier(result.eocIdentifier)
-                            .paperNo(result.paperNo)
+                            .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                            .eocIdentifier(eocIdentifier)
+                            .paperNo(paperNo)
                             .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                            .extractedValue(result.extractedValue)
-                            .actualValue(result.actualValue)
+                            .extractedValue(extractedValue)
+                            .actualValue(actualValue)
                             .intelliMatch(0)
                             .status("FAILED")
                             .stage("MASTER-DATA-COMPARISON")
@@ -199,15 +204,15 @@ public class MasterdataComparisonAction implements IActionExecution {
             log.error(aMarker, "The Exception occurred in master data comparison by {} ", response);
             throw new HandymanException(responseBody);
           }
-        } catch (Exception t) {
+        } catch (Exception exception) {
           parentObj.add(
                   MasterDataOutputTable.builder()
-                          .originId(Optional.ofNullable(result.getOriginId()).map(String::valueOf).orElse(null))
-                          .eocIdentifier(result.eocIdentifier)
-                          .paperNo(result.paperNo)
+                          .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                          .eocIdentifier(eocIdentifier)
+                          .paperNo(paperNo)
                           .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                          .extractedValue(result.extractedValue)
-                          .actualValue(result.actualValue)
+                          .extractedValue(extractedValue)
+                          .actualValue(actualValue)
                           .intelliMatch(0)
                           .status("FAILED")
                           .stage("MASTER-DATA-COMPARISON")
@@ -216,18 +221,19 @@ public class MasterdataComparisonAction implements IActionExecution {
                           .build()
           );
 
-                    log.error(aMarker, "The Exception occurred in copro api for master data comparison - {} ", ExceptionUtil.toString(t));
-                    throw new HandymanException(t.toString());
+                    log.error(aMarker, "Exception occurred in copro api for master data comparison - {} ", ExceptionUtil.toString(exception));
+                    HandymanException handymanException = new HandymanException(exception);
+                    HandymanException.insertException("Paper classification (hw-detection) consumer failed for originId "+ originId, handymanException, this.action);
                 }
             } else {
                 parentObj.add(
                         MasterDataOutputTable.builder()
-                                .originId(Optional.ofNullable(result.getOriginId()).map(String::valueOf).orElse(null))
-                                .eocIdentifier(result.eocIdentifier)
-                                .paperNo(result.paperNo)
+                                .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                                .eocIdentifier(eocIdentifier)
+                                .paperNo(paperNo)
                                 .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                                .extractedValue(result.extractedValue)
-                                .actualValue(result.actualValue)
+                                .extractedValue(extractedValue)
+                                .actualValue(actualValue)
                                 .intelliMatch(0)
                                 .status("COMPLETED")
                                 .stage("MASTER-DATA-COMPARISON")

@@ -64,12 +64,12 @@ public class HwDetectionAction implements IActionExecution {
       log.info(aMarker, "Handwritten Classification Action for {} has been started", hwDetection.getName());
       final String insertQuery = "INSERT INTO paper_classification.paper_classification_result(created_on, created_user_id, last_updated_on, last_updated_user_id, tenant_id, origin_id, paper_no, template_id, model_registry_id, document_type, status, stage, message, group_id, root_pipeline_id, confidence_score)" +
               "values(now(),?,now(),?,?,?,?,?,?,?,?,?,?,?,?,?)";
-      final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.hw-detection.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
+      final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.hw-detection.url")).map(s -> Arrays.stream(s.split(",")).map(url -> {
         try {
-          return new URL(s1);
+          return new URL(url);
         } catch (MalformedURLException e) {
-          log.error("Error in processing the URL ", e);
-          throw new RuntimeException(e);
+          log.error("Error in processing the URL {}", url, e);
+          throw new HandymanException("Error in processing the URL", e, action);
         }
       }).collect(Collectors.toList())).orElse(Collections.emptyList());
       log.info("urls used in hw detection macro {}",urls);
@@ -132,6 +132,14 @@ public class HwDetectionAction implements IActionExecution {
 
       log.info("request builder object {}",request);
 
+      String createdUserId = entity.getCreatedUserId();
+      String lastUpdatedUserId = entity.getLastUpdatedUserId();
+      String tenantId = entity.getTenantId();
+      String originId = entity.getOriginId();
+      Integer paperNo = entity.getPaperNo();
+      String templateId = entity.getTemplateId();
+      String modelRegistryId = entity.getModelRegistryId();
+      Integer groupId = entity.getGroupId();
       try (Response response = httpclient.newCall(request).execute()){
         String responseBody = Objects.requireNonNull(response.body()).string();
         if (response.isSuccessful()) {
@@ -140,14 +148,14 @@ public class HwDetectionAction implements IActionExecution {
           Long score = Optional.ofNullable(mapper.readTree(responseBody).get("confidence_score")).map(JsonNode::asLong).orElse(null);
 
           parentObj.add(HwClassificationOutputTable.builder()
-                  .createdUserId(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).orElse(null))
-                  .lastUpdatedUserId(Optional.ofNullable(entity.getLastUpdatedUserId()).map(String::valueOf).orElse(null))
-                  .tenantId(Optional.ofNullable(entity.getTenantId()).map(String::valueOf).orElse(null))
-                  .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                  .paperNo(Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                  .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
-                  .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                  .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
+                  .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
+                  .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                  .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                  .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
+                  .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .documentType(documentStatus)
                   .confidenceScore(score)
                   .status("COMPLETED")
@@ -159,14 +167,14 @@ public class HwDetectionAction implements IActionExecution {
         }
         else {
           parentObj.add(HwClassificationOutputTable.builder()
-                  .createdUserId(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).orElse(null))
-                  .lastUpdatedUserId(Optional.ofNullable(entity.getLastUpdatedUserId()).map(String::valueOf).orElse(null))
-                  .tenantId(Optional.ofNullable(entity.getTenantId()).map(String::valueOf).orElse(null))
-                  .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                  .paperNo(Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                  .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
-                  .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                  .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
+                  .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
+                  .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                  .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                  .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
+                  .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .status("FAILED")
                   .stage(STAGE)
                   .message(response.message())
@@ -177,14 +185,14 @@ public class HwDetectionAction implements IActionExecution {
         }
       } catch (Exception e) {
         parentObj.add(HwClassificationOutputTable.builder()
-                .createdUserId(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).orElse(null))
-                .lastUpdatedUserId(Optional.ofNullable(entity.getLastUpdatedUserId()).map(String::valueOf).orElse(null))
-                .tenantId(Optional.ofNullable(entity.getTenantId()).map(String::valueOf).orElse(null))
-                .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                .paperNo(Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
-                .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
+                .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
+                .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
+                .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .status("FAILED")
                 .stage(STAGE)
                 .message(ExceptionUtil.toString(e))
@@ -192,6 +200,8 @@ public class HwDetectionAction implements IActionExecution {
                 .rootPipelineId(entity.rootPipelineId)
                 .build());
         log.error(aMarker, "The Exception occurred in paper classification request", e);
+        HandymanException handymanException = new HandymanException(e);
+        HandymanException.insertException("Paper classification (hw-detection) consumer failed for batch/group "+ groupId, handymanException, this.action);
 
       }
       return parentObj;
