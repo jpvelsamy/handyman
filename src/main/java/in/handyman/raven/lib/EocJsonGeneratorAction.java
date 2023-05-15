@@ -20,8 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.net.URI;
+import java.net.URL;
 import java.util.Objects;
 
 /**
@@ -61,7 +61,9 @@ public class EocJsonGeneratorAction implements IActionExecution {
         final String originId = eocJsonGenerator.getOriginId();
         final String groupId = eocJsonGenerator.getGroupId();
 
-        Request request = new Request.Builder().url(URI + "api/v1/" + documentId + "/docdetaillineitem/" + eocId)
+        String apiUrl = urlEncoder(URI + "api/v1/" + documentId + "/docdetaillineitem/" + eocId);
+
+        Request request = new Request.Builder().url(apiUrl)
                 .header("Authorization", "Bearer " + eocJsonGenerator.getAuthtoken()).build();
 
         String name = eocJsonGenerator.getName();
@@ -100,12 +102,15 @@ public class EocJsonGeneratorAction implements IActionExecution {
 
     }
 
-    private String urlEncoder(final String url){
-        String encodedUrl = null;
+    private String urlEncoder(final String encodingUrl){
+        String encodedUrl;
         try {
-            encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8);
+            URL url = new URL(encodingUrl);
+            URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+            encodedUrl = uri.toASCIIString();
         } catch (Exception exception) {
-            log.error(aMarker, "The Exception occurred in encoding the url {}", url, exception);
+            log.error(aMarker, "Exception occurred in encoding the url {}", encodingUrl, exception);
+            throw new HandymanException("Exception occurred in encoding the url", exception, action);
         }
         return encodedUrl;
     }
