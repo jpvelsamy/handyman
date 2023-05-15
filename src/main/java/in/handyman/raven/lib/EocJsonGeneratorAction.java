@@ -56,8 +56,8 @@ public class EocJsonGeneratorAction implements IActionExecution {
         log.info(aMarker, "Eoc Json Generation Action for {} has been started", eocJsonGenerator.getName());
         final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(eocJsonGenerator.getResourceConn());
         final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
-        final String documentId = urlEncoder(eocJsonGenerator.getDocumentId());
-        final String eocId = urlEncoder(eocJsonGenerator.getEocId());
+        final String documentId = eocJsonGenerator.getDocumentId();
+        final String eocId = eocJsonGenerator.getEocId();
         final String originId = eocJsonGenerator.getOriginId();
         final String groupId = eocJsonGenerator.getGroupId();
 
