@@ -67,13 +67,13 @@ public class SorItemCoverage {
                         paperList.add(i);
                     }
                     //thic code will save the result as a map with string as key and list as value
-                    answerString =answerString.replaceAll("[-/#%;?\\\\]","");
+                    answerString =answerString.replaceAll("[-/#%;?\\\\]","_");
                     stringObjectMap.put(answerString, paperList);
                 }
             }
 
         } catch (Exception e) {
-            log.info(aMarker, "<-------Episode of coverage Action for member id filter {} has failed------->" + episodeOfCoverage.getName());
+            log.info(aMarker, "Episode of coverage Action for member id filter {} has failed" , episodeOfCoverage.getName());
 
         }
         return stringObjectMap;

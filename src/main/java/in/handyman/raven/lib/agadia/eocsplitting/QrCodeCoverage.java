@@ -66,7 +66,7 @@ public class QrCodeCoverage {
                         paperList.add(i);
                     }
                     //thic code will save the result as a map with string as key and list as value
-                    answerString =answerString.replaceAll("[-/#%;?\\\\]","");
+                    answerString =answerString.replaceAll("[-/#%;?\\\\]","_");
                     eocObjectMap.put(answerString, paperList);
                 }
             }
