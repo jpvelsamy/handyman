@@ -67,7 +67,7 @@ public class SorItemCoverage {
                         paperList.add(i);
                     }
                     //thic code will save the result as a map with string as key and list as value
-                    answerString =answerString.replaceAll("[-/]","_");
+                    answerString =answerString.replaceAll("[-/#%;?\\\\]","");
                     stringObjectMap.put(answerString, paperList);
                 }
             }

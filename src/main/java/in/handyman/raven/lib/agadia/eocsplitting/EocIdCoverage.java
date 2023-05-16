@@ -43,7 +43,7 @@ public class EocIdCoverage {
                 for (var eocGroupingEocIdRequestInfo : eocIdRequestInfo) {
                     List<Integer> paperList = new ArrayList<>();
                     Integer startNoInt = (Integer) Optional.ofNullable(eocGroupingEocIdRequestInfo.get("start_no")).orElse(0);
-                    final String answerString = Optional.ofNullable(eocGroupingEocIdRequestInfo.get("answer")).map(String::valueOf).orElse("");
+                    String answerString = Optional.ofNullable(eocGroupingEocIdRequestInfo.get("answer")).map(String::valueOf).orElse("");
                     int totalPageInt = Integer.parseInt(episodeOfCoverage.getTotalPages());
                     int endPoint = 0;
 
@@ -60,6 +60,7 @@ public class EocIdCoverage {
                         paperList.add(i);
                     }
                     //thic code will save the result as a map with string as key and list as value
+                    answerString =answerString.replaceAll("[-/#%;?\\\\]","");
                     eocObjectMap.put(answerString, paperList);
                 }
             }
