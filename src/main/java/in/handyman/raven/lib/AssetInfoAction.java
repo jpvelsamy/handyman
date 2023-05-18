@@ -119,6 +119,8 @@ public class AssetInfoAction implements IActionExecution {
                     }
                 } catch (Exception e) {
                     log.error(aMarker, "Error in file info for {}", tableInfo, e);
+                    HandymanException handymanException = new HandymanException(e);
+                    HandymanException.insertException("Error in file info for "+ tableInfo, handymanException, action);
                 }
             });
             if (!fileInfos.isEmpty()) {
@@ -179,16 +181,18 @@ public class AssetInfoAction implements IActionExecution {
                                         .bindBean(insert).execute();
                                 log.info(aMarker, "inserted {} into source of origin", insert);
                             } catch (Throwable t) {
-                                insertSummaryAudit(jdbi, 0, 0, 1, "failed in bactch for " + insert.getFile_name());
+                                insertSummaryAudit(jdbi, 0, 0, 1, "failed in batch for " + insert.getFile_name());
                                 log.error(aMarker, "error inserting result {}", resultQueue, t);
                             }
 
                         });
                     }
             );
-        } catch (Throwable t) {
+        } catch (Exception e) {
             insertSummaryAudit(jdbi, 0, 0, resultQueue.size(), "failed in batch insert");
-            log.error(aMarker, "error inserting result {}", resultQueue, t);
+            log.error(aMarker, "error inserting result {}", resultQueue, e);
+            HandymanException handymanException = new HandymanException(e);
+            HandymanException.insertException("error inserting result"+ resultQueue, handymanException, action);
         }
     }
 
@@ -207,8 +211,11 @@ public class AssetInfoAction implements IActionExecution {
                 Update bindBean = update.bindBean(summary);
                 bindBean.execute();
             });
-        } catch (Throwable t) {
-            log.error(aMarker, "error inserting into batch insert audit  {}", t.toString());
+        } catch (Exception exception) {
+            log.error(aMarker, "error inserting into batch insert audit  {}", ExceptionUtil.toString(exception));
+            HandymanException handymanException = new HandymanException(exception);
+            HandymanException.insertException("error inserting into batch insert audit", handymanException, action);
+
         }
     }
 

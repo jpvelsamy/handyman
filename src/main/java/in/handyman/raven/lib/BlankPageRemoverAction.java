@@ -77,8 +77,8 @@ public class BlankPageRemoverAction implements IActionExecution {
                 try {
                     return new URL(s1);
                 } catch (MalformedURLException e) {
-                    log.error("Error in processing the URL ", e);
-                    throw new RuntimeException(e);
+                    log.error("Error in processing the URL {}", s1, e);
+                    throw new HandymanException("Error in processing the URL", e, action);
                 }
             }).collect(Collectors.toList())).orElse(Collections.emptyList());
 
@@ -136,6 +136,8 @@ public class BlankPageRemoverAction implements IActionExecution {
                     .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
             log.debug(aMarker, "Request has been build with the parameters \n URI : {} ", request.body());
             log.debug(aMarker, "The Request Details: {}", request);
+            String originId = entity.getOriginId();
+            Integer groupId = entity.getGroupId();
             try (Response response = httpclient.newCall(request).execute()) {
                 String responseBody = Objects.requireNonNull(response.body()).string();
                 if (response.isSuccessful()) {
@@ -144,8 +146,8 @@ public class BlankPageRemoverAction implements IActionExecution {
                             BlankPageRemoverOutputTable
                                     .builder()
                                     .processedFilePath(Optional.ofNullable(parentResponseObject.get("processedFilePath")).map(String::valueOf).orElse(null))
-                                    .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                                    .groupId(entity.getGroupId())
+                                    .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                                    .groupId(groupId)
                                     .status("COMPLETED")
                                     .stage("BLANK_PAGE_REMOVAL")
                                     .message("Blankpage removal finished")
@@ -154,8 +156,8 @@ public class BlankPageRemoverAction implements IActionExecution {
                     parentObj.add(
                             BlankPageRemoverOutputTable
                                     .builder()
-                                    .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                                    .groupId(entity.getGroupId())
+                                    .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                                    .groupId(groupId)
                                     .status("FAILED")
                                     .stage("BLANK_PAGE_REMOVAL")
                                     .message(response.message())
@@ -166,14 +168,15 @@ public class BlankPageRemoverAction implements IActionExecution {
                 parentObj.add(
                         BlankPageRemoverOutputTable
                                 .builder()
-                                .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                                .groupId(entity.getGroupId())
+                                .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                                .groupId(groupId)
                                 .status("FAILED")
                                 .stage("BLANK_PAGE_REMOVAL")
                                 .message(ExceptionUtil.toString(e))
                                 .build());
-                log.info(aMarker, "The Exception occurred in blank page remover ", e);
-                //TODO  insert query for error queue
+                log.error(aMarker, "The Exception occurred in blank page remover ", e);
+                HandymanException handymanException = new HandymanException(e);
+                HandymanException.insertException("Blank Page removal consumer failed for batch/group "+ groupId, handymanException, this.action);
             }
             return parentObj;
         }

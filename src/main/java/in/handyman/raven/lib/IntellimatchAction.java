@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import in.handyman.raven.util.CommonQueryUtil;
+import in.handyman.raven.util.ExceptionUtil;
 import in.handyman.raven.util.InstanceUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -104,10 +105,13 @@ public class IntellimatchAction implements IActionExecution {
 
                         } else {
                             insertSummaryAudit(jdbi, 0, 0, 1, "failed on" + result.getFileName());
+                            log.error(aMarker, "Error in response {}", responseBody);
                             throw new HandymanException(responseBody);
                         }
-                    } catch (Exception t) {
-                        log.error(aMarker, "error inserting row {}", result, t);
+                    } catch (Exception exception) {
+                        log.error(aMarker, "error inserting row {}", result, exception);
+                        HandymanException handymanException = new HandymanException(exception);
+                        HandymanException.insertException("Intelli match consumer failed", handymanException, this.action);
                     }
                 } else {
                     result.setIntelliMatch(0);
@@ -131,8 +135,9 @@ public class IntellimatchAction implements IActionExecution {
                 resultQueue.clear();
                 log.info(aMarker, "cleared final batch {}", resultQueue.size());
             }
-        } catch (Exception e) {
-            throw new HandymanException("Error in intellimatch action", e, action);
+        } catch (Exception exception) {
+            log.error(aMarker, "Error in intellimatch action", ExceptionUtil.toString(exception));
+            throw new HandymanException("Error in intellimatch action", exception, action);
         }
     }
 
@@ -153,16 +158,20 @@ public class IntellimatchAction implements IActionExecution {
                                         "  :intelliMatch )");
                                 Update bindBean = update.bindBean(insert);
                                 bindBean.execute();
-                            } catch (Throwable t) {
+                            } catch (Exception exception) {
                                 insertSummaryAudit(jdbi, 0, 0, 1, "failed in bactch for " + insert.getFileName());
-                                log.error(aMarker, "error inserting result {}", resultQueue, t);
+                                log.error(aMarker, "error inserting result {}", resultQueue, exception);
+                                HandymanException handymanException = new HandymanException(exception);
+                                HandymanException.insertException("Intellimatch consumer failed", handymanException, this.action);
                             }
                         });
                     }
             );
-        } catch (Exception t) {
+        } catch (Exception exception) {
             insertSummaryAudit(jdbi, 0, 0, resultQueue.size(), "failed in batch insert");
-            log.error(aMarker, "error inserting result {}", resultQueue, t);
+            log.error(aMarker, "error inserting result {}", resultQueue, exception);
+            HandymanException handymanException = new HandymanException(exception);
+            HandymanException.insertException("Error in inserting Intellimatch result table", handymanException, this.action);
         }
     }
 

@@ -7,6 +7,7 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.CheckboxClassification;
+import in.handyman.raven.util.ExceptionUtil;
 import in.handyman.raven.util.InstanceUtil;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -74,8 +75,8 @@ public class CheckboxClassificationAction implements IActionExecution {
         } catch (Exception e) {
             action.getContext().put(name.concat(".error"), "true");
             action.getContext().put(name.concat(".errorMessage"), e.getMessage());
-            log.info(aMarker, "The Exception occurred ", e);
-            throw new HandymanException("Failed to execute", e);
+            log.error(aMarker, "Exception occurred with {}", ExceptionUtil.toString(e));
+            throw new HandymanException("Failed to execute", e, action);
         }
     }
 

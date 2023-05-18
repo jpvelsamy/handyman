@@ -16,6 +16,7 @@ import in.handyman.raven.lib.model.ScalarAdapter;
 import in.handyman.raven.lib.model.Validator;
 import in.handyman.raven.lib.model.Wordcount;
 import in.handyman.raven.util.CommonQueryUtil;
+import in.handyman.raven.util.ExceptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -215,9 +216,11 @@ public class ScalarAdapterAction implements IActionExecution {
                 resultQueue.clear();
                 log.info(aMarker, "cleared final batch {}", resultQueue.size());
             }
-        } catch (Throwable e) {
+        } catch (Exception e) {
             action.getContext().put(scalarAdapter.getName().concat(".error"), "true");
-            log.error(aMarker, "The Exception occurred in Scalar Computation", e);
+            log.error(aMarker, "Exception occurred in Scalar Computation {}", ExceptionUtil.toString(e));
+            HandymanException handymanException = new HandymanException(e);
+            HandymanException.insertException("Exception occurred in Scalar Computation", handymanException, action);
         }
     }
 
@@ -232,16 +235,20 @@ public class ScalarAdapterAction implements IActionExecution {
                                         "   ");
                                 Update bindBean = update.bindBean(insert);
                                 bindBean.execute();
-                            } catch (Throwable t) {
+                            } catch (Exception t) {
                                 insertSummaryAudit(jdbi, 0, 0, 1);
                                 log.error(aMarker, "error inserting result {}", resultQueue, t);
+                                HandymanException handymanException = new HandymanException(t);
+                                HandymanException.insertException("Exception occurred in Scalar Computation consumer batch insert into adapter result for groupId"+ insert.groupId, handymanException, action);
                             }
                         });
                     }
             );
-        } catch (Throwable t) {
+        } catch (Exception t) {
             insertSummaryAudit(jdbi, 0, 0, resultQueue.size());
             log.error(aMarker, "error inserting result {}", resultQueue, t);
+            HandymanException handymanException = new HandymanException(t);
+            HandymanException.insertException("Exception occurred in Scalar Computation consumer batch insert into adapter result", handymanException, action);
         }
     }
 
@@ -262,8 +269,10 @@ public class ScalarAdapterAction implements IActionExecution {
                     confidenceScore = this.dateAction.getDateScore(inputDetail);
                     break;
             }
-        } catch (Throwable t) {
+        } catch (Exception t) {
             log.error(aMarker, "error adpater validation{}", inputDetail, t);
+            HandymanException handymanException = new HandymanException(t);
+            HandymanException.insertException("Exception occurred in computing adapter score", handymanException, action);
         }
         return confidenceScore;
 

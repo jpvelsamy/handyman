@@ -61,7 +61,7 @@ public class FileMergerAction implements IActionExecution {
                 action.getContext().put(name, mapper.readTree(responseBody).toString());
                 log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
             } else {
-                log.info(aMarker, "The Failure Response  {} {}", name, responseBody);
+                log.error(aMarker, "The Failure Response  {} {}", name, responseBody);
             }
         } catch (Exception e) {
             log.info(aMarker, "The Exception occurred ", e);

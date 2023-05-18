@@ -1,6 +1,5 @@
 package in.handyman.raven.lib;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,13 +19,10 @@ import okhttp3.*;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.argument.Arguments;
 import org.jdbi.v3.core.argument.NullArgument;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Timestamp;
@@ -35,7 +31,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -46,13 +41,10 @@ import java.util.stream.Stream;
         actionName = "AutoRotation"
 )
 public class AutoRotationAction implements IActionExecution {
-    private static final MediaType MediaTypeJSON = MediaType
-            .parse("application/json; charset=utf-8");
     private final ActionExecutionAudit action;
     private final Logger log;
     private final AutoRotation autoRotation;
     private final Marker aMarker;
-    private final ObjectMapper mapper = new ObjectMapper();
     private final String URI;
 
     public AutoRotationAction(final ActionExecutionAudit action, final Logger log,
@@ -67,7 +59,7 @@ public class AutoRotationAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-        try{
+        try {
             final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(autoRotation.getResourceConn());
 
             jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
@@ -94,9 +86,9 @@ public class AutoRotationAction implements IActionExecution {
             Thread.sleep(1000);
             coproProcessor.startConsumer(insertQuery, Integer.valueOf(action.getContext().get("consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")), new AutoRotationAction.AutoRotationConsumerProcess(log, aMarker, action, outputDir));
             log.info(aMarker, " Auto Rotation Action has been completed {}  ", autoRotation.getName());
-        }catch(Exception e){
+        } catch (Exception e) {
             action.getContext().put(autoRotation.getName() + ".isSuccessful", "false");
-            log.error(aMarker,"error in execute method for auto rotation ",e);
+            log.error(aMarker, "error in execute method for auto rotation ", e);
             throw new HandymanException("error in execute method for auto rotation", e, action);
         }
     }
@@ -132,65 +124,71 @@ public class AutoRotationAction implements IActionExecution {
             log.info(aMarker, " Input variables id : {}", action.getActionId());
             Request request = new Request.Builder().url(endpoint)
                     .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-            log.debug(aMarker, "Request has been build with the parameters \n URI : {} ",endpoint);
+            log.debug(aMarker, "Request has been build with the parameters \n URI : {} ", endpoint);
             log.debug(aMarker, "The Request Details: {}", request);
+            Integer groupId = entity.getGroupId();
+            Long processId = entity.getProcessId();
+            String tenantId = entity.getTenantId();
+            String templateId = entity.getTemplateId();
+            Integer paperNo = entity.getPaperNo();
+            Long rootPipelineId = entity.getRootPipelineId();
 
             try (Response response = httpclient.newCall(request).execute()) {
                 if (response.isSuccessful()) {
-                    AutoRotationResponse autoRotationResponse=mapper.readValue(response.body().string(), new TypeReference<>() {
+                    AutoRotationResponse autoRotationResponse = mapper.readValue(Objects.requireNonNull(response.body()).string(), new TypeReference<>() {
                     });
-                    if(!(autoRotationResponse.getProcessedFilePaths()==null)){
-                            parentObj.add(
-                                    AutoRotationAction.AutoRotationOutputTable
-                                            .builder()
-                                            .processedFilePath(autoRotationResponse.getProcessedFilePaths())
-                                            .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                                            .groupId(entity.getGroupId())
-                                            .processId(entity.processId)
-                                            .tenantId(entity.tenantId)
-                                            .templateId(entity.templateId)
-                                            .paperNo(entity.paperNo)
-                                            .status("COMPLETED")
-                                            .stage("AUTO_ROTATION")
-                                            .message("Auto rotation macro completed")
-                                            .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                                            .rootPipelineId(entity.rootPipelineId)
-                                            .build());
+                    if (!(autoRotationResponse.getProcessedFilePaths() == null)) {
+                        parentObj.add(
+                                AutoRotationAction.AutoRotationOutputTable
+                                        .builder()
+                                        .processedFilePath(autoRotationResponse.getProcessedFilePaths())
+                                        .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
+                                        .groupId(groupId)
+                                        .processId(processId)
+                                        .tenantId(tenantId)
+                                        .templateId(templateId)
+                                        .paperNo(paperNo)
+                                        .status("COMPLETED")
+                                        .stage("AUTO_ROTATION")
+                                        .message("Auto rotation macro completed")
+                                        .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                                        .rootPipelineId(rootPipelineId)
+                                        .build());
 
-                    }else{
-                            parentObj.add(
-                                    AutoRotationAction.AutoRotationOutputTable
-                                            .builder()
-                                            .processedFilePath(entity.filePath)
-                                            .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                                            .groupId(entity.getGroupId())
-                                            .processId(entity.processId)
-                                            .tenantId(entity.tenantId)
-                                            .templateId(entity.templateId)
-                                            .paperNo(entity.paperNo)
-                                            .status("COMPLETED")
-                                            .stage("AUTO_ROTATION")
-                                            .message("Auto rotation macro completed")
-                                            .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                                            .rootPipelineId(entity.rootPipelineId)
-                                            .build());
+                    } else {
+                        parentObj.add(
+                                AutoRotationAction.AutoRotationOutputTable
+                                        .builder()
+                                        .processedFilePath(entity.filePath)
+                                        .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
+                                        .groupId(groupId)
+                                        .processId(processId)
+                                        .tenantId(tenantId)
+                                        .templateId(templateId)
+                                        .paperNo(paperNo)
+                                        .status("COMPLETED")
+                                        .stage("AUTO_ROTATION")
+                                        .message("Auto rotation macro completed")
+                                        .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                                        .rootPipelineId(rootPipelineId)
+                                        .build());
                     }
 
-                }else{
+                } else {
                     parentObj.add(
                             AutoRotationAction.AutoRotationOutputTable
                                     .builder()
                                     .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                                    .groupId(entity.getGroupId())
-                                    .processId(entity.processId)
-                                    .tenantId(entity.tenantId)
-                                    .templateId(entity.templateId)
-                                    .paperNo(entity.paperNo)
+                                    .groupId(groupId)
+                                    .processId(processId)
+                                    .tenantId(tenantId)
+                                    .templateId(templateId)
+                                    .paperNo(paperNo)
                                     .status("FAILED")
                                     .stage("AUTO_ROTATION")
                                     .message(response.message())
                                     .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                                    .rootPipelineId(entity.rootPipelineId)
+                                    .rootPipelineId(rootPipelineId)
                                     .build());
                     log.info(aMarker, "Error in response {}", response.message());
                 }
@@ -210,6 +208,10 @@ public class AutoRotationAction implements IActionExecution {
                                 .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                                 .rootPipelineId(entity.rootPipelineId)
                                 .build());
+                HandymanException handymanException = new HandymanException(e);
+                HandymanException.insertException("AutoRotation consumer failed for batch/group " + groupId,
+                        handymanException,
+                        this.action);
                 log.error(aMarker, "The Exception occurred in getting response {}", ExceptionUtil.toString(e));
             }
 
@@ -274,8 +276,8 @@ public class AutoRotationAction implements IActionExecution {
 
         @Override
         public List<Object> getRowData() {
-            return Stream.of(this.originId, this.groupId,this.tenantId,this.templateId,this.processId, this.processedFilePath
-                    , this.paperNo,this.status,this.stage,this.message,this.createdOn,this.rootPipelineId).collect(Collectors.toList());
+            return Stream.of(this.originId, this.groupId, this.tenantId, this.templateId, this.processId, this.processedFilePath
+                    , this.paperNo, this.status, this.stage, this.message, this.createdOn, this.rootPipelineId).collect(Collectors.toList());
         }
     }
 

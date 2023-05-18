@@ -49,7 +49,7 @@ public class FileSizeAction implements IActionExecution {
                 action.getContext().put(fileSize.getName(), sizeBig.toString());
                 log.info(aMarker, "File size {} for file {} ", fileSize, filePath);
             } else {
-                log.info(aMarker, "Error in getting the file size for file {} ", filePath);
+                log.error(aMarker, "Error in getting the file size for file {} ", filePath);
                 throw new HandymanException("Error in getting the file size");
             }
             log.info(aMarker, "Filesize Action for {} has been Completed", fileSize.getName());

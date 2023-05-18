@@ -10,6 +10,7 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.QrExtraction;
+import in.handyman.raven.util.ExceptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -65,7 +66,7 @@ public class QrExtractionAction implements IActionExecution {
         try {
           return new URL(s1);
         } catch (MalformedURLException e) {
-          log.error("Error in processing the URL ", e);
+          log.error("Error in processing the URL {}", s1, e);
           throw new HandymanException("Error in processing the URL", e, action);
         }
       }).collect(Collectors.toList())).orElse(Collections.emptyList());
@@ -91,7 +92,7 @@ public class QrExtractionAction implements IActionExecution {
       log.info("start consumer method from copro processor ");
 
     }catch (Exception e){
-      log.error("Error in the Qr extraction action ", e);
+      log.error("Error in the Qr extraction action {}", ExceptionUtil.toString(e));
       throw new HandymanException("QR extraction action failed ", e, action);
 
     }
@@ -134,6 +135,10 @@ public class QrExtractionAction implements IActionExecution {
 
       Request request = new Request.Builder().url(endpoint).post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
       log.info("request in the copro consumer process {}", request);
+      String originId = entity.getOriginId();
+      Integer paperNo = entity.getPaperNo();
+      Integer groupId = entity.getGroupId();
+      String fileId = entity.getFileId();
       try (Response response = httpclient.newCall(request).execute()) {
         String responseBody = Objects.requireNonNull(response.body()).string();
         if (response.isSuccessful()) {
@@ -146,10 +151,10 @@ public class QrExtractionAction implements IActionExecution {
 
               qrOutputEntities.add(QrOutputEntity.builder()
                       .angle(qrReader.getAngle())
-                      .originId(entity.getOriginId())
-                      .paperNo(entity.getPaperNo())
-                      .groupId(entity.getGroupId())
-                      .fileId(entity.getFileId())
+                      .originId(originId)
+                      .paperNo(paperNo)
+                      .groupId(groupId)
+                      .fileId(fileId)
                       .qrFormat(qrReader.getType())
                       .qrFormatId(atomicInteger.incrementAndGet())
                       .extractedValue(qrReader.getValue())
@@ -164,10 +169,10 @@ public class QrExtractionAction implements IActionExecution {
             });
           }else{
             qrOutputEntities.add(QrOutputEntity.builder()
-                    .originId(entity.getOriginId())
-                    .paperNo(entity.getPaperNo())
-                    .groupId(entity.getGroupId())
-                    .fileId(entity.getFileId())
+                    .originId(originId)
+                    .paperNo(paperNo)
+                    .groupId(groupId)
+                    .fileId(fileId)
                     .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                     .status("ABSENT")
                     .stage("QR_EXTRACTION")
@@ -177,10 +182,10 @@ public class QrExtractionAction implements IActionExecution {
 
         } else {
           qrOutputEntities.add(QrOutputEntity.builder()
-                  .originId(entity.getOriginId())
-                  .paperNo(entity.getPaperNo())
-                  .groupId(entity.getGroupId())
-                  .fileId(entity.getFileId())
+                  .originId(originId)
+                  .paperNo(paperNo)
+                  .groupId(groupId)
+                  .fileId(fileId)
                   .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                   .status("FAILED")
                   .stage("QR_EXTRACTION")
@@ -192,16 +197,18 @@ public class QrExtractionAction implements IActionExecution {
 
       } catch (Exception e) {
         qrOutputEntities.add(QrOutputEntity.builder()
-                .originId(entity.getOriginId())
-                .paperNo(entity.getPaperNo())
-                .groupId(entity.getGroupId())
-                .fileId(entity.getFileId())
+                .originId(originId)
+                .paperNo(paperNo)
+                .groupId(groupId)
+                .fileId(fileId)
                 .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                 .status("FAILED")
                 .stage("QR_EXTRACTION")
-                .message(e.toString())
+                .message(e.getMessage())
                 .build());
         log.error("Error in the copro process api hit {}", request);
+        HandymanException handymanException = new HandymanException(e);
+        HandymanException.insertException("Error in qr extraction action for group id - "+ groupId, handymanException, this.action);
       }
       return qrOutputEntities;
     }

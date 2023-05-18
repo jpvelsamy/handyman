@@ -66,6 +66,7 @@ public class FileDetailsAction implements IActionExecution {
                 try (InputStream is = Files.newInputStream(Path.of(file.getPath()))) {
                     sha1Hex = org.apache.commons.codec.digest.DigestUtils.sha1Hex(is);
                 } catch (IOException e) {
+                    log.error(aMarker, "Error in reading the input stream {}", ExceptionUtil.toString(e));
                     throw new HandymanException("Error in reading the input stream", e, action);
                 }
 

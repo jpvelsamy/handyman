@@ -133,8 +133,8 @@ public class EpisodeOfCoverageAction implements IActionExecution {
           log.info(aMarker, "Completed insert for the patient instance {}", coverageEntity);
 
         } catch (Exception e) {
-          log.error(aMarker, "Failed in executed formated query {} for this sor item {}", e, sorItem);
-          throw new HandymanException("Failed in executed formated query {} for this sor item {}", e, action);
+          log.error(aMarker, "Failed in executed formatted query {} for this sor item {}", e, sorItem);
+          throw new HandymanException("Failed in executed formatted query {} for this sor item {}", e, action);
         }
       }
     });

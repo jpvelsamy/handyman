@@ -7,6 +7,7 @@ import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.DocnetResult;
 import in.handyman.raven.util.CommonQueryUtil;
+import in.handyman.raven.util.ExceptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -93,7 +94,7 @@ public class DocnetResultAction implements IActionExecution {
             }
         } catch (Exception e) {
             action.getContext().put(docnetResult.getName().concat(".error"), "true");
-            log.info(aMarker, "The Exception occurred ", e);
+            log.error(aMarker, "The Exception occurred {}", ExceptionUtil.toString(e));
             throw new HandymanException("Failed to execute", e, action);
         }
 
@@ -173,7 +174,7 @@ public class DocnetResultAction implements IActionExecution {
             int confidenceScore = 100 - confidenceScoreNegative;
             return confidenceScore;
         } catch (Exception ex) {
-            log.info(aMarker, "The Exception occurred in Confidence score validation ", ex);
+            log.error(aMarker, "The Exception occurred in Confidence score validation {}", ExceptionUtil.toString(ex));
             throw new HandymanException("Failed to execute", ex, action);
         }
     }

@@ -8,6 +8,7 @@ import in.handyman.raven.lib.agadia.adapters.MemberIdAdapter;
 import in.handyman.raven.lib.interfaces.ScalarEvaluationInterface;
 import in.handyman.raven.lib.model.AgadiaAdapter;
 import in.handyman.raven.lib.model.EvalMemberId;
+import in.handyman.raven.util.ExceptionUtil;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -50,8 +51,8 @@ public class EvalMemberIdAction implements IActionExecution {
             action.getContext().put(evalMemberId.getName().concat(".score"), String.valueOf(score));
         } catch (Exception ex) {
             action.getContext().put(evalMemberId.getName().concat(".error"), "true");
-            log.info(aMarker, "The Exception occurred ", ex);
-            throw new HandymanException("Failed to execute", ex, action);
+            log.error(aMarker, "The Exception occurred {}", ExceptionUtil.toString(ex));
+            throw new HandymanException("Failed to execute the eval member id action", ex, action);
         }
     }
 

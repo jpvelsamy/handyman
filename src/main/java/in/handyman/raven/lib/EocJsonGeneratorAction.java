@@ -6,6 +6,7 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.EocJsonGenerator;
+import in.handyman.raven.util.ExceptionUtil;
 import in.handyman.raven.util.InstanceUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,55 +54,53 @@ public class EocJsonGeneratorAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-        log.info(aMarker, "Eoc Json Generation Action for {} has been started", eocJsonGenerator.getName());
-        final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(eocJsonGenerator.getResourceConn());
-        final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
-        final String documentId = eocJsonGenerator.getDocumentId();
-        final String eocId = eocJsonGenerator.getEocId();
-        final String originId = eocJsonGenerator.getOriginId();
-        final String groupId = eocJsonGenerator.getGroupId();
+      log.info(aMarker, "Eoc Json Generation Action for {} has been started", eocJsonGenerator.getName());
+      final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(eocJsonGenerator.getResourceConn());
+      final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
+      final String documentId = eocJsonGenerator.getDocumentId();
+      final String eocId = eocJsonGenerator.getEocId();
+      final String originId = eocJsonGenerator.getOriginId();
+      final String groupId = eocJsonGenerator.getGroupId();
 
-        String apiUrl = urlEncoder(URI + "api/v1/" + documentId + "/docdetaillineitem/" + eocId);
+      String apiUrl = urlEncoder(URI + "api/v1/" + documentId + "/docdetaillineitem/" + eocId);
 
-        Request request = new Request.Builder().url(apiUrl)
-                .header("Authorization", "Bearer " + eocJsonGenerator.getAuthtoken()).build();
+      Request request = new Request.Builder().url(apiUrl)
+              .header("Authorization", "Bearer " + eocJsonGenerator.getAuthtoken()).build();
 
-        String name = eocJsonGenerator.getName();
-        log.info(aMarker, "The Request Details : {}", request);
-        try (Response response = httpclient.newCall(request).execute()) {
-            String responseBody = Objects.requireNonNull(response.body()).string();
-            if (response.isSuccessful()) {
-                log.info(aMarker, "The Successful Response for {} --> {}", name, responseBody);
+      String name = eocJsonGenerator.getName();
+      log.info(aMarker, "The Request Details : {}", request);
+      try (Response response = httpclient.newCall(request).execute()) {
+        String responseBody = Objects.requireNonNull(response.body()).string();
+        if (response.isSuccessful()) {
+          log.info(aMarker, "The Successful Response for {} --> {}", name, responseBody);
 
 
-                EocResponse eocResponse = EocResponse.builder()
-                        .documentId(documentId)
-                        .eocId(eocId)
-                        .originId(originId)
-                        .groupId(Integer.valueOf(groupId))
-                        .eocResponse(responseBody).rootPipelineId(action.getRootPipelineId()).build();
+          EocResponse eocResponse = EocResponse.builder()
+                  .documentId(documentId)
+                  .eocId(eocId)
+                  .originId(originId)
+                  .groupId(Integer.valueOf(groupId))
+                  .eocResponse(responseBody).rootPipelineId(action.getRootPipelineId()).build();
 
-                jdbi.useTransaction(handle -> {
-                    handle.createUpdate("INSERT INTO outbound.eoc_response_details (document_id, eoc_id, origin_id, group_id, eoc_response, root_pipeline_id) " +
-                                    "VALUES( :documentId, :eocId, :originId, :groupId, :eocResponse::json, :rootPipelineId);")
-                            .bindBean(eocResponse).execute();
-                    log.debug(aMarker, "inserted {} into eoc response details", eocResponse);
-                });
-            } else {
-                log.error(aMarker, "The Failure Response {} --> {}", name, responseBody);
-                action.getContext().put(name.concat(".error"), "true");
-                action.getContext().put(name.concat(".errorMessage"), responseBody);
-            }
+          jdbi.useTransaction(handle -> {
+            handle.createUpdate("INSERT INTO outbound.eoc_response_details (document_id, eoc_id, origin_id, group_id, eoc_response, root_pipeline_id) " +
+                            "VALUES( :documentId, :eocId, :originId, :groupId, :eocResponse::json, :rootPipelineId);")
+                    .bindBean(eocResponse).execute();
+            log.debug(aMarker, "inserted {} into eoc response details", eocResponse);
             action.getContext().put(name + ".isSuccessful", String.valueOf(response.isSuccessful()));
-        } catch (Exception e) {
-            log.error(aMarker, "The Exception occurred ", e);
-            action.getContext().put(name + ".isSuccessful", "false");
-            throw new HandymanException("Failed to execute for groupId- "+ groupId +"originId- "+originId+"eocId- "+eocId, e, action);
+          });
+        } else {
+          log.error(aMarker, "The Failure Response {} --> {}", name, responseBody);
+          action.getContext().put(name.concat(".error"), "true");
+          action.getContext().put(name.concat(".errorMessage"), responseBody);
         }
-        log.info(aMarker, "Eoc Json Generation Action for {} has been completed for groupId- "+ groupId +"originId- "+originId+"eocId- "+eocId, eocJsonGenerator.getName());
-
+      } catch (Exception e) {
+        log.error(aMarker, "The Exception occurred ", e);
+        action.getContext().put(name + ".isSuccessful", "false");
+        throw new HandymanException("Failed to execute for groupId- " + groupId + "originId- " + originId + "eocId- " + eocId, e, action);
+      }
+      log.info(aMarker, "Eoc Json Generation Action for {} has been completed for groupId- " + groupId + "originId- " + originId + "eocId- " + eocId, eocJsonGenerator.getName());
     }
-
     private String urlEncoder(final String encodingUrl){
         String encodedUrl;
         try {
