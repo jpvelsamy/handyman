@@ -144,9 +144,10 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
                             .build());
             log.error(aMarker, "The Exception occurred in getting response {}", ExceptionUtil.toString(e));
             HandymanException handymanException = new HandymanException(e);
-            HandymanException.insertException("AutoRotation consumer failed for batch/group "+groupId,
+            HandymanException.insertException("AutoRotation consumer failed for batch/group " + groupId,
                     handymanException,
                     this.action);
+            log.error(aMarker, "The Exception occurred in getting response {}", ExceptionUtil.toString(e));
         }
 
         return parentObj;

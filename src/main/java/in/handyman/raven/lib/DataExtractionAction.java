@@ -176,7 +176,7 @@ public class DataExtractionAction implements IActionExecution {
 
         log.error(aMarker, "The Exception occurred ", e);
         HandymanException handymanException = new HandymanException(e);
-        HandymanException.insertException("Blank Page removal consumer failed for batch/group "+ groupId, handymanException, this.action);
+        HandymanException.insertException("test extraction consumer failed for batch/group "+ groupId, handymanException, this.action);
 
       }
       return parentObj;
