@@ -49,7 +49,7 @@ public class JsonToFileAction implements IActionExecution {
             JsonNode jsonNode = mapper.readTree(jsonToFile.getJsonSql());
             mapper.writeValue(file, jsonNode);
         } catch (Exception e) {
-            log.info(aMarker, "The Exception occurred ", e);
+            log.error(aMarker, "The Exception occurred ", e);
             throw new HandymanException("Failed to execute", e);
         }
         log.info(aMarker, "Json toFile Action for {} has been completed", jsonToFile.getName());

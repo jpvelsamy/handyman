@@ -133,6 +133,16 @@ public class CheckboxVqaAction implements IActionExecution {
       log.debug(aMarker, "The Request Details: {}", request);
 
 
+      String createdUserId = entity.getCreatedUserId();
+      String lastUpdatedUserId = entity.getLastUpdatedUserId();
+      String tenantId = entity.getTenantId();
+      Double modelScore = entity.getModelScore();
+      Long processId = entity.getProcessId();
+      Integer groupId = entity.getGroupId();
+      String originId = entity.getOriginId();
+      Integer paperNo = entity.getPaperNo();
+      String templateId = entity.getTemplateId();
+      String modelRegistryId = entity.getModelRegistryId();
       try (Response response = httpclient.newCall(request).execute()) {
         String responseBody = Objects.requireNonNull(response.body()).string();
         if (response.isSuccessful()) {
@@ -141,16 +151,16 @@ public class CheckboxVqaAction implements IActionExecution {
           String paperFinalResult = Optional.ofNullable(mapper.readTree(responseBody).get("paper_type")).map(JsonNode::asText).orElse(null);
           final String checkboxBoundingBox = Optional.ofNullable(mapper.readTree(responseBody).get("bbox")).map(JsonNode::toString).orElse(null);
           parentObj.add(CheckboxVqaOutputTable.builder()
-                  .createdUserId(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).orElse(null))
-                  .lastUpdatedUserId(Optional.ofNullable(entity.getLastUpdatedUserId()).map(String::valueOf).orElse(null))
-                  .tenantId(Optional.ofNullable(entity.getTenantId()).map(String::valueOf).orElse(null))
-                  .modelScore(Optional.ofNullable(entity.getModelScore()).map(String::valueOf).map(Double::parseDouble).orElse(null))
-                  .processId(Optional.ofNullable(entity.getProcessId()).map(String::valueOf).map(Long::parseLong).orElse(null))
-                  .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                  .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                  .paperNo(Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                  .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
-                  .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
+                  .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
+                  .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                  .modelScore(Optional.ofNullable(modelScore).map(String::valueOf).map(Double::parseDouble).orElse(null))
+                  .processId(Optional.ofNullable(processId).map(String::valueOf).map(Long::parseLong).orElse(null))
+                  .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                  .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
+                  .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .triageLabel(extractedPrintedText)
                   .bBox(checkboxBoundingBox)
                   .triageState(checkboxState)
@@ -162,16 +172,16 @@ public class CheckboxVqaAction implements IActionExecution {
           log.info(aMarker, "Execute for urgency triage {}",response);
         } else {
           parentObj.add(CheckboxVqaOutputTable.builder()
-                  .createdUserId(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).orElse(null))
-                  .lastUpdatedUserId(Optional.ofNullable(entity.getLastUpdatedUserId()).map(String::valueOf).orElse(null))
-                  .tenantId(Optional.ofNullable(entity.getTenantId()).map(String::valueOf).orElse(null))
-                  .modelScore(Optional.ofNullable(entity.getModelScore()).map(String::valueOf).map(Double::parseDouble).orElse(null))
+                  .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
+                  .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
+                  .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                  .modelScore(Optional.ofNullable(modelScore).map(String::valueOf).map(Double::parseDouble).orElse(null))
                   .processId(Optional.ofNullable(checkboxVqa.getProcessID()).map(String::valueOf).map(Long::parseLong).orElse(null))
-                  .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                  .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                  .paperNo(Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                  .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
-                  .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                  .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
+                  .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .status("FAILED")
                   .stage("TRIAGE_CHECKBOX")
                   .message(response.message())
@@ -180,21 +190,24 @@ public class CheckboxVqaAction implements IActionExecution {
         }
       } catch (Exception e) {
         parentObj.add(CheckboxVqaOutputTable.builder()
-                .createdUserId(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).orElse(null))
-                .lastUpdatedUserId(Optional.ofNullable(entity.getLastUpdatedUserId()).map(String::valueOf).orElse(null))
-                .tenantId(Optional.ofNullable(entity.getTenantId()).map(String::valueOf).orElse(null))
-                .modelScore(Optional.ofNullable(entity.getModelScore()).map(String::valueOf).map(Double::parseDouble).orElse(null))
+                .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
+                .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
+                .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                .modelScore(Optional.ofNullable(modelScore).map(String::valueOf).map(Double::parseDouble).orElse(null))
                 .processId(Optional.ofNullable(checkboxVqa.getProcessID()).map(String::valueOf).map(Long::parseLong).orElse(null))
-                .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                .paperNo(Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
-                .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
+                .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .status("FAILED")
                 .stage("TRIAGE_CHECKBOX")
                 .message(ExceptionUtil.toString(e))
                 .build());
         log.error(aMarker, "The Exception occurred in urgency triage {}", ExceptionUtil.toString(e));
+        HandymanException handymanException = new HandymanException(e);
+        HandymanException.insertException("Blank Page removal consumer failed for batch/group "+ groupId, handymanException, this.action);
+
       }
       return parentObj;
     }

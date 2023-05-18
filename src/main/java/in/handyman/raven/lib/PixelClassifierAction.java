@@ -90,10 +90,11 @@ public class PixelClassifierAction implements IActionExecution {
             } catch (Exception e) {
                 action.getContext().put(name.concat(".error"), "true");
                 action.getContext().put(name.concat(".errorMessage"), e.getMessage());
-                log.info(aMarker, "The Exception occurred {} ", ExceptionUtil.toString(e));
+                log.error(aMarker, "The Exception occurred {} ", ExceptionUtil.toString(e));
                 throw new HandymanException("Failed to execute pixel classifier action", e, action);
             }
         } catch (JsonProcessingException | HandymanException e) {
+            log.error(aMarker, "Error in pixel classifier action with {}", ExceptionUtil.toString(e));
             throw new HandymanException("Error in pixel classifier action", e, action);
         }
     }

@@ -109,7 +109,7 @@ public class SorFilterAction implements IActionExecution {
             log.info(aMarker, "Match Phrase Query Action for {} has been completed" , sorFilter.getName());
         } catch (Exception e) {
             action.getContext().put(sorFilter.getName().concat(".error"), "true");
-            log.info(aMarker, "The Exception occurred {} ", ExceptionUtil.toString(e));
+            log.error(aMarker, "The Exception occurred {} ", ExceptionUtil.toString(e));
             throw new HandymanException("Failed to execute sor filter action", e, action);
         }
 

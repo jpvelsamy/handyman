@@ -100,8 +100,8 @@ public class BlankPageRemoverAction implements IActionExecution {
                 try {
                     return new URL(urlItem);
                 } catch (MalformedURLException e) {
-                    log.error("Error in processing the URL ", e);
-                    throw new HandymanException(e);
+                    log.error("Error in processing the URL {}", urlItem, e);
+                    throw new HandymanException("Error in processing the URL", e, action);
                 }
             }).collect(Collectors.toList())).orElse(Collections.emptyList());
 
@@ -123,10 +123,9 @@ public class BlankPageRemoverAction implements IActionExecution {
             final BlankPageRemoverConsumerProcess blankPageRemoverConsumerProcess = new BlankPageRemoverConsumerProcess(log, aMarker, action, outputDir);
             coproProcessor.startConsumer(insertQuery, consumerApiCount, writeBatchSize, blankPageRemoverConsumerProcess);
             log.info(aMarker, " Blank Page Removal Action has been completed {}  ", blankPageRemover.getName());
-        } catch (Exception e) {
+        } catch (Exception t) {
             action.getContext().put(blankPageRemover.getName() + ".isSuccessful", "false");
-            log.error(aMarker, "error at blank page removal execute method {}", ExceptionUtil.toString(e));
-            throw new HandymanException("error in execute method for auto rotation", e, action);
+            log.error(aMarker, "error at blank page removal execute method {}", ExceptionUtil.toString(t));
         }
     }
 

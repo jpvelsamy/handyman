@@ -80,14 +80,14 @@ public class ZeroShotClassifierAction implements IActionExecution {
             } else {
                 action.getContext().put(name.concat(".error"), "true");
                 action.getContext().put(name.concat(".errorMessage"), responseBody);
-                log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
+                log.error(aMarker, "The Failure Response {} --> {}", name, responseBody);
                 throw new HandymanException(responseBody);
             }
             log.info(aMarker, "Zero Short Classifier Action for {} has been completed" , zeroShotClassifier.getName());
         } catch (Exception e) {
             action.getContext().put(name.concat(".error"), "true");
             action.getContext().put(name.concat(".errorMessage"), e.getMessage());
-            log.info(aMarker, "The Exception occurred {}", ExceptionUtil.toString(e));
+            log.error(aMarker, "The Exception occurred {}", ExceptionUtil.toString(e));
             throw new HandymanException("Failed to execute", e, action);
         }
     }

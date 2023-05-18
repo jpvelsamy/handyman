@@ -6,6 +6,7 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.EocJsonGenerator;
+import in.handyman.raven.util.ExceptionUtil;
 import in.handyman.raven.util.InstanceUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.Objects;
 
 /**
@@ -29,86 +32,104 @@ import java.util.Objects;
         actionName = "EocJsonGenerator"
 )
 public class EocJsonGeneratorAction implements IActionExecution {
-  private static final MediaType MediaTypeJSON = MediaType
-          .parse("application/json; charset=utf-8");
-  private final ActionExecutionAudit action;
+    private static final MediaType MediaTypeJSON = MediaType
+            .parse("application/json; charset=utf-8");
+    private final ActionExecutionAudit action;
 
-  private final Logger log;
+    private final Logger log;
 
-  private final EocJsonGenerator eocJsonGenerator;
+    private final EocJsonGenerator eocJsonGenerator;
 
-  private final Marker aMarker;
-  private final String URI;
+    private final Marker aMarker;
+    private final String URI;
 
-  public EocJsonGeneratorAction(final ActionExecutionAudit action, final Logger log,
-                                final Object eocJsonGenerator) {
-    this.eocJsonGenerator = (EocJsonGenerator) eocJsonGenerator;
-    this.action = action;
-    this.log = log;
-    this.aMarker = MarkerFactory.getMarker(" EocJsonGenerator:" + this.eocJsonGenerator.getName());
-    this.URI = action.getContext().get("gatekeeper.url");
-  }
-
-  @Override
-  public void execute() throws Exception {
-    log.info(aMarker, "Eoc Json Generation Action for {} has been started" , eocJsonGenerator.getName());
-    final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(eocJsonGenerator.getResourceConn());
-    final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
-
-    Request request = new Request.Builder().url(URI + "api/v1/" + eocJsonGenerator.getDocumentId() + "/docdetaillineitem/" + eocJsonGenerator.getEocId())
-            .header("Authorization", "Bearer " + eocJsonGenerator.getAuthtoken()).build();
-
-    String name = eocJsonGenerator.getName();
-    log.info(aMarker, "The Request Details : {}", request);
-    try (Response response = httpclient.newCall(request).execute()) {
-      String responseBody = Objects.requireNonNull(response.body()).string();
-      if (response.isSuccessful()) {
-        log.info(aMarker, "The Successful Response for {} --> {}", name, responseBody);
-
-
-        EocResponse eocResponse = EocResponse.builder()
-                .documentId(eocJsonGenerator.getDocumentId())
-                .eocId(eocJsonGenerator.getEocId())
-                .originId(eocJsonGenerator.getOriginId())
-                .groupId(Integer.valueOf(eocJsonGenerator.getGroupId()))
-                .eocResponse(responseBody).rootPipelineId(action.getRootPipelineId()).build();
-
-        jdbi.useTransaction(handle -> {
-          handle.createUpdate("INSERT INTO outbound.eoc_response_details (document_id, eoc_id, origin_id, group_id, eoc_response, root_pipeline_id) " +
-                          "VALUES( :documentId, :eocId, :originId, :groupId, :eocResponse::json, :rootPipelineId);")
-                  .bindBean(eocResponse).execute();
-          log.debug(aMarker, "inserted {} into eoc response details", eocResponse);
-        });
-      } else {
-        log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
-        action.getContext().put(name.concat(".error"), "true");
-        action.getContext().put(name.concat(".errorMessage"), responseBody);
-      }
-      action.getContext().put(name + ".isSuccessful", String.valueOf(response.isSuccessful()));
-    } catch (Exception e) {
-      log.error(aMarker, "The Exception occurred ", e);
-      action.getContext().put(name + ".isSuccessful", "false");
-      throw new HandymanException("Failed to execute", e, action);
+    public EocJsonGeneratorAction(final ActionExecutionAudit action, final Logger log,
+                                  final Object eocJsonGenerator) {
+        this.eocJsonGenerator = (EocJsonGenerator) eocJsonGenerator;
+        this.action = action;
+        this.log = log;
+        this.aMarker = MarkerFactory.getMarker(" EocJsonGenerator:" + this.eocJsonGenerator.getName());
+        this.URI = action.getContext().get("gatekeeper.url");
     }
-    log.info(aMarker, "Eoc Json Generation Action for {} has been completed" , eocJsonGenerator.getName());
 
-  }
+    @Override
+    public void execute() throws Exception {
+      log.info(aMarker, "Eoc Json Generation Action for {} has been started", eocJsonGenerator.getName());
+      final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(eocJsonGenerator.getResourceConn());
+      final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
+      final String documentId = eocJsonGenerator.getDocumentId();
+      final String eocId = eocJsonGenerator.getEocId();
+      final String originId = eocJsonGenerator.getOriginId();
+      final String groupId = eocJsonGenerator.getGroupId();
 
-  @Override
-  public boolean executeIf() throws Exception {
-    return eocJsonGenerator.getCondition();
-  }
+      String apiUrl = urlEncoder(URI + "api/v1/" + documentId + "/docdetaillineitem/" + eocId);
 
-  @Data
-  @AllArgsConstructor
-  @NoArgsConstructor
-  @Builder
-  public static class EocResponse {
-    private String documentId;
-    private String eocId;
-    private String originId;
-    private Integer groupId;
-    private String eocResponse;
-    private Long rootPipelineId;
-  }
+      Request request = new Request.Builder().url(apiUrl)
+              .header("Authorization", "Bearer " + eocJsonGenerator.getAuthtoken()).build();
+
+      String name = eocJsonGenerator.getName();
+      log.info(aMarker, "The Request Details : {}", request);
+      try (Response response = httpclient.newCall(request).execute()) {
+        String responseBody = Objects.requireNonNull(response.body()).string();
+        if (response.isSuccessful()) {
+          log.info(aMarker, "The Successful Response for {} --> {}", name, responseBody);
+
+
+          EocResponse eocResponse = EocResponse.builder()
+                  .documentId(documentId)
+                  .eocId(eocId)
+                  .originId(originId)
+                  .groupId(Integer.valueOf(groupId))
+                  .eocResponse(responseBody).rootPipelineId(action.getRootPipelineId()).build();
+
+          jdbi.useTransaction(handle -> {
+            handle.createUpdate("INSERT INTO outbound.eoc_response_details (document_id, eoc_id, origin_id, group_id, eoc_response, root_pipeline_id) " +
+                            "VALUES( :documentId, :eocId, :originId, :groupId, :eocResponse::json, :rootPipelineId);")
+                    .bindBean(eocResponse).execute();
+            log.debug(aMarker, "inserted {} into eoc response details", eocResponse);
+            action.getContext().put(name + ".isSuccessful", String.valueOf(response.isSuccessful()));
+          });
+        } else {
+          log.error(aMarker, "The Failure Response {} --> {}", name, responseBody);
+          action.getContext().put(name.concat(".error"), "true");
+          action.getContext().put(name.concat(".errorMessage"), responseBody);
+        }
+      } catch (Exception e) {
+        log.error(aMarker, "The Exception occurred ", e);
+        action.getContext().put(name + ".isSuccessful", "false");
+        throw new HandymanException("Failed to execute for groupId- " + groupId + "originId- " + originId + "eocId- " + eocId, e, action);
+      }
+      log.info(aMarker, "Eoc Json Generation Action for {} has been completed for groupId- " + groupId + "originId- " + originId + "eocId- " + eocId, eocJsonGenerator.getName());
+    }
+    private String urlEncoder(final String encodingUrl){
+        String encodedUrl;
+        try {
+            URL url = new URL(encodingUrl);
+            URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+            encodedUrl = uri.toASCIIString();
+        } catch (Exception exception) {
+            log.error(aMarker, "Exception occurred in encoding the url {}", encodingUrl, exception);
+            throw new HandymanException("Exception occurred in encoding the url", exception, action);
+        }
+        return encodedUrl;
+    }
+
+
+    @Override
+    public boolean executeIf() throws Exception {
+        return eocJsonGenerator.getCondition();
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class EocResponse {
+        private String documentId;
+        private String eocId;
+        private String originId;
+        private Integer groupId;
+        private String eocResponse;
+        private Long rootPipelineId;
+    }
 }

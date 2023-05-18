@@ -13,6 +13,7 @@ import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.DonutImpiraQa;
 import in.handyman.raven.util.CommonQueryUtil;
+import in.handyman.raven.util.ExceptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -62,13 +63,13 @@ public class DonutImpiraQaAction implements IActionExecution {
     this.log = log;
     this.nodes = Optional.ofNullable(action.getContext().get(ATTRIBUTION_URL)).map(s -> Arrays.asList(s.split(","))).orElse(Collections.emptyList());
     this.aMarker = MarkerFactory.getMarker(" DonutImpiraQa:"+this.donutImpiraQa.getName());
-    this.httpClientTimeout = action.getContext().get("okhttp.client.timeout");
+    httpClientTimeout = action.getContext().get("okhttp.client.timeout");
   }
 
   @Override
   public void execute() throws Exception {
         try{
-    log.info(aMarker, "<-------Donut Impira Attribution Action for {} has been started------->" + donutImpiraQa.getName());
+    log.info(aMarker, "Donut Impira Attribution Action for {} has been started" , donutImpiraQa.getName());
     final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(donutImpiraQa.getResourceConn());
     final List<DonutImpiraQueryResult> donutImpiraQueryResults = new ArrayList<>();
     jdbi.useTransaction(handle -> {
@@ -281,6 +282,7 @@ public class DonutImpiraQaAction implements IActionExecution {
           throw new HandymanException(responseBody);
         }
       } catch (Exception e) {
+        log.error("Failed to execute the rest api call {}", ExceptionUtil.toString(e));
         throw new HandymanException("Failed to execute the rest api call " + node, e);
       }
     }

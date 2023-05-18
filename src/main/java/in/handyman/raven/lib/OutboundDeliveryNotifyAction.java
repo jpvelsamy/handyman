@@ -70,6 +70,7 @@ public class OutboundDeliveryNotifyAction implements IActionExecution {
                 if (response.isSuccessful()) {
                     log.info(aMarker, "Sent response for the document {}", outboundDeliveryNotify.getDocumentId());
                 } else {
+                    log.error(aMarker, "Error in response {}", responseBody);
                     throw new HandymanException(responseBody);
                 }
             } catch (Exception exception) {

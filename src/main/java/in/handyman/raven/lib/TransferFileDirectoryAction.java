@@ -58,7 +58,7 @@ public class TransferFileDirectoryAction implements IActionExecution {
             }
             log.info("Source File copied to Destination has Deleted {}", sourcePath);
         } else {
-            log.info("Source file -{} does not exists", sourcePath);
+            log.error("Source file -{} does not exists", sourcePath);
             throw new HandymanException("Source file does not exists");
         }
     }

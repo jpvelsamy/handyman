@@ -13,6 +13,7 @@ import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.DonutDocQa;
 import in.handyman.raven.util.CommonQueryUtil;
+import in.handyman.raven.util.ExceptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -178,6 +179,9 @@ public class DonutDocQaAction implements IActionExecution {
                         .bind("filePath", filePath)
                         .bind("errorMessage", e.getMessage())
                         .execute());
+                log.error(aMarker, "Error in inserting into docqa action {}", ExceptionUtil.toString(e));
+                HandymanException handymanException = new HandymanException(e);
+                HandymanException.insertException("Error in donut docQa action", handymanException, action);
             }
 
         });
@@ -274,6 +278,7 @@ public class DonutDocQaAction implements IActionExecution {
                     log.info("DonutLineItem size {}", donutLineItems.attributes.size());
                     return donutLineItems;
                 } else {
+                    log.error("Error in the donut docqa response {}", responseBody);
                     throw new HandymanException(responseBody);
                 }
             } catch (Exception e) {

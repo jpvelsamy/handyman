@@ -5,6 +5,7 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.Checksum;
+import in.handyman.raven.util.ExceptionUtil;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -52,6 +53,7 @@ public class ChecksumAction implements IActionExecution {
             }
             log.info(aMarker, "Checksum Action for {} has been Completed", checksum.getName());
         } catch (Exception e) {
+            log.error(aMarker, "Error in generating checksum with exception {}", ExceptionUtil.toString(e));
             throw new HandymanException("Error in generating checksum", e, action);
         }
     }

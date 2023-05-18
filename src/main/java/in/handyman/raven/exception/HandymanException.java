@@ -25,7 +25,7 @@ public class HandymanException extends RuntimeException {
         super(e);
     }
 
-    public static void insertException(final String message, final HandymanException exception,  final ActionExecutionAudit actionExecutionAudit){
+    public static void insertException(final String message, final HandymanException exception, final ActionExecutionAudit actionExecutionAudit) {
         handymanRepo.insertExceptionLog(actionExecutionAudit, exception, message);
     }
 }

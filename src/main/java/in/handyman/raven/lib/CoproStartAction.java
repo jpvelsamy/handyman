@@ -74,14 +74,14 @@ public class CoproStartAction implements IActionExecution {
     String name = coproStart.getName() + "_response";
     log.debug(aMarker, "The Request Details: {} ", request);
     try (Response response = httpclient.newCall(request).execute()) {
-      String responseBody = response.body().string();
+      String responseBody = Objects.requireNonNull(response.body()).string();
       if (response.isSuccessful()) {
         JSONObject responseObj = new JSONObject(responseBody);
         CoproStartAction.coproStartActionEntity coproStartActionEntity = CoproStartAction.coproStartActionEntity
                 .builder()
                 .processId(Optional.ofNullable(coproStart.getProcessID()).map(Long::valueOf).orElse(null))
-                .actionId(Optional.ofNullable(action.getActionId()).map(Long::valueOf).orElse(null))
-                .rootPipelineId(Optional.ofNullable(action.getRootPipelineId()).map(Long::valueOf).orElse(null))
+                .actionId(action.getActionId())
+                .rootPipelineId(action.getRootPipelineId())
                 .coproActionName(Optional.ofNullable(coproStart.getModuleName()).map(String::valueOf).orElse(null))
                 .command(Optional.ofNullable(coproStart.getCommand()).map(String::valueOf).orElse(null))
                 .coproProcessId(Optional.ofNullable(responseObj.get("Pid")).map(String::valueOf).orElse(null))
@@ -95,13 +95,13 @@ public class CoproStartAction implements IActionExecution {
                         .execute());
                 log.info(aMarker, "The Successful Response for {} --> {}", name, responseBody);
             } else {
-                log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
+                log.error(aMarker, "The Failure Response {} --> {}", name, responseBody);
             }
             log.info(aMarker, "copro admin API call for {} has been completed" , coproStart.getName());
         } catch (Exception e) {
             action.getContext().put(name.concat(".error"), "true");
             action.getContext().put(name.concat(".errorMessage"), e.getMessage());
-            log.info(aMarker, "The Exception occurred {}", ExceptionUtil.toString(e));
+            log.error(aMarker, "The Exception occurred {}", ExceptionUtil.toString(e));
             throw new HandymanException("Failed to execute", e, action);
         }
     }

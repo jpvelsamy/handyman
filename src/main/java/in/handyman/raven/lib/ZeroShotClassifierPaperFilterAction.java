@@ -68,8 +68,8 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
             try {
                 return new URL(s1);
             } catch (MalformedURLException e) {
-                log.error("Error in processing the URL ", e);
-                throw new RuntimeException(e);
+                log.error("Error in processing the URL {}", s1, e);
+                throw new HandymanException("Error in processing the URL", e, action);
             }
         }).collect(Collectors.toList())).orElse(Collections.emptyList());
 
@@ -124,13 +124,17 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
             List<PaperFilteringZeroShotClassifierOutputTable> parentObj = new ArrayList<>();
             final ObjectNode objectNode = mapper.createObjectNode();
             objectNode.put("pageContent", entity.pageContent);
+            String originId = entity.originId;
+            String groupId = entity.groupId;
+            Integer paperNo = entity.paperNo;
+            Long actionId = action.getActionId();
             try {
 //                objectNode.put("truthEntity", entity.truthEntity);
                 objectNode.set("keysToFilter", mapper.readTree(entity.truthPlaceholder));
-                objectNode.put("originId", entity.originId);
-                objectNode.put("groupId", entity.groupId);
-                objectNode.put("paperNo", entity.paperNo);
-                log.info(aMarker, " Input variables id : {}", action.getActionId());
+                objectNode.put("originId", originId);
+                objectNode.put("groupId", groupId);
+                objectNode.put("paperNo", paperNo);
+                log.info(aMarker, " Input variables id : {}", actionId);
                 Request request = new Request.Builder().url(endpoint)
                         .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
                 log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n page content : {} \n key-filters : {} ", endpoint, entity.getPageContent(), entity.getTruthPlaceholder());
@@ -138,60 +142,70 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
                 coproAPIProcessor(entity, parentObj, request);
             } catch (JsonProcessingException e) {
                 log.error("error in the zero-shot classifier paper filter copro api call {}", e.toString());
+                HandymanException handymanException = new HandymanException(e);
+                HandymanException.insertException("Exception occurred in urgency triage model action for group id - "+ groupId+ " and originId - "+ originId, handymanException, this.action);
             }
             return parentObj;
         }
 
         private void coproAPIProcessor(PaperFilteringZeroShotClassifierInputTable entity, List<PaperFilteringZeroShotClassifierOutputTable> parentObj, Request request) {
+            String originId = entity.getOriginId();
+            String groupId = entity.getGroupId();
+            final Integer paperNo = Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null);
+            Long rootPipelineId = entity.rootPipelineId;
             try (Response response = httpclient.newCall(request).execute()) {
                 String responseBody = Objects.requireNonNull(response.body()).string();
                 if (response.isSuccessful()) {
                     JSONObject parentResponseObject = new JSONObject(responseBody);
-                    final Integer paperNo = Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null);
                     JSONArray responseObject = new JSONArray(String.valueOf(parentResponseObject.get("entity_confidence_score")));
                     responseObject.forEach(entry -> {
                         final JSONObject childObj = new JSONObject(entry.toString());
+                        Object truthEntity = childObj.get("truthEntity");
+                        Object key = childObj.get("key");
+                        Object score = childObj.get("score");
                         parentObj.add(PaperFilteringZeroShotClassifierOutputTable
                                 .builder()
-                                .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                                .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).orElse(null))
-                                .truthEntity(Optional.ofNullable(childObj.get("truthEntity")).map(String::valueOf).orElse(null))
-                                .entity(Optional.ofNullable(childObj.get("key")).map(String::valueOf).orElse(null))
-                                .confidenceScore(Optional.ofNullable(childObj.get("score")).map(String::valueOf).orElse(null))
+                                .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                                .groupId(Optional.ofNullable(groupId).map(String::valueOf).orElse(null))
+                                .truthEntity(Optional.ofNullable(truthEntity).map(String::valueOf).orElse(null))
+                                .entity(Optional.ofNullable(key).map(String::valueOf).orElse(null))
+                                .confidenceScore(Optional.ofNullable(score).map(String::valueOf).orElse(null))
                                 .paperNo(paperNo)
                                 .status("COMPLETED")
                                 .stage(actionName)
                                 .message("Completed API call zero shot classifier")
-                                .rootPipelineId(entity.rootPipelineId)
+                                .rootPipelineId(rootPipelineId)
                                 .build());
                     });
                 } else {
                     parentObj.add(
                             PaperFilteringZeroShotClassifierOutputTable
                                     .builder()
-                                    .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                                    .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).orElse(null))
+                                    .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                                    .groupId(Optional.ofNullable(groupId).map(String::valueOf).orElse(null))
                                     .status("FAILED")
-                                    .paperNo(entity.paperNo)
+                                    .paperNo(paperNo)
                                     .stage(actionName)
                                     .message(Optional.of(responseBody).map(String::valueOf).orElse(null))
-                                    .rootPipelineId(entity.rootPipelineId)
+                                    .rootPipelineId(rootPipelineId)
                                     .build());
-                    log.info(aMarker, "The Exception occurred in zero shot classifier API call");
+                    log.error(aMarker, "Exception occurred in zero shot classifier API call");
                 }
-            } catch (Exception e) {
-                log.info(aMarker, "The Exception occurred ", e);
+            } catch (Exception exception) {
                 parentObj.add(
                         ZeroShotClassifierPaperFilterAction.PaperFilteringZeroShotClassifierOutputTable
                                 .builder()
-                                .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                                .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).orElse(null))
+                                .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                                .groupId(Optional.ofNullable(groupId).map(String::valueOf).orElse(null))
                                 .status("FAILED")
-                                .paperNo(entity.paperNo)
+                                .paperNo(paperNo)
                                 .stage(actionName)
-                                .message(ExceptionUtil.toString(e))
-                                .rootPipelineId(entity.rootPipelineId)
+                                .message(exception.getMessage())
+                                .rootPipelineId(rootPipelineId)
                                 .build());
+                log.error(aMarker, "Exception occurred in the zero shot classifier paper filter action {}", ExceptionUtil.toString(exception));
+                HandymanException handymanException = new HandymanException(exception);
+                HandymanException.insertException("Zero shot classifier paper filter action failed for groupId - "+ groupId +"and originId - "+ originId+ "and paperNo -"+ paperNo, handymanException, action);
             }
         }
 

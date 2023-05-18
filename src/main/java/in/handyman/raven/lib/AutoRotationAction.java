@@ -1,5 +1,7 @@
 package in.handyman.raven.lib;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
@@ -20,6 +22,7 @@ import java.net.URL;
 import java.sql.Types;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -56,6 +59,7 @@ public class AutoRotationAction implements IActionExecution {
     private final String insertQuery;
 
     private  int timeout;
+
     private final ActionExecutionAudit action;
     private final Logger log;
     private final AutoRotation autoRotation;
@@ -94,7 +98,7 @@ public class AutoRotationAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
-        try{
+        try {
             final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(autoRotation.getResourceConn());
             jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
             log.info(aMarker, "Auto Rotation Action for {} has been started", autoRotation.getName());
@@ -120,9 +124,9 @@ public class AutoRotationAction implements IActionExecution {
             final AutoRotationConsumerProcess autoRotationConsumerProcess = new AutoRotationConsumerProcess(log, aMarker, action, outputDir, this);
             coproProcessor.startConsumer(insertQuery, consumerApiCount, writeBatchSize, autoRotationConsumerProcess);
             log.info(aMarker, " Auto Rotation Action has been completed {}  ", autoRotation.getName());
-        }catch(Exception e){
+        } catch (Exception e) {
             action.getContext().put(autoRotation.getName() + ".isSuccessful", "false");
-            log.error(aMarker,"error in execute method for auto rotation ",e);
+            log.error(aMarker, "error in execute method for auto rotation ", e);
             throw new HandymanException("error in execute method for auto rotation", e, action);
         }
     }
@@ -135,6 +139,5 @@ public class AutoRotationAction implements IActionExecution {
     public Integer getTimeOut() {
         return this.timeout;
     }
-
 
 }

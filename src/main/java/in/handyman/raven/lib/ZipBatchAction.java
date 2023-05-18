@@ -93,12 +93,12 @@ public class ZipBatchAction implements IActionExecution {
                 }
                 log.info(aMarker, "<------- Source folder deleted------->" + deleteFolder(zipBatchFolderFile));
             } else {
-                log.info("target directory path {} not found", zipBatch.getOutputDir());
+                log.error("target directory path {} not found", zipBatch.getOutputDir());
                 throw new HandymanException("target directory path not found");
             }
             log.info(aMarker, "Zip Batch Action for {} has been completed", zipBatch.getName());
         } catch (Exception e) {
-            log.info(aMarker, "Zip Batch Action for {} has failed", zipBatch.getName());
+            log.error(aMarker, "Zip Batch Action for {} has failed", zipBatch.getName());
             throw new HandymanException("Zip Batch Action has failed", e, action);
         }
 

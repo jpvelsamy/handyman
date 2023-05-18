@@ -70,15 +70,15 @@ public class TransformAction implements IActionExecution {
                             stmt.clearWarnings();
                         } catch (SQLSyntaxErrorException ex) {
                             log.error(aMarker, "Stopping execution, General Error executing sql for {} with for {}", sqlToExecute, ExceptionUtil.toString(ex));
-                            log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
+                            log.error(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
                             throw new HandymanException("Process failed", ex, actionExecutionAudit);
                         } catch (SQLException ex) {
                             log.error(aMarker, "Continuing to execute, even though SQL Error executing sql for {} ", sqlToExecute, ex);
-                            log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
+                            log.error(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
                             throw new HandymanException("Process failed", ex, actionExecutionAudit);
                         } catch (Exception ex) {
                             log.error(aMarker, "Stopping execution, General Error executing sql for {} with for {}", sqlToExecute, ExceptionUtil.toString(ex));
-                            log.info(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
+                            log.error(aMarker, sqlToExecute + ".exception", ExceptionUtil.toString(ex));
                             throw new HandymanException("Process failed", ex, actionExecutionAudit);
                         }
                     }
@@ -89,7 +89,7 @@ public class TransformAction implements IActionExecution {
                 log.info(aMarker, "Transform Action for {} has been completed" , transform.getName());
             } catch (SQLException ex) {
                 log.error(aMarker, "Stopping execution, Fetching connection failed", ex);
-                log.info(aMarker, "connection.exception {}", ExceptionUtil.toString(ex));
+                log.error(aMarker, "connection.exception {}", ExceptionUtil.toString(ex));
                 throw new HandymanException("Process failed", ex, actionExecutionAudit);
             }
         });

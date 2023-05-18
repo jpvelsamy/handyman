@@ -45,21 +45,19 @@ import java.util.stream.Stream;
         actionName = "UrgencyTriageModel"
 )
 public class UrgencyTriageModelAction implements IActionExecution {
-  private static final MediaType MediaTypeJSON = MediaType.parse("application/json; charset=utf-8");
   private final ActionExecutionAudit action;
   private final Logger log;
   private static UrgencyTriageModel UrgencyTriageModel = new UrgencyTriageModel();
   private final Marker aMarker;
   private final String URI;
-  private final ObjectMapper mapper = new ObjectMapper();
 
   public UrgencyTriageModelAction(final ActionExecutionAudit action, final Logger log,
                                   final Object UrgencyTriageModel) {
-    this.UrgencyTriageModel = (UrgencyTriageModel) UrgencyTriageModel;
+    UrgencyTriageModelAction.UrgencyTriageModel = (UrgencyTriageModel) UrgencyTriageModel;
     this.action = action;
     this.log = log;
     this.URI = action.getContext().get("copro.urgency-triage-model.url");
-    this.aMarker = MarkerFactory.getMarker(" UrgencyTriageModel:"+this.UrgencyTriageModel.getName());
+    this.aMarker = MarkerFactory.getMarker(" UrgencyTriageModel:"+ UrgencyTriageModelAction.UrgencyTriageModel.getName());
   }
 
 
@@ -92,7 +90,7 @@ public class UrgencyTriageModelAction implements IActionExecution {
       log.info(aMarker, "Urgency Triage has been completed {}  ", UrgencyTriageModel.getName());
     } catch (Exception t) {
       action.getContext().put(UrgencyTriageModel.getName() + ".isSuccessful", "false");
-      log.error(aMarker, "Error at urgency triage execute method {}", t);
+      log.error(aMarker, "Error at urgency triage execute method {}", ExceptionUtil.toString(t));
       throw new HandymanException("Error at Urgency triage model execute method ", t, action);
 
     }
@@ -137,6 +135,15 @@ public class UrgencyTriageModelAction implements IActionExecution {
       log.debug(aMarker, "The Request Details: {}", request);
 
 
+      String createdUserId = entity.getCreatedUserId();
+      String lastUpdatedUserId = entity.getLastUpdatedUserId();
+      String tenantId = entity.getTenantId();
+      Long processId = entity.getProcessId();
+      Integer groupId = entity.getGroupId();
+      String originId = entity.getOriginId();
+      Integer paperNo = entity.getPaperNo();
+      String templateId = entity.getTemplateId();
+      String modelRegistryId = entity.getModelRegistryId();
       try (Response response = httpclient.newCall(request).execute()) {
         final String responseBody = Objects.requireNonNull(response.body()).string();
         if (response.isSuccessful()) {
@@ -145,15 +152,15 @@ public class UrgencyTriageModelAction implements IActionExecution {
           final Long confidenceScore = Optional.ofNullable(mapper.readTree(responseBody).get("confidence_score")).map(JsonNode::asLong).orElse(null);
           final String bboxes = Optional.ofNullable(mapper.readTree(responseBody).get("bboxes")).map(JsonNode::toString).orElse(null);
           parentObj.add(UrgencyTriageOutputTable.builder()
-                  .createdUserId(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).orElse(null))
-                  .lastUpdatedUserId(Optional.ofNullable(entity.getLastUpdatedUserId()).map(String::valueOf).orElse(null))
-                  .tenantId(Optional.ofNullable(entity.getTenantId()).map(String::valueOf).orElse(null))
-                  .processId(Optional.ofNullable(entity.getProcessId()).map(String::valueOf).map(Long::parseLong).orElse(null))
-                  .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                  .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                  .paperNo(Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                  .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
-                  .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
+                  .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
+                  .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                  .processId(Optional.ofNullable(processId).map(String::valueOf).map(Long::parseLong).orElse(null))
+                  .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                  .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
+                  .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .utResult(paperType)
                   .confScore(confidenceScore)
                   .bbox(bboxes)
@@ -165,15 +172,15 @@ public class UrgencyTriageModelAction implements IActionExecution {
           log.info(aMarker, "Execute for urgency triage {}",response);
         } else {
           parentObj.add(UrgencyTriageOutputTable.builder()
-                  .createdUserId(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).orElse(null))
-                  .lastUpdatedUserId(Optional.ofNullable(entity.getLastUpdatedUserId()).map(String::valueOf).orElse(null))
-                  .tenantId(Optional.ofNullable(entity.getTenantId()).map(String::valueOf).orElse(null))
-                  .processId(Optional.ofNullable(entity.getProcessId()).map(String::valueOf).map(Long::parseLong).orElse(null))
-                  .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                  .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                  .paperNo(Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                  .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
-                  .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
+                  .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
+                  .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                  .processId(Optional.ofNullable(processId).map(String::valueOf).map(Long::parseLong).orElse(null))
+                  .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                  .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
+                  .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .status("FAILED")
                   .stage("URGENCY_TRIAGE_MODEL")
                   .message(response.message())
@@ -183,21 +190,23 @@ public class UrgencyTriageModelAction implements IActionExecution {
         }
       } catch (Exception e) {
         parentObj.add(UrgencyTriageOutputTable.builder()
-                .createdUserId(Optional.ofNullable(entity.getCreatedUserId()).map(String::valueOf).orElse(null))
-                .lastUpdatedUserId(Optional.ofNullable(entity.getLastUpdatedUserId()).map(String::valueOf).orElse(null))
-                .tenantId(Optional.ofNullable(entity.getTenantId()).map(String::valueOf).orElse(null))
-                .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                .processId(Optional.ofNullable(entity.getProcessId()).map(String::valueOf).map(Long::parseLong).orElse(null))
-                .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
-                .paperNo(Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                .templateId(Optional.ofNullable(entity.getTemplateId()).map(String::valueOf).orElse(null))
-                .modelRegistryId(Optional.ofNullable(entity.getModelRegistryId()).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
+                .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
+                .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                .processId(Optional.ofNullable(processId).map(String::valueOf).map(Long::parseLong).orElse(null))
+                .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
+                .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .status("FAILED")
                 .stage("URGENCY_TRIAGE_MODEL")
                 .message(ExceptionUtil.toString(e))
                 .rootPipelineId(entity.rootPipelineId)
                 .build());
         log.error(aMarker, "The Exception occurred in urgency triage", e);
+        HandymanException handymanException = new HandymanException(e);
+        HandymanException.insertException("Exception occurred in urgency triage model action for group id - "+ groupId+ " and originId - "+ originId, handymanException, this.action);
       }
       return parentObj;
     }
