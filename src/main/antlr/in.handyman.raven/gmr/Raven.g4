@@ -128,6 +128,7 @@ action:
     |drugMatch
     |urgencyTriageModel
     |donutImpiraQa
+    |templateDetection
     );
 
 
@@ -853,6 +854,17 @@ donutImpiraQa:
      'using'  '{' questionSql=STRING '}'
      ('on-condition' condition=expression)*
      ('on-parallel-fielding' forkBatchSize=STRING)*;
+
+templateDetection:
+	'templateDetection'  'as' name=STRING
+	'copro-url' coproUrl=STRING
+	'resource-conn' resourceConn=STRING
+	'input-table' inputTable=STRING
+	'process-id' processId=STRING
+	'ouput-table' ouputTable=STRING
+	'using'  '{'
+	 querySet=STRING
+	'}'('on-condition' condition=expression)*;
 
 
 //rules
