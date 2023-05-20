@@ -14,7 +14,6 @@ public class TemplateDetectionOutputTable implements CoproProcessor.Entity {
     private String templateId;
     private Long processId;
 
-    private String attributes;
     private String processedFilePath;
     private String question;
     private String predictedAttributionValue;
