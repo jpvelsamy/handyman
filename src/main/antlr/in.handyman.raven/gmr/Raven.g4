@@ -128,7 +128,7 @@ action:
     |drugMatch
     |urgencyTriageModel
     |donutImpiraQa
-    |dieModel
+    |trinityModel
     );
 
 
@@ -855,8 +855,8 @@ donutImpiraQa:
      ('on-condition' condition=expression)*
      ('on-parallel-fielding' forkBatchSize=STRING)*;
 
-dieModel:
-     'die-docqa' 'as' name=STRING
+trinityModel:
+     'trinity-docqa' 'as' name=STRING
      'in-output-dir' outputDir=STRING
      'on-resource-conn' resourceConn=STRING
      'save-response-as' responseAs=STRING

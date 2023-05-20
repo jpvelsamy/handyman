@@ -19,9 +19,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "DieModel"
+    actionName = "TrinityModel"
 )
-public class DieModel implements IActionContext {
+public class TrinityModel implements IActionContext {
   private String name;
 
   private String outputDir;
