@@ -47,10 +47,9 @@ public class TemplateDetectionAction implements IActionExecution {
     public static final String WRITE_BATCH_SIZE = "read.batch.size";
     public static final String CONSUMER_API_COUNT = "consumer.API.count";
     public static final String INSERT_INTO = "INSERT INTO ";
-    public static final String SCHEMA_NAME = "info ";
-    public static final String TEMPLATE_DETECTION = "template_detection ";
-    public static final String COLUMN_LIST = "origin_id,group_id,tenant_id,template_id,process_id, processed_file_path,paper_no, template_name,status,stage,message,created_on,root_pipeline_id";
-    public static final String VAL_STRING_LIST = "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    public static final String SCHEMA_NAME = "macro";
+    public static final String COLUMN_LIST = "process_id, origin_id, paper_no, group_id, processed_file_path, question, predictedattribution_value, score, bboxes, image_width, image_height, image_dpi, extracted_image_unit, tenant_id, template_id, status, stage, message, created_on, root_pipeline_id";
+    public static final String VAL_STRING_LIST = "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     public static final String THREAD_SLEEP_TIME = "1000";
     public static final String COPRO_CLIENT_SOCKET_TIMEOUT = "copro.client.socket.timeout";
     private final String DEFAULT_THREAD_SLEEP = "1000";
@@ -73,7 +72,7 @@ public class TemplateDetectionAction implements IActionExecution {
         this.action = action;
         this.log = log;
         this.schemaName = SCHEMA_NAME;
-        this.targetTableName = TEMPLATE_DETECTION;
+        this.targetTableName = ((TemplateDetection) templateDetection).getOuputTable();
         this.columnList = COLUMN_LIST;
         String readBatchSizeStr = Optional.ofNullable(this.action.getContext().get(READ_BATCH_SIZE)).orElse(DEFAULT_BATCH_SIZE);
         String writeBatchSizeStr = Optional.ofNullable(this.action.getContext().get(WRITE_BATCH_SIZE)).orElse(DEFAULT_BATCH_SIZE);
@@ -81,7 +80,7 @@ public class TemplateDetectionAction implements IActionExecution {
         String socketTimeStr= Optional.ofNullable(this.action.getContext().get(COPRO_CLIENT_SOCKET_TIMEOUT)).orElse(DEFAULT_SOCKET_TIME_OUT);
         String threadSleep = Optional.ofNullable(this.action.getContext().get(THREAD_SLEEP_TIME)).orElse(DEFAULT_THREAD_SLEEP);
 
-        insertQuery = INSERT_INTO + " " + schemaName + " " + targetTableName + "(" + columnList + ")" + " " + VAL_STRING_LIST;
+        insertQuery = INSERT_INTO +  targetTableName + "(" + columnList + ")" + " " + VAL_STRING_LIST;
         this.timeout = Integer.parseInt(socketTimeStr);
         this.writeBatchSize = Integer.parseInt(writeBatchSizeStr);
         this.readBatchSize = Integer.parseInt(readBatchSizeStr);

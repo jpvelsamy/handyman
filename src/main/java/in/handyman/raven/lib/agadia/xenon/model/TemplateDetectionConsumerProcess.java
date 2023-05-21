@@ -61,9 +61,12 @@ public class TemplateDetectionConsumerProcess  implements CoproProcessor.Consume
 
         log.info(aMarker,"Input request object for template detection filePath is {} and questions size {}", inputFilePath,attributes.size());
 
+
+        final String body = mapper.writeValueAsString(templateDetectionRequest);
+        RequestBody requestBody = RequestBody.create(body, MediaTypeJSON);
         Request request=new Request.Builder()
                 .url(endpoint)
-                .post(RequestBody.create(templateDetectionRequest.toString(), MediaTypeJSON))
+                .post(requestBody)
                 .build();
 
         log.info(aMarker, "Request object {} and request endpoint {}",request,endpoint);
@@ -90,15 +93,16 @@ public class TemplateDetectionConsumerProcess  implements CoproProcessor.Consume
 
                         String string = attribute.getBboxes().toString();
                         String question = attribute.getQuestion();
-                        Float score = attribute.getScore();
+                        Float scores = attribute.getScores();
                         String predictedAttributionValue = attribute.getPredictedAttributionValue();
                         outputObjectList.add(
                                 TemplateDetectionOutputTable.builder()
+                                        .processId(processId)
                                         .tenantId(tenantId)
                                         .templateId(templateId)
                                         .predictedAttributionValue(predictedAttributionValue)
                                         .question(question)
-                                        .score(score)
+                                        .scores(scores)
                                         .bboxes(string)
                                         .imageWidth(imageWidth)
                                         .imageHeight(imageHeight)
@@ -119,6 +123,7 @@ public class TemplateDetectionConsumerProcess  implements CoproProcessor.Consume
 
                 }else {
                     outputObjectList.add( TemplateDetectionOutputTable.builder()
+                            .processId(processId)
                             .tenantId(tenantId)
                             .templateId(templateId)
                             .rootPipelineId(rootPipelineId)

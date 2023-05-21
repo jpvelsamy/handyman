@@ -69,8 +69,8 @@ public class DataExtractionAction implements IActionExecution {
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
       log.info(aMarker, "Data Extraction Action for {} has been started", dataExtraction.getName());
 
-      final String insertQuery = "INSERT INTO info.data_extraction(origin_id,group_id,tenant_id,template_id,process_id, file_path, extracted_text,paper_no,file_name, status,stage,message,is_blank_page, created_on ,root_pipeline_id) " + "" +
-              " VALUES(?,? ,?,?,? ,?,?,?,?, ?,?,?,?,? ,?)";
+      final String insertQuery = "INSERT INTO info.data_extraction(origin_id,group_id,tenant_id,template_id,process_id, file_path, extracted_text,paper_no,file_name, status,stage,message,is_blank_page, created_on ,root_pipeline_id,template_name) " + "" +
+              " VALUES(?,? ,?,?,? ,?,?,?,?, ?,?,?,?,? ,?, ?)";
       final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.data-extraction.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
         try {
           return new URL(s1);
@@ -141,6 +141,7 @@ public class DataExtractionAction implements IActionExecution {
                           .templateId(entity.templateId)
                           .processId(entity.processId)
                           .isBlankPage(flag)
+                          .templateName(entity.templateName)
                           .rootPipelineId(entity.rootPipelineId)
                   .build());
         }else{
@@ -156,6 +157,7 @@ public class DataExtractionAction implements IActionExecution {
                   .message(response.message())
                   .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                   .rootPipelineId(entity.rootPipelineId)
+                  .templateName(entity.templateName)
                   .build());
           log.error(aMarker, "The Exception occurred ");
         }
@@ -172,6 +174,7 @@ public class DataExtractionAction implements IActionExecution {
                 .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                 .message(ExceptionUtil.toString(e))
                 .rootPipelineId(entity.rootPipelineId)
+                .templateName(entity.templateName)
                 .build());
 
         log.error(aMarker, "The Exception occurred ", e);
@@ -202,6 +205,7 @@ public class DataExtractionAction implements IActionExecution {
     private String templateId;
     private Long processId;
     private Long rootPipelineId;
+    private String templateName;
 
     @Override
     public List<Object> getRowData() {
@@ -231,13 +235,14 @@ public class DataExtractionAction implements IActionExecution {
     private String isBlankPage;
     private Timestamp createdOn;
     private Long rootPipelineId;
+    private String templateName;
 
 
     @Override
     public List<Object> getRowData() {
       return Stream.of(this.originId, this.groupId, this.tenantId,this.templateId
               ,this.processId,this.filePath, this.extractedText,this.paperNo,this.fileName
-              ,this.status,this.stage,this.message,this.isBlankPage,this.createdOn,this.rootPipelineId).collect(Collectors.toList());
+              ,this.status,this.stage,this.message,this.isBlankPage,this.createdOn,this.rootPipelineId,this.templateName).collect(Collectors.toList());
     }
   }
 

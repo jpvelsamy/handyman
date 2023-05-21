@@ -1,12 +1,18 @@
 package in.handyman.raven.lib.agadia.xenon.model;
 
 import in.handyman.raven.lib.CoproProcessor;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TemplateDetectionOutputTable implements CoproProcessor.Entity {
     private String originId;
     private Integer groupId;
@@ -17,7 +23,7 @@ public class TemplateDetectionOutputTable implements CoproProcessor.Entity {
     private String processedFilePath;
     private String question;
     private String predictedAttributionValue;
-    private Float score;
+    private Float scores;
     private String bboxes;
     private Integer imageWidth;
     private Integer imageHeight;
@@ -144,6 +150,8 @@ public class TemplateDetectionOutputTable implements CoproProcessor.Entity {
 
     @Override
     public List<Object> getRowData() {
-        return null;
+        return Stream.of(this.processId, this.originId, this.paperNo,this.groupId
+                ,this.processedFilePath,this.question, this.predictedAttributionValue,this.scores,this.bboxes
+                ,this.imageWidth,this.imageHeight,this.imageDPI,this.extractedImageUnit,this.tenantId,this.templateId,this.status,this.stage,this.message,this.createdOn,this.rootPipelineId).collect(Collectors.toList());
     }
 }

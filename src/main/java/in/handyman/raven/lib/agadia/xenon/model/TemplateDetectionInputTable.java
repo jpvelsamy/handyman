@@ -1,11 +1,15 @@
 package in.handyman.raven.lib.agadia.xenon.model;
 
 import in.handyman.raven.lib.CoproProcessor;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TemplateDetectionInputTable implements CoproProcessor.Entity {
 
     private String originId;
@@ -18,20 +22,6 @@ public class TemplateDetectionInputTable implements CoproProcessor.Entity {
     private Long rootPipelineId;
     private String questions;
 
-    public TemplateDetectionInputTable() {
-    }
-
-    public TemplateDetectionInputTable(String originId, Integer paperNo, Integer groupId, String filePath, String tenantId, String templateId, Long processId, String outputDir, Long rootPipelineId, String questions) {
-        this.originId = originId;
-        this.paperNo = paperNo;
-        this.groupId = groupId;
-        this.filePath = filePath;
-        this.tenantId = tenantId;
-        this.templateId = templateId;
-        this.processId = processId;
-        this.rootPipelineId = rootPipelineId;
-        this.questions = questions;
-    }
 
     public String getOriginId() {
         return originId;

@@ -6,7 +6,7 @@ public class XenonResult {
 
     private String question;
     private String predictedAttributionValue;
-    private Float score;
+    private Float scores;
     private JsonNode bboxes;
 
     public String getQuestion() {
@@ -25,12 +25,12 @@ public class XenonResult {
         this.predictedAttributionValue = predictedAttributionValue;
     }
 
-    public Float getScore() {
-        return score;
+    public Float getScores() {
+        return scores;
     }
 
-    public void setScore(Float score) {
-        this.score = score;
+    public void setScore(Float scores) {
+        this.scores = scores;
     }
 
     public JsonNode getBboxes() {
