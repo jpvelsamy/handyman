@@ -128,6 +128,7 @@ action:
     |drugMatch
     |urgencyTriageModel
     |donutImpiraQa
+    |trinityModel
     |templateDetection
     );
 
@@ -866,6 +867,14 @@ templateDetection:
 	 querySet=STRING
 	'}'('on-condition' condition=expression)*;
 
+trinityModel:
+     'trinity-docqa' 'as' name=STRING
+     'in-output-dir' outputDir=STRING
+     'on-resource-conn' resourceConn=STRING
+     'save-response-as' responseAs=STRING
+     'using'  '{' questionSql=STRING '}'
+     ('on-condition' condition=expression)*
+     ('on-parallel-fielding' forkBatchSize=STRING)*;
 
 //rules
 
