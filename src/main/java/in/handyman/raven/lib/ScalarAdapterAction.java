@@ -229,9 +229,11 @@ public class ScalarAdapterAction implements IActionExecution {
             resultQueue.forEach(insert -> {
                         jdbi.useTransaction(handle -> {
                             try {
+                                String COLUMN_LIST = "origin_id, paper_no, group_id, process_id, sor_id, sor_item_id, sor_item_name,question, answer, weight, created_user_id, tenant_id, created_on, word_score, char_score, validator_score_allowed, validator_score_negative, confidence_score,validation_name,b_box,status,stage,message,vqa_score";
+                                String COLUMN_BINDED_LIST = ":originId, :paperNo, :groupId, :processId , :sorId, :sorItemId, :sorKey, :question ,:inputValue, :weight, :createdUserId, :tenantId, NOW(), :wordScore , :charScore , :validatorScore, :validatorNegativeScore, :confidenceScore,:allowedAdapter,:bbox,:status,:stage,:message,:vqaScore";
                                 Update update = handle.createUpdate("  INSERT INTO sor_transaction.adapter_result_" + scalarAdapter.getProcessID() +
-                                        " ( origin_id, paper_no, group_id, process_id, sor_id, sor_item_id, sor_item_name,question, answer, weight, created_user_id, tenant_id, created_on, word_score, char_score, validator_score_allowed, validator_score_negative, confidence_score,validation_name,b_box,status,stage,message) " +
-                                        " VALUES( :originId, :paperNo, :groupId, :processId , :sorId, :sorItemId, :sorKey, :question ,:inputValue, :weight, :createdUserId, :tenantId, NOW(), :wordScore , :charScore , :validatorScore, :validatorNegativeScore, :confidenceScore,:allowedAdapter,:bbox,:status,:stage,:message);" +
+                                        " ( " + COLUMN_LIST + ") " +
+                                        " VALUES( " + COLUMN_BINDED_LIST + ");" +
                                         "   ");
                                 Update bindBean = update.bindBean(insert);
                                 bindBean.execute();
@@ -344,6 +346,7 @@ public class ScalarAdapterAction implements IActionExecution {
         private double validatorNegativeScore;
         private double confidenceScore;
         private String sorItemName;
+        private float vqaScore;
         private int weight;
         private String status;
         private String stage;
