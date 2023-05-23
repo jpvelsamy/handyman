@@ -72,7 +72,8 @@ class RestApiActionTestExecutionAudit {
     }
 
     @Test
-    public void performanceOpt()
+    public void
+    performanceOpt()
     {
         LContext request = LContext.builder()
                 .pipelineName("root.processor#1")
@@ -82,8 +83,8 @@ class RestApiActionTestExecutionAudit {
                         Map.entry("tenant_id","TND-001"),
                         Map.entry("document_id","TMP-AGD-001"),
                         Map.entry("last_updated_user_id","-1"),
-                        Map.entry("dir_path","/home/dineshkumar.anandan@zucisystems.com/Pipeline/2_pdf/"),
-                        Map.entry("target_directory_path","/home/dineshkumar.anandan@zucisystems.com/Pipeline/output")))
+                        Map.entry("dir_path","/home/anandh.andrews@zucisystems.com/W-space/agadia-pipeline/sent/inputs/166838894_c3.pdf"),
+                        Map.entry("target_directory_path","/home/anandh.andrews@zucisystems.com/W-space/agadia-pipeline/sent/output")))
                 .build();
         log.info(request.toString());
         LambdaEngine.start(request);

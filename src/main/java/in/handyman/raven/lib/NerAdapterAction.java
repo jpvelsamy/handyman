@@ -64,9 +64,10 @@ public class NerAdapterAction implements IActionExecution {
             final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(nerAdapter.getResourceConn());
             jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
             // build insert prepare statement with output table columns
+            String COLUMN_LIST = "origin_id, paper_no, group_id, process_id, sor_id, sor_item_id, sor_item_name, question, answer,weight, created_user_id, tenant_id, created_on, word_score, char_score, validator_score_allowed, validator_score_negative, confidence_score, validation_name, b_box,status,stage,message,vqa_score";
             final String insertQuery = "INSERT INTO " + nerAdapter.getResultTable() +
-                    "(origin_id, paper_no, group_id, process_id, sor_id, sor_item_id, sor_item_name, question, answer,weight, created_user_id, tenant_id, created_on, word_score, char_score, validator_score_allowed, validator_score_negative, confidence_score, validation_name, b_box,status,stage,message)" +
-                    " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?,?, ?, ?, ?, ?, ?,?,?,?);";
+                    "(" + COLUMN_LIST + ")" +
+                    " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?,?, ?, ?, ?, ?, ?,?,?,?  ,?);";
             log.info(aMarker, "ner adapter Insert query {}", insertQuery);
 
             //3. initiate copro processor and copro urls
@@ -167,6 +168,7 @@ public class NerAdapterAction implements IActionExecution {
             int sorItemId = result.getSorItemId();
             String sorKey = result.getSorKey();
             String question = result.getQuestion();
+            float vqaScore=result.getVqaScore();
             int weight = result.weight;
             String createdUserId = result.createdUserId;
             if (confidenceScore >= 0) {
@@ -183,6 +185,7 @@ public class NerAdapterAction implements IActionExecution {
                                 .sorItemName(sorKey)
                                 .question(question)
                                 .answer(inputValue)
+                                .vqaScore(vqaScore)
                                 .weight(weight)
                                 .createdUserId(createdUserId)
                                 .createdOn(Timestamp.valueOf(LocalDateTime.now()))
@@ -212,6 +215,7 @@ public class NerAdapterAction implements IActionExecution {
                                 .sorItemName(sorKey)
                                 .question(question)
                                 .answer(inputValue)
+                                .vqaScore(vqaScore)
                                 .weight(weight)
                                 .createdUserId(createdUserId)
                                 .createdOn(Timestamp.valueOf(LocalDateTime.now()))
@@ -279,6 +283,7 @@ public class NerAdapterAction implements IActionExecution {
         private String sorKey;
         private String question;
         private String inputValue;
+        private float vqaScore;
         private String allowedAdapter;
         private String restrictedAdapter;
         private int wordLimit;
@@ -328,6 +333,7 @@ public class NerAdapterAction implements IActionExecution {
         private String createdUserId;
         private String tenantId;
         private Timestamp createdOn;
+        private float vqaScore;
         private double wordScore;
         private double charScore;
         private double validatorScoreAllowed;
@@ -344,7 +350,7 @@ public class NerAdapterAction implements IActionExecution {
             return Stream.of(this.originId, this.paperNo, this.groupId, this.processId, this.sorId, this.sorItemId, this.sorItemName,
                     this.question, this.answer, this.weight, this.createdUserId, this.tenantId, this.createdOn, this.wordScore, this.charScore,
                     this.validatorScoreAllowed, this.validatorScoreNegative, this.confidenceScore, this.validationName, this.bBox,
-                    this.status, this.stage, this.message
+                    this.status, this.stage, this.message,this.vqaScore
             ).collect(Collectors.toList());
         }
 
