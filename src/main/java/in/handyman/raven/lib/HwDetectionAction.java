@@ -45,12 +45,14 @@ public class HwDetectionAction implements IActionExecution {
   private static HwDetection hwDetection = new HwDetection();
 
   private final Marker aMarker;
+  private static String httpClientTimeout = new String();
 
   public HwDetectionAction(final ActionExecutionAudit action, final Logger log,
                            final Object hwDetection) {
     this.hwDetection = (HwDetection) hwDetection;
     this.action = action;
     this.log = log;
+    this.httpClientTimeout=action.getContext().get("okhttp.client.timeout");
     this.aMarker = MarkerFactory.getMarker(" HwDetection:"+this.hwDetection.getName());
   }
 
@@ -104,10 +106,11 @@ public class HwDetectionAction implements IActionExecution {
     private static final MediaType MediaTypeJSON = MediaType
             .parse("application/json; charset=utf-8");
     public final ActionExecutionAudit action;
+
     final OkHttpClient httpclient = new OkHttpClient.Builder()
-            .connectTimeout(10, TimeUnit.MINUTES)
-            .writeTimeout(10, TimeUnit.MINUTES)
-            .readTimeout(10, TimeUnit.MINUTES)
+            .connectTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
+            .writeTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
+            .readTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
             .build();
 
     public HwClassificationConsumerProcess(final Logger log, final Marker aMarker, ActionExecutionAudit action) {

@@ -49,8 +49,10 @@ public class DataExtractionAction implements IActionExecution {
   private static final MediaType MediaTypeJSON = MediaType.parse("application/json; charset=utf-8");
   private final Marker aMarker;
   private final ObjectMapper mapper = new ObjectMapper();
+  private static String httpClientTimeout = new String();
 
   private final String URI;
+
 
 
   public DataExtractionAction(final ActionExecutionAudit action, final Logger log, final Object dataExtraction) {
@@ -59,6 +61,7 @@ public class DataExtractionAction implements IActionExecution {
     this.log = log;
     this.aMarker = MarkerFactory.getMarker(" DataExtraction:" + this.dataExtraction.getName());
     this.URI = action.getContext().get("copro.data-extraction.url");
+    this.httpClientTimeout=action.getContext().get("okhttp.client.timeout");
   }
 
   @Override
@@ -100,8 +103,11 @@ public class DataExtractionAction implements IActionExecution {
     private static final MediaType MediaTypeJSON = MediaType.parse("application/json; charset=utf-8");
 
     public final ActionExecutionAudit action;
-    final OkHttpClient httpclient = new OkHttpClient.Builder().connectTimeout(10, TimeUnit.MINUTES).writeTimeout(10, TimeUnit.MINUTES).readTimeout(10, TimeUnit.MINUTES).build();
-
+    final OkHttpClient httpclient = new OkHttpClient.Builder()
+            .connectTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
+            .writeTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
+            .readTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
+            .build();
     public DataExtractionConsumerProcess(final Logger log, final Marker aMarker, ActionExecutionAudit action) {
       this.log = log;
       this.aMarker = aMarker;
