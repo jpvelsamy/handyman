@@ -83,7 +83,7 @@ class RestApiActionTestExecutionAudit {
                         Map.entry("tenant_id","TND-001"),
                         Map.entry("document_id","TMP-AGD-001"),
                         Map.entry("last_updated_user_id","-1"),
-                        Map.entry("dir_path","/home/anandh.andrews@zucisystems.com/W-space/agadia-pipeline/sent/inputs/166838894_c3.pdf"),
+                        Map.entry("dir_path","/home/anandh.andrews@zucisystems.com/W-space/agadia-pipeline/sent/inputs/"),
                         Map.entry("target_directory_path","/home/anandh.andrews@zucisystems.com/W-space/agadia-pipeline/sent/output")))
                 .build();
         log.info(request.toString());

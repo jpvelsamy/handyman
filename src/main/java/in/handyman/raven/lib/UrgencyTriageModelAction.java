@@ -47,26 +47,26 @@ import java.util.stream.Stream;
 public class UrgencyTriageModelAction implements IActionExecution {
   private final ActionExecutionAudit action;
   private final Logger log;
-  private static UrgencyTriageModel UrgencyTriageModel = new UrgencyTriageModel();
+  private static UrgencyTriageModel urgencyTriageModel = new UrgencyTriageModel();
   private final Marker aMarker;
   private final String URI;
 
   public UrgencyTriageModelAction(final ActionExecutionAudit action, final Logger log,
                                   final Object UrgencyTriageModel) {
-    UrgencyTriageModelAction.UrgencyTriageModel = (UrgencyTriageModel) UrgencyTriageModel;
+    UrgencyTriageModelAction.urgencyTriageModel = (UrgencyTriageModel) UrgencyTriageModel;
     this.action = action;
     this.log = log;
     this.URI = action.getContext().get("copro.urgency-triage-model.url");
-    this.aMarker = MarkerFactory.getMarker(" UrgencyTriageModel:"+ UrgencyTriageModelAction.UrgencyTriageModel.getName());
+    this.aMarker = MarkerFactory.getMarker(" UrgencyTriageModel:"+ UrgencyTriageModelAction.urgencyTriageModel.getName());
   }
 
 
   @Override
   public void execute() throws Exception {
     try {
-      final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(UrgencyTriageModel.getResourceConn());
+      final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(urgencyTriageModel.getResourceConn());
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
-      log.info(aMarker, "Urgency Triage Action for {} has been started", UrgencyTriageModel.getName());
+      log.info(aMarker, "Urgency Triage Action for {} has been started", urgencyTriageModel.getName());
       final String insertQuery = "INSERT INTO urgency_triage.ut_model_result(created_on, created_user_id, last_updated_on, last_updated_user_id, process_id, group_id, tenant_id, confidence_score, origin_id, paper_no, template_id, model_registry_id, status, stage, message, paper_type, bboxes, root_pipeline_id)" +
               "values(now(),?,now(),?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?)";
       final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.urgency-triage-model.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
@@ -84,12 +84,12 @@ public class UrgencyTriageModelAction implements IActionExecution {
                       UrgencyTriageInputTable.class,
                       jdbi, log,
                       new UrgencyTriageInputTable(), urls, action);
-      coproProcessor.startProducer(UrgencyTriageModel.getQuerySet(), Integer.valueOf(action.getContext().get("read.batch.size")));
+      coproProcessor.startProducer(urgencyTriageModel.getQuerySet(), Integer.valueOf(action.getContext().get("read.batch.size")));
       Thread.sleep(1000);
       coproProcessor.startConsumer(insertQuery, 1, 1, new UrgencyTriageConsumerProcess(log, aMarker, action));
-      log.info(aMarker, "Urgency Triage has been completed {}  ", UrgencyTriageModel.getName());
+      log.info(aMarker, "Urgency Triage has been completed {}  ", urgencyTriageModel.getName());
     } catch (Exception t) {
-      action.getContext().put(UrgencyTriageModel.getName() + ".isSuccessful", "false");
+      action.getContext().put(urgencyTriageModel.getName() + ".isSuccessful", "false");
       log.error(aMarker, "Error at urgency triage execute method {}", ExceptionUtil.toString(t));
       throw new HandymanException("Error at Urgency triage model execute method ", t, action);
 
@@ -98,7 +98,7 @@ public class UrgencyTriageModelAction implements IActionExecution {
 
   @Override
   public boolean executeIf() throws Exception {
-    return UrgencyTriageModel.getCondition();
+    return urgencyTriageModel.getCondition();
   }
 
   public static class UrgencyTriageConsumerProcess implements CoproProcessor.ConsumerProcess<UrgencyTriageInputTable, UrgencyTriageOutputTable> {
@@ -125,15 +125,20 @@ public class UrgencyTriageModelAction implements IActionExecution {
 
       List<UrgencyTriageOutputTable> parentObj = new ArrayList<>();
       final ObjectNode objectNode = mapper.createObjectNode();
-      objectNode.put("inputFilePath", entity.getInputFilePath());
-      objectNode.put("outputDir", UrgencyTriageModel.getOutputDir());
+      String inputFilePath = entity.getInputFilePath();
+      String outputDir = urgencyTriageModel.getOutputDir();
+
+      objectNode.put("inputFilePath", inputFilePath);
+      objectNode.put("outputDir", outputDir);
 
       log.info("request builder object node {}",objectNode);
 
       Request request = new Request.Builder().url(endpoint)
               .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-      log.debug(aMarker, "The Request Details: {}", request);
 
+      if(log.isInfoEnabled()) {
+        log.info(aMarker, "Request has been build with the parameters \n coproUrl  {} ,inputFilePath : {} ,outputDir {} ", endpoint,inputFilePath,outputDir);
+      }
 
       String createdUserId = entity.getCreatedUserId();
       String lastUpdatedUserId = entity.getLastUpdatedUserId();

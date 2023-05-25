@@ -46,7 +46,7 @@ public class IntellimatchAction implements IActionExecution {
     private final Logger log;
 
     private final Intellimatch intellimatch;
-    final String URI;
+    final String coproUrl;
     private final Marker aMarker;
     final ObjectMapper MAPPER;
     final OkHttpClient httpclient;
@@ -59,7 +59,7 @@ public class IntellimatchAction implements IActionExecution {
         this.intellimatch = (Intellimatch) intellimatch;
         this.action = action;
         this.log = log;
-        this.URI = action.getContext().get("copro.intelli-match.url");
+        this.coproUrl = action.getContext().get("copro.intelli-match.url");
         this.MAPPER = new ObjectMapper();
         this.httpclient = InstanceUtil.createOkHttpClient();
         this.aMarker = MarkerFactory.getMarker(" Intellimatch:" + this.intellimatch.getName());
@@ -87,13 +87,19 @@ public class IntellimatchAction implements IActionExecution {
 
             List<MatchResultSet> resultQueue = new ArrayList<>();
             inputResult.forEach(result -> {
-                if (result.getActualValue() != null) {
+                String actualValue = result.getActualValue();
+                if (actualValue != null) {
                     final ObjectNode objectNode = MAPPER.createObjectNode();
-                    List<String> comparableSentence = Collections.singletonList(result.getExtractedValue());
-                    objectNode.put("inputSentence", result.getActualValue());
+                    String extractedValue = result.getExtractedValue();
+                    List<String> comparableSentence = Collections.singletonList(extractedValue);
+                    objectNode.put("inputSentence", actualValue);
                     objectNode.putPOJO("sentences", comparableSentence);
-                    final Request request = new Request.Builder().url(URI)
+                    final Request request = new Request.Builder().url(coproUrl)
                             .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
+
+                    if(log.isInfoEnabled()){
+                        log.info("input object node in the consumer process copro url {},  inputSentence {}, extractedValue{} , sentences {}  ",coproUrl, actualValue,extractedValue,comparableSentence);
+                    }
                     try (Response response = httpclient.newCall(request).execute()) {
                         String responseBody = Objects.requireNonNull(response.body()).string();
                         if (response.isSuccessful()) {

@@ -124,17 +124,20 @@ public class HwDetectionAction implements IActionExecution {
 
       List<HwClassificationOutputTable> parentObj = new ArrayList<>();
       final ObjectNode objectNode = mapper.createObjectNode();
-      objectNode.put("inputFilePath", entity.getFilePath());
-      objectNode.put("modelPath", hwDetection.getModelPath());
-      objectNode.put("outputDir", hwDetection.getDirectoryPath());
+      String entityFilePath = entity.getFilePath();
+      String modelPath = hwDetection.getModelPath();
+      String directoryPath = hwDetection.getDirectoryPath();
+      objectNode.put("inputFilePath", entityFilePath);
+      objectNode.put("modelPath", modelPath);
+      objectNode.put("outputDir", directoryPath);
       log.info(aMarker, "Request List {}", objectNode);
       log.info("request object node {}",objectNode);
       Request request = new Request.Builder().url(endpoint)
               .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-      log.debug(aMarker, "The Request Details: {}", request);
 
-      log.info("request builder object {}",request);
-
+      if(log.isInfoEnabled()) {
+        log.info(aMarker, "Request has been build with the parameters \n coproUrl  {} ,inputFilePath : {} modelPath  {}  outputDir {} ", endpoint,entityFilePath,modelPath,directoryPath);
+      }
       String createdUserId = entity.getCreatedUserId();
       String lastUpdatedUserId = entity.getLastUpdatedUserId();
       String tenantId = entity.getTenantId();

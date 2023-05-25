@@ -138,8 +138,11 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
                 log.info(aMarker, " Input variables id : {}", action.getActionId());
                 Request request = new Request.Builder().url(endpoint)
                         .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-                log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n page content : {} \n key-filters : {} ", endpoint, entity.getPageContent(), entity.getTruthPlaceholder());
-                log.debug(aMarker, "The Request Details: {}", request);
+
+                if(log.isInfoEnabled()) {
+                    log.info(aMarker, "Request has been build with the parameters \n URI : {}, with truthPlaceHolder {},originId {},groupId {},paperNo {}", endpoint, truthPlaceholder, originId,groupId,paperNo);
+                }
+
                 coproAPIProcessor(entity, parentObj, request);
             } catch (JsonProcessingException exception) {
                 log.error("error in the phrase match paper filter copro api call {}", exception.toString());

@@ -59,7 +59,7 @@ public class CheckboxClassificationAction implements IActionExecution {
         log.info(aMarker, " Input variables id : {}", action.getActionId());
         Request request = new Request.Builder().url(URI)
                 .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-        log.debug(aMarker, "The Request Details: {}", request);
+        log.debug(aMarker, "The Request Details: {}", objectNode);
         String name = checkboxClassification.getName() + "_response";
         try (Response response = httpclient.newCall(request).execute()) {
             String responseBody = Objects.requireNonNull(response.body()).string();

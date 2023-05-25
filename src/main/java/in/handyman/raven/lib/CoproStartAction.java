@@ -64,13 +64,19 @@ public class CoproStartAction implements IActionExecution {
             .readTimeout(10, TimeUnit.MINUTES)
             .build();
     final ObjectNode objectNode = mapper.createObjectNode();
-    objectNode.put("processStartCommand", coproStart.getCommand());
-    objectNode.put("exportCommand",coproStart.getExportCommand());
+    String coproCommand = coproStart.getCommand();
+    String exportCommand = coproStart.getExportCommand();
+    objectNode.put("processStartCommand", coproCommand);
+    objectNode.put("exportCommand", exportCommand);
     objectNode.put("processUp","1");
-    log.info(aMarker, " Input variables id : {}", action.getActionId());
-    Request request = new Request.Builder().url(coproStart.getCoproServerUrl())
+
+    String coproServerUrl = coproStart.getCoproServerUrl();
+    Request request = new Request.Builder().url(coproServerUrl)
             .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-    log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n command : {} ", coproStart.getCoproServerUrl(), coproStart.getCommand());
+
+    if(log.isInfoEnabled()) {
+      log.info(aMarker, "Request has been build with the parameters \n coproUrl  {} ,coproCommand : {} exportCommand {} ", coproServerUrl,coproCommand,exportCommand);
+    }
     String name = coproStart.getName() + "_response";
     log.debug(aMarker, "The Request Details: {} ", request);
     try (Response response = httpclient.newCall(request).execute()) {
@@ -83,7 +89,7 @@ public class CoproStartAction implements IActionExecution {
                 .actionId(action.getActionId())
                 .rootPipelineId(action.getRootPipelineId())
                 .coproActionName(Optional.ofNullable(coproStart.getModuleName()).map(String::valueOf).orElse(null))
-                .command(Optional.ofNullable(coproStart.getCommand()).map(String::valueOf).orElse(null))
+                .command(Optional.ofNullable(coproCommand).map(String::valueOf).orElse(null))
                 .coproProcessId(Optional.ofNullable(responseObj.get("Pid")).map(String::valueOf).orElse(null))
                         .ram(Optional.ofNullable(responseObj.get("cpuUtilize")).map(String::valueOf).orElse(null))
                         .gpuRam(Optional.ofNullable(responseObj.get("gpuUtilize")).map(String::valueOf).orElse(null))

@@ -46,14 +46,18 @@ public class FileMergerAction implements IActionExecution {
     @Override
     public void execute() throws Exception {
         final OkHttpClient httpclient = InstanceUtil.createOkHttpClient();
-        ObjectNode inputJSON = (ObjectNode) mapper.readTree(fileMerger.getRequestBody());
+        String requestBody = fileMerger.getRequestBody();
+        ObjectNode inputJSON = (ObjectNode) mapper.readTree(requestBody);
 
-        inputJSON.put("outputDir", fileMerger.getOutputDir());
+        String outputDir = fileMerger.getOutputDir();
+        inputJSON.put("outputDir", outputDir);
         // BUILD A REQUEST
         Request request = new Request.Builder().url(URI)
                 .post(RequestBody.create(inputJSON.toString(), MediaTypeJSON)).build();
-        log.info(aMarker, "The request got it successfully the request body and output directory {} {}", fileMerger.getRequestBody()
-                , fileMerger.getOutputDir());
+
+        if(log.isInfoEnabled()){
+            log.info(aMarker, "The request got it successfully the copro url {} ,request body {} and output directory  {}", URI,requestBody,outputDir);
+        }
         try (Response response = httpclient.newCall(request).execute()) {
             String responseBody = Objects.requireNonNull(response.body()).string();
             String name = "file-merger-response";

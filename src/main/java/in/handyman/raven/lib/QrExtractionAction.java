@@ -130,8 +130,12 @@ public class QrExtractionAction implements IActionExecution {
 
       List<QrOutputEntity> qrOutputEntities = new ArrayList<>();
       final ObjectNode objectNode = mapper.createObjectNode();
-      objectNode.put("inputFilePath", entity.filePath);
-      log.info("input object node in the consumer process {}", objectNode);
+      String filePath = entity.filePath;
+      objectNode.put("inputFilePath", filePath);
+
+      if(log.isInfoEnabled()){
+        log.info("input object node in the consumer process  inputFilePath {}", filePath);
+      }
 
       Request request = new Request.Builder().url(endpoint).post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
       log.info("request in the copro consumer process {}", request);

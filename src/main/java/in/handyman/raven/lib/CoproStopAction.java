@@ -67,13 +67,18 @@ public class CoproStopAction implements IActionExecution {
             .readTimeout(10, TimeUnit.MINUTES)
             .build();
     final ObjectNode objectNode = mapper.createObjectNode();
-    objectNode.put("processName","gunicorn");
+    String gunicorn = "gunicorn";
+    objectNode.put("processName", gunicorn);
     log.info(aMarker, " Input variables id : {}", action.getActionId());
-    Request request = new Request.Builder().url(coproStop.getCoproServerUrl())
+    String coproServerUrl = coproStop.getCoproServerUrl();
+    Request request = new Request.Builder().url(coproServerUrl)
             .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-    log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n command : {} ", coproStop.getCoproServerUrl(), coproStop.getCommand());
+
     String name = coproStop.getName() + "_response";
-    log.debug(aMarker, "The Request Details: {} ", request);
+
+    if(log.isInfoEnabled()) {
+      log.info(aMarker, "Request has been build with the parameters \n URI : {} processName {} ", coproServerUrl,gunicorn);
+    }
     try (Response response = httpclient.newCall(request).execute()) {
       String responseBody = Objects.requireNonNull(response.body()).string();
       if (response.isSuccessful()) {

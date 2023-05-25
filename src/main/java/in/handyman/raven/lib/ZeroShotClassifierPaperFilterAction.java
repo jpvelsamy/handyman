@@ -130,15 +130,18 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
             Long actionId = action.getActionId();
             try {
 //                objectNode.put("truthEntity", entity.truthEntity);
-                objectNode.set("keysToFilter", mapper.readTree(entity.truthPlaceholder));
+                String truthPlaceholder = entity.getTruthPlaceholder();
+                objectNode.set("keysToFilter", mapper.readTree(truthPlaceholder));
                 objectNode.put("originId", originId);
                 objectNode.put("groupId", groupId);
                 objectNode.put("paperNo", paperNo);
-                log.info(aMarker, " Input variables id : {}", actionId);
+
                 Request request = new Request.Builder().url(endpoint)
                         .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-                log.debug(aMarker, "Request has been build with the parameters \n URI : {} \n page content : {} \n key-filters : {} ", endpoint, entity.getPageContent(), entity.getTruthPlaceholder());
-                log.debug(aMarker, "The Request Details: {}", request);
+                if(log.isInfoEnabled()) {
+                    log.info(aMarker, " Input variables id : {}", actionId);
+                    log.info(aMarker, "Request has been build with the parameters \n URI : {}, with truthPlaceHolder{},originId{},groupId{},paperNo{}", endpoint, truthPlaceholder, originId,groupId,paperNo);
+                }
                 coproAPIProcessor(entity, parentObj, request);
             } catch (JsonProcessingException e) {
                 log.error("error in the zero-shot classifier paper filter copro api call {}", e.toString());

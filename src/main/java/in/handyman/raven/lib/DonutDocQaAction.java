@@ -255,6 +255,7 @@ public class DonutDocQaAction implements IActionExecution {
                 .writeTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
                 .readTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
                 .build();
+        //TODO rename to copro url
         private final String node;
 
         public DonutApiCaller(final String node) {
@@ -268,6 +269,10 @@ public class DonutDocQaAction implements IActionExecution {
 //            objectNode.put("outputDir", outputDir);
             final Request request = new Request.Builder().url(node)
                     .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
+
+            if(log.isInfoEnabled()) {
+                log.info( "Request has been build with the parameters \n coproUrl  {} ,inputFilePath : {} ,attributes {} ",node,inputPath,questions );
+            }
             log.info("Request URL : {} Question List size {}", node, questions.size());
             try (Response response = httpclient.newCall(request).execute()) {
                 String responseBody = Objects.requireNonNull(response.body()).string();

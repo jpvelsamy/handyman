@@ -1050,6 +1050,26 @@ public interface RavenListener extends ParseTreeListener {
 	 */
 	void exitDonutImpiraQa(RavenParser.DonutImpiraQaContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link RavenParser#templateDetection}.
+	 * @param ctx the parse tree
+	 */
+	void enterTemplateDetection(RavenParser.TemplateDetectionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#templateDetection}.
+	 * @param ctx the parse tree
+	 */
+	void exitTemplateDetection(RavenParser.TemplateDetectionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RavenParser#trinityModel}.
+	 * @param ctx the parse tree
+	 */
+	void enterTrinityModel(RavenParser.TrinityModelContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#trinityModel}.
+	 * @param ctx the parse tree
+	 */
+	void exitTrinityModel(RavenParser.TrinityModelContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link RavenParser#json}.
 	 * @param ctx the parse tree
 	 */

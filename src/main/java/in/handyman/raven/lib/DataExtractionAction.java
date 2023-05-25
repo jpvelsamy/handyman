@@ -119,11 +119,14 @@ public class DataExtractionAction implements IActionExecution {
     public List<DataExtractionAction.DataExtractionOutputTable> process(URL endpoint, DataExtractionAction.DataExtractionInputTable entity) throws JsonProcessingException {
       List<DataExtractionAction.DataExtractionOutputTable> parentObj = new ArrayList<>();
       final ObjectNode objectNode = mapper.createObjectNode();
-      objectNode.put("inputFilePath", entity.filePath);
-      log.info(aMarker, " Input variables id : {}", action.getActionId());
+      String inputFilePath = entity.getFilePath();
+      objectNode.put("inputFilePath", inputFilePath);
       Request request = new Request.Builder().url(endpoint).post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-      log.debug(aMarker, "Request has been build with the parameters \n URI :  \n page content : \n key-filters :{}", request.body());
-      log.debug(aMarker, "The Request Details: {}", request);
+
+      if(log.isInfoEnabled()) {
+        log.info(aMarker, "Request has been build with the parameters \n URI : {}, with inputFilePath {} ", endpoint, inputFilePath);
+      }
+
       String originId = entity.getOriginId();
       Integer groupId = entity.getGroupId();
       try (Response response = httpclient.newCall(request).execute()) {

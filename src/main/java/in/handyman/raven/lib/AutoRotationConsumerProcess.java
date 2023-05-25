@@ -23,7 +23,7 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
     private final Logger log;
     private final Marker aMarker;
     private final ObjectMapper mapper = new ObjectMapper();
-    private static final MediaType MediaTypeJSON = MediaType
+    private static final MediaType MEDIA_TYPE_JSON = MediaType
             .parse("application/json; charset=utf-8");
     private final String outputDir;
 
@@ -52,14 +52,16 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
     public List<AutoRotationOutputTable> process(URL endpoint, AutoRotationInputTable entity) throws JsonProcessingException {
         List<AutoRotationOutputTable> parentObj = new ArrayList<>();
         final ObjectNode objectNode = mapper.createObjectNode();
-        objectNode.put("inputFilePath", entity.getFilePath());
+        String entityFilePath = entity.getFilePath();
+        objectNode.put("inputFilePath", entityFilePath);
         objectNode.put("outputDir", outputDir);
         log.info(aMarker, " Input variables id : {}", action.getActionId());
         Request request = new Request.Builder().url(endpoint)
-                .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-        log.debug(aMarker, "Request has been build with the parameters \n URI : {} ", endpoint);
-        log.debug(aMarker, "The Request Details: {}", request);
+                .post(RequestBody.create(objectNode.toString(), MEDIA_TYPE_JSON)).build();
 
+        if(log.isInfoEnabled()) {
+            log.info(aMarker, "Request has been build with the parameters \n URI : {}, with inputFilePath {} and outputDir {}", endpoint, entityFilePath, outputDir);
+        }
         Integer groupId = entity.getGroupId();
         Long processId = entity.getProcessId();
         String tenantId = entity.getTenantId();
@@ -93,7 +95,7 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
                     parentObj.add(
                             AutoRotationOutputTable
                                     .builder()
-                                    .processedFilePath(entity.getFilePath())
+                                    .processedFilePath(entityFilePath)
                                     .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                                     .groupId(groupId)
                                     .processId(processId)

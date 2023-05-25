@@ -130,7 +130,7 @@ public class CheckboxVqaAction implements IActionExecution {
 
       Request request = new Request.Builder().url(endpoint)
               .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-      log.debug(aMarker, "The Request Details: {}", request);
+      log.debug(aMarker, "The Request Details: {}", objectNode);
 
 
       String createdUserId = entity.getCreatedUserId();

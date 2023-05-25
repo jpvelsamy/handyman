@@ -138,12 +138,16 @@ public class PaperItemizerAction implements IActionExecution {
       log.info(aMarker,"coproProcessor consumer process started with endpoint {} and entity {}",endpoint,entity);
       List<PaperItemizerOutputTable> parentObj = new ArrayList<>();
       final ObjectNode objectNode = mapper.createObjectNode();
-      objectNode.put("inputFilePath", entity.filePath);
+      String inputFilePath = entity.getFilePath();
+      objectNode.put("inputFilePath", inputFilePath);
       objectNode.put("outputDir", outputDir);
       log.info(aMarker,"coproProcessor mapper object node {}",objectNode);
       Request request = new Request.Builder().url(endpoint)
               .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-      log.info(aMarker,"coproProcessor Request builder {}",request);
+
+      if(log.isInfoEnabled()) {
+        log.info(aMarker, "Request has been build with the parameters \n URI : {}, with inputFilePath {} and outputDir {}", endpoint, inputFilePath, outputDir);
+      }
       AtomicInteger atomicInteger = new AtomicInteger();
       String originId = entity.getOriginId();
       Integer groupId = entity.getGroupId();

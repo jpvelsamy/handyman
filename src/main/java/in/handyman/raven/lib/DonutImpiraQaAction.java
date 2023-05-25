@@ -269,7 +269,12 @@ public class DonutImpiraQaAction implements IActionExecution {
 //            objectNode.put("outputDir", outputDir);
       final Request request = new Request.Builder().url(node)
               .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
-      log.info("Request URL : {} Question List size {}", node, questions.size());
+
+      if(log.isInfoEnabled()){
+        log.info("1. input object node in the consumer process copro url {},   inputFilePath{} ,  attributes {}",node,inputPath,questions);
+        log.info("2. Request URL : {} Question List size {}", node, questions.size());
+
+      }
       try (Response response = httpclient.newCall(request).execute()) {
         String responseBody = Objects.requireNonNull(response.body()).string();
         if (response.isSuccessful()) {

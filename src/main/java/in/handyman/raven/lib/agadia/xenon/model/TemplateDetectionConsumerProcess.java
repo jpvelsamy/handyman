@@ -69,7 +69,7 @@ public class TemplateDetectionConsumerProcess  implements CoproProcessor.Consume
                 .post(requestBody)
                 .build();
 
-        log.info(aMarker, "Request object {} and request endpoint {}",request,endpoint);
+        log.info(aMarker, "Request object  endpoint {} and requestbody {}",endpoint, body);
 
         Long processId = entity.getProcessId();
         String templateId = entity.getTemplateId();

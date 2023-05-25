@@ -64,11 +64,14 @@ public class EocJsonGeneratorAction implements IActionExecution {
 
       String apiUrl = urlEncoder(URI + "api/v1/" + documentId + "/docdetaillineitem/" + eocId);
 
-      Request request = new Request.Builder().url(apiUrl)
-              .header("Authorization", "Bearer " + eocJsonGenerator.getAuthtoken()).build();
+        String authtoken = eocJsonGenerator.getAuthtoken();
+        Request request = new Request.Builder().url(apiUrl)
+              .header("Authorization", "Bearer " + authtoken).build();
 
       String name = eocJsonGenerator.getName();
-      log.info(aMarker, "The Request Details : {}", request);
+      if(log.isInfoEnabled()){
+          log.info(aMarker, "The Request Details api url {} authToken {} ", apiUrl,authtoken);
+      }
       try (Response response = httpclient.newCall(request).execute()) {
         String responseBody = Objects.requireNonNull(response.body()).string();
         if (response.isSuccessful()) {

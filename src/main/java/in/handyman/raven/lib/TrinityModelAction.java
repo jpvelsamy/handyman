@@ -154,8 +154,11 @@ public class TrinityModelAction implements IActionExecution {
                 final List<String> questions = donutLineItem.getQuestions();
                 final String node = nodes.get(counter.incrementAndGet() % nodeSize);
 
-                log.info(aMarker, "preparing {} for rest api call", questions.size());
-                log.info(aMarker, "info's are {}, {}, {}", filePath, paperType, questions);
+                if(log.isInfoEnabled()){
+                    log.info(aMarker, "1. preparing {} for rest api call", questions.size());
+                    log.info(aMarker, "2. info's are {}, {}, {}", filePath, paperType, questions);
+                }
+
                 final TrinityModelAction.TrinityModelResultLineItem trinityModelResultLineItem = new TrinityModelAction.TrinityModelApiCaller(node).compute(filePath, paperType, questions);
 
                 log.info(aMarker, "completed {}", trinityModelResultLineItem.attributes.size());

@@ -62,11 +62,15 @@ public class AuthTokenAction implements IActionExecution {
     log.info(aMarker, " Input variables id : {}", action.getActionId());
 
     // build a request
-    Request request = new Request.Builder().url(URI + "api/v1/auth")
+    String gatekeeperUrl = URI + "api/v1/auth";
+    Request request = new Request.Builder().url(gatekeeperUrl)
             .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
 
     String name = authToken.getName();
-    log.info(aMarker, "The Request Details : {}", request);
+    if(log.isInfoEnabled()){
+      log.info(aMarker, "The Request Details url {} , appID {} ", gatekeeperUrl,appId);
+    }
+
 
     try (Response response = httpclient.newCall(request).execute()) {
       assert response.body() != null;
