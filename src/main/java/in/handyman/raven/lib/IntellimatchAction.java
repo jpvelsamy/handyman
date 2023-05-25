@@ -88,7 +88,7 @@ public class IntellimatchAction implements IActionExecution {
             List<MatchResultSet> resultQueue = new ArrayList<>();
             inputResult.forEach(result -> {
                 String actualValue = result.getActualValue();
-                if (actualValue != null) {
+                if (actualValue != null && !actualValue.isEmpty() && !actualValue.isBlank()) {
                     final ObjectNode objectNode = MAPPER.createObjectNode();
                     String extractedValue = result.getExtractedValue();
                     List<String> comparableSentence = Collections.singletonList(extractedValue);
