@@ -152,7 +152,9 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
                                 final int index = nodeCount.incrementAndGet() % nodeSize;//Round robin
                                 final List<O> results = new ArrayList<>();
                                 try {
-                                    if(nodes.size() < index) {
+                                    int nodesSize = nodes.size();
+                                    logger.info("Nodes size {} and index value {}", nodesSize,index);
+                                    if(nodesSize != index) {
                                         final List<O> list = callable.process(nodes.get(index), take);
                                         results.addAll(list);
                                     }
