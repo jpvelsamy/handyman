@@ -152,8 +152,10 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
                                 final int index = nodeCount.incrementAndGet() % nodeSize;//Round robin
                                 final List<O> results = new ArrayList<>();
                                 try {
-                                    final List<O> list = callable.process(nodes.get(index), take);
-                                    results.addAll(list);
+                                    if(nodes.size() < index) {
+                                        final List<O> list = callable.process(nodes.get(index), take);
+                                        results.addAll(list);
+                                    }
                                 } catch (Exception e) {
                                     logger.error("Error in callable process in consumer", e);
                                 }

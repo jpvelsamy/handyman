@@ -157,7 +157,8 @@ public class PaperItemizerAction implements IActionExecution {
       Long rootPipelineId = entity.rootPipelineId;
       try(Response response=httpclient.newCall(request).execute()){
 
-        log.info(aMarker,"coproProcessor consumer process response  {}",response);
+        if(log.isInfoEnabled())
+          log.info(aMarker,"coproProcessor consumer process response with status{}, and message as {}, ", response.isSuccessful(), response.message());
         if (response.isSuccessful()) {
           log.info(aMarker,"coproProcessor consumer process response status {}",response.message());
           String responseParse = Objects.requireNonNull(response.body()).string();
