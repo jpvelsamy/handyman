@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class TemplateDetectionConsumerProcess  implements CoproProcessor.ConsumerProcess<TemplateDetectionInputTable,TemplateDetectionOutputTable> {
+public class TemplateDetectionConsumerProcess implements CoproProcessor.ConsumerProcess<TemplateDetectionInputTable, TemplateDetectionOutputTable> {
 
     private final Logger log;
     private final Marker aMarker;
@@ -30,16 +30,16 @@ public class TemplateDetectionConsumerProcess  implements CoproProcessor.Consume
     public final ActionExecutionAudit action;
     private final OkHttpClient httpclient;
     private final TemplateDetectionAction aAction;
-    private final String STAGE_NAME="TEMPLATE_DETECTION";
+    private final String STAGE_NAME = "TEMPLATE_DETECTION";
 
     private final int timeOut;
 
-    public TemplateDetectionConsumerProcess(final Logger log, final Marker aMarker, ActionExecutionAudit action,TemplateDetectionAction aAction) {
+    public TemplateDetectionConsumerProcess(final Logger log, final Marker aMarker, ActionExecutionAudit action, TemplateDetectionAction aAction) {
         this.log = log;
         this.aMarker = aMarker;
         this.action = action;
         this.aAction = aAction;
-        this.timeOut  = aAction.getTimeOut();
+        this.timeOut = aAction.getTimeOut();
         this.httpclient = new OkHttpClient.Builder()
                 .connectTimeout(this.timeOut, TimeUnit.MINUTES)
 
@@ -53,23 +53,23 @@ public class TemplateDetectionConsumerProcess  implements CoproProcessor.Consume
     public List<TemplateDetectionOutputTable> process(URL endpoint, TemplateDetectionInputTable entity) throws Exception {
 
         List<TemplateDetectionOutputTable> outputObjectList = new ArrayList<>();
-        List<String>  attributes = List.of(entity.getQuestions().split(","));
-       String inputFilePath= entity.getFilePath();
-        TemplateDetectionRequest templateDetectionRequest=new TemplateDetectionRequest();
+        List<String> attributes = List.of(entity.getQuestions().split(","));
+        String inputFilePath = entity.getFilePath();
+        TemplateDetectionRequest templateDetectionRequest = new TemplateDetectionRequest();
         templateDetectionRequest.setAttributes(attributes);
         templateDetectionRequest.setInputFilePath(inputFilePath);
 
-        log.info(aMarker,"Input request object for template detection filePath is {} and questions size {}", inputFilePath,attributes.size());
+        log.info(aMarker, "Input request object for template detection filePath is {} and questions size {}", inputFilePath, attributes.size());
 
 
         final String body = mapper.writeValueAsString(templateDetectionRequest);
         RequestBody requestBody = RequestBody.create(body, MediaTypeJSON);
-        Request request=new Request.Builder()
+        Request request = new Request.Builder()
                 .url(endpoint)
                 .post(requestBody)
                 .build();
 
-        log.info(aMarker, "Request object  endpoint {} and requestbody {}",endpoint, body);
+        log.info(aMarker, "Request object  endpoint {} and requestbody {}", endpoint, body);
 
         Long processId = entity.getProcessId();
         String templateId = entity.getTemplateId();
@@ -79,17 +79,19 @@ public class TemplateDetectionConsumerProcess  implements CoproProcessor.Consume
         Integer groupId = entity.getGroupId();
         Long rootPipelineId = entity.getRootPipelineId();
 
-        try(Response response=httpclient.newCall(request).execute()){
+        try (Response response = httpclient.newCall(request).execute()) {
 
-                if(response.isSuccessful()){
-                        TemplateDetectionResponse templateDetectionResponse=mapper.readValue(response.body().string(), new TypeReference<>() {
-                        });
-                    Integer imageWidth = templateDetectionResponse.getImageWidth();
-                    Integer imageHeight = templateDetectionResponse.getImageHeight();
-                    Integer imageDPI = templateDetectionResponse.getImageDPI();
-                    String extractedImageUnit = templateDetectionResponse.getExtractedImageUnit();
+            Timestamp createdOn = Timestamp.valueOf(LocalDateTime.now());
+            if (response.isSuccessful()) {
+                TemplateDetectionResponse templateDetectionResponse = mapper.readValue(response.body().string(), new TypeReference<>() {
+                });
+                Integer imageWidth = templateDetectionResponse.getImageWidth();
+                Integer imageHeight = templateDetectionResponse.getImageHeight();
+                Integer imageDPI = templateDetectionResponse.getImageDPI();
+                String extractedImageUnit = templateDetectionResponse.getExtractedImageUnit();
 
-                    templateDetectionResponse.getAttributes().forEach(attribute ->{
+                if (!templateDetectionResponse.getAttributes().isEmpty()) {
+                    templateDetectionResponse.getAttributes().forEach(attribute -> {
 
                         String string = attribute.getBboxes().toString();
                         String question = attribute.getQuestion();
@@ -112,33 +114,54 @@ public class TemplateDetectionConsumerProcess  implements CoproProcessor.Consume
                                         .groupId(groupId)
                                         .originId(originId)
                                         .paperNo(paperNo)
-                                        .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                                        .createdOn(createdOn)
                                         .status(ExecutionStatus.COMPLETED.toString())
                                         .stage(STAGE_NAME)
-                                        .message("Template detection completed for group_id "+groupId+"and origin_id  "+originId)
+                                        .message("Template detection completed for group_id " + groupId + "and origin_id  " + originId)
                                         .processedFilePath(inputFilePath).build()
-                                );
-                            });
-
-
-                }else {
-                    outputObjectList.add( TemplateDetectionOutputTable.builder()
-                            .processId(processId)
-                            .tenantId(tenantId)
-                            .templateId(templateId)
-                            .rootPipelineId(rootPipelineId)
-                            .groupId(groupId)
-                            .originId(originId)
-                            .paperNo(paperNo)
-                            .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                            .status(ExecutionStatus.FAILED.toString())
-                            .stage(STAGE_NAME)
-                            .message("Template detection failed for group_id "+groupId+"and origin_id  "+originId  +" and Exception" )
-                            .processedFilePath(inputFilePath)
-                            .build()
+                        );
+                    });
+                } else {
+                    outputObjectList.add(
+                            TemplateDetectionOutputTable.builder()
+                                    .processId(processId)
+                                    .tenantId(tenantId)
+                                    .templateId(templateId)
+                                    .imageWidth(imageWidth)
+                                    .imageHeight(imageHeight)
+                                    .imageDPI(imageDPI)
+                                    .extractedImageUnit(extractedImageUnit)
+                                    .rootPipelineId(rootPipelineId)
+                                    .groupId(groupId)
+                                    .originId(originId)
+                                    .paperNo(paperNo)
+                                    .createdOn(createdOn)
+                                    .status(ExecutionStatus.COMPLETED.toString())
+                                    .stage(STAGE_NAME)
+                                    .message("Template detection completed and response is empty for group_id " + groupId + "and origin_id  " + originId)
+                                    .processedFilePath(inputFilePath)
+                                    .build()
                     );
                 }
-        }catch (Exception e){
+
+            } else {
+                outputObjectList.add(TemplateDetectionOutputTable.builder()
+                        .processId(processId)
+                        .tenantId(tenantId)
+                        .templateId(templateId)
+                        .rootPipelineId(rootPipelineId)
+                        .groupId(groupId)
+                        .originId(originId)
+                        .paperNo(paperNo)
+                        .createdOn(createdOn)
+                        .status(ExecutionStatus.FAILED.toString())
+                        .stage(STAGE_NAME)
+                        .message("Template detection failed for group_id " + groupId + "and origin_id  " + originId + " and Exception")
+                        .processedFilePath(inputFilePath)
+                        .build()
+                );
+            }
+        } catch (Exception e) {
             log.error(aMarker, "The Exception occurred in getting response {}", ExceptionUtil.toString(e));
             HandymanException handymanException = new HandymanException(e);
             HandymanException.insertException("Template detection consumer failed for batch/group " + groupId,
