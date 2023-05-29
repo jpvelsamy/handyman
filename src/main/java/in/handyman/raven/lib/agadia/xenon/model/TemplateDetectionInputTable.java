@@ -20,8 +20,15 @@ public class TemplateDetectionInputTable implements CoproProcessor.Entity {
     private String templateId;
     private Long processId;
     private Long rootPipelineId;
-    private String questions;
+    private List<String> questions;
 
+    public List<String> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<String> questions) {
+        this.questions = questions;
+    }
 
     public String getOriginId() {
         return originId;
@@ -85,14 +92,6 @@ public class TemplateDetectionInputTable implements CoproProcessor.Entity {
 
     public void setRootPipelineId(Long rootPipelineId) {
         this.rootPipelineId = rootPipelineId;
-    }
-
-    public String getQuestions() {
-        return questions;
-    }
-
-    public void setQuestions(String questions) {
-        this.questions = questions;
     }
 
     @Override

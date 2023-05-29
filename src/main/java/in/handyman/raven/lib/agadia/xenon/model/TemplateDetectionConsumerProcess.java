@@ -53,7 +53,7 @@ public class TemplateDetectionConsumerProcess implements CoproProcessor.Consumer
     public List<TemplateDetectionOutputTable> process(URL endpoint, TemplateDetectionInputTable entity) throws Exception {
 
         List<TemplateDetectionOutputTable> outputObjectList = new ArrayList<>();
-        List<String> attributes = List.of(entity.getQuestions().split(","));
+        List<String> attributes = entity.getQuestions();
         String inputFilePath = entity.getFilePath();
         TemplateDetectionRequest templateDetectionRequest = new TemplateDetectionRequest();
         templateDetectionRequest.setAttributes(attributes);
