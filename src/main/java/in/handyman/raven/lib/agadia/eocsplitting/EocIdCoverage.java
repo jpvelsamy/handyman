@@ -41,27 +41,32 @@ public class EocIdCoverage {
 
 
                 for (var eocGroupingEocIdRequestInfo : eocIdRequestInfo) {
-                    List<Integer> paperList = new ArrayList<>();
-                    Integer startNoInt = (Integer) Optional.ofNullable(eocGroupingEocIdRequestInfo.get("start_no")).orElse(0);
                     String answerString = Optional.ofNullable(eocGroupingEocIdRequestInfo.get("answer")).map(String::valueOf).orElse("");
-                    int totalPageInt = Integer.parseInt(episodeOfCoverage.getTotalPages());
-                    int endPoint = 0;
+                    if(!answerString.isEmpty() && !answerString.isBlank()){
+                        List<Integer> paperList = new ArrayList<>();
 
-                    try {
-                        endPoint = breakPointsList.get(breakPointsList.indexOf(startNoInt) + 1);
-                    } catch (Exception e) {
-                        endPoint = totalPageInt + 1;
-                    }
-                    if (breakPointsList.indexOf(startNoInt) == 0 ) {
-                        startNoInt = 1;
+                        Integer startNoInt = (Integer) Optional.ofNullable(eocGroupingEocIdRequestInfo.get("start_no")).orElse(0);
+
+                        int totalPageInt = Integer.parseInt(episodeOfCoverage.getTotalPages());
+                        int endPoint = 0;
+
+                        try {
+                            endPoint = breakPointsList.get(breakPointsList.indexOf(startNoInt) + 1);
+                        } catch (Exception e) {
+                            endPoint = totalPageInt + 1;
+                        }
+                        if (breakPointsList.indexOf(startNoInt) == 0 ) {
+                            startNoInt = 1;
+                        }
+
+                        for (int i = startNoInt; i < endPoint; i++) {
+                            paperList.add(i);
+                        }
+                        //thic code will save the result as a map with string as key and list as value
+                        answerString =answerString.replaceAll("[-/#%;?\\\\]","_");
+                        eocObjectMap.put(answerString, paperList);
                     }
 
-                    for (int i = startNoInt; i < endPoint; i++) {
-                        paperList.add(i);
-                    }
-                    //thic code will save the result as a map with string as key and list as value
-                    answerString =answerString.replaceAll("[-/#%;?\\\\]","_");
-                    eocObjectMap.put(answerString, paperList);
                 }
             }
         }
