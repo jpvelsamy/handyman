@@ -58,17 +58,20 @@ public class FileMergerAction implements IActionExecution {
         if(log.isInfoEnabled()){
             log.info(aMarker, "The request got it successfully the copro url {} ,request body {} and output directory  {}", URI,requestBody,outputDir);
         }
+        String name = "file-merger-response";
         try (Response response = httpclient.newCall(request).execute()) {
             String responseBody = Objects.requireNonNull(response.body()).string();
-            String name = "file-merger-response";
             if (response.isSuccessful()) {
                 action.getContext().put(name, mapper.readTree(responseBody).toString());
+                action.getContext().put(name.concat(".success"), "true");
                 log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
             } else {
+                action.getContext().put(name.concat(".error"), "true");
                 log.error(aMarker, "The Failure Response  {} {}", name, responseBody);
             }
         } catch (Exception e) {
-            log.info(aMarker, "The Exception occurred ", e);
+            action.getContext().put(name.concat(".error"), "true");
+            log.error(aMarker, "The Exception occurred ", e);
             throw new HandymanException("Failed to execute", e, action);
         }
     }
