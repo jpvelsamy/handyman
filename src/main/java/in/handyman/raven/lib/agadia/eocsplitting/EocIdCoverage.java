@@ -28,7 +28,7 @@ public class EocIdCoverage {
         Map<String,List<Integer>> eocObjectMap=new HashMap<>();
 
         if(Objects.equals(sorItem,"patient_eoc")){
-            String inputQuery=episodeOfCoverage.getValue().replace(";"," ").concat("AND sor_item_name IN ('patient_eoc' ) group by predicted_value,paper_no");
+            String inputQuery=episodeOfCoverage.getValue().replace(";"," ").concat("AND sor_item_name IN ('patient_eoc' ) group by predicted_value");
             List<Map<String, Object>> eocIdRequestInfo=queryExecutor(jdbi,sorItem,inputQuery);
             if (!eocIdRequestInfo.isEmpty()) {
 
