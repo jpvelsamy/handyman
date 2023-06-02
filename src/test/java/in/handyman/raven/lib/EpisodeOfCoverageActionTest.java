@@ -31,6 +31,9 @@ class EpisodeOfCoverageActionTest {
                 .qrInput(" SELECT '${gen_group_id.group_id}' AS group_id,extracted_value AS answer, min(paper_no) AS start_no, max(paper_no) AS end_no,'${file_count.total_page}' AS total_pages\n" +
                         "                           FROM qr_extraction.qr_extraction_result_138971395735140128\n" +
                         "                           WHERE origin_id='INT-1' AND qr_format='DATAMATRIX' group by extracted_value")
+                .pndValue("     SELECT '${group_id}' AS group_id,string_agg(predicted_value,'-') AS answer,min(paper_no) AS start_no,max(paper_no) AS end_no ,'${file_count.total_page}' AS total_pages\n" +
+                        "                            FROM score.aggregation_evaluator\n" +
+                        "                            WHERE origin_id='${origin_id}'  and predicted_value !='' and predicted_value is not null;")
                 .build();
 
         final ActionExecutionAudit action = ActionExecutionAudit.builder()
