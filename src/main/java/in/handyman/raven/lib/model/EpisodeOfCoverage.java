@@ -44,5 +44,7 @@ public class EpisodeOfCoverage implements IActionContext {
 
   private String value;
 
+  private String pndValue;
+
   private Boolean condition = true;
 }
