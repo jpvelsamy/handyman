@@ -684,7 +684,8 @@ episodeOfCoverage:
   'patient-eoc-count' eocIdCount=STRING
   'input-file-path' '{' filepath=STRING '}'
   'qr-grouping' '{' qrInput=STRING '}'
-  'eoc-grouping' '{' value=STRING '}' ('on-condition' condition=expression)* ;
+  'eoc-grouping' '{' value=STRING '}'
+  'pnd-grouping' '{' pndValue=STRING '}'  ('on-condition' condition=expression)* ;
 
 userRegistration:
         'userRegistration' 'as' name=STRING
