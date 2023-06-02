@@ -14,6 +14,7 @@ import in.handyman.raven.lib.model.Intellimatch;
 import java.lang.Exception;
 import java.lang.Object;
 import java.lang.Override;
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -154,13 +155,13 @@ public class IntellimatchAction implements IActionExecution {
                         jdbi.useTransaction(handle -> {
                             try {
                                 Update update = handle.createUpdate(" INSERT INTO " + intellimatch.getMatchResult() +
-                                        " ( file_name, created_on, actual_value, extracted_value, similarity, levenshtein, perfect_match, text_match, intelli_match)" +
-                                        " VALUES( :fileName, NOW(), :actualValue, :extractedValue,  " +
-                                        " similarity(lower(:actualValue),:extractedValue), " +
+                                        " ( file_name, created_on,origin_id,group_id,root_pipeline_id,actual_value,extracted_value, similarity, levenshtein, perfect_match, text_match, intelli_match)" +
+                                        " VALUES(:fileName,:createdOn,:originId,:groupId,:rootpipelineId,:actualValue,:extractedValue," +
+                                        " similarity(lower(:actualValue),lower(:extractedValue)), " +
                                         " levenshtein(:actualValue,:extractedValue), " +
-                                        " (CASE WHEN lower(:actualValue)=:extractedValue THEN 'yes' ELSE 'no' end ), " +
-                                        " (CASE WHEN lower(:actualValue) like concat('%',:extractedValue,'%') THEN 'yes'" +
-                                        "                       WHEN lower(:actualValue) = :extractedValue THEN 'yes' ELSE 'no' end)," +
+                                        " (CASE WHEN lower(:actualValue)=lower(:extractedValue) THEN 'yes' ELSE 'no' end ), " +
+                                        " (CASE WHEN lower(:actualValue) like concat('%',lower(:extractedValue),'%') THEN 'yes'" +
+                                        "                       WHEN lower(:actualValue) = lower(:extractedValue) THEN 'yes' ELSE 'no' end)," +
                                         "  :intelliMatch )");
                                 Update bindBean = update.bindBean(insert);
                                 bindBean.execute();
@@ -233,6 +234,10 @@ public class IntellimatchAction implements IActionExecution {
     public static class MatchResultSet {
 
         String fileName;
+        String originId;
+        private Timestamp createdOn;
+        Integer groupId;
+        Integer rootpipelineId;
         String actualValue;
         String extractedValue;
         double similarity;
