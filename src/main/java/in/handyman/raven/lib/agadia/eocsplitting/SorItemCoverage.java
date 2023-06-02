@@ -35,7 +35,7 @@ public class SorItemCoverage {
             if(Objects.equals("patient_name",sorItem)){
                 inputSorItem=" AND sor_item_name IN ('patient_name' , 'patient_dob')  group by paper_no;";
             }
-            String inputQuery=episodeOfCoverage.getValue().replace(";"," ").concat(inputSorItem);
+            String inputQuery=episodeOfCoverage.getPndValue().replace(";"," ").concat(inputSorItem);
             List<Map<String, Object>> eocGroupingMemberItemRequestInfos = queryExecutor(jdbi,sorItem,inputQuery);
 
             List<Integer> breakPointsList = new ArrayList<>();
