@@ -58,7 +58,7 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
         this.executorService = Executors.newWorkStealingPool();
         this.outputTargetClass = outputTargetClass;
         this.jdbi = jdbi;
-        this.logger = log;
+        this.logger = logger;
         this.actionExecutionAudit = actionExecutionAudit;
         this.nodeSize = coproNodes.size();
         final LocalDateTime startTime = LocalDateTime.now();
