@@ -33,38 +33,47 @@ import java.util.Map;
         actionName = "EpisodeOfCoverage"
 )
 public class EpisodeOfCoverageAction implements IActionExecution {
-  private final ActionExecutionAudit action;
+    private final ActionExecutionAudit action;
 
-  private final Logger log;
-  public static Map<String, List<Integer>> qrObjectMap = new HashMap<>();
-  public static Boolean hasMember = false;
+    private final Logger log;
+    public static Map<String, List<Integer>> qrObjectMap = new HashMap<>();
+    public static Boolean hasMember = false;
 
-  private final EpisodeOfCoverage episodeOfCoverage;
+    private final EpisodeOfCoverage episodeOfCoverage;
 
-  private final Marker aMarker;
+    private final Marker aMarker;
 
-  public EpisodeOfCoverageAction(final ActionExecutionAudit action, final Logger log,
-                                 final Object episodeOfCoverage) {
-    this.episodeOfCoverage = (EpisodeOfCoverage) episodeOfCoverage;
-    this.action = action;
-    this.log = log;
-    this.aMarker = MarkerFactory.getMarker(" EpisodeOfCoverage:" + this.episodeOfCoverage.getName());
-  }
+    public EpisodeOfCoverageAction(final ActionExecutionAudit action, final Logger log,
+                                   final Object episodeOfCoverage) {
+        this.episodeOfCoverage = (EpisodeOfCoverage) episodeOfCoverage;
+        this.action = action;
+        this.log = log;
+        this.aMarker = MarkerFactory.getMarker(" EpisodeOfCoverage:" + this.episodeOfCoverage.getName());
+    }
 
-  @Override
-  public void execute() throws Exception {
+    @Override
+    public void execute() throws Exception {
 
-    try {
-      log.info(aMarker, "Episode of coverage Action for {} with group by eoc-id has started" , episodeOfCoverage.getName());
-      final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(episodeOfCoverage.getResourceConn());
-      if (Integer.parseInt(episodeOfCoverage.getEocIdCount()) > 0) {
-        log.info("patient instance check for Eoc id in aggregation");
-        EocIdCoverage eocIdCoverage = new EocIdCoverage(log, episodeOfCoverage, aMarker, action);
-        Map<String, List<Integer>> sorIdPageNumbers = eocIdCoverage.SplitByEocId(jdbi, "patient_eoc");
-        OutputQueryExecutor(jdbi, "EID", sorIdPageNumbers);
-        log.info("patient instance checked for Eoc id in aggregation and the output result is {}", sorIdPageNumbers);
+        try {
+            String name = episodeOfCoverage.getName();
+            String eocIdCount = episodeOfCoverage.getEocIdCount();
+            log.info(aMarker, "Episode of coverage Action for {} with group by eoc-id has started name {} eoc_id_count {} ", name, eocIdCount);
+            final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(episodeOfCoverage.getResourceConn());
+            if (Integer.parseInt(eocIdCount) > 0) {
+                executeEocIdCount(eocIdCount, jdbi);
 
-      } else if (Integer.parseInt(episodeOfCoverage.getEocIdCount()) <= 0) {
+            } else {
+                executeNonEocId(jdbi);
+            }
+
+        } catch (Exception e) {
+            log.error(aMarker, "Episode of coverage Action for {} with group by eoc-id has failed for {}", episodeOfCoverage.getName(), ExceptionUtil.toString(e));
+            throw new HandymanException("Error in sor grouping", e, action);
+        }
+
+    }
+
+    private void executeNonEocId(Jdbi jdbi) throws InterruptedException {
         log.info("patient instance extract QR code from source of truth table");
         QrCodeCoverage qrCodeCoverage = new QrCodeCoverage(log, episodeOfCoverage, aMarker, action);
         Map<String, List<Integer>> qrPagenumbers = qrCodeCoverage.splitByQrcode(jdbi, "qr_code");
@@ -73,89 +82,104 @@ public class EpisodeOfCoverageAction implements IActionExecution {
         log.info("patient instance checked for Qrcode from source of truth and the output result is {}", qrPagenumbers);
 
         if (qrPagenumbers.isEmpty()) {
-          log.info("patient instance check for member_id from aggregation");
-          SorItemCoverage sorItemMemberIdCoverage = new SorItemCoverage(log, episodeOfCoverage, aMarker, action);
-          Map<String, List<Integer>> patientMemberPageNumbers = sorItemMemberIdCoverage.splitBySorItem(jdbi, "patient_member_id");
-          OutputQueryExecutor(jdbi, "PID", patientMemberPageNumbers);
-          log.info("patient instance check for member_id from aggregation and the output result is {}", patientMemberPageNumbers);
+            Map<String, List<Integer>> patientMemberPageNumbers = executeMemberIdGrouping(jdbi);
 
-          if (patientMemberPageNumbers.isEmpty()) {
-            log.info("patient instance check for patient_name and patient_dob from aggregation");
-            SorItemCoverage sorItemPatientNameCoverage = new SorItemCoverage(log, episodeOfCoverage, aMarker, action);
-            Map<String, List<Integer>> patientNamePageNumbers = sorItemPatientNameCoverage.splitBySorItem(jdbi, "patient_name");
-            OutputQueryExecutor(jdbi, "PND", patientNamePageNumbers);
-            log.info("patient instance checked for patient_name and patient_dob from aggregation and the output result is {}", patientNamePageNumbers);
+            if (patientMemberPageNumbers.isEmpty()) {
+                Map<String, List<Integer>> patientNamePageNumbers = executePatientnameGrouping(jdbi);
 
-            if(patientNamePageNumbers.isEmpty()){
-              log.info("patient instance check for origin id from aggregation");
-              OriginCoverage originCoverage = new OriginCoverage(log, episodeOfCoverage, aMarker, action);
-              Map<String, List<Integer>> originIdPageNumbers = originCoverage.aggregateByOrigin(jdbi, episodeOfCoverage.getOriginId()) ;
-              OutputQueryExecutor(jdbi, "NID", originIdPageNumbers);
-              log.info("patient instance checked for no id from aggregation and the output result is {}", originIdPageNumbers);
+                if (patientNamePageNumbers.isEmpty()) {
+                    executePNDGrouping(jdbi);
+                }
             }
-          }
 
         }
-      }
-
-    } catch (Exception e) {
-      log.error(aMarker, "Episode of coverage Action for {} with group by eoc-id has failed for {}" , episodeOfCoverage.getName(), ExceptionUtil.toString(e));
-      throw new HandymanException("Error in sor grouping", e, action);
     }
 
-  }
+    private void executePNDGrouping(Jdbi jdbi) {
+        log.info("patient instance check for origin id from aggregation");
+        OriginCoverage originCoverage = new OriginCoverage(log, episodeOfCoverage, aMarker, action);
+        Map<String, List<Integer>> originIdPageNumbers = originCoverage.aggregateByOrigin(jdbi, episodeOfCoverage.getOriginId());
+        OutputQueryExecutor(jdbi, "NID", originIdPageNumbers);
+        log.info("patient instance checked for no id from aggregation and the output result is {}", originIdPageNumbers);
+    }
 
-  @Override
-  public boolean executeIf() throws Exception {
-    return episodeOfCoverage.getCondition();
-  }
+    private Map<String, List<Integer>> executePatientnameGrouping(Jdbi jdbi) {
+        log.info("patient instance check for patient_name and patient_dob from aggregation");
+        SorItemCoverage sorItemPatientNameCoverage = new SorItemCoverage(log, episodeOfCoverage, aMarker, action);
+        Map<String, List<Integer>> patientNamePageNumbers = sorItemPatientNameCoverage.splitBySorItem(jdbi, "patient_name");
+        OutputQueryExecutor(jdbi, "PND", patientNamePageNumbers);
+        log.info("patient instance checked for patient_name and patient_dob from aggregation and the output result is {}", patientNamePageNumbers);
+        return patientNamePageNumbers;
+    }
+
+    private Map<String, List<Integer>> executeMemberIdGrouping(Jdbi jdbi) {
+        log.info("patient instance check for member_id from aggregation");
+        SorItemCoverage sorItemMemberIdCoverage = new SorItemCoverage(log, episodeOfCoverage, aMarker, action);
+        Map<String, List<Integer>> patientMemberPageNumbers = sorItemMemberIdCoverage.splitBySorItem(jdbi, "patient_member_id");
+        OutputQueryExecutor(jdbi, "PID", patientMemberPageNumbers);
+        log.info("patient instance check for member_id from aggregation and the output result is {}", patientMemberPageNumbers);
+        return patientMemberPageNumbers;
+    }
+
+    private void executeEocIdCount(String eocIdCount, Jdbi jdbi) {
+        log.info("patient instance check for Eoc id in aggregation count {}", eocIdCount);
+        EocIdCoverage eocIdCoverage = new EocIdCoverage(log, episodeOfCoverage, aMarker, action);
+        Map<String, List<Integer>> sorIdPageNumbers = eocIdCoverage.SplitByEocId(jdbi, "patient_eoc");
+        OutputQueryExecutor(jdbi, "EID", sorIdPageNumbers);
+        log.info("patient instance checked for Eoc id in aggregation and the output result is {}", sorIdPageNumbers);
+    }
+
+    @Override
+    public boolean executeIf() throws Exception {
+        return episodeOfCoverage.getCondition();
+    }
 
 
-  public void OutputQueryExecutor(Jdbi jdbi, String sorItem, Map<String, List<Integer>> stringListMap) {
+    public void OutputQueryExecutor(Jdbi jdbi, String sorItem, Map<String, List<Integer>> stringListMap) {
 
-    stringListMap.forEach((s, integers) -> {
-      for (Integer integer : integers) {
-        CoverageEntity coverageEntity = CoverageEntity.builder()
-                .paperNo(integer)
-                .pahubId(s)
-                .originId(episodeOfCoverage.getOriginId())
-                .groupId(Integer.valueOf(episodeOfCoverage.getGroupId()))
-                .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                .sourceOfPahub(sorItem)
-                .build();
-        try {
-          jdbi.useTransaction(handle -> {
-            handle.createUpdate("INSERT INTO " + episodeOfCoverage.getOutputTable() +
-                            "(pahub_id, origin_id, source_of_pahub,group_id,created_on, paper_no,status,stage,message)" +
-                            "VALUES (:pahubId , :originId, :sourceOfPahub ,:groupId,:createdOn, :paperNo, 'COMPLETED', 'SOR_GROUPING', 'sor grouping completed')")
-                    .bindBean(coverageEntity).execute();
-          });
-          log.info(aMarker, "Completed insert for the patient instance {}", coverageEntity);
+        stringListMap.forEach((s, integers) -> {
+            for (Integer integer : integers) {
+                CoverageEntity coverageEntity = CoverageEntity.builder()
+                        .paperNo(integer)
+                        .pahubId(s)
+                        .originId(episodeOfCoverage.getOriginId())
+                        .groupId(Integer.valueOf(episodeOfCoverage.getGroupId()))
+                        .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                        .sourceOfPahub(sorItem)
+                        .build();
+                try {
+                    jdbi.useTransaction(handle -> {
+                        handle.createUpdate("INSERT INTO " + episodeOfCoverage.getOutputTable() +
+                                        "(pahub_id, origin_id, source_of_pahub,group_id,created_on, paper_no,status,stage,message)" +
+                                        "VALUES (:pahubId , :originId, :sourceOfPahub ,:groupId,:createdOn, :paperNo, 'COMPLETED', 'SOR_GROUPING', 'sor grouping completed')")
+                                .bindBean(coverageEntity).execute();
+                    });
+                    log.info(aMarker, "Completed insert for the patient instance {}", coverageEntity);
 
-        } catch (Exception e) {
-          log.error(aMarker, "Failed in executed formatted query {} for this sor item {}", e, sorItem);
-          throw new HandymanException("Failed in executed formatted query {} for this sor item {}", e, action);
-        }
-      }
-    });
-  }
+                } catch (Exception e) {
+                    log.error(aMarker, "Failed in executed formatted query {} for this sor item {}", e, sorItem);
+                    throw new HandymanException("Failed in executed formatted query {} for this sor item {}", e, action);
+                }
+            }
+        });
+    }
 
 
-  @Data
-  @AllArgsConstructor
-  @NoArgsConstructor
-  @Builder
-  public static class CoverageEntity {
-    private String pahubId;
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class CoverageEntity {
+        private String pahubId;
 
-    private String originId;
-    private Integer groupId;
-    private String fileId;
-    private Timestamp createdOn;
-    private String sourceOfPahub;
+        private String originId;
+        private Integer groupId;
+        private String fileId;
+        private Timestamp createdOn;
+        private String sourceOfPahub;
 
-    private Integer paperNo;
-  }
+        private Integer paperNo;
+    }
 
 
 }
