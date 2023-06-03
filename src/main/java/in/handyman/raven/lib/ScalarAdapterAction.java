@@ -87,7 +87,7 @@ public class ScalarAdapterAction implements IActionExecution {
             final List<ValidatorConfigurationDetail> validatorConfigurationDetails = new ArrayList<>();
             URI = action.getContext().get("copro.text-validation.url");
             multiverseValidator = Boolean.valueOf(action.getContext().get("validation.multiverse-mode"));
-            restrictedAnswers = new String[]{action.getContext().get("validation.restricted-answers")};
+            restrictedAnswers = action.getContext().get("validation.restricted-answers").split(",");
 
             jdbi.useTransaction(handle -> {
                 final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(scalarAdapter.getResultSet());
@@ -199,9 +199,9 @@ public class ScalarAdapterAction implements IActionExecution {
                     result.setInputValue("");
                     result.setVqaScore(0);
                 }
-                if (confidenceScore == 100 && multiverseValidator) {
+                if (multiverseValidator) {
                     for (String format : restrictedAnswers) {
-                        if (result.getInputValue().equalsIgnoreCase(format) && multiverseValidator) {
+                        if (inputValue.equalsIgnoreCase(format)) {
                             result.setInputValue("");
                             result.setVqaScore(0);
                         }

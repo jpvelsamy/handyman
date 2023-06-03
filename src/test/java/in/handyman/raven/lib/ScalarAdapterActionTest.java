@@ -15,23 +15,28 @@ class ScalarAdapterActionTest {
                 .condition(true)
                 .name("Test ScalarAdapter")
                 .processID("138968829607360172")
-                .resultSet("SELECT dp.sor_item_name as sor_key, dp.sor_question as question, dp.answer as input_value,\n" +
-                        "\t\t\t\t\t\tsi.allowed_adapter , si.restricted_adapter ,\n" +
-                        "\t\t\t\t\t\tsi.word_limit , si.word_threshold ,\n" +
-                        "\t\t\t\t\t\tsi.char_limit , si.char_threshold ,\n" +
-                        "\t\t\t\t\t\tsi.validator_threshold , si.allowed_characters ,\n" +
-                        "\t\t\t\t\t\tsi.comparable_characters, si.restricted_adapter_flag,\n" +
-                        "\t\t\t\t\t\tdp.origin_id ,dp.paper_no ,dp.group_id,\n" +
-                        "\t\t\t\t\t\tdp.created_user_id, dp.tenant_id\n" +
-                        "\t\t\t\tFROM sor_transaction.vqa_transaction dp\n" +
-                        "\t\t\t\tJOIN sor_meta.sor_item si ON si.sor_item_name = dp.sor_item_name")
+                .resultSet(" SELECT dp.sor_item_name as sor_key, dp.sor_question as question, dp.answer as input_value, dp.weight,dp.vqa_score,\n" +
+    "                     si.allowed_adapter , si.restricted_adapter ,'${init_process_id.process_id}' as process_id,\n" +
+    "                     si.word_limit , si.word_threshold ,\n" +
+    "                     si.char_limit , si.char_threshold ,\n" +
+    "                     si.validator_threshold , si.allowed_characters ,\n" +
+    "                     si.comparable_characters, si.restricted_adapter_flag,\n" +
+    "                     dp.origin_id ,dp.paper_no ,dp.group_id,\n" +
+    "                     dp.created_user_id, dp.tenant_id,dp.b_box\n" +
+    "                     FROM sor_transaction.vqa_transaction dp\n" +
+    "                     JOIN sor_meta.sor_item si ON si.sor_item_name = dp.sor_item_name\n" +
+    "                     WHERE dp.group_id = '1' AND si.allowed_adapter !='ner' AND dp.answer is not null;\n" +
+    "   ")
                 .resourceConn("intics_agadia_db_conn")
+
                 .build();
 
 
         final ActionExecutionAudit action = ActionExecutionAudit.builder()
                 .build();
         action.setRootPipelineId(11011L);
+        action.getContext().put("validation.multiverse-mode","true");
+        action.getContext().put("validation.restricted-answers","No,None of the above");
         //action.getContext().put("copro.text-validation.url", "http://localhost:10189/copro/text-validation/patient");
         final ScalarAdapterAction scalarAdapterAction = new ScalarAdapterAction(action, log, build);
         scalarAdapterAction.execute();

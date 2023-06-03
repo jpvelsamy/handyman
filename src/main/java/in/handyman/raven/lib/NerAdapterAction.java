@@ -128,7 +128,7 @@ public class NerAdapterAction implements IActionExecution {
         public List<NerOutputTable> process(URL endpoint, NerInputTable result) throws Exception {
             URI = String.valueOf(endpoint);
             multiverseValidator = Boolean.parseBoolean(action.getContext().get("validation.multiverse-mode"));
-            restrictedAnswers = new String[]{action.getContext().get("validation.restricted-answers")};
+            restrictedAnswers = action.getContext().get("validation.restricted-answers").split(",");
 
             log.info(aMarker, "coproProcessor consumer process started with endpoint {} and entity {}", endpoint, result);
             List<NerOutputTable> parentObj = new ArrayList<>();
@@ -158,7 +158,7 @@ public class NerAdapterAction implements IActionExecution {
                 vqaScore = 0;
             }
             for (String format : restrictedAnswers) {
-                if (result.getInputValue().equalsIgnoreCase(format) && multiverseValidator) {
+                if (inputValue.equalsIgnoreCase(format) && multiverseValidator) {
                     result.setInputValue("");
                     vqaScore = 0;
                 }
