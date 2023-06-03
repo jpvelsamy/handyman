@@ -27,6 +27,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -111,10 +113,17 @@ public class NerAdapterAction implements IActionExecution {
         private final Marker aMarker;
         private final NervalidatorAction nerAction;
         private final WordcountAction wordcountAction;
+        private final CharactercountAction charactercountAction;
+        private final AlphavalidatorAction alphaAction;
+        private final NumericvalidatorAction numericAction;
+        private final AlphanumericvalidatorAction alphaNumericAction;
+        private final DatevalidatorAction dateAction;
         public final ActionExecutionAudit action;
         boolean multiverseValidator;
         String[] restrictedAnswers;
         String URI;
+        private final String PHONE_NUMBER_REGEX = "^\\(?(\\d{3})\\)?[-]?(\\d{3})[-]?(\\d{4})$";
+        private final String NUMBER_REGEX = "^[+-]?(\\d+\\.?\\d*|\\.\\d+)$";
 
         public NerAdapterConsumerProcess(Logger log, Marker aMarker, ActionExecutionAudit action) {
             this.log = log;
@@ -122,6 +131,11 @@ public class NerAdapterAction implements IActionExecution {
             this.action = action;
             this.nerAction = new NervalidatorAction(action, log, Nervalidator.builder().build());
             this.wordcountAction = new WordcountAction(action, log, Wordcount.builder().build());
+            this.charactercountAction = new CharactercountAction(action, log, Charactercount.builder().build());
+            this.alphaAction = new AlphavalidatorAction(action, log, Alphavalidator.builder().build());
+            this.numericAction = new NumericvalidatorAction(action, log, Numericvalidator.builder().build());
+            this.alphaNumericAction = new AlphanumericvalidatorAction(action, log, Alphanumericvalidator.builder().build());
+            this.dateAction = new DatevalidatorAction(action, log, Datevalidator.builder().build());
         }
 
         @Override
@@ -135,7 +149,7 @@ public class NerAdapterAction implements IActionExecution {
             String inputValue = result.getInputValue();
             int wordScore = wordcountAction.getWordCount(inputValue,
                     result.getWordLimit(), result.getWordThreshold());
-            int charScore = CharactercountAction.getCharCount(inputValue,
+            int charScore = charactercountAction.getCharCount(inputValue,
                     result.getCharLimit(), result.getCharThreshold());
             Validator configurationDetails = Validator.builder()
                     .inputValue(inputValue)
@@ -246,13 +260,58 @@ public class NerAdapterAction implements IActionExecution {
         int computeAdapterScore(Validator inputDetail) {
             int confidenceScore = 0;
             try {
-                confidenceScore = this.nerAction.getNerScore(inputDetail, URI);
+
+                switch (inputDetail.getAdapter()) {
+                    case "ner":
+                        confidenceScore = this.nerAction.getNerScore(inputDetail, URI);
+                        break;
+                    case "alpha":
+                        confidenceScore = this.alphaAction.getAlphaScore(inputDetail);
+                        break;
+                    case "alphanumeric":
+                        confidenceScore = this.alphaNumericAction.getAlphaNumericScore(inputDetail);
+                        break;
+                    case "numeric":
+                        confidenceScore = this.numericAction.getNumericScore(inputDetail);
+                        break;
+                    case "date":
+                        confidenceScore = this.dateAction.getDateScore(inputDetail);
+                        break;
+                    case "phone-reg":
+                        confidenceScore = regValidator(inputDetail, PHONE_NUMBER_REGEX);
+                        break;
+                    case "numeric-reg":
+                        confidenceScore = regValidator(inputDetail, NUMBER_REGEX);
+                        break;
+                }
+
             } catch (Throwable t) {
                 log.error(aMarker, "error adapter validation{}", inputDetail, t);
             }
             return confidenceScore;
         }
+
+        private int regValidator(Validator validator, String regForm) {
+            String inputValue = validator.getInputValue();
+            inputValue = replaceSplChars(validator.getAllowedSpecialChar(), inputValue);
+            Pattern pattern = Pattern.compile(regForm);
+            Matcher matcher = pattern.matcher(inputValue);
+            return matcher.matches() ? validator.getThreshold() : 0;
+        }
+
+        private String replaceSplChars(final String specialCharacters, String input) {
+            if (specialCharacters != null) {
+                for (int i = 0; i < specialCharacters.length(); i++) {
+                    if (input.contains(Character.toString(specialCharacters.charAt(i)))) {
+                        input = input.replace(Character.toString(specialCharacters.charAt(i)), "");
+                    }
+                }
+            }
+            return input;
+        }
+
     }
+
 
     @Override
     public boolean executeIf() throws Exception {
