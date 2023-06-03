@@ -111,12 +111,9 @@ public class NerAdapterAction implements IActionExecution {
         private final Marker aMarker;
         private final NervalidatorAction nerAction;
         private final WordcountAction wordcountAction;
-        private final CharactercountAction charactercountAction;
-        private final AlphavalidatorAction alphaAction;
-        private final NumericvalidatorAction numericAction;
-        private final AlphanumericvalidatorAction alphaNumericAction;
-        private final DatevalidatorAction dateAction;
         public final ActionExecutionAudit action;
+        boolean multiverseValidator;
+        String[] restrictedAnswers;
         String URI;
 
         public NerAdapterConsumerProcess(Logger log, Marker aMarker, ActionExecutionAudit action) {
@@ -125,16 +122,14 @@ public class NerAdapterAction implements IActionExecution {
             this.action = action;
             this.nerAction = new NervalidatorAction(action, log, Nervalidator.builder().build());
             this.wordcountAction = new WordcountAction(action, log, Wordcount.builder().build());
-            this.charactercountAction = new CharactercountAction(action, log, Charactercount.builder().build());
-            this.alphaAction = new AlphavalidatorAction(action, log, Alphavalidator.builder().build());
-            this.numericAction = new NumericvalidatorAction(action, log, Numericvalidator.builder().build());
-            this.alphaNumericAction = new AlphanumericvalidatorAction(action, log, Alphanumericvalidator.builder().build());
-            this.dateAction = new DatevalidatorAction(action, log, Datevalidator.builder().build());
         }
 
         @Override
         public List<NerOutputTable> process(URL endpoint, NerInputTable result) throws Exception {
             URI = String.valueOf(endpoint);
+            multiverseValidator = Boolean.parseBoolean(action.getContext().get("validation.multiverse-mode"));
+            restrictedAnswers = new String[]{action.getContext().get("validation.restricted-answers")};
+
             log.info(aMarker, "coproProcessor consumer process started with endpoint {} and entity {}", endpoint, result);
             List<NerOutputTable> parentObj = new ArrayList<>();
             String inputValue = result.getInputValue();
@@ -156,7 +151,18 @@ public class NerAdapterAction implements IActionExecution {
                 configurationDetails.setAdapter(result.getRestrictedAdapter());
                 validatorNegativeScore = computeAdapterScore(configurationDetails);
             }
+            float vqaScore = result.getVqaScore();
             double confidenceScore = wordScore + charScore + validatorScore - validatorNegativeScore;
+            if (confidenceScore < 100 && multiverseValidator) {
+                result.setInputValue("");
+                vqaScore = 0;
+            }
+            for (String format : restrictedAnswers) {
+                if (result.getInputValue().equalsIgnoreCase(format) && multiverseValidator) {
+                    result.setInputValue("");
+                    vqaScore = 0;
+                }
+            }
             AtomicInteger atomicInteger = new AtomicInteger();
             log.info(aMarker, "coproProcessor consumer confidence score  {}", confidenceScore);
             String originId = result.getOriginId();
@@ -168,7 +174,6 @@ public class NerAdapterAction implements IActionExecution {
             int sorItemId = result.getSorItemId();
             String sorKey = result.getSorKey();
             String question = result.getQuestion();
-            float vqaScore=result.getVqaScore();
             int weight = result.weight;
             String createdUserId = result.createdUserId;
             if (confidenceScore >= 0) {
@@ -241,23 +246,7 @@ public class NerAdapterAction implements IActionExecution {
         int computeAdapterScore(Validator inputDetail) {
             int confidenceScore = 0;
             try {
-                switch (inputDetail.getAdapter()) {
-                    case "alpha":
-                        confidenceScore = this.alphaAction.getAlphaScore(inputDetail);
-                        break;
-                    case "alphanumeric":
-                        confidenceScore = this.alphaNumericAction.getAlphaNumericScore(inputDetail);
-                        break;
-                    case "numeric":
-                        confidenceScore = this.numericAction.getNumericScore(inputDetail);
-                        break;
-                    case "ner":
-                        confidenceScore = this.nerAction.getNerScore(inputDetail, URI);
-                        break;
-                    case "date":
-                        confidenceScore = this.dateAction.getDateScore(inputDetail);
-                        break;
-                }
+                confidenceScore = this.nerAction.getNerScore(inputDetail, URI);
             } catch (Throwable t) {
                 log.error(aMarker, "error adapter validation{}", inputDetail, t);
             }
@@ -350,7 +339,7 @@ public class NerAdapterAction implements IActionExecution {
             return Stream.of(this.originId, this.paperNo, this.groupId, this.processId, this.sorId, this.sorItemId, this.sorItemName,
                     this.question, this.answer, this.weight, this.createdUserId, this.tenantId, this.createdOn, this.wordScore, this.charScore,
                     this.validatorScoreAllowed, this.validatorScoreNegative, this.confidenceScore, this.validationName, this.bBox,
-                    this.status, this.stage, this.message,this.vqaScore
+                    this.status, this.stage, this.message, this.vqaScore
             ).collect(Collectors.toList());
         }
 

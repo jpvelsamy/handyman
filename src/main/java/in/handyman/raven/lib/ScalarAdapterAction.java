@@ -32,6 +32,8 @@ import org.slf4j.MarkerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -57,6 +59,10 @@ public class ScalarAdapterAction implements IActionExecution {
     private final WordcountAction wordcountAction;
     private final CharactercountAction charactercountAction;
     String URI;
+    boolean multiverseValidator;
+    String[] restrictedAnswers;
+    private final String PHONE_NUMBER_REGEX = "^\\(?(\\d{3})\\)?[-]?(\\d{3})[-]?(\\d{4})$";
+    private final String NUMBER_REGEX = "^[+-]?(\\d+\\.?\\d*|\\.\\d+)$";
 
     public ScalarAdapterAction(final ActionExecutionAudit action, final Logger log,
                                final Object scalarAdapter) {
@@ -80,6 +86,8 @@ public class ScalarAdapterAction implements IActionExecution {
             final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(scalarAdapter.getResourceConn());
             final List<ValidatorConfigurationDetail> validatorConfigurationDetails = new ArrayList<>();
             URI = action.getContext().get("copro.text-validation.url");
+            multiverseValidator = Boolean.valueOf(action.getContext().get("validation.multiverse-mode"));
+            restrictedAnswers = new String[]{action.getContext().get("validation.restricted-answers")};
 
             jdbi.useTransaction(handle -> {
                 final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(scalarAdapter.getResultSet());
@@ -169,7 +177,7 @@ public class ScalarAdapterAction implements IActionExecution {
                 String inputValue = result.getInputValue();
                 int wordScore = wordcountAction.getWordCount(inputValue,
                         result.getWordLimit(), result.getWordThreshold());
-                int charScore = CharactercountAction.getCharCount(inputValue,
+                int charScore = charactercountAction.getCharCount(inputValue,
                         result.getCharLimit(), result.getCharThreshold());
                 Validator configurationDetails = Validator.builder()
                         .inputValue(inputValue)
@@ -187,6 +195,19 @@ public class ScalarAdapterAction implements IActionExecution {
                 }
 
                 double confidenceScore = wordScore + charScore + validatorScore - validatorNegativeScore;
+                if (confidenceScore < 100 && multiverseValidator) {
+                    result.setInputValue("");
+                    result.setVqaScore(0);
+                }
+                if (confidenceScore == 100 && multiverseValidator) {
+                    for (String format : restrictedAnswers) {
+                        if (result.getInputValue().equalsIgnoreCase(format) && multiverseValidator) {
+                            result.setInputValue("");
+                            result.setVqaScore(0);
+                        }
+                    }
+                }
+
                 result.setWordScore(wordScore);
                 result.setCharScore(charScore);
                 result.setValidatorScore(validatorScore);
@@ -241,7 +262,7 @@ public class ScalarAdapterAction implements IActionExecution {
                                 insertSummaryAudit(jdbi, 0, 0, 1);
                                 log.error(aMarker, "error inserting result {}", resultQueue, t);
                                 HandymanException handymanException = new HandymanException(t);
-                                HandymanException.insertException("Exception occurred in Scalar Computation consumer batch insert into adapter result for groupId"+ insert.groupId, handymanException, action);
+                                HandymanException.insertException("Exception occurred in Scalar Computation consumer batch insert into adapter result for groupId" + insert.groupId, handymanException, action);
                             }
                         });
                     }
@@ -270,6 +291,12 @@ public class ScalarAdapterAction implements IActionExecution {
                 case "date":
                     confidenceScore = this.dateAction.getDateScore(inputDetail);
                     break;
+                case "phone-reg":
+                    confidenceScore = regValidator(inputDetail, PHONE_NUMBER_REGEX);
+                    break;
+                case "numeric-reg":
+                    confidenceScore = regValidator(inputDetail, NUMBER_REGEX);
+                    break;
             }
         } catch (Exception t) {
             log.error(aMarker, "error adpater validation{}", inputDetail, t);
@@ -293,6 +320,25 @@ public class ScalarAdapterAction implements IActionExecution {
             Update bindBean = update.bindBean(summary);
             bindBean.execute();
         });
+    }
+
+    private int regValidator(Validator validator, String regForm) {
+        String inputValue = validator.getInputValue();
+        inputValue = replaceSplChars(validator.getAllowedSpecialChar(), inputValue);
+        Pattern pattern = Pattern.compile(regForm);
+        Matcher matcher = pattern.matcher(inputValue);
+        return matcher.matches() ? validator.getThreshold() : 0;
+    }
+
+    private String replaceSplChars(final String specialCharacters, String input) {
+        if (specialCharacters != null) {
+            for (int i = 0; i < specialCharacters.length(); i++) {
+                if (input.contains(Character.toString(specialCharacters.charAt(i)))) {
+                    input = input.replace(Character.toString(specialCharacters.charAt(i)), "");
+                }
+            }
+        }
+        return input;
     }
 
     @Override
