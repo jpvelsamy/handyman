@@ -201,11 +201,13 @@ public class LambdaEngine {
             action.setContext(context);
             action.setPipelineId(pipelineExecutionAudit.getPipelineId());
             toAction(action, pipelineExecutionAudit);
-            log.info("");
-            log.info("Action context has been set successfully for action {}", action.getActionId());
+
+            String actionName = action.getActionName();
+            Long actionId = action.getActionId();
+            log.info("Action context has been set successfully for action name {} with id {}", actionName, actionId);
             doAction(action, actionContext);
-            log.info("Action context has been executed successfully for action {}", action.getActionId());
-            log.info("");
+            log.info("Action context has been executed successfully for action name {} with id {}", actionName, actionId);
+
         });
     }
 
