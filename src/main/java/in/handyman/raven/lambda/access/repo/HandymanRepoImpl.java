@@ -388,7 +388,7 @@ public class HandymanRepoImpl extends AbstractAccess implements HandymanRepo {
             return repo.findAll();
         });
     }
-    public void insertExceptionLog(ActionExecutionAudit actionExecutionAudit, Exception exception, String message) {
+    public void insertExceptionLog(ActionExecutionAudit actionExecutionAudit, Throwable exception, String message) {
         HandymanExceptionAuditDetails exceptionAuditDetails = HandymanExceptionAuditDetails.builder()
                 .groupId(Integer.parseInt(actionExecutionAudit.getContext().get("gen_group_id.group_id")))
                 .rootPipelineId(actionExecutionAudit.getRootPipelineId())

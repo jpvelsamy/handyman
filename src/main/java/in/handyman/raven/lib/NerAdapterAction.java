@@ -284,6 +284,11 @@ public class NerAdapterAction implements IActionExecution {
 
             } catch (Throwable t) {
                 log.error(aMarker, "error adapter validation{}", inputDetail, t);
+                action.getContext().put(this.action.getActionName().concat(".error"), "true");
+                log.error(aMarker, "Exception occurred in Scalar Computation {}", ExceptionUtil.toString(t));
+                HandymanException handymanException = new HandymanException("Error in execute method for ner adapter", t, action);
+                HandymanException.insertException("Exception occurred in NER Computation", handymanException, action);
+                throw new HandymanException("Error in execute method for ner adapter", t, action);
             }
             return confidenceScore;
         }
