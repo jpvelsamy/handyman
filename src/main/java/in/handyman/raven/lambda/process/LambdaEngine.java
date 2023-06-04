@@ -202,11 +202,9 @@ public class LambdaEngine {
             action.setPipelineId(pipelineExecutionAudit.getPipelineId());
             toAction(action, pipelineExecutionAudit);
 
-            String actionName = action.getActionName();
-            Long actionId = action.getActionId();
-            log.info("Action context has been set successfully for action name {} with id {}", actionName, actionId);
+
             doAction(action, actionContext);
-            log.info("Action context has been executed successfully for action name {} with id {}", actionName, actionId);
+
 
         });
     }
@@ -243,12 +241,13 @@ public class LambdaEngine {
         HandymanActorSystemAccess.update(actionExecutionAudit);
         logger.info("\n");
         String actionName = actionExecutionAudit.getActionName();
+        Long actionId = actionExecutionAudit.getActionId();
         try {
-            logger.info("Action execution has been started for "+ actionName);
-            logger.info("Given context {}", actionExecutionAudit.getContext());
+            logger.info("Given name {} with id {}, context {}", actionName, actionId, actionExecutionAudit.getContext());
             final IActionExecution execution = load(actionContext, actionExecutionAudit);
+            logger.info("Action execution has been started for action name {} with id {}", actionName, actionId);
             execute(execution, actionExecutionAudit);
-            logger.info("Execution has been completed successfully for "+ actionName);
+            logger.info("Execution has been completed successfully action name {} with id {}", actionName, actionId);
         } catch (Exception e) {
             logger.error("Error executing action " + actionName, e);
             actionExecutionAudit.updateExecutionStatusId(ExecutionStatus.FAILED.getId());
