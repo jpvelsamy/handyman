@@ -144,7 +144,7 @@ public class NerAdapterAction implements IActionExecution {
             multiverseValidator = Boolean.parseBoolean(action.getContext().get("validation.multiverse-mode"));
             restrictedAnswers = action.getContext().get("validation.restricted-answers").split(",");
 
-            log.info(aMarker, "coproProcessor consumer process started with endpoint {} and entity {}", endpoint, result);
+            log.info(aMarker, "Build 19-coproProcessor consumer process started with endpoint {} and entity {}", endpoint, result);
             List<NerOutputTable> parentObj = new ArrayList<>();
             String inputValue = result.getInputValue();
             int wordScore = wordcountAction.getWordCount(inputValue,
@@ -165,20 +165,14 @@ public class NerAdapterAction implements IActionExecution {
                 configurationDetails.setAdapter(result.getRestrictedAdapter());
                 validatorNegativeScore = computeAdapterScore(configurationDetails);
             }
-            float vqaScore = result.getVqaScore();
-            double confidenceScore = wordScore + charScore + validatorScore - validatorNegativeScore;
-            if (confidenceScore < 100 && multiverseValidator) {
-                result.setInputValue("");
-                vqaScore = 0;
-            }
-            for (String format : restrictedAnswers) {
-                if (inputValue.equalsIgnoreCase(format) && multiverseValidator) {
-                    result.setInputValue("");
-                    vqaScore = 0;
-                }
-            }
+            double valConfidenceScore = wordScore + charScore + validatorScore - validatorNegativeScore;
+            log.info(aMarker, "Build 19-validator confidence score {}", valConfidenceScore);
+
+            updateEmptyValueIfLowCf(result, valConfidenceScore);
+            updateEmptyValueForRestrictedAns(result, inputValue);
+
             AtomicInteger atomicInteger = new AtomicInteger();
-            log.info(aMarker, "coproProcessor consumer confidence score  {}", confidenceScore);
+            log.info(aMarker, "coproProcessor consumer confidence score  {}", valConfidenceScore);
             String originId = result.getOriginId();
             Integer groupId = result.getGroupId();
             int sorId = result.getSorId();
@@ -189,8 +183,11 @@ public class NerAdapterAction implements IActionExecution {
             String sorKey = result.getSorKey();
             String question = result.getQuestion();
             int weight = result.weight;
+            float vqaScore = result.getVqaScore();
             String createdUserId = result.createdUserId;
-            if (confidenceScore >= 0) {
+            log.info(aMarker, "Build 19-validator vqa score {}", vqaScore);
+
+            if (valConfidenceScore >= 0) {
                 parentObj.add(
                         NerOutputTable
                                 .builder()
@@ -212,7 +209,7 @@ public class NerAdapterAction implements IActionExecution {
                                 .charScore(charScore)
                                 .validatorScoreAllowed(validatorScore)
                                 .validatorScoreNegative(validatorNegativeScore)
-                                .confidenceScore(confidenceScore)
+                                .confidenceScore(valConfidenceScore)
                                 .validationName(result.allowedAdapter)
                                 .bBox(result.bbox)
                                 .status("COMPLETED")
@@ -242,14 +239,14 @@ public class NerAdapterAction implements IActionExecution {
                                 .charScore(charScore)
                                 .validatorScoreAllowed(validatorScore)
                                 .validatorScoreNegative(validatorNegativeScore)
-                                .confidenceScore(confidenceScore)
+                                .confidenceScore(valConfidenceScore)
                                 .validationName(result.allowedAdapter)
                                 .bBox(result.bbox)
                                 .status("FAILED")
                                 .stage("SCALAR_VALIDATION")
                                 .message("Confidence Score is less than 0")
                                 .build());
-                log.error(aMarker, "The Exception occurred in confidence score validation by {} ", confidenceScore);
+                log.error(aMarker, "The Exception occurred in confidence score validation by {} ", valConfidenceScore);
             }
 
             atomicInteger.set(0);
@@ -289,6 +286,29 @@ public class NerAdapterAction implements IActionExecution {
                 log.error(aMarker, "error adapter validation{}", inputDetail, t);
             }
             return confidenceScore;
+        }
+
+        private void updateEmptyValueForRestrictedAns(NerInputTable result, String inputValue) {
+            if (multiverseValidator) {
+                log.info(aMarker, "Build 19-validator updatating for Restricted answer {}");
+                for (String format : restrictedAnswers) {
+                    if (inputValue.equalsIgnoreCase(format)) {
+                        updateEmptyValueAndCf(result);
+                    }
+                }
+            }
+        }
+
+        private void updateEmptyValueIfLowCf(NerInputTable result, double valConfidenceScore) {
+            if (valConfidenceScore < 100 && multiverseValidator) {
+                log.info(aMarker, "Build 19-validator updateEmptyValueIfLowCf {}", valConfidenceScore);
+                updateEmptyValueAndCf(result);
+            }
+        }
+
+        private static void updateEmptyValueAndCf(NerInputTable result) {
+            result.setInputValue("");
+            result.setVqaScore(0);
         }
 
         private int regValidator(Validator validator, String regForm) {

@@ -65,6 +65,16 @@ class SharePointTest {
     }
 
     @Test
+    void testRegWithNumeric() {
+        final String NUMBER_REGEX = "^[+-]?(\\d+\\.?\\d*|\\.\\d+)$";
+        Pattern pattern = Pattern.compile(NUMBER_REGEX);
+        Matcher matcher = pattern.matcher("JODISANDERS");
+        boolean matchScore = matcher.matches();
+        int result = matchScore ? 70 : 0;
+
+    }
+
+    @Test
     void testRegWithwStringAndNumber() {
         final String NAME_NUMBER_REGEX = "^(.+?)\\s*(\\d+)$";
         Pattern pattern = Pattern.compile(NAME_NUMBER_REGEX);

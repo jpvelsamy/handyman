@@ -25,7 +25,8 @@ class ScalarAdapterActionTest {
     "                     dp.created_user_id, dp.tenant_id,dp.b_box\n" +
     "                     FROM sor_transaction.vqa_transaction dp\n" +
     "                     JOIN sor_meta.sor_item si ON si.sor_item_name = dp.sor_item_name\n" +
-    "                     WHERE dp.group_id = '1' AND si.allowed_adapter !='ner' AND dp.answer is not null;\n" +
+    "                     WHERE dp.group_id = '1' AND si.allowed_adapter ='ner' AND dp.answer is not null" +
+                        " AND dp.sor_item_name ='patient_name';\n" +
     "   ")
                 .resourceConn("intics_agadia_db_conn")
 

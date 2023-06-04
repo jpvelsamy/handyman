@@ -172,7 +172,7 @@ public class ScalarAdapterAction implements IActionExecution {
         try {
             List<ValidatorConfigurationDetail> resultQueue = new ArrayList<>();
             for (ValidatorConfigurationDetail result : listOfDetails) {
-                log.info(aMarker, "executing  validator {}", result);
+                log.info(aMarker, "Build 19- scalar executing  validator {}", result);
 
                 String inputValue = result.getInputValue();
                 int wordScore = wordcountAction.getWordCount(inputValue,
@@ -188,31 +188,25 @@ public class ScalarAdapterAction implements IActionExecution {
                         .build();
 
                 int validatorScore = computeAdapterScore(configurationDetails);
+                validatorScore = 70;
                 int validatorNegativeScore = 0;
                 if (result.getRestrictedAdapterFlag() == 1 && validatorScore != 0) {
                     configurationDetails.setAdapter(result.getRestrictedAdapter());
                     validatorNegativeScore = computeAdapterScore(configurationDetails);
                 }
 
-                double confidenceScore = wordScore + charScore + validatorScore - validatorNegativeScore;
-                if (confidenceScore < 100 && multiverseValidator) {
-                    result.setInputValue("");
-                    result.setVqaScore(0);
-                }
-                if (multiverseValidator) {
-                    for (String format : restrictedAnswers) {
-                        if (inputValue.equalsIgnoreCase(format)) {
-                            result.setInputValue("");
-                            result.setVqaScore(0);
-                        }
-                    }
-                }
+                double valConfidenceScore = wordScore + charScore + validatorScore - validatorNegativeScore;
+                log.info(aMarker, "Build 19-validator scalar confidence score {}", valConfidenceScore);
+
+                updateEmptyValueIfLowCf(result, valConfidenceScore);
+                updateEmptyValueForRestrictedAns(result, inputValue);
+                log.info(aMarker, "Build 19-validator vqa score {}", result.getVqaScore());
 
                 result.setWordScore(wordScore);
                 result.setCharScore(charScore);
                 result.setValidatorScore(validatorScore);
                 result.setValidatorNegativeScore(validatorNegativeScore);
-                result.setConfidenceScore(confidenceScore);
+                result.setConfidenceScore(valConfidenceScore);
                 result.setProcessId(String.valueOf(action.getProcessId()));
                 result.setStatus("COMPLETED");
                 result.setStage("SCALAR_VALIDATION");
@@ -243,6 +237,29 @@ public class ScalarAdapterAction implements IActionExecution {
             HandymanException handymanException = new HandymanException(e);
             HandymanException.insertException("Exception occurred in Scalar Computation", handymanException, action);
         }
+    }
+
+    private void updateEmptyValueForRestrictedAns(ValidatorConfigurationDetail result, String inputValue) {
+        if (multiverseValidator) {
+            log.info(aMarker, "Build 19-validator updatating for Restricted answer {}");
+            for (String format : restrictedAnswers) {
+                if (inputValue.equalsIgnoreCase(format)) {
+                    updateEmptyValueAndCf(result);
+                }
+            }
+        }
+    }
+
+    private void updateEmptyValueIfLowCf(ValidatorConfigurationDetail result, double valConfidenceScore) {
+        if (valConfidenceScore < 100 && multiverseValidator) {
+            log.info(aMarker, "Build 19-validator updateEmptyValueIfLowCf {}", valConfidenceScore);
+            updateEmptyValueAndCf(result);
+        }
+    }
+
+    private static void updateEmptyValueAndCf(ValidatorConfigurationDetail result) {
+        result.setInputValue("");
+        result.setVqaScore(0);
     }
 
     void consumerBatch(final Jdbi jdbi, List<ValidatorConfigurationDetail> resultQueue) {
@@ -327,7 +344,8 @@ public class ScalarAdapterAction implements IActionExecution {
         inputValue = replaceSplChars(validator.getAllowedSpecialChar(), inputValue);
         Pattern pattern = Pattern.compile(regForm);
         Matcher matcher = pattern.matcher(inputValue);
-        return matcher.matches() ? validator.getThreshold() : 0;
+        boolean matchValue = matcher.matches();
+        return matchValue ? validator.getThreshold() : 0;
     }
 
     private String replaceSplChars(final String specialCharacters, String input) {
