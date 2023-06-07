@@ -78,8 +78,8 @@ public class IntellimatchAction implements IActionExecution {
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
       // build insert prepare statement with output table columns
       final String insertQuery = "INSERT INTO " + intellimatch.getMatchResult() +
-              " ( file_name,origin_id,group_id,created_on,root_pipeline_id,actual_value, extracted_value,similarity_score,intelli_match,status,stage,message)" +
-              " VALUES(?,?,?,?,?,?,?,?,?,?,?,?);";
+              " ( file_name,origin_id,group_id,created_on,root_pipeline_id,actual_value, extracted_value,similarity,confidence_score,intelli_match,status,stage,message)" +
+              " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?);";
       log.info(aMarker, "intelli match Insert query {}", insertQuery);
 
       //3. initiate copro processor and copro urls
@@ -151,7 +151,6 @@ public class IntellimatchAction implements IActionExecution {
         List<String> comparableSentence = Arrays.asList(result.getExtractedValue());
         objectNode.put("inputSentence", result.getActualValue());
         objectNode.putPOJO("sentences", comparableSentence);
-        System.out.println(result.actualValue);
           final Request request = new Request.Builder().url(endpoint)
                 .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
         log.info("intellimatch reqest body {}", request);
@@ -171,7 +170,8 @@ public class IntellimatchAction implements IActionExecution {
                     rootPipelineId(result.rootPipelineId).
                     actualValue(result.actualValue).
                     extractedValue(result.extractedValue).
-                    similarityScore(result.similarityScore).
+                    similarity(result.similarity).
+                    confidenceScore(result.confidenceScore).
                     intelliMatch(matchPercent).
                     status("completed").
                     stage("control data").
@@ -189,7 +189,7 @@ public class IntellimatchAction implements IActionExecution {
                     rootPipelineId(result.rootPipelineId).
                     actualValue(result.actualValue).
                     extractedValue(result.extractedValue).
-                    similarityScore(result.similarityScore).
+                    similarity(result.similarity).
                     intelliMatch(0.00).
                     status("failed").
                     stage("control data").
@@ -209,7 +209,7 @@ public class IntellimatchAction implements IActionExecution {
                   rootPipelineId(result.rootPipelineId).
                   actualValue(result.actualValue).
                   extractedValue(result.extractedValue).
-                  similarityScore(result.similarityScore).
+                  similarity(result.similarity).
                   intelliMatch(0.00).
                   status("failed").
                   stage("control data").
@@ -231,7 +231,7 @@ public class IntellimatchAction implements IActionExecution {
                 rootPipelineId(result.rootPipelineId).
                 actualValue(result.actualValue).
                 extractedValue(result.extractedValue).
-                similarityScore(result.similarityScore).
+                similarity(result.similarity).
                 intelliMatch(0.0000).
                 status("completed").
                 stage("control data").
@@ -276,7 +276,8 @@ public class IntellimatchAction implements IActionExecution {
     private Long rootPipelineId;
     private String actualValue;
     private String extractedValue;
-    private Double similarityScore;
+    private Double similarity;
+    private Integer confidenceScore;
 
 
     @Override
@@ -298,7 +299,8 @@ public class IntellimatchAction implements IActionExecution {
     private Long rootPipelineId;
     private String actualValue;
     private String extractedValue;
-    private Double similarityScore;
+    private Double similarity;
+    private Integer confidenceScore;
     private Double intelliMatch;
     private String status;
     private String stage;
@@ -314,7 +316,8 @@ public class IntellimatchAction implements IActionExecution {
               this.rootPipelineId,
               this.actualValue,
               this.extractedValue,
-              this.similarityScore,
+              this.similarity,
+              this.confidenceScore,
               this.intelliMatch,
               this.status,
               this.stage,
