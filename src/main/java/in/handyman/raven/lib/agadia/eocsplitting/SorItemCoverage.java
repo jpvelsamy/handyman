@@ -27,16 +27,16 @@ public class SorItemCoverage {
         this.action = action;
     }
 
-    public Map<String, List<Integer>> splitBySorItem(Jdbi jdbi, String sorItem){
+    public Map<String, List<Integer>> splitBySorItem(Jdbi jdbi, String sorItem) {
         Map<String, List<Integer>> stringObjectMap = new HashMap<>();
 
         try {
-            String inputSorItem="AND sor_item_name IN ('patient_member_id') group by predicted_value,paper_no ;";
-            if(Objects.equals("patient_name",sorItem)){
-                inputSorItem=" AND sor_item_name IN ('patient_name' , 'patient_dob')  group by paper_no;";
+            String inputSorItem = "AND sor_item_name IN ('patient_member_id') group by predicted_value,paper_no ;";
+            if (Objects.equals("patient_name", sorItem)) {
+                inputSorItem = " AND sor_item_name IN ('patient_name' , 'patient_dob')  group by paper_no  having count(predicted_value)=2;";
             }
-            String inputQuery=episodeOfCoverage.getPndValue().replace(";"," ").concat(inputSorItem);
-            List<Map<String, Object>> eocGroupingMemberItemRequestInfos = queryExecutor(jdbi,sorItem,inputQuery);
+            String inputQuery = episodeOfCoverage.getPndValue().replace(";", " ").concat(inputSorItem);
+            List<Map<String, Object>> eocGroupingMemberItemRequestInfos = queryExecutor(jdbi, sorItem, inputQuery);
 
             List<Integer> breakPointsList = new ArrayList<>();
             eocGroupingMemberItemRequestInfos.forEach(stringObjectMapInfo -> {
@@ -53,13 +53,13 @@ public class SorItemCoverage {
                 int totalPageInt = Integer.parseInt(episodeOfCoverage.getTotalPages());
                 int endPoint = 0;
 
-                if(!answerString.isBlank() && !answerString.isBlank()){
+                if (!answerString.isBlank() && !answerString.isBlank()) {
                     try {
                         endPoint = breakPointsList.get(breakPointsList.indexOf(startNoInt) + 1);
                     } catch (Exception e) {
                         endPoint = totalPageInt + 1;
                     }
-                    if (breakPointsList.indexOf(startNoInt) == 0 ) {
+                    if (breakPointsList.indexOf(startNoInt) == 0) {
                         startNoInt = 1;
                     }
 
@@ -67,21 +67,21 @@ public class SorItemCoverage {
                         paperList.add(i);
                     }
                     //thic code will save the result as a map with string as key and list as value
-                    answerString =answerString.replaceAll("[-/#%;?\\\\]","_");
+                    answerString = answerString.replaceAll("[-/#%;?\\\\]", "_");
                     stringObjectMap.put(answerString, paperList);
                 }
             }
 
         } catch (Exception e) {
-            log.info(aMarker, "Episode of coverage Action for member id filter {} has failed" , episodeOfCoverage.getName());
+            log.info(aMarker, "Episode of coverage Action for member id filter {} has failed", episodeOfCoverage.getName());
 
         }
         return stringObjectMap;
     }
 
-    public List<Map<String, Object>> queryExecutor(Jdbi jdbi,String sorItem,String unFormattedQueryString){
+    public List<Map<String, Object>> queryExecutor(Jdbi jdbi, String sorItem, String unFormattedQueryString) {
         final List<Map<String, Object>> requestInfos = new ArrayList<>();
-        try{
+        try {
             jdbi.useTransaction(handle -> {
                 final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(unFormattedQueryString);
                 formattedQuery.forEach(sqlToExecute -> {
@@ -89,8 +89,8 @@ public class SorItemCoverage {
                 });
             });
 
-        }catch(Exception e){
-            log.info(aMarker, "Failed in executed formated query {} for this sor item {}", e,sorItem);
+        } catch (Exception e) {
+            log.info(aMarker, "Failed in executed formated query {} for this sor item {}", e, sorItem);
         }
         return requestInfos;
     }
