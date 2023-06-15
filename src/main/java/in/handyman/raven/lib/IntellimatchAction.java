@@ -278,8 +278,6 @@ public class IntellimatchAction implements IActionExecution {
     private String extractedValue;
     private Double similarity;
     private Integer confidenceScore;
-
-
     @Override
     public List<Object> getRowData() {
       return null;

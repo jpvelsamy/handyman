@@ -39,7 +39,7 @@ public class AlphavalidatorAction implements IActionExecution {
 
     int getAlphaScore(Validator adapter) {
         try {
-            boolean validator = alphaAdapter.getValidationModel(adapter.getInputValue(), adapter.getAllowedSpecialChar());
+            boolean validator = alphaAdapter.getValidationModel(adapter.getInputValue(), adapter.getAllowedSpecialChar(), action);
             return validator ? adapter.getThreshold() : 0;
         } catch (Exception ex) {
             log.error("Exception occurred in getting alpha score", ex);
@@ -51,7 +51,7 @@ public class AlphavalidatorAction implements IActionExecution {
     public void execute() throws Exception {
         try {
             log.info(aMarker, "Alpha Count Action for {} has been started" , alphavalidator.getName());
-            boolean validator = alphaAdapter.getValidationModel(alphavalidator.getInputValue(), alphavalidator.getAllowedSpecialCharacters());
+            boolean validator = alphaAdapter.getValidationModel(alphavalidator.getInputValue(), alphavalidator.getAllowedSpecialCharacters(), action);
             int confidenceScore = validator ? Integer.parseInt(alphavalidator.getThresholdValue()) : 0;
             action.getContext().put("validator.score", String.valueOf(confidenceScore));
             log.info(aMarker, "Alpha Count Action for {} has been completed" , alphavalidator.getName());

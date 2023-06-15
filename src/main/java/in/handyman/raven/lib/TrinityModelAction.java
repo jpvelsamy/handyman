@@ -150,6 +150,7 @@ public class TrinityModelAction implements IActionExecution {
             final String filePath = donutLineItem.getFilePath();
             final String paperType = donutLineItem.getPaperType();
 
+
             try {
                 final List<String> questions = donutLineItem.getQuestions();
                 final String node = nodes.get(counter.incrementAndGet() % nodeSize);
@@ -159,7 +160,7 @@ public class TrinityModelAction implements IActionExecution {
                     log.info(aMarker, "2. info's are {}, {}, {}", filePath, paperType, questions);
                 }
 
-                final TrinityModelAction.TrinityModelResultLineItem trinityModelResultLineItem = new TrinityModelAction.TrinityModelApiCaller(node).compute(filePath, paperType, questions);
+                final TrinityModelAction.TrinityModelResultLineItem trinityModelResultLineItem = new TrinityModelAction.TrinityModelApiCaller(node).compute(filePath, paperType, questions,action);
 
                 log.info(aMarker, "completed {}", trinityModelResultLineItem.attributes.size());
 
@@ -279,11 +280,20 @@ public class TrinityModelAction implements IActionExecution {
             this.node = node;
         }
 
-        protected TrinityModelAction.TrinityModelResultLineItem compute(final String inputPath, final String paperType, final List<String> questions) {
+        protected TrinityModelAction.TrinityModelResultLineItem compute(final String inputPath, final String paperType, final List<String> questions,ActionExecutionAudit action) {
+
+         Long actionId= action.getActionId();
+          Long rootpipelineId= Long.valueOf(action.getContext().get("gen_id.root_pipeline_id"));
+            final String trinityProcessName="VQA_VALUATION";
+
             final ObjectNode objectNode = MAPPER.createObjectNode();
             objectNode.put("inputFilePath", inputPath);
             objectNode.putPOJO("attributes", questions);
             objectNode.put("paperType", paperType);
+            //added rootpipeline,process and actionId
+            objectNode.put("rootPipelineId",rootpipelineId);
+            objectNode.put("actionId",actionId);
+            objectNode.put("process",trinityProcessName);
 //            objectNode.put("outputDir", outputDir);
             final Request request = new Request.Builder().url(node)
                     .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();

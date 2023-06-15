@@ -48,7 +48,7 @@ public class EvalDateOfBirthAction implements IActionExecution {
                     .dateFormats(evalDateOfBirth.getDateFormats().split(","))
                     .comparableYear(evalDateOfBirth.getComparableYear())
                     .validatorThreshold(evalDateOfBirth.getValidatorThreshold()).build();
-            int score = dobAdapter.getConfidenceScore(evalDateOfBirth.getDob(), adapter);
+            int score = dobAdapter.getConfidenceScore(evalDateOfBirth.getDob(), adapter,action);
             action.getContext().put(evalDateOfBirth.getName().concat(".score"), String.valueOf(score));
         } catch (Exception ex) {
             action.getContext().put(evalDateOfBirth.getName().concat(".error"), "true");

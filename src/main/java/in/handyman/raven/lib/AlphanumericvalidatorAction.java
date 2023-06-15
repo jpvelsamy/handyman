@@ -40,7 +40,7 @@ public class AlphanumericvalidatorAction implements IActionExecution {
 
     int getAlphaNumericScore(Validator adapter) {
         try {
-            boolean validator = alphaNumericAdapter.getValidationModel(adapter.getInputValue(), adapter.getAllowedSpecialChar());
+            boolean validator = alphaNumericAdapter.getValidationModel(adapter.getInputValue(), adapter.getAllowedSpecialChar(), action);
             return validator ? adapter.getThreshold() : 0;
         } catch (Exception ex) {
             log.error("Exception occurred in getting alpha numeric score", ex);
@@ -54,7 +54,7 @@ public class AlphanumericvalidatorAction implements IActionExecution {
         try {
             log.info(aMarker, "Alpha Numeric Count Action for {} has been started" , alphanumericvalidator.getName());
             AdapterInterface alphaNumericAdapter = new AlphaNumericAdapter();
-            boolean validator = alphaNumericAdapter.getValidationModel(alphanumericvalidator.getInputValue(), alphanumericvalidator.getAllowedSpecialCharacters());
+            boolean validator = alphaNumericAdapter.getValidationModel(alphanumericvalidator.getInputValue(), alphanumericvalidator.getAllowedSpecialCharacters(), action);
             int confidenceScore = validator ? Integer.parseInt(alphanumericvalidator.getThresholdValue()) : 0;
             action.getContext().put("validator.score", String.valueOf(confidenceScore));
             log.info(aMarker, "Alpha Numeric Action for {} has been completed" , alphanumericvalidator.getName());

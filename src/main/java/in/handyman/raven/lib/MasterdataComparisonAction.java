@@ -295,12 +295,11 @@ public class MasterdataComparisonAction implements IActionExecution {
         private Timestamp createdOn;
         String extractedValue;
         String actualValue;
-
-    double intelliMatch;
-    String status;
-    String stage;
-    String message;
-    private Long rootPipelineId;
+        double intelliMatch;
+        String status;
+        String stage;
+        String message;
+        private Long rootPipelineId;
 
     @Override
     public List<Object> getRowData() {
