@@ -11,6 +11,7 @@ import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
+import java.awt.*;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -53,6 +54,12 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
         List<AutoRotationOutputTable> parentObj = new ArrayList<>();
         final ObjectNode objectNode = mapper.createObjectNode();
         String entityFilePath = entity.getFilePath();
+        Long actionId= action.getActionId();
+        Long rootpipelineId=entity.getRootPipelineId();
+        final String autoRotationProcess="AUTO_ROTATION";
+        objectNode.put("rootPipelineId",rootpipelineId);
+        objectNode.put("actionId",actionId);
+        objectNode.put("process",autoRotationProcess);
         objectNode.put("inputFilePath", entityFilePath);
         objectNode.put("outputDir", outputDir);
         log.info(aMarker, " Input variables id : {}", action.getActionId());

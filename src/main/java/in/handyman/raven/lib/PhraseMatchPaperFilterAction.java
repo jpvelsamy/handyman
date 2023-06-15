@@ -126,15 +126,23 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
             Integer paperNo = entity.paperNo;
             String truthPlaceholder = entity.truthPlaceholder;
 
+            Long rootpipelineId=entity.getRootPipelineId();
+            final String PHRASE_MATCH_PROCESS="PHRASE_MATCH";
+            Long actionId= action.getActionId();
+
+
             try {
                 String pageContent = entity.pageContent;
                 objectNode.put("pageContent", pageContent);
-//                objectNode.put("truthEntity", entity.truthEntity);
+    // objectNode.put("truthEntity", entity.truthEntity);
                 objectNode.set("keysToFilter", mapper.readTree(truthPlaceholder));
                 objectNode.put("originId", originId);
-
                 objectNode.put("groupId", groupId);
                 objectNode.put("paperNo", paperNo);
+    //added rootpipelineid,actionId and processname in the request
+                objectNode.put("rootPipelineId",rootpipelineId);
+                objectNode.put("actionId",actionId);
+                objectNode.put("process",PHRASE_MATCH_PROCESS);
                 log.info(aMarker, " Input variables id : {}", action.getActionId());
                 Request request = new Request.Builder().url(endpoint)
                         .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();

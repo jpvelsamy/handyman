@@ -125,11 +125,20 @@ public class HwDetectionAction implements IActionExecution {
       List<HwClassificationOutputTable> parentObj = new ArrayList<>();
       final ObjectNode objectNode = mapper.createObjectNode();
       String entityFilePath = entity.getFilePath();
+
+      Long actionId=action.getActionId();
+      final String PAPER_CLASSIFICATION_PROCESS="PAPER_CLASSIFICATION";
+      long rootpipelineId= entity.getRootPipelineId();
+
       String modelPath = hwDetection.getModelPath();
       String directoryPath = hwDetection.getDirectoryPath();
       objectNode.put("inputFilePath", entityFilePath);
       objectNode.put("modelPath", modelPath);
       objectNode.put("outputDir", directoryPath);
+      //added rootpipelineId,actionId and process anem in the request
+      objectNode.put("rootPipelineId",rootpipelineId);
+      objectNode.put("actionId",actionId);
+      objectNode.put("process",PAPER_CLASSIFICATION_PROCESS);
       log.info(aMarker, "Request List {}", objectNode);
       log.info("request object node {}",objectNode);
       Request request = new Request.Builder().url(endpoint)

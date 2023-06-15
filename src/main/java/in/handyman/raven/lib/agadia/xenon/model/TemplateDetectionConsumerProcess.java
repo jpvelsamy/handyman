@@ -55,9 +55,15 @@ public class TemplateDetectionConsumerProcess implements CoproProcessor.Consumer
         List<TemplateDetectionOutputTable> outputObjectList = new ArrayList<>();
         List<String> attributes = entity.getQuestions();
         String inputFilePath = entity.getFilePath();
+        Long rootpipelineId=entity.getRootPipelineId();
+        Long actionId=action.getActionId();
+        final String TemplateDetectionprocessname = "TEMPLATE_DETECTION";
         TemplateDetectionRequest templateDetectionRequest = new TemplateDetectionRequest();
         templateDetectionRequest.setAttributes(attributes);
         templateDetectionRequest.setInputFilePath(inputFilePath);
+        templateDetectionRequest.setRootpipelineId(rootpipelineId);
+        templateDetectionRequest.setActionId(actionId);
+        templateDetectionRequest.setProcessname(TemplateDetectionprocessname);
 
         log.info(aMarker, "Input request object for template detection filePath is {} and questions size {}", inputFilePath, attributes.size());
 

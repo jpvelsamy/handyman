@@ -127,10 +127,19 @@ public class UrgencyTriageModelAction implements IActionExecution {
       final ObjectNode objectNode = mapper.createObjectNode();
       String inputFilePath = entity.getInputFilePath();
       String outputDir = urgencyTriageModel.getOutputDir();
+      Long actionId= action.getActionId();
+      Long rootpipelineId= entity.getRootPipelineId();
+      final String UT_MODEL_PROCESS="URGENCY_TRIAGE_MODEL";
+
 
       objectNode.put("inputFilePath", inputFilePath);
       objectNode.put("outputDir", outputDir);
 
+      //added rootpipelineId,actionId,process to the object node
+      objectNode.put("rootPipelineId",rootpipelineId);
+      objectNode.put("actionId",actionId);
+      objectNode.put("process",UT_MODEL_PROCESS);
+      
       log.info("request builder object node {}",objectNode);
 
       Request request = new Request.Builder().url(endpoint)

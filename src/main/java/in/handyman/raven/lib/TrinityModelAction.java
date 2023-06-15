@@ -218,6 +218,7 @@ public class TrinityModelAction implements IActionExecution {
         private List<String> questions;
         private String paperType;
 
+
     }
 
     @AllArgsConstructor

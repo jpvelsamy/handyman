@@ -17,6 +17,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import okhttp3.*;
 import org.jdbi.v3.core.Jdbi;
+import org.mariadb.jdbc.message.client.LongDataPacket;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -134,7 +135,13 @@ public class QrExtractionAction implements IActionExecution {
             List<QrOutputEntity> qrOutputEntities = new ArrayList<>();
             final ObjectNode objectNode = mapper.createObjectNode();
             String filePath = entity.filePath;
+            final String qrExtractionProcess="QR_EXTRACTION";
+            Long actionId= action.getActionId();
+            Long rootpipelineId=entity.getRootPipelineId();
             objectNode.put("inputFilePath", filePath);
+            objectNode.put("process",qrExtractionProcess);
+            objectNode.put("actionId",actionId);
+            objectNode.put("rootPipelineId",rootpipelineId);
 
             if (log.isInfoEnabled()) {
                 log.info("input object node in the consumer process  inputFilePath {}", filePath);
@@ -242,12 +249,13 @@ public class QrExtractionAction implements IActionExecution {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class QrInputEntity implements CoproProcessor.Entity {
+    public static class     QrInputEntity implements CoproProcessor.Entity {
         private String filePath;
         private Integer groupId;
         private String originId;
         private Integer paperNo;
         private String fileId;
+        private Long rootPipelineId;
 
         @Override
         public List<Object> getRowData() {

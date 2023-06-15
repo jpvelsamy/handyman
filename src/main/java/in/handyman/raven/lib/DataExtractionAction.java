@@ -20,6 +20,7 @@ import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.argument.Arguments;
 import org.jdbi.v3.core.argument.NullArgument;
 import org.json.JSONObject;
+import org.mariadb.jdbc.message.client.LongDataPacket;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -120,7 +121,13 @@ public class DataExtractionAction implements IActionExecution {
       List<DataExtractionAction.DataExtractionOutputTable> parentObj = new ArrayList<>();
       final ObjectNode objectNode = mapper.createObjectNode();
       String inputFilePath = entity.getFilePath();
+    final String DATA_EXTRACTION_PROCESS="DATA_EXTRACTION";
+      Long rootpipelineId=entity.rootPipelineId;
+      Long actionId=action.getActionId();
       objectNode.put("inputFilePath", inputFilePath);
+      objectNode.put("rootPipelineId",rootpipelineId);
+      objectNode.put("actionId",actionId);
+      objectNode.put("process",DATA_EXTRACTION_PROCESS);
       Request request = new Request.Builder().url(endpoint).post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
 
       if(log.isInfoEnabled()) {
