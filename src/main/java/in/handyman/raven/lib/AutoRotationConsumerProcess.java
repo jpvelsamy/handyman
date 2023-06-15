@@ -79,7 +79,7 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
         String tenantId = entity.getTenantId();
         String templateId = entity.getTemplateId();
         Integer paperNo = entity.getPaperNo();
-        Long rootPipelineId = entity.getRootPipelineId();
+
 
         try (Response response = httpclient.newCall(request).execute()) {
             if (response.isSuccessful()) {
