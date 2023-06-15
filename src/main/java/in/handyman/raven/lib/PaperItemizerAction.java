@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import in.handyman.raven.util.ExceptionUtil;
+import in.handyman.raven.util.UniqueID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -139,14 +140,17 @@ public class PaperItemizerAction implements IActionExecution {
       List<PaperItemizerOutputTable> parentObj = new ArrayList<>();
       final ObjectNode objectNode = mapper.createObjectNode();
       String inputFilePath = entity.getFilePath();
+      Long uniqueId= UniqueID.getId();
+      String uniqueIdStr=String.valueOf(uniqueId);
+      String outputDirectory=outputDir.concat("/").concat(String.valueOf(entity.getRootPipelineId())).concat("/").concat(entity.getOriginId()).concat("/").concat(uniqueIdStr);
       objectNode.put("inputFilePath", inputFilePath);
-      objectNode.put("outputDir", outputDir);
+      objectNode.put("outputDir", outputDirectory);
       log.info(aMarker,"coproProcessor mapper object node {}",objectNode);
       Request request = new Request.Builder().url(endpoint)
               .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
 
       if(log.isInfoEnabled()) {
-        log.info(aMarker, "Request has been build with the parameters \n URI : {}, with inputFilePath {} and outputDir {}", endpoint, inputFilePath, outputDir);
+        log.info(aMarker, "Request has been build with the parameters \n URI : {}, with inputFilePath {} and outputDir {}", endpoint, inputFilePath, outputDirectory);
       }
       AtomicInteger atomicInteger = new AtomicInteger();
       String originId = entity.getOriginId();
