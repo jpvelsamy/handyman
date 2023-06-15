@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.util.ExceptionUtil;
+import in.handyman.raven.util.UniqueID;
 import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -54,20 +55,24 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
         List<AutoRotationOutputTable> parentObj = new ArrayList<>();
         final ObjectNode objectNode = mapper.createObjectNode();
         String entityFilePath = entity.getFilePath();
+        Long uniqueId= UniqueID.getId();
         Long actionId= action.getActionId();
-        Long rootpipelineId=entity.getRootPipelineId();
+        Long rootPipelineId=entity.getRootPipelineId();
+        String uniqueIdStr=String.valueOf(uniqueId);
         final String autoRotationProcess="AUTO_ROTATION";
-        objectNode.put("rootPipelineId",rootpipelineId);
+
+        String outputDirectory=outputDir.concat("/").concat(String.valueOf(entity.getRootPipelineId())).concat("/").concat(entity.getOriginId()).concat("/").concat(uniqueIdStr);
+        objectNode.put("rootPipelineId",rootPipelineId);
         objectNode.put("actionId",actionId);
         objectNode.put("process",autoRotationProcess);
         objectNode.put("inputFilePath", entityFilePath);
-        objectNode.put("outputDir", outputDir);
+        objectNode.put("outputDir", outputDirectory);
         log.info(aMarker, " Input variables id : {}", action.getActionId());
         Request request = new Request.Builder().url(endpoint)
                 .post(RequestBody.create(objectNode.toString(), MEDIA_TYPE_JSON)).build();
 
         if(log.isInfoEnabled()) {
-            log.info(aMarker, "Request has been build with the parameters \n URI : {}, with inputFilePath {} and outputDir {}", endpoint, entityFilePath, outputDir);
+            log.info(aMarker, "Request has been build with the parameters \n URI : {}, with inputFilePath {} and outputDir {}", endpoint, entityFilePath, outputDirectory);
         }
         Integer groupId = entity.getGroupId();
         Long processId = entity.getProcessId();

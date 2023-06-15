@@ -26,49 +26,54 @@ public class EocIdCoverage {
 
     public Map<String,List<Integer>> SplitByEocId(Jdbi jdbi, String sorItem) {
         Map<String,List<Integer>> eocObjectMap=new HashMap<>();
-
-        if(Objects.equals(sorItem,"patient_eoc")){
-            String inputQuery=episodeOfCoverage.getValue().replace(";"," ").concat("AND sor_item_name IN ('patient_eoc' ) group by predicted_value");
-            List<Map<String, Object>> eocIdRequestInfo=queryExecutor(jdbi,sorItem,inputQuery);
-            if (!eocIdRequestInfo.isEmpty()) {
-
-                List<Integer> breakPointsList = new ArrayList<>();
-                eocIdRequestInfo.forEach(eocGroupingEocIdRequestInfo -> {
-                    final Integer startNoString = (Integer) Optional.ofNullable(eocGroupingEocIdRequestInfo.get("start_no")).orElse(0);
-                    breakPointsList.add(startNoString);
-                });
-                Collections.sort(breakPointsList);
+        Integer eocIdCount = Integer.parseInt(episodeOfCoverage.getEocIdCount());
+        if(eocIdCount >0){
 
 
-                for (var eocGroupingEocIdRequestInfo : eocIdRequestInfo) {
-                    String answerString = Optional.ofNullable(eocGroupingEocIdRequestInfo.get("answer")).map(String::valueOf).orElse("");
-                    if(!answerString.isEmpty() && !answerString.isBlank()){
-                        List<Integer> paperList = new ArrayList<>();
+            if(Objects.equals(sorItem,"patient_eoc")){
+                String inputQuery=episodeOfCoverage.getValue().replace(";"," ").concat("AND sor_item_name IN ('patient_eoc' ) group by predicted_value");
+                List<Map<String, Object>> eocIdRequestInfo=queryExecutor(jdbi,sorItem,inputQuery);
+                if (!eocIdRequestInfo.isEmpty()) {
 
-                        Integer startNoInt = (Integer) Optional.ofNullable(eocGroupingEocIdRequestInfo.get("start_no")).orElse(0);
+                    List<Integer> breakPointsList = new ArrayList<>();
+                    eocIdRequestInfo.forEach(eocGroupingEocIdRequestInfo -> {
+                        final Integer startNoString = (Integer) Optional.ofNullable(eocGroupingEocIdRequestInfo.get("start_no")).orElse(0);
+                        breakPointsList.add(startNoString);
+                    });
+                    Collections.sort(breakPointsList);
 
-                        int totalPageInt = Integer.parseInt(episodeOfCoverage.getTotalPages());
-                        int endPoint = 0;
 
-                        try {
-                            endPoint = breakPointsList.get(breakPointsList.indexOf(startNoInt) + 1);
-                        } catch (Exception e) {
-                            endPoint = totalPageInt + 1;
+                    for (var eocGroupingEocIdRequestInfo : eocIdRequestInfo) {
+                        String answerString = Optional.ofNullable(eocGroupingEocIdRequestInfo.get("answer")).map(String::valueOf).orElse("");
+                        if(!answerString.isEmpty() && !answerString.isBlank()){
+                            List<Integer> paperList = new ArrayList<>();
+
+                            Integer startNoInt = (Integer) Optional.ofNullable(eocGroupingEocIdRequestInfo.get("start_no")).orElse(0);
+
+                            int totalPageInt = Integer.parseInt(episodeOfCoverage.getTotalPages());
+                            int endPoint = 0;
+
+                            try {
+                                endPoint = breakPointsList.get(breakPointsList.indexOf(startNoInt) + 1);
+                            } catch (Exception e) {
+                                endPoint = totalPageInt + 1;
+                            }
+                            if (breakPointsList.indexOf(startNoInt) == 0 ) {
+                                startNoInt = 1;
+                            }
+
+                            for (int i = startNoInt; i < endPoint; i++) {
+                                paperList.add(i);
+                            }
+                            //thic code will save the result as a map with string as key and list as value
+                            answerString =answerString.replaceAll("[-/#%;?\\\\]","_");
+                            eocObjectMap.put(answerString, paperList);
                         }
-                        if (breakPointsList.indexOf(startNoInt) == 0 ) {
-                            startNoInt = 1;
-                        }
 
-                        for (int i = startNoInt; i < endPoint; i++) {
-                            paperList.add(i);
-                        }
-                        //thic code will save the result as a map with string as key and list as value
-                        answerString =answerString.replaceAll("[-/#%;?\\\\]","_");
-                        eocObjectMap.put(answerString, paperList);
                     }
-
                 }
             }
+            return eocObjectMap;
         }
         return eocObjectMap;
     }
