@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import in.handyman.raven.util.ExceptionUtil;
+import in.handyman.raven.util.UniqueID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -139,7 +140,9 @@ public class PaperItemizerAction implements IActionExecution {
       List<PaperItemizerOutputTable> parentObj = new ArrayList<>();
       final ObjectNode objectNode = mapper.createObjectNode();
       String inputFilePath = entity.getFilePath();
-      String outputDirectory=outputDir.concat("/").concat(String.valueOf(entity.getRootPipelineId())).concat("/").concat(entity.originId);
+      Long uniqueId= UniqueID.getId();
+      String uniqueIdStr=String.valueOf(uniqueId);
+      String outputDirectory=outputDir.concat("/").concat(String.valueOf(entity.getRootPipelineId())).concat("/").concat(entity.originId).concat("/").concat(uniqueIdStr);
       objectNode.put("inputFilePath", inputFilePath);
       objectNode.put("outputDir", outputDirectory);
       log.info(aMarker,"coproProcessor mapper object node {}",objectNode);
