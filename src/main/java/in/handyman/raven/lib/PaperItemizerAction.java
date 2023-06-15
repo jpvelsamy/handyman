@@ -142,7 +142,7 @@ public class PaperItemizerAction implements IActionExecution {
       String inputFilePath = entity.getFilePath();
       Long uniqueId= UniqueID.getId();
       String uniqueIdStr=String.valueOf(uniqueId);
-      String outputDirectory=outputDir.concat("/").concat(String.valueOf(entity.getRootPipelineId())).concat("/").concat(entity.originId).concat("/").concat(uniqueIdStr);
+      String outputDirectory=outputDir.concat("/").concat(String.valueOf(entity.getRootPipelineId())).concat("/").concat(entity.getOriginId()).concat("/").concat(uniqueIdStr);
       objectNode.put("inputFilePath", inputFilePath);
       objectNode.put("outputDir", outputDirectory);
       log.info(aMarker,"coproProcessor mapper object node {}",objectNode);
