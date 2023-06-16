@@ -77,8 +77,8 @@ public class QrExtractionAction implements IActionExecution {
 
             //5. build insert prepare statement with output table columns
             final String insertQuery = "INSERT INTO " + qrExtraction.getOutputTable() +
-                    "            (origin_id, group_id, paper_no, created_on,   qr_format, qr_format_id, extracted_value,   file_id, b_box, angle, confidence_score, status, stage, message)" +
-                    "VALUES(?,?,?,?,  ?,?,? ,?,?,  ?,?,?, ?,?)";
+                    "            (origin_id, group_id, paper_no, created_on,   qr_format, qr_format_id, extracted_value,   file_id, b_box, angle, confidence_score, status, stage, message,decode_type)" +
+                    "VALUES(?,?,?,?,  ?,?,? ,?,?,  ?,?,?, ?,?  ,?)";
             final CoproProcessor<QrInputEntity, QrOutputEntity> coproProcessor =
                     new CoproProcessor<>(new LinkedBlockingQueue<>(),
                             QrOutputEntity.class,
@@ -172,6 +172,7 @@ public class QrExtractionAction implements IActionExecution {
                                     .paperNo(paperNo)
                                     .groupId(groupId)
                                     .fileId(fileId)
+                                    .decodeType(qrReader.getDecode_type())
                                     .qrFormat(qrReader.getType())
                                     .qrFormatId(atomicInteger.incrementAndGet())
                                     .extractedValue(qrReader.getValue())
@@ -239,6 +240,7 @@ public class QrExtractionAction implements IActionExecution {
     public static class QrReader {
         private String value;
         private String type;
+        private String decode_type;
         private Integer confidenceScore;
         private JsonNode boundingBox;
         private Integer angle;
@@ -283,10 +285,11 @@ public class QrExtractionAction implements IActionExecution {
         private String status;
         private String stage;
         private String message;
+        private String decodeType;
 
         @Override
         public List<Object> getRowData() {
-            return Stream.of(this.originId, this.groupId, this.paperNo, this.createdOn, this.qrFormat, this.qrFormatId, this.extractedValue, this.fileId, this.b_box, this.angle, this.confidenceScore, this.status, this.stage, this.message).collect(Collectors.toList());
+            return Stream.of(this.originId, this.groupId, this.paperNo, this.createdOn, this.qrFormat, this.qrFormatId, this.extractedValue, this.fileId, this.b_box, this.angle, this.confidenceScore, this.status, this.stage, this.message,this.decodeType).collect(Collectors.toList());
         }
 
     }
