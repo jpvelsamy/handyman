@@ -143,8 +143,15 @@ public class PaperItemizerAction implements IActionExecution {
       Long uniqueId= UniqueID.getId();
       String uniqueIdStr=String.valueOf(uniqueId);
       String outputDirectory=outputDir.concat("/").concat(String.valueOf(entity.getRootPipelineId())).concat("/").concat(entity.getOriginId()).concat("/").concat(uniqueIdStr);
+      Long rootPipelineId=entity.getRootPipelineId();
+      final String paperItemizerProcessName = "PAPER_ITEMIZER";
+      Long actionId=action.getActionId();
+      objectNode.put("rootPipelineId",rootPipelineId);
+      objectNode.put("process",paperItemizerProcessName);
       objectNode.put("inputFilePath", inputFilePath);
       objectNode.put("outputDir", outputDirectory);
+      objectNode.put("actionId", actionId);
+
       log.info(aMarker,"coproProcessor mapper object node {}",objectNode);
       Request request = new Request.Builder().url(endpoint)
               .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
@@ -158,7 +165,8 @@ public class PaperItemizerAction implements IActionExecution {
       String templateId = entity.templateId;
       String tenantId = entity.tenantId;
       Long processId = entity.processId;
-      Long rootPipelineId = entity.rootPipelineId;
+
+
       try(Response response=httpclient.newCall(request).execute()){
 
         if(log.isInfoEnabled())
@@ -182,7 +190,7 @@ public class PaperItemizerAction implements IActionExecution {
                             .processId(processId)
                             .paperNo(atomicInteger.incrementAndGet())
                             .status("COMPLETED")
-                            .stage("PAPER_ITEMIZER")
+                            .stage(paperItemizerProcessName)
                             .message("Paper Itemizer macro completed")
                             .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                             .rootPipelineId(rootPipelineId)
@@ -199,7 +207,7 @@ public class PaperItemizerAction implements IActionExecution {
                           .tenantId(tenantId)
                           .paperNo(atomicInteger.incrementAndGet())
                           .status("FAILED")
-                          .stage("PAPER_ITEMIZER")
+                          .stage(paperItemizerProcessName)
                           .message(response.message())
                           .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                           .rootPipelineId(rootPipelineId)
@@ -217,7 +225,7 @@ public class PaperItemizerAction implements IActionExecution {
                         .tenantId(tenantId)
                         .paperNo(atomicInteger.incrementAndGet())
                         .status("FAILED")
-                        .stage("PAPER_ITEMIZER")
+                        .stage(paperItemizerProcessName)
                         .message(exception.getMessage())
                         .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                         .rootPipelineId(rootPipelineId)

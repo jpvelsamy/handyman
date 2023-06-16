@@ -47,7 +47,7 @@ public class EvalMemberIdAction implements IActionExecution {
                     .charCountThreshold(evalMemberId.getCharCountThreshold())
                     .validatorDetail(evalMemberId.getSpecialCharacter())
                     .validatorThreshold(evalMemberId.getValidatorThreshold()).build();
-            int score = memberAdapter.getConfidenceScore(evalMemberId.getMemberID(), adapter);
+            int score = memberAdapter.getConfidenceScore(evalMemberId.getMemberID(), adapter,action);
             action.getContext().put(evalMemberId.getName().concat(".score"), String.valueOf(score));
         } catch (Exception ex) {
             action.getContext().put(evalMemberId.getName().concat(".error"), "true");

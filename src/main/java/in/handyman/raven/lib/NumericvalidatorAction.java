@@ -41,7 +41,7 @@ public class NumericvalidatorAction implements IActionExecution {
 
     int getNumericScore(Validator adapter) {
         try {
-            boolean validator = numericAdapter.getValidationModel(adapter.getInputValue(), adapter.getAllowedSpecialChar());
+            boolean validator = numericAdapter.getValidationModel(adapter.getInputValue(), adapter.getAllowedSpecialChar(), action);
             return validator ? adapter.getThreshold() : 0;
         } catch (Exception ex) {
             log.error(aMarker, "Error in getting numeric score");
@@ -55,7 +55,7 @@ public class NumericvalidatorAction implements IActionExecution {
 
             log.info(aMarker, "Numeric Validator Action for {} has been started" , numericvalidator.getName());
             AdapterInterface numericAdapter = new NumericAdapter();
-            boolean validator = numericAdapter.getValidationModel(numericvalidator.getInputValue(), numericvalidator.getAllowedSpecialCharacters());
+            boolean validator = numericAdapter.getValidationModel(numericvalidator.getInputValue(), numericvalidator.getAllowedSpecialCharacters(), action);
             int confidenceScore = validator ? Integer.parseInt(numericvalidator.getThresholdValue()) : 0;
             action.getContext().put("validator.score", String.valueOf(confidenceScore));
             log.info(aMarker, "Numeric Validator Action for {} has been completed" , numericvalidator.getName());

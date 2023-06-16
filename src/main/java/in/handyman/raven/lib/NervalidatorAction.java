@@ -49,16 +49,16 @@ public class NervalidatorAction implements IActionExecution {
     int getNerScore(Validator adapter, String uri) {
         int confidenceScore = 0;
         try {
-            boolean alphaValidator = alphaAdapter.getValidationModel(adapter.getInputValue(), adapter.getAllowedSpecialChar());
+            boolean alphaValidator = alphaAdapter.getValidationModel(adapter.getInputValue(), adapter.getAllowedSpecialChar(), action);
             if (alphaValidator) {
-                boolean validator = nameAdapter.getValidationModel(adapter.getInputValue(), uri);
+                boolean validator = nameAdapter.getValidationModel(adapter.getInputValue(), uri, action);
                 confidenceScore = validator ? adapter.getThreshold() : 0;
             } else {
                 Pattern pattern = Pattern.compile(NAME_NUMBER_REGEX);
                 Matcher matcher = pattern.matcher(adapter.getInputValue());
                 if (matcher.matches()) {
                     String name = matcher.group(1);
-                    boolean validator = nameAdapter.getValidationModel(name, uri);
+                    boolean validator = nameAdapter.getValidationModel(name, uri, action);
                     confidenceScore = validator ? adapter.getThreshold() : 0;
                 }
             }
@@ -74,7 +74,7 @@ public class NervalidatorAction implements IActionExecution {
         try {
             log.info(aMarker, "Ner Validator Count Action for {} has been started", nervalidator.getName());
             AdapterInterface nameAdapter = new NameAdapter();
-            boolean validator = nameAdapter.getValidationModel(nervalidator.getInputValue(), URI);
+            boolean validator = nameAdapter.getValidationModel(nervalidator.getInputValue(), URI, action);
             int confidenceScore = validator ? Integer.parseInt(nervalidator.getNerThreshold()) : 0;
             action.getContext().put("validator.score", String.valueOf(confidenceScore));
             log.info(aMarker, "Ner Validator Action for {} has been completed", nervalidator.getName());

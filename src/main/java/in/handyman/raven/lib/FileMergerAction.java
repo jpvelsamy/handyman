@@ -50,7 +50,14 @@ public class FileMergerAction implements IActionExecution {
         ObjectNode inputJSON = (ObjectNode) mapper.readTree(requestBody);
 
         String outputDir = fileMerger.getOutputDir();
+        final String mergerProcessName="FILE_MERGER";
+        String rootPipelineId= action.getContext().get("gen_id.root_pipeline_id");
+        Long actionId=action.getActionId();
+
         inputJSON.put("outputDir", outputDir);
+        inputJSON.put("actionId",actionId);
+        inputJSON.put("rootPipelineId",rootPipelineId);
+        inputJSON.put("process",mergerProcessName);
         // BUILD A REQUEST
         Request request = new Request.Builder().url(URI)
                 .post(RequestBody.create(inputJSON.toString(), MediaTypeJSON)).build();
@@ -71,7 +78,7 @@ public class FileMergerAction implements IActionExecution {
             }
         } catch (Exception e) {
             action.getContext().put(name.concat(".error"), "true");
-            log.error(aMarker, "The Exception occurred ", e);
+            log.error(aMarker, "The Exception ocfileMergercurred ", e);
             throw new HandymanException("Failed to execute", e, action);
         }
     }

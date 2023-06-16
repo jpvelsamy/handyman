@@ -149,6 +149,12 @@ public class IntellimatchAction implements IActionExecution {
       if (result.getActualValue() != null) {
         final ObjectNode objectNode = mapper.createObjectNode();
         List<String> comparableSentence = Arrays.asList(result.getExtractedValue());
+        final String intellimatchProcessName="CONTROL_DATA";
+        Long actionId= action.getActionId();
+        Long rootpipelineId=result.rootPipelineId;
+        objectNode.put("rootPipelineId",rootpipelineId);
+        objectNode.put("actionId",actionId);
+        objectNode.put("process",intellimatchProcessName);
         objectNode.put("inputSentence", result.getActualValue());
         objectNode.putPOJO("sentences", comparableSentence);
           final Request request = new Request.Builder().url(endpoint)
@@ -278,8 +284,6 @@ public class IntellimatchAction implements IActionExecution {
     private String extractedValue;
     private Double similarity;
     private Integer confidenceScore;
-
-
     @Override
     public List<Object> getRowData() {
       return null;

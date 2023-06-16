@@ -128,6 +128,8 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
             String groupId = entity.groupId;
             Integer paperNo = entity.paperNo;
             Long actionId = action.getActionId();
+            Long rootpipelineId= entity.getRootPipelineId();
+            final String zeroshotProcessName="ZERO_SHOT_CLASSIFIER";
             try {
 //                objectNode.put("truthEntity", entity.truthEntity);
                 String truthPlaceholder = entity.getTruthPlaceholder();
@@ -135,6 +137,9 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
                 objectNode.put("originId", originId);
                 objectNode.put("groupId", groupId);
                 objectNode.put("paperNo", paperNo);
+                objectNode.put("rootPipelineId",rootpipelineId);
+                objectNode.put("actionId",actionId);
+                objectNode.put("process",zeroshotProcessName);
 
                 Request request = new Request.Builder().url(endpoint)
                         .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();

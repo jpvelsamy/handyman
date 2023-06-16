@@ -55,9 +55,15 @@ public class TemplateDetectionConsumerProcess implements CoproProcessor.Consumer
         List<TemplateDetectionOutputTable> outputObjectList = new ArrayList<>();
         List<String> attributes = entity.getQuestions();
         String inputFilePath = entity.getFilePath();
+        Long rootPipelineId=entity.getRootPipelineId();
+        Long actionId=action.getActionId();
+        final String TemplateDetectionProcessname = "TEMPLATE_DETECTION";
         TemplateDetectionRequest templateDetectionRequest = new TemplateDetectionRequest();
         templateDetectionRequest.setAttributes(attributes);
         templateDetectionRequest.setInputFilePath(inputFilePath);
+        templateDetectionRequest.setRootPipelineId(rootPipelineId);
+        templateDetectionRequest.setActionId(actionId);
+        templateDetectionRequest.setProcess(TemplateDetectionProcessname);
 
         log.info(aMarker, "Input request object for template detection filePath is {} and questions size {}", inputFilePath, attributes.size());
 
@@ -77,7 +83,6 @@ public class TemplateDetectionConsumerProcess implements CoproProcessor.Consumer
         String originId = entity.getOriginId();
         Integer paperNo = entity.getPaperNo();
         Integer groupId = entity.getGroupId();
-        Long rootPipelineId = entity.getRootPipelineId();
 
         try (Response response = httpclient.newCall(request).execute()) {
 

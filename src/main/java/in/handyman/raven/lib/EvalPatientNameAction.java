@@ -47,7 +47,7 @@ public class EvalPatientNameAction implements IActionExecution {
                     .charCountThreshold(evalPatientName.getCharCountThreshold())
                     .validatorDetail(evalPatientName.getNerCoproApi())
                     .validatorThreshold(evalPatientName.getNerApiThreshold()).build();
-            int score = patientAdapter.getConfidenceScore(evalPatientName.getPatientName(), adapter);
+            int score = patientAdapter.getConfidenceScore(evalPatientName.getPatientName(), adapter,action);
             action.getContext().put(evalPatientName.getName().concat(".score"), String.valueOf(score));
         } catch (Exception ex) {
             action.getContext().put(evalPatientName.getName().concat(".error"), "true");

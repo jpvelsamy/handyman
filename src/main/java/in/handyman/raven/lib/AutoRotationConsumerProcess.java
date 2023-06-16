@@ -12,6 +12,7 @@ import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
+import java.awt.*;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -55,8 +56,15 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
         final ObjectNode objectNode = mapper.createObjectNode();
         String entityFilePath = entity.getFilePath();
         Long uniqueId= UniqueID.getId();
+        Long actionId= action.getActionId();
+        Long rootPipelineId=entity.getRootPipelineId();
         String uniqueIdStr=String.valueOf(uniqueId);
+        final String autoRotationProcess="AUTO_ROTATION";
+
         String outputDirectory=outputDir.concat("/").concat(String.valueOf(entity.getRootPipelineId())).concat("/").concat(entity.getOriginId()).concat("/").concat(uniqueIdStr);
+        objectNode.put("rootPipelineId",rootPipelineId);
+        objectNode.put("actionId",actionId);
+        objectNode.put("process",autoRotationProcess);
         objectNode.put("inputFilePath", entityFilePath);
         objectNode.put("outputDir", outputDirectory);
         log.info(aMarker, " Input variables id : {}", action.getActionId());
@@ -71,7 +79,7 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
         String tenantId = entity.getTenantId();
         String templateId = entity.getTemplateId();
         Integer paperNo = entity.getPaperNo();
-        Long rootPipelineId = entity.getRootPipelineId();
+
 
         try (Response response = httpclient.newCall(request).execute()) {
             if (response.isSuccessful()) {
