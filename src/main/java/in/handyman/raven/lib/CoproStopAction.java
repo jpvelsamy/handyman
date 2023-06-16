@@ -66,9 +66,17 @@ public class CoproStopAction implements IActionExecution {
             .writeTimeout(10, TimeUnit.MINUTES)
             .readTimeout(10, TimeUnit.MINUTES)
             .build();
+
+    String process="COPRO_STOP";
+    Long rootPipelineId=action.getRootPipelineId();
+    Long actionId=action.getActionId();
     final ObjectNode objectNode = mapper.createObjectNode();
     String gunicorn = "gunicorn";
     objectNode.put("processName", gunicorn);
+    objectNode.put("process",process);
+    objectNode.put("rootPipelineId",rootPipelineId);
+    objectNode.put("actionId",actionId);
+
     log.info(aMarker, " Input variables id : {}", action.getActionId());
     String coproServerUrl = coproStop.getCoproServerUrl();
     Request request = new Request.Builder().url(coproServerUrl)

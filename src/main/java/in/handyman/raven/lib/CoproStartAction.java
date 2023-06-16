@@ -63,12 +63,18 @@ public class CoproStartAction implements IActionExecution {
             .writeTimeout(10, TimeUnit.MINUTES)
             .readTimeout(10, TimeUnit.MINUTES)
             .build();
+    String process="COPRO_START";
+    Long rootPipelineId=action.getRootPipelineId();
+    Long actionId=action.getActionId();
     final ObjectNode objectNode = mapper.createObjectNode();
     String coproCommand = coproStart.getCommand();
     String exportCommand = coproStart.getExportCommand();
     objectNode.put("processStartCommand", coproCommand);
     objectNode.put("exportCommand", exportCommand);
     objectNode.put("processUp","1");
+    objectNode.put("process",process);
+    objectNode.put("rootPipelineId",rootPipelineId);
+    objectNode.put("actionId",actionId);
 
     String coproServerUrl = coproStart.getCoproServerUrl();
     Request request = new Request.Builder().url(coproServerUrl)
