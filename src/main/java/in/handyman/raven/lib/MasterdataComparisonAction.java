@@ -154,8 +154,14 @@ public class MasterdataComparisonAction implements IActionExecution {
       String actualValue = result.actualValue;
       Integer paperNo = result.paperNo;
       String originId = result.getOriginId();
+      String masterDataProcess="MASTER_DATA";
+      Long actionId= action.getActionId();
+      Long rootpipelineId=result.rootPipelineId;
       if (result.getActualValue() != null) {
         final ObjectNode objectNode = mapper.createObjectNode();
+        objectNode.put("process",masterDataProcess);
+        objectNode.put("actionId",actionId);
+        objectNode.put("rootPipelineId",rootpipelineId);
         List<String> comparableSentence = Arrays.asList(result.getExtractedValue());
         objectNode.put("inputSentence", result.getActualValue());
         objectNode.putPOJO("sentences", comparableSentence);

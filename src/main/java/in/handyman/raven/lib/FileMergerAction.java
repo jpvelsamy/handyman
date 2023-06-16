@@ -78,7 +78,7 @@ public class FileMergerAction implements IActionExecution {
             }
         } catch (Exception e) {
             action.getContext().put(name.concat(".error"), "true");
-            log.error(aMarker, "The Exception occurred ", e);
+            log.error(aMarker, "The Exception ocfileMergercurred ", e);
             throw new HandymanException("Failed to execute", e, action);
         }
     }
