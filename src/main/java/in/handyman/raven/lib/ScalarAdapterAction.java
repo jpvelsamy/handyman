@@ -188,7 +188,6 @@ public class ScalarAdapterAction implements IActionExecution {
                         .build();
 
                 int validatorScore = computeAdapterScore(configurationDetails);
-                validatorScore = 70;
                 int validatorNegativeScore = 0;
                 if (result.getRestrictedAdapterFlag() == 1 && validatorScore != 0) {
                     configurationDetails.setAdapter(result.getRestrictedAdapter());

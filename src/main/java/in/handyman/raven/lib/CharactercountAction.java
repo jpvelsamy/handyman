@@ -23,6 +23,7 @@ public class CharactercountAction implements IActionExecution {
     private final Charactercount charactercount;
     private final Marker aMarker;
     static AdapterInterface charCountAdapter;
+    private static int limitedCharCount;
 
 
     public CharactercountAction(final ActionExecutionAudit action, final Logger log,
@@ -31,13 +32,17 @@ public class CharactercountAction implements IActionExecution {
         this.action = action;
         this.log = log;
         this.charCountAdapter = new CharacterCountAdapter();
+        this.limitedCharCount = Integer.parseInt(action.getContext().get("validaiton.char-limit-count"));
         this.aMarker = MarkerFactory.getMarker(" Charactercount:" + this.charactercount.getName());
     }
 
     public static int getCharCount(String input, int countLimit, int threshold) {
         try {
-            int wordCount = charCountAdapter.getThresholdScore(input);
-            return wordCount <= countLimit ? threshold : 0;
+            int charCount = charCountAdapter.getThresholdScore(input);
+            if(charCount<=limitedCharCount){
+                return 0;
+            }
+            return charCount <= countLimit ? threshold : 0;
         } catch (Exception ex) {
             throw new HandymanException("Failed to execute char count", ex);
         }
