@@ -162,7 +162,7 @@ public class AlchemyInfoAction implements IActionExecution {
                             .height(originUploadResponse.getHeight())
                             .rootPipelineId(rootPipelineId)
                             .build()));
-                    log.info(aMarker, "Execute for urgency triage {}", response);
+                    log.info(aMarker, "Execute for alchemy Info {}", response);
                 }
             } catch (Exception e) {
                 log.error(aMarker, "The Exception occurred in alchemy info action", e);
