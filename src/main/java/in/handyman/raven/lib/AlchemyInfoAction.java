@@ -181,7 +181,6 @@ public class AlchemyInfoAction implements IActionExecution {
     @Data
     @Builder
     public static class AlchemyInfoInputTable implements CoproProcessor.Entity {
-        private Long tenantId;
         private String originId;
         private Long rootPipelineId;
         private Integer groupId;
