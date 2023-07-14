@@ -1,6 +1,7 @@
 package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
@@ -61,11 +62,11 @@ public class AlchemyInfoAction implements IActionExecution {
             final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(alchemyInfo.getResourceConn());
             jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
             log.info(aMarker, "Alchemy Info Action for {} has been started", alchemyInfo.getName());
-            final String insertQuery = "INSERT INTO outbound.alchemy_papers (tenant_id, group_id, file_name, paper_no, pipeline_origin_id, alchemy_origin_id, origin_file_path, encode, width, height, created_on, root_pipeline_id)" +
-                    "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?)";
+            final String insertQuery = "INSERT INTO alchemy_migration.alchemy_papers (tenant_id, group_id, paper_no, pipeline_origin_id, alchemy_origin_id, origin_file_path, width, height, created_on, root_pipeline_id)" +
+                    "VALUES(?, ?, ?, ?, ?, ?, ?, ?, now(), ?)";
             final List<URL> urls = Optional.ofNullable(action.getContext().get("alchemy.origin.upload.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
                 try {
-                    return new URL(s1 + "?tenantId=" + alchemyInfo.getTenantId());
+                    return new URL(s1);
                 } catch (MalformedURLException e) {
                     log.error("Error in processing the URL ", e);
                     throw new RuntimeException(e);
@@ -101,7 +102,7 @@ public class AlchemyInfoAction implements IActionExecution {
 
         public final ActionExecutionAudit action;
 
-        private final String tenantId;
+        private final Long tenantId;
         private final String authToken;
         final OkHttpClient httpclient = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.MINUTES)
@@ -113,7 +114,7 @@ public class AlchemyInfoAction implements IActionExecution {
             this.log = log;
             this.aMarker = aMarker;
             this.action = action;
-            this.tenantId = action.getContext().get("alchemyAuth.tenantId");
+            this.tenantId = Long.valueOf(action.getContext().get("alchemyAuth.tenantId"));
             this.authToken = action.getContext().get("alchemyAuth.token");
         }
 
@@ -131,7 +132,8 @@ public class AlchemyInfoAction implements IActionExecution {
                     .addFormDataPart("file", file.getName(), RequestBody.create(mediaType, file))
                     .build();
 
-            Request request = new Request.Builder().url(endpoint)
+            URL url = new URL(endpoint.toString() + "/" + entity.getRootPipelineId() + "/?tenantId=" + this.tenantId);
+            Request request = new Request.Builder().url(url)
                     .addHeader("accept", "*/*")
                     .addHeader("Authorization", "Bearer " + authToken)
                     .post(requestBody)
@@ -145,19 +147,20 @@ public class AlchemyInfoAction implements IActionExecution {
             String pipelineOriginId = entity.getOriginId();
             Long rootPipelineId = entity.getRootPipelineId();
             try (Response response = httpclient.newCall(request).execute()) {
-                List<OriginUploadResponse> originUploadResponseList = mapper.readValue(Objects.requireNonNull(response.body()).string(), new TypeReference<>() {
-                });
                 if (response.isSuccessful()) {
                     log.info("Response Details: {}", response);
+                    String responseBody = Objects.requireNonNull(response.body()).string();
+                    JsonNode responseNode = mapper.readTree(responseBody);
+                    JsonNode payload = responseNode.get("payload");
+                    List<OriginUploadResponse> originUploadResponseList = mapper.readValue(payload.toString(), new TypeReference<>() {
+                    });
                     originUploadResponseList.forEach(originUploadResponse -> parentObj.add(AlchemyInfoOutputTable.builder()
                             .tenantId(this.tenantId)
                             .groupId(groupId)
-                            .fileName(originUploadResponse.getFilename())
                             .paperNo(originUploadResponse.getPageNo())
                             .pipelineOriginId(pipelineOriginId)
                             .alchemyOriginId(originUploadResponse.getOriginId())
                             .originFilePath(inputFilePath)
-                            .encode(originUploadResponse.getEncode())
                             .width(originUploadResponse.getWidth())
                             .height(originUploadResponse.getHeight())
                             .rootPipelineId(rootPipelineId)
@@ -178,7 +181,7 @@ public class AlchemyInfoAction implements IActionExecution {
     @Data
     @Builder
     public static class AlchemyInfoInputTable implements CoproProcessor.Entity {
-        private String tenantId;
+        private Long tenantId;
         private String originId;
         private Long rootPipelineId;
         private Integer groupId;
@@ -195,14 +198,12 @@ public class AlchemyInfoAction implements IActionExecution {
     @Data
     @Builder
     public static class AlchemyInfoOutputTable implements CoproProcessor.Entity {
-        private String tenantId;
+        private Long tenantId;
         private Integer groupId;
-        private String fileName;
         private Integer paperNo;
         private String pipelineOriginId;
         private String alchemyOriginId;
         private String originFilePath;
-        private String encode;
         private Integer width;
         private Integer height;
         private Long rootPipelineId;
@@ -210,8 +211,8 @@ public class AlchemyInfoAction implements IActionExecution {
 
         @Override
         public List<Object> getRowData() {
-            return Stream.of(this.tenantId, this.groupId, this.fileName, this.paperNo, this.pipelineOriginId,
-                    this.alchemyOriginId, this.originFilePath, this.encode, this.width, this.height, this.rootPipelineId).collect(Collectors.toList());
+            return Stream.of(this.tenantId, this.groupId, this.paperNo, this.pipelineOriginId,
+                    this.alchemyOriginId, this.originFilePath, this.width, this.height, this.rootPipelineId).collect(Collectors.toList());
         }
     }
 
@@ -220,11 +221,11 @@ public class AlchemyInfoAction implements IActionExecution {
     @Data
     @Builder
     public static class OriginUploadResponse {
-        private String filename;
         private Integer pageNo;
         private String encode;
         private Integer width;
         private Integer height;
         private String originId;
+        private String content;
     }
 }

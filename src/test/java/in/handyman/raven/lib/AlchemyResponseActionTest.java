@@ -13,15 +13,16 @@ class AlchemyResponseActionTest {
 
         AlchemyResponse alchemyResponse = AlchemyResponse.builder()
                 .name("alchemy response action")
-                .token("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJpc3MiOiJJbnRpY3NBSSBBbGNoZW15IiwiZXhwIjoxNjg3NDYzMDU3LCJpYXQiOjE2ODc0MTk4NTcsImVtYWlsIjoibWFuaWthbmRhbi50bUB6dWNpc3lzdGVtcy5jb20ifQ.FXvWsBa7rGGBGWO9_HfOHg-CQOMEdMRds7JQCWgBrfo")
-                .tenantId("TNT-000001")
-                .querySet("SELECT bbox, alchemy_origin_id as origin_id, paper_no, tenant_id, root_pipeline_id, confidence_score, extracted_value, sor_item_name, synonym_id FROM outbound.alchemy_response where root_pipeline_id = 37957;")
+                .token("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJpc3MiOiJJbnRpY3NBSSBBbGNoZW15IiwiZXhwIjoxNjg5MzU1MjA2LCJpYXQiOjE2ODkzMTIwMDYsImVtYWlsIjoiZGVtb0BpbnRpY3MuY29tIn0.0AUSfuHkA1iEGHr0qQ0EYl2zdJci0ZhOFWylE1wdHxM")
+                .tenantId("1")
+                .querySet("SELECT ar.bbox, ar.alchemy_origin_id as origin_id, ar.paper_no, ar.tenant_id, ampq.root_pipeline_id, ar.confidence_score, ar.extracted_value, ar.sor_item_name, ar.synonym_id\n" +
+                        "            FROM alchemy_migration.alchemy_response ar join alchemy_migration.alchemy_migration_payload_queue ampq on ampq.origin_id = ar.pipeline_origin_id;")
                 .resourceConn("intics_agadia_db_conn")
                 .condition(true).build();
         ActionExecutionAudit actionExecutionAudit = new ActionExecutionAudit();
         actionExecutionAudit.getContext().put("alchemy.origin.valuation.url","http://localhost:8189/alchemy/api/v1/valuation/origin");
-        actionExecutionAudit.getContext().put("alchemyAuth.token","eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJpc3MiOiJJbnRpY3NBSSBBbGNoZW15IiwiZXhwIjoxNjg3NDYzMDU3LCJpYXQiOjE2ODc0MTk4NTcsImVtYWlsIjoibWFuaWthbmRhbi50bUB6dWNpc3lzdGVtcy5jb20ifQ.FXvWsBa7rGGBGWO9_HfOHg-CQOMEdMRds7JQCWgBrfo");
-        actionExecutionAudit.getContext().put("alchemyAuth.tenantId","TNT-000001");
+        actionExecutionAudit.getContext().put("alchemyAuth.token","eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJpc3MiOiJJbnRpY3NBSSBBbGNoZW15IiwiZXhwIjoxNjg5MzU1MjA2LCJpYXQiOjE2ODkzMTIwMDYsImVtYWlsIjoiZGVtb0BpbnRpY3MuY29tIn0.0AUSfuHkA1iEGHr0qQ0EYl2zdJci0ZhOFWylE1wdHxM");
+        actionExecutionAudit.getContext().put("alchemyAuth.tenantId","1");
         actionExecutionAudit.getContext().put("gen_group_id.group_id","1");
         actionExecutionAudit.getContext().put("read.batch.size","1");
 

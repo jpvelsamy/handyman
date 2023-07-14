@@ -14,8 +14,8 @@ class AlchemyAuthTokenActionTest {
         AlchemyAuthToken alchemyAuthToken = AlchemyAuthToken.builder().build();
         ActionExecutionAudit actionExecutionAudit=new ActionExecutionAudit();
         actionExecutionAudit.getContext().put("alchemy.login.url","http://localhost:8189/alchemy/api/v1/auth/login");
-        actionExecutionAudit.getContext().put("alchemy.user","");
-        actionExecutionAudit.getContext().put("alchemy.password","TNT-000001");
+        actionExecutionAudit.getContext().put("alchemy.user","demo@intics.com");
+        actionExecutionAudit.getContext().put("alchemy.password","Marvel@2026");
         actionExecutionAudit.getContext().put("gen_group_id.group_id","1");
 
         AlchemyAuthTokenAction alchemyAuthTokenAction = new AlchemyAuthTokenAction(actionExecutionAudit, log, alchemyAuthToken);

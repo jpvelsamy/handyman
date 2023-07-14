@@ -1,8 +1,9 @@
 package in.handyman.raven.lib;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
@@ -77,11 +78,14 @@ public class AlchemyAuthTokenAction implements IActionExecution {
             String responseBody = response.body().string();
             if (response.isSuccessful()) {
                 log.info(aMarker, "The Successful Response for {} --> {}", alchemyAuthToken.getName(), responseBody);
-                AlchemyLoginResponse alchemyLoginResponse = mapper.readValue(responseBody, new TypeReference<>() {
-                });
+                mapper.registerModule(new JavaTimeModule());
+                JsonNode responseNode = mapper.readTree(responseBody);
+                JsonNode payload = responseNode.get("payload");
+                AlchemyLoginResponse alchemyLoginResponse = mapper.treeToValue(payload, AlchemyLoginResponse.class);
                 String authToken = alchemyLoginResponse.getToken();
+                System.out.println(authToken);
                 action.getContext().put(name.concat(".token"), authToken);
-                action.getContext().put(name.concat(".tenantId"), alchemyLoginResponse.getTenantId());
+                action.getContext().put(name.concat(".tenantId"), String.valueOf(alchemyLoginResponse.getTenantId()));
 
             } else {
                 log.info(aMarker, "The Failure Response {} --> {}", name, responseBody);
@@ -109,7 +113,7 @@ public class AlchemyAuthTokenAction implements IActionExecution {
     @Builder
     public static class AlchemyLoginResponse {
         private String username;
-        private String tenantId;
+        private Long tenantId;
         private String role;
         private String token;
         private Date expireDatetime;
