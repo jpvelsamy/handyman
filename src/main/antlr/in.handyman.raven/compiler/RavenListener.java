@@ -1070,6 +1070,16 @@ public interface RavenListener extends ParseTreeListener {
 	 */
 	void exitTrinityModel(RavenParser.TrinityModelContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link RavenParser#fileBucketing}.
+	 * @param ctx the parse tree
+	 */
+	void enterFileBucketing(RavenParser.FileBucketingContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RavenParser#fileBucketing}.
+	 * @param ctx the parse tree
+	 */
+	void exitFileBucketing(RavenParser.FileBucketingContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link RavenParser#json}.
 	 * @param ctx the parse tree
 	 */

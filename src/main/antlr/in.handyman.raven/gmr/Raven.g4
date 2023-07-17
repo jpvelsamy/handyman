@@ -130,6 +130,7 @@ action:
     |donutImpiraQa
     |trinityModel
     |templateDetection
+    |fileBucketing
     );
 
 
@@ -875,6 +876,13 @@ trinityModel:
      'using'  '{' questionSql=STRING '}'
      ('on-condition' condition=expression)*
      ('on-parallel-fielding' forkBatchSize=STRING)*;
+
+
+fileBucketing:
+     'file-bucketing' 'as' name=STRING
+     'output-dir' outputDir=STRING
+     'using'  '{' inputDirectory=STRING '}'
+     ('on-condition' condition=expression)*;
 
 //rules
 
