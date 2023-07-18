@@ -47,8 +47,11 @@ public class FileBucketingAction implements IActionExecution {
     @Override
     public void execute() throws Exception {
         log.info(aMarker, " File Bucketing Action has been started {}  ", fileBucketing.getName());
-        String inputFolder = getAbsolutePath(fileBucketing.getInputDirectory());
-        String outputFolder = getAbsolutePath(fileBucketing.getOutputDir());
+//        String inputFolder = getAbsolutePath(fileBucketing.getInputDirectory());
+//        String outputFolder = getAbsolutePath(fileBucketing.getOutputDir());
+        String inputFolder = fileBucketing.getInputDirectory();
+        String outputFolder = fileBucketing.getOutputDir();
+
         try {
             splitFilesByPage(inputFolder, outputFolder);
             System.out.println("File splitting completed successfully.");

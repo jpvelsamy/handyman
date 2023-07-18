@@ -45,7 +45,7 @@ public class TemplateDetectionAction implements IActionExecution {
     public static final String DEFAULT_BATCH_SIZE = "100";
     public static final String READ_BATCH_SIZE = "read.batch.size";
     public static final String WRITE_BATCH_SIZE = "read.batch.size";
-    public static final String CONSUMER_API_COUNT = "consumer.API.count";
+    public static final String CONSUMER_API_COUNT = "template.detection.consumer.API.count";
     public static final String INSERT_INTO = "INSERT INTO ";
     public static final String SCHEMA_NAME = "macro";
     public static final String COLUMN_LIST = "process_id, origin_id, paper_no, group_id, processed_file_path, question, predictedattribution_value, score, bboxes, image_width, image_height, image_dpi, extracted_image_unit, tenant_id, template_id, status, stage, message, created_on, root_pipeline_id";

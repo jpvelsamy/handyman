@@ -79,7 +79,7 @@ public class CheckboxVqaAction implements IActionExecution {
                       new CheckboxVqaInputTable(), urls, action);
       coproProcessor.startProducer(checkboxVqa.getQuerySet(), Integer.valueOf(action.getContext().get("read.batch.size")));
       Thread.sleep(1000);
-      coproProcessor.startConsumer(insertQuery,  Integer.valueOf(action.getContext().get("consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")), new CheckboxVqaConsumerProcess(log, aMarker, action));
+      coproProcessor.startConsumer(insertQuery,  Integer.valueOf(action.getContext().get("ut.consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")), new CheckboxVqaConsumerProcess(log, aMarker, action));
       log.info(aMarker, " Urgency Triage has been completed {}  ", checkboxVqa.getName());
     } catch (Exception t) {
       action.getContext().put(checkboxVqa.getName() + ".isSuccessful", "false");

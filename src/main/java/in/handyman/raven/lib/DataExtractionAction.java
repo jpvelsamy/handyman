@@ -87,7 +87,7 @@ public class DataExtractionAction implements IActionExecution {
       final CoproProcessor<DataExtractionAction.DataExtractionInputTable, DataExtractionAction.DataExtractionOutputTable> coproProcessor = new CoproProcessor<>(new LinkedBlockingQueue<>(), DataExtractionAction.DataExtractionOutputTable.class, DataExtractionAction.DataExtractionInputTable.class, jdbi, log, new DataExtractionAction.DataExtractionInputTable(), urls, action);
       coproProcessor.startProducer(dataExtraction.getQuerySet(), Integer.valueOf(action.getContext().get("read.batch.size")));
       Thread.sleep(1000);
-      coproProcessor.startConsumer(insertQuery, Integer.valueOf(action.getContext().get("consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")), new DataExtractionAction.DataExtractionConsumerProcess(log, aMarker, action));
+      coproProcessor.startConsumer(insertQuery, Integer.valueOf(action.getContext().get("text.extraction.consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")), new DataExtractionAction.DataExtractionConsumerProcess(log, aMarker, action));
       log.info(aMarker, " Data Extraction Action has been completed {}  ", dataExtraction.getName());
     }catch (Exception e){
       action.getContext().put(dataExtraction.getName() + ".isSuccessful", "false");

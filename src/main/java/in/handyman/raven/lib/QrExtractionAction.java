@@ -90,7 +90,7 @@ public class QrExtractionAction implements IActionExecution {
             log.info("start producer method from copro processor ");
             Thread.sleep(1000);
             //8. call the method start consumer from coproprocessor
-            coproProcessor.startConsumer(insertQuery, Integer.valueOf(action.getContext().get("consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")), new QrConsumerProcess(log, aMarker, action));
+            coproProcessor.startConsumer(insertQuery, Integer.valueOf(action.getContext().get("qr.consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")), new QrConsumerProcess(log, aMarker, action));
             log.info("start consumer method from copro processor ");
 
         } catch (Exception e) {

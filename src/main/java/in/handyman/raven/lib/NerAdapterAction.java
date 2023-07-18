@@ -96,9 +96,9 @@ public class NerAdapterAction implements IActionExecution {
             coproProcessor.startProducer(nerAdapter.getResultSet(), Integer.valueOf(action.getContext().get("read.batch.size")));
             log.info(aMarker, "ner adapter copro coproProcessor startProducer called read batch size {}", action.getContext().get("read.batch.size"));
             Thread.sleep(1000);
-            coproProcessor.startConsumer(insertQuery, Integer.valueOf(action.getContext().get("consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")),
+            coproProcessor.startConsumer(insertQuery, Integer.valueOf(action.getContext().get("ner.consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")),
                     new NerAdapterConsumerProcess(log, aMarker, action));
-            log.info(aMarker, "ner adapter copro coproProcessor startConsumer called consumer count {} write batch count {} ", Integer.valueOf(action.getContext().get("consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")));
+            log.info(aMarker, "ner adapter copro coproProcessor startConsumer called consumer count {} write batch count {} ", Integer.valueOf(action.getContext().get("ner.consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")));
 
 
         } catch (Exception ex) {

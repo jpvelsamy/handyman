@@ -86,7 +86,7 @@ public class UrgencyTriageModelAction implements IActionExecution {
                       new UrgencyTriageInputTable(), urls, action);
       coproProcessor.startProducer(urgencyTriageModel.getQuerySet(), Integer.valueOf(action.getContext().get("read.batch.size")));
       Thread.sleep(1000);
-      coproProcessor.startConsumer(insertQuery, 1, 1, new UrgencyTriageConsumerProcess(log, aMarker, action));
+      coproProcessor.startConsumer(insertQuery, Integer.valueOf(action.getContext().get("ut.consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")), new UrgencyTriageConsumerProcess(log, aMarker, action));
       log.info(aMarker, "Urgency Triage has been completed {}  ", urgencyTriageModel.getName());
     } catch (Exception t) {
       action.getContext().put(urgencyTriageModel.getName() + ".isSuccessful", "false");

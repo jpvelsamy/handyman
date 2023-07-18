@@ -38,7 +38,7 @@ public class AutoRotationAction implements IActionExecution {
     public static final String DEFAULT_SOCKET_TIME_OUT = "100";
     public static final String COPRO_CLIENT_SOCKET_TIMEOUT = "copro.client.socket.timeout";
     public static final String COPRO_CLIENT_API_SLEEPTIME = "copro.client.api.sleeptime";
-    public static final String CONSUMER_API_COUNT = "consumer.API.count";
+    public static final String CONSUMER_API_COUNT = "auto.rotation.consumer.API.count";
     public static final String WRITE_BATCH_SIZE = "write.batch.size";
     public static final String THREAD_SLEEP_TIME = "1000";
     public static final String INSERT_INTO = "INSERT INTO";
