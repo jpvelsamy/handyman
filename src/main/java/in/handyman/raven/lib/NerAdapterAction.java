@@ -66,10 +66,10 @@ public class NerAdapterAction implements IActionExecution {
             final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(nerAdapter.getResourceConn());
             jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
             // build insert prepare statement with output table columns
-            String COLUMN_LIST = "origin_id, paper_no, group_id, process_id, sor_id, sor_item_id, sor_item_name, question, answer,weight, created_user_id, tenant_id, created_on, word_score, char_score, validator_score_allowed, validator_score_negative, confidence_score, validation_name, b_box,status,stage,message,vqa_score";
+            String COLUMN_LIST = "origin_id, paper_no, group_id, process_id, sor_id, sor_item_id, sor_item_name, question, answer,weight, created_user_id, tenant_id, created_on, word_score, char_score, validator_score_allowed, validator_score_negative, confidence_score, validation_name, b_box,status,stage,message,vqa_score,question_id,synonym_id";
             final String insertQuery = "INSERT INTO " + nerAdapter.getResultTable() +
                     "(" + COLUMN_LIST + ")" +
-                    " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?,?, ?, ?, ?, ?, ?,?,?,?  ,?);";
+                    " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?,?, ?, ?, ?, ?, ?,?,?,?  ,? ,?,?);";
             log.info(aMarker, "ner adapter Insert query {}", insertQuery);
 
             //3. initiate copro processor and copro urls
@@ -212,6 +212,8 @@ public class NerAdapterAction implements IActionExecution {
                                 .confidenceScore(valConfidenceScore)
                                 .validationName(result.allowedAdapter)
                                 .bBox(result.bbox)
+                                .questionId(result.questionId)
+                                .synonymId(result.synonymId)
                                 .status("COMPLETED")
                                 .stage("SCALAR_VALIDATION")
                                 .message("Ner validation macro completed")
@@ -242,6 +244,8 @@ public class NerAdapterAction implements IActionExecution {
                                 .confidenceScore(valConfidenceScore)
                                 .validationName(result.allowedAdapter)
                                 .bBox(result.bbox)
+                                .questionId(result.questionId)
+                                .synonymId(result.synonymId)
                                 .status("FAILED")
                                 .stage("SCALAR_VALIDATION")
                                 .message("Confidence Score is less than 0")
@@ -380,6 +384,8 @@ public class NerAdapterAction implements IActionExecution {
         private double confidenceScore;
         private String sorItemName;
         private int weight;
+        private Integer synonymId;
+        private Integer questionId;
 
         @Override
         public List<Object> getRowData() {
@@ -417,13 +423,15 @@ public class NerAdapterAction implements IActionExecution {
         private String status;
         private String stage;
         private String message;
+        private Integer synonymId;
+        private Integer questionId;
 
         @Override
         public List<Object> getRowData() {
             return Stream.of(this.originId, this.paperNo, this.groupId, this.processId, this.sorId, this.sorItemId, this.sorItemName,
                     this.question, this.answer, this.weight, this.createdUserId, this.tenantId, this.createdOn, this.wordScore, this.charScore,
                     this.validatorScoreAllowed, this.validatorScoreNegative, this.confidenceScore, this.validationName, this.bBox,
-                    this.status, this.stage, this.message, this.vqaScore
+                    this.status, this.stage, this.message, this.vqaScore,this.questionId,this.synonymId
             ).collect(Collectors.toList());
         }
 
