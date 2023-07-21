@@ -873,6 +873,7 @@ trinityModel:
      'in-output-dir' outputDir=STRING
      'on-resource-conn' resourceConn=STRING
      'save-response-as' responseAs=STRING
+     'api-endpoint' requestUrl=STRING
      'using'  '{' questionSql=STRING '}'
      ('on-condition' condition=expression)*
      ('on-parallel-fielding' forkBatchSize=STRING)*;
