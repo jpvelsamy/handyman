@@ -74,6 +74,8 @@ public class TrinityModelAction implements IActionExecution {
 
     try {
       log.info(aMarker, "Trinity Model Attribution Action for {} has been started", trinityModel.getName());
+      log.info(aMarker, "Api endpoint to copro {}", attributionUrl);
+
       final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(trinityModel.getResourceConn());
       final List<TrinityModelAction.TrinityModelQueryResult> trinityModelQueryResults = new ArrayList<>();
       jdbi.useTransaction(handle -> {
