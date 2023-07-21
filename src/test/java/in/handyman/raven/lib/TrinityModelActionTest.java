@@ -13,20 +13,54 @@ import static org.junit.jupiter.api.Assertions.*;
 class TrinityModelActionTest {
 
     @Test
-    void execute() throws Exception {
+    void executeHandwritten() throws Exception {
 
         TrinityModel trinityModel=TrinityModel.builder()
                 .name("DIE model testing")
                 .condition(true)
                 .outputDir("dir")
+                .requestUrl("http://192.168.10.239:10189/copro/attribution/kvp-docnet")
                 .resourceConn("intics_agadia_db_conn")
                 .forkBatchSize("1")
-                .questionSql("   SELECT question,file_path, document_type as paperType FROM\n" +
-                        "                macro.impira_transaction_temp_tqa_synonym_8588_tnd_001_1;")
-                .responseAs("impira_attribution_response_12345")
+                .questionSql("   SELECT a.question, a.file_path, a.document_type as paperType FROM\n" +
+                        "\t                   macro.sor_transaction_tqa_49254 a\n" +
+                        "\t                     join sor_transaction.sor_transaction_payload_queue st on st.origin_id=a.origin_id\n" +
+                        "\t                        where a.document_type='Handwritten';      ")
+                .responseAs("sor_transaction_tqa_49254")
                 .build();
         ActionExecutionAudit actionExecutionAudit=new ActionExecutionAudit();
-        actionExecutionAudit.getContext().put("copro.trinity-attribution.url","http://localhost:10189/copro/attribution/kvp-docnet");
+        actionExecutionAudit.getContext().put("copro.trinity-attribution.handwritten.url","http://copro.valuation:10189/copro/attribution/kvp-docnet");
+        actionExecutionAudit.getContext().put("okhttp.client.timeout","20");
+        actionExecutionAudit.getContext().put("gen_group_id.group_id","1");
+        actionExecutionAudit.setProcessId(138980079308730208L);
+        actionExecutionAudit.getContext().putAll(Map.ofEntries(Map.entry("read.batch.size","5"),
+                Map.entry("consumer.API.count","1"),
+                Map.entry("write.batch.size","5")));
+
+        TrinityModelAction trinityModelAction=new TrinityModelAction(actionExecutionAudit,log,trinityModel);
+        trinityModelAction.execute();
+    }
+
+
+
+    @Test
+    void executePrinted() throws Exception {
+
+        TrinityModel trinityModel=TrinityModel.builder()
+                .name("DIE model testing")
+                .condition(true)
+                .outputDir("dir")
+                .requestUrl("http://copro.impira:10193/copro/attribution/kvp-attribution-dqa-new")
+                .resourceConn("intics_agadia_db_conn")
+                .forkBatchSize("1")
+                .questionSql("   SELECT a.question, a.file_path, a.document_type as paperType FROM\n" +
+                        "\t                   macro.sor_transaction_tqa_${init_process_id.process_id} a\n" +
+                        "\t                     join sor_transaction.sor_transaction_payload_queue st on st.origin_id=a.origin_id\n" +
+                        "\t                        where a.document_type='Printed';      ")
+                .responseAs("macro.sor_transaction_tqa_49254")
+                .build();
+        ActionExecutionAudit actionExecutionAudit=new ActionExecutionAudit();
+        actionExecutionAudit.getContext().put("copro.trinity-attribution.printed.url","http://copro.impira:10193/copro/attribution/kvp-attribution-dqa-new");
         actionExecutionAudit.getContext().put("okhttp.client.timeout","20");
         actionExecutionAudit.getContext().put("gen_group_id.group_id","1");
         actionExecutionAudit.setProcessId(138980079308730208L);
