@@ -77,7 +77,7 @@ public class TrinityModelAction implements IActionExecution {
                 .mapToBean(TrinityModelAction.TrinityModelQueryResult.class)
                 .stream().collect(Collectors.toList())));
       });
-      log.info("Trinity model line items from select query {}" ,trinityModelQueryResults);
+
 
       // Create DDL
 
