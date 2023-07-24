@@ -126,6 +126,7 @@ public class AlchemyResponseAction implements IActionExecution {
             String extractedValue = entity.getExtractedValue();
             String sorItemName = entity.getSorItemName();
             Long synonymId = entity.getSynonymId();
+            Long questionId = entity.getQuestionId();
             String bbox = entity.getBbox();
 
             final ObjectNode objectNode = mapper.createObjectNode();
@@ -134,6 +135,7 @@ public class AlchemyResponseAction implements IActionExecution {
             objectNode.put("confidenceScore", confidenceScore);
             objectNode.put("extractedValue", extractedValue);
             objectNode.put("synonymId", synonymId);
+            objectNode.put("questionId", questionId);
             objectNode.set("bbox", mapper.readTree(bbox));
 
 
@@ -176,6 +178,7 @@ public class AlchemyResponseAction implements IActionExecution {
         private String extractedValue;
         private String sorItemName;
         private Long synonymId;
+        private Long questionId;
         private String bbox;
 
         @Override
