@@ -314,3 +314,8 @@ CREATE TABLE IF NOT EXISTS config.spw_resource_config (
 	"version" int4 NOT NULL,
 	CONSTRAINT spw_resource_config_pkey PRIMARY KEY (id)
 );
+
+
+INSERT INTO config.spw_process_config
+(id, process, variable, value, active, created_by, created_date, last_modified_by, last_modified_date, "version")
+VALUES(1, 'SYS_PACKAGE', 'raven.java.lib', 'in.handyman.raven.lib', true, 1, now(), 1,now(), 1);
