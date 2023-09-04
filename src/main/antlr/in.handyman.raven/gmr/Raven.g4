@@ -131,6 +131,9 @@ action:
     |trinityModel
     |templateDetection
     |fileBucketing
+    |alchemyInfo
+    |alchemyAuthToken
+    |alchemyResponse
     );
 
 
@@ -884,6 +887,30 @@ fileBucketing:
      'output-dir' outputDir=STRING
      'using'  '{' inputDirectory=STRING '}'
      ('on-condition' condition=expression)*;
+
+alchemyInfo:
+    'alchemyInfo' 'as' name=STRING
+    'tenantId' tenantId=STRING
+    'auth-token' token=STRING
+    'on-resource-conn' resourceConn=STRING
+    'using'  '{'
+     querySet=STRING
+    '}'('on-condition' condition=expression)*;
+
+alchemyAuthToken:
+    'alchemyAuthToken' 'as' name=STRING
+    'on-resource-conn' resourceConn=STRING
+    'using'  '{'
+    '}' ('on-condition' condition=expression)* ;
+
+alchemyResponse:
+    'alchemyResponse' 'as' name=STRING
+    'tenantId' tenantId=STRING
+    'auth-token' token=STRING
+    'on-resource-conn' resourceConn=STRING
+    'using'  '{'
+     querySet=STRING
+    '}'('on-condition' condition=expression)*;
 
 //rules
 
