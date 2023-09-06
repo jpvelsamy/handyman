@@ -131,6 +131,7 @@ action:
     |trinityModel
     |templateDetection
     |fileBucketing
+    |tableExtraction
     );
 
 
@@ -884,6 +885,16 @@ fileBucketing:
      'output-dir' outputDir=STRING
      'using'  '{' inputDirectory=STRING '}'
      ('on-condition' condition=expression)*;
+
+tableExtraction:
+	'tableExtraction' 'as' name=STRING
+	'outputDir' outputDir=STRING
+	'result-table' resultTable=STRING
+	'processId' processId=STRING
+	'resource-conn' resourceConn=STRING
+	'using' '{'
+		querySet=STRING
+	'}' ('on-condition' condition=expression)* ;
 
 //rules
 
