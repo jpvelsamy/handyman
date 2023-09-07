@@ -217,7 +217,7 @@ public class DataExtractionAction implements IActionExecution {
     private Integer groupId;
     private String filePath;
     private Integer paperNo;
-    private String tenantId;
+    private Long tenantId;
     private String templateId;
     private Long processId;
     private Long rootPipelineId;
@@ -238,7 +238,7 @@ public class DataExtractionAction implements IActionExecution {
 
     private String originId;
     private Integer groupId;
-    private String tenantId;
+    private Long tenantId;
     private String templateId;
     private Long processId;
     private String filePath;

@@ -307,10 +307,10 @@ public class ScalarAdapterAction implements IActionExecution {
                 case "date":
                     confidenceScore = this.dateAction.getDateScore(inputDetail);
                     break;
-                case "phone-reg":
+                case "phone_reg":
                     confidenceScore = regValidator(inputDetail, PHONE_NUMBER_REGEX);
                     break;
-                case "numeric-reg":
+                case "numeric_reg":
                     confidenceScore = regValidator(inputDetail, NUMBER_REGEX);
                     break;
             }
@@ -402,7 +402,7 @@ public class ScalarAdapterAction implements IActionExecution {
         private String bbox;
         private int sorItemId;
         private String createdUserId;
-        private String tenantId;
+        private Long tenantId;
         private double wordScore;
         private double charScore;
         private double validatorScore;

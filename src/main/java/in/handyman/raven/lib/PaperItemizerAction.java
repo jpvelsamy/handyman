@@ -163,7 +163,7 @@ public class PaperItemizerAction implements IActionExecution {
       String originId = entity.getOriginId();
       Integer groupId = entity.getGroupId();
       String templateId = entity.templateId;
-      String tenantId = entity.tenantId;
+      Long tenantId = entity.tenantId;
       Long processId = entity.processId;
 
 
@@ -252,7 +252,7 @@ public class PaperItemizerAction implements IActionExecution {
     private String originId;
     private Long processId;
     private Integer groupId;
-    private String tenantId;
+    private Long tenantId;
     private String templateId;
     private String filePath;
     private String outputDir;
@@ -273,7 +273,7 @@ public class PaperItemizerAction implements IActionExecution {
 
     private String originId;
     private Integer groupId;
-    private String tenantId;
+    private Long tenantId;
     private Long processId;
     private String templateId;
     private String processedFilePath;

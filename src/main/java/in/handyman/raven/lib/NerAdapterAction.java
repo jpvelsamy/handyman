@@ -176,7 +176,7 @@ public class NerAdapterAction implements IActionExecution {
             String originId = result.getOriginId();
             Integer groupId = result.getGroupId();
             int sorId = result.getSorId();
-            String tenantId = result.getTenantId();
+            Long tenantId = result.getTenantId();
             String processId = result.getProcessId();
             int paperNo = result.getPaperNo();
             int sorItemId = result.getSorItemId();
@@ -278,10 +278,10 @@ public class NerAdapterAction implements IActionExecution {
                     case "date":
                         confidenceScore = this.dateAction.getDateScore(inputDetail);
                         break;
-                    case "phone-reg":
+                    case "phone_reg":
                         confidenceScore = regValidator(inputDetail, PHONE_NUMBER_REGEX);
                         break;
-                    case "numeric-reg":
+                    case "numeric_reg":
                         confidenceScore = regValidator(inputDetail, NUMBER_REGEX);
                         break;
                 }
@@ -376,7 +376,7 @@ public class NerAdapterAction implements IActionExecution {
         private String bbox;
         private int sorItemId;
         private String createdUserId;
-        private String tenantId;
+        private Long tenantId;
         private double wordScore;
         private double charScore;
         private double validatorScore;
@@ -410,7 +410,7 @@ public class NerAdapterAction implements IActionExecution {
         private String question;
         private String answer;
         private String createdUserId;
-        private String tenantId;
+        private Long tenantId;
         private Timestamp createdOn;
         private float vqaScore;
         private double wordScore;

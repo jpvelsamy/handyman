@@ -67,7 +67,7 @@ public class UrgencyTriageModelAction implements IActionExecution {
       final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(urgencyTriageModel.getResourceConn());
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
       log.info(aMarker, "Urgency Triage Action for {} has been started", urgencyTriageModel.getName());
-      final String insertQuery = "INSERT INTO urgency_triage.ut_model_result(created_on, created_user_id, last_updated_on, last_updated_user_id, process_id, group_id, tenant_id, confidence_score, origin_id, paper_no, template_id, model_registry_id, status, stage, message, paper_type, bboxes, root_pipeline_id)" +
+      final String insertQuery = "INSERT INTO urgency_triage.ut_model_result(created_on, created_user_id, last_updated_on, last_updated_user_id, process_id, group_id, tenant_id, confidence_score, origin_id, paper_no, template_id, model_id, status, stage, message, paper_type, bboxes, root_pipeline_id)" +
               "values(now(),?,now(),?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?)";
       final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.urgency-triage-model.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
         try {
@@ -151,13 +151,13 @@ public class UrgencyTriageModelAction implements IActionExecution {
 
       String createdUserId = entity.getCreatedUserId();
       String lastUpdatedUserId = entity.getLastUpdatedUserId();
-      String tenantId = entity.getTenantId();
+      Long tenantId = entity.getTenantId();
       Long processId = entity.getProcessId();
       Integer groupId = entity.getGroupId();
       String originId = entity.getOriginId();
       Integer paperNo = entity.getPaperNo();
       String templateId = entity.getTemplateId();
-      String modelRegistryId = entity.getModelRegistryId();
+      String modelId = entity.getModelId();
       try (Response response = httpclient.newCall(request).execute()) {
         final String responseBody = Objects.requireNonNull(response.body()).string();
         if (response.isSuccessful()) {
@@ -168,13 +168,13 @@ public class UrgencyTriageModelAction implements IActionExecution {
           parentObj.add(UrgencyTriageOutputTable.builder()
                   .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
                   .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
-                  .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                  .tenantId(Optional.ofNullable(tenantId).map(Long::valueOf).orElse(null))
                   .processId(Optional.ofNullable(processId).map(String::valueOf).map(Long::parseLong).orElse(null))
                   .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                   .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
-                  .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .modelId(Optional.ofNullable(modelId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .utResult(paperType)
                   .confScore(confidenceScore)
                   .bbox(bboxes)
@@ -188,13 +188,13 @@ public class UrgencyTriageModelAction implements IActionExecution {
           parentObj.add(UrgencyTriageOutputTable.builder()
                   .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
                   .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
-                  .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                  .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).map(Long::valueOf).orElse(null))
                   .processId(Optional.ofNullable(processId).map(String::valueOf).map(Long::parseLong).orElse(null))
                   .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                   .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
-                  .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .modelId(Optional.ofNullable(modelId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .status("FAILED")
                   .stage("URGENCY_TRIAGE_MODEL")
                   .message(response.message())
@@ -206,13 +206,13 @@ public class UrgencyTriageModelAction implements IActionExecution {
         parentObj.add(UrgencyTriageOutputTable.builder()
                 .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
                 .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
-                .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).map(Long::valueOf).orElse(null))
                 .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .processId(Optional.ofNullable(processId).map(String::valueOf).map(Long::parseLong).orElse(null))
                 .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                 .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
-                .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                .modelId(Optional.ofNullable(modelId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .status("FAILED")
                 .stage("URGENCY_TRIAGE_MODEL")
                 .message(ExceptionUtil.toString(e))
@@ -233,13 +233,13 @@ public class UrgencyTriageModelAction implements IActionExecution {
   public static class UrgencyTriageInputTable implements CoproProcessor.Entity {
     private String createdUserId;
     private String lastUpdatedUserId;
-    private String tenantId;
+    private Long tenantId;
     private Long processId;
     private Integer groupId;
     private String originId;
     private Integer paperNo;
     private String templateId;
-    private String modelRegistryId;
+    private String modelId;
     private String inputFilePath;
     private Long rootPipelineId;
 
@@ -258,12 +258,12 @@ public class UrgencyTriageModelAction implements IActionExecution {
     private String lastUpdatedUserId;
     private Long processId;
     private Integer groupId;
-    private String tenantId;
+    private Long tenantId;
     private Long confScore;
     private String originId;
     private Integer paperNo;
     private String templateId;
-    private Integer modelRegistryId;
+    private Integer modelId;
     private String status;
     private String stage;
     private String message;
@@ -274,7 +274,7 @@ public class UrgencyTriageModelAction implements IActionExecution {
     @Override
     public List<Object> getRowData() {
       return Stream.of(this.createdUserId, this.lastUpdatedUserId, this.processId, this.groupId, this.tenantId, this.confScore,
-              this.originId, this.paperNo, this.templateId, this.modelRegistryId, this.status, this.stage, this.message, this.utResult, this.bbox, this.rootPipelineId).collect(Collectors.toList());
+              this.originId, this.paperNo, this.templateId, this.modelId, this.status, this.stage, this.message, this.utResult, this.bbox, this.rootPipelineId).collect(Collectors.toList());
     }
   }
 }

@@ -76,7 +76,7 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
         }
         Integer groupId = entity.getGroupId();
         Long processId = entity.getProcessId();
-        String tenantId = entity.getTenantId();
+        Long tenantId = entity.getTenantId();
         String templateId = entity.getTemplateId();
         Integer paperNo = entity.getPaperNo();
 

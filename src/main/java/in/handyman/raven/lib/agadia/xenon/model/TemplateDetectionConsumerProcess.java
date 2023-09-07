@@ -79,7 +79,7 @@ public class TemplateDetectionConsumerProcess implements CoproProcessor.Consumer
 
         Long processId = entity.getProcessId();
         String templateId = entity.getTemplateId();
-        String tenantId = entity.getTenantId();
+        Long tenantId = entity.getTenantId();
         String originId = entity.getOriginId();
         Integer paperNo = entity.getPaperNo();
         Integer groupId = entity.getGroupId();

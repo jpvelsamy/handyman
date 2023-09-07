@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 public class AlchemyResponse implements IActionContext {
   private String name;
 
-  private String tenantId;
+  private Long tenantId;
 
   private String token;
 

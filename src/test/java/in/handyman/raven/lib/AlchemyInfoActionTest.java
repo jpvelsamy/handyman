@@ -14,7 +14,7 @@ class AlchemyInfoActionTest {
 
 
         AlchemyInfo alchemyInfo = AlchemyInfo.builder()
-                .tenantId("1")
+                .tenantId(1L)
                 .condition(true)
                 .name("alchemy info action")
                 .querySet("SELECT so.tenant_id::bigint, so.origin_id, ampq.root_pipeline_id, so.group_id, at.file_path from info.source_of_origin so join info.asset at on so.file_id = at.file_id\n" +

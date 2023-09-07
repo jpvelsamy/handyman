@@ -16,7 +16,7 @@ public class TemplateDetectionInputTable implements CoproProcessor.Entity {
     private Integer paperNo;
     private Integer groupId;
     private String filePath;
-    private String tenantId;
+    private Long tenantId;
     private String templateId;
     private Long processId;
     private Long rootPipelineId;
@@ -62,11 +62,11 @@ public class TemplateDetectionInputTable implements CoproProcessor.Entity {
         this.filePath = filePath;
     }
 
-    public String getTenantId() {
+    public Long getTenantId() {
         return tenantId;
     }
 
-    public void setTenantId(String tenantId) {
+    public void setTenantId(Long tenantId) {
         this.tenantId = tenantId;
     }
 

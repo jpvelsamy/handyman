@@ -142,6 +142,6 @@ public class EntityFilterAction implements IActionExecution {
         private String mandatoryResponse;
         private String mandatoryConfidenceScore;
         private String createdUserId;
-        private String tenantId;
+        private Long tenantId;
     }
 }

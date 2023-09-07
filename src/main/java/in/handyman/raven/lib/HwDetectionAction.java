@@ -64,7 +64,7 @@ public class HwDetectionAction implements IActionExecution {
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
 
       log.info(aMarker, "Handwritten Classification Action for {} has been started", hwDetection.getName());
-      final String insertQuery = "INSERT INTO paper_classification.paper_classification_result(created_on, created_user_id, last_updated_on, last_updated_user_id, tenant_id, origin_id, paper_no, template_id, model_registry_id, document_type, status, stage, message, group_id, root_pipeline_id, confidence_score)" +
+      final String insertQuery = "INSERT INTO paper_classification.paper_classification_result(created_on, created_user_id, last_updated_on, last_updated_user_id, tenant_id, origin_id, paper_no, template_id, model_id, document_type, status, stage, message, group_id, root_pipeline_id, confidence_score)" +
               "values(now(),?,now(),?,?,?,?,?,?,?,?,?,?,?,?,?)";
       final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.hw-detection.url")).map(s -> Arrays.stream(s.split(",")).map(url -> {
         try {
@@ -149,11 +149,11 @@ public class HwDetectionAction implements IActionExecution {
       }
       String createdUserId = entity.getCreatedUserId();
       String lastUpdatedUserId = entity.getLastUpdatedUserId();
-      String tenantId = entity.getTenantId();
+      Long tenantId = entity.getTenantId();
       String originId = entity.getOriginId();
       Integer paperNo = entity.getPaperNo();
       String templateId = entity.getTemplateId();
-      String modelRegistryId = entity.getModelRegistryId();
+      String modelId = entity.getModelId();
       Integer groupId = entity.getGroupId();
       try (Response response = httpclient.newCall(request).execute()){
         String responseBody = Objects.requireNonNull(response.body()).string();
@@ -165,11 +165,11 @@ public class HwDetectionAction implements IActionExecution {
           parentObj.add(HwClassificationOutputTable.builder()
                   .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
                   .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
-                  .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                  .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).map(Long::valueOf).orElse(null))
                   .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                   .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
-                  .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .modelId(Optional.ofNullable(modelId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .documentType(documentStatus)
                   .confidenceScore(score)
@@ -184,11 +184,11 @@ public class HwDetectionAction implements IActionExecution {
           parentObj.add(HwClassificationOutputTable.builder()
                   .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
                   .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
-                  .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                  .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).map(Long::valueOf).orElse(null))
                   .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                   .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
-                  .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .modelId(Optional.ofNullable(modelId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .status("FAILED")
                   .stage(STAGE)
@@ -202,11 +202,11 @@ public class HwDetectionAction implements IActionExecution {
         parentObj.add(HwClassificationOutputTable.builder()
                 .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
                 .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
-                .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).map(Long::valueOf).orElse(null))
                 .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                 .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
-                .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                .modelId(Optional.ofNullable(modelId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .status("FAILED")
                 .stage(STAGE)
@@ -230,13 +230,13 @@ public class HwDetectionAction implements IActionExecution {
   public static class HwClassificationInputTable implements CoproProcessor.Entity{
     private String createdUserId;
     private String lastUpdatedUserId;
-    private String tenantId;
+    private Long tenantId;
     private Double modelScore;
     private String originId;
     private Integer paperNo;
     private Integer groupId;
     private String templateId;
-    private String modelRegistryId;
+    private String modelId;
     private String filePath;
     private Long rootPipelineId;
 
@@ -256,12 +256,12 @@ public class HwDetectionAction implements IActionExecution {
 
     private String createdUserId;
     private String lastUpdatedUserId;
-    private String tenantId;
+    private Long tenantId;
     private String originId;
     private Integer groupId;
     private Integer paperNo;
     private String templateId;
-    private Integer modelRegistryId;
+    private Integer modelId;
     private String documentType;
     private Long confidenceScore;
     private String status;
@@ -272,7 +272,7 @@ public class HwDetectionAction implements IActionExecution {
     @Override
     public List<Object> getRowData() {
       return Stream.of(this.createdUserId,this.lastUpdatedUserId, this.tenantId,
-              this.originId, this.paperNo, this.templateId, this.modelRegistryId,
+              this.originId, this.paperNo, this.templateId, this.modelId,
               this.documentType, this.status, this.stage, this.message, this.groupId,this.rootPipelineId, this.confidenceScore).collect(Collectors.toList());
 
     }
