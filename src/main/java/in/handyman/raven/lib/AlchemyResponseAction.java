@@ -1,5 +1,6 @@
 package in.handyman.raven.lib;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import in.handyman.raven.exception.HandymanException;
@@ -13,7 +14,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import okhttp3.*;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.argument.Arguments;
 import org.jdbi.v3.core.argument.NullArgument;
@@ -24,7 +29,11 @@ import org.slf4j.MarkerFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Types;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -76,7 +85,7 @@ public class AlchemyResponseAction implements IActionExecution {
                             new AlchemyResponseAction.AlchemyResponseInputTable(), urls, action);
             coproProcessor.startProducer(alchemyResponse.getQuerySet(), Integer.valueOf(action.getContext().get("read.batch.size")));
             Thread.sleep(1000);
-            coproProcessor.startConsumer(insertQuery, 1,  Integer.valueOf(action.getContext().get("write.batch.size")), new AlchemyResponseAction.AlchemyReponseConsumerProcess(log, aMarker, action));
+            coproProcessor.startConsumer(insertQuery, 1, Integer.valueOf(action.getContext().get("write.batch.size")), new AlchemyResponseAction.AlchemyReponseConsumerProcess(log, aMarker, action));
             log.info(aMarker, "Alchemy Info has been completed {}  ", alchemyResponse.getName());
         } catch (Exception t) {
             action.getContext().put(alchemyResponse.getName() + ".isSuccessful", "false");
@@ -121,29 +130,45 @@ public class AlchemyResponseAction implements IActionExecution {
             List<AlchemyResponseAction.AlchemyResponseOutputTable> parentObj = new ArrayList<>();
             String originId = entity.getOriginId();
             Integer paperNo = entity.getPaperNo();
-            String rootPipelineId = String.valueOf(entity.getRootPipelineId());
+            Long rootPipelineId = entity.getRootPipelineId();
             Integer confidenceScore = entity.getConfidenceScore();
             String extractedValue = entity.getExtractedValue();
             String sorItemName = entity.getSorItemName();
             Long synonymId = entity.getSynonymId();
             Long questionId = entity.getQuestionId();
             String bbox = entity.getBbox();
+            String feature = entity.getFeature();
 
-            final ObjectNode objectNode = mapper.createObjectNode();
-            objectNode.put("paperNo", paperNo);
-            objectNode.put("rootPipelineId", rootPipelineId);
-            objectNode.put("confidenceScore", confidenceScore);
-            objectNode.put("extractedValue", extractedValue);
-            objectNode.put("synonymId", synonymId);
-            objectNode.put("questionId", questionId);
-            objectNode.set("bbox", mapper.readTree(bbox));
+            AlchemyRequestTable alchemyRequestTable = AlchemyRequestTable
+                    .builder()
+                    .paperNo(paperNo)
+                    .rootPipelineId(rootPipelineId)
+                    .feature(feature)
+                    .build();
+
+            if(feature.equals("KIE")){
+                alchemyRequestTable.setBbox(mapper.readTree(bbox));
+                alchemyRequestTable.setConfidenceScore(confidenceScore);
+                alchemyRequestTable.setExtractedValue(extractedValue);
+                alchemyRequestTable.setSynonymId(synonymId);
+                alchemyRequestTable.setQuestionId(questionId);
+            }
+            if(feature.equals("CHECKBOX_EXTRACTION")){
+                alchemyRequestTable.setBbox(mapper.readTree(bbox));
+                alchemyRequestTable.setConfidenceScore(confidenceScore);
+                alchemyRequestTable.setExtractedValue(extractedValue);
+                alchemyRequestTable.setState(entity.getState());
+            }
+            if(feature.equals("TABLE_EXTRACT")){
+                alchemyRequestTable.setTableData(mapper.readTree(entity.getTableData()));
+            }
 
 
-            Request request = new Request.Builder().url(endpoint + "/" + originId+ "/?tenantId=" + this.tenantId)
+            Request request = new Request.Builder().url(endpoint + "/" + originId + "/?tenantId=" + this.tenantId)
                     .addHeader("accept", "*/*")
                     .addHeader("Authorization", "Bearer " + authToken)
                     .addHeader("Content-Type", "application/json")
-                    .post(RequestBody.create(objectNode.toString(), MediaTypeJSON))
+                    .post(RequestBody.create(mapper.writeValueAsString(alchemyRequestTable), MediaTypeJSON))
                     .build();
 
             if (log.isInfoEnabled()) {
@@ -180,11 +205,31 @@ public class AlchemyResponseAction implements IActionExecution {
         private Long synonymId;
         private Long questionId;
         private String bbox;
+        private String feature;
+        private String state;
+        private String tableData;
 
         @Override
         public List<Object> getRowData() {
             return null;
         }
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    @Builder
+    public static class AlchemyRequestTable {
+        private Integer paperNo;
+        private Integer confidenceScore;
+        private String extractedValue;
+        private JsonNode bbox;
+        private Long synonymId;
+        private Long questionId;
+        private Long rootPipelineId;
+        private String feature;
+        private String state;
+        private JsonNode tableData;
     }
 
     @AllArgsConstructor
