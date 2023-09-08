@@ -333,6 +333,7 @@ paperItemization:
 autoRotation:
     'autoRotation' 'as' name=STRING 'output-dir' outputDir=STRING 'process-id' processId=STRING  'resource-conn' resourceConn=STRING 'using'  '{' querySet=STRING '}' ('on-condition' condition=expression)*  ;
 
+
 blankPageRemover:
     'blankPageRemover' 'as' name=STRING  'output-dir' outputDir=STRING 'process-id' processId=STRING 'resource-conn' resourceConn=STRING  'using'  '{'  querySet=STRING '}' ('on-condition' condition=expression)* ;
 
@@ -793,7 +794,7 @@ nerAdapter:
       'using-docnut-result'
       '{' resultSet=STRING  '}'
        ('on-condition' condition=expression)*;
-resource : STRING;
+
 
 
 coproStart:

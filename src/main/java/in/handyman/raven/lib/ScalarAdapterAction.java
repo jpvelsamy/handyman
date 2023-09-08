@@ -253,6 +253,7 @@ public class ScalarAdapterAction implements IActionExecution {
         if (valConfidenceScore < 100 && multiverseValidator) {
             log.info(aMarker, "Build 19-validator updateEmptyValueIfLowCf {}", valConfidenceScore);
             updateEmptyValueAndCf(result);
+
         }
     }
 
@@ -336,6 +337,7 @@ public class ScalarAdapterAction implements IActionExecution {
             Update bindBean = update.bindBean(summary);
             bindBean.execute();
         });
+
     }
 
     private int regValidator(Validator validator, String regForm) {
@@ -417,4 +419,5 @@ public class ScalarAdapterAction implements IActionExecution {
         private Integer synonymId;
         private Integer questionId;
     }
+
 }
