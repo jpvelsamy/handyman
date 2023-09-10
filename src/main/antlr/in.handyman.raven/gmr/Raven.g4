@@ -132,6 +132,7 @@ action:
     |templateDetection
     |fileBucketing
     |tableExtraction
+    |mailServer
     );
 
 
@@ -889,6 +890,15 @@ fileBucketing:
 tableExtraction:
 	'tableExtraction' 'as' name=STRING
 	'outputDir' outputDir=STRING
+	'result-table' resultTable=STRING
+	'processId' processId=STRING
+	'resource-conn' resourceConn=STRING
+	'using' '{'
+		querySet=STRING
+	'}' ('on-condition' condition=expression)* ;
+
+mailServer:
+	'mailServer' 'as' name=STRING
 	'result-table' resultTable=STRING
 	'processId' processId=STRING
 	'resource-conn' resourceConn=STRING
