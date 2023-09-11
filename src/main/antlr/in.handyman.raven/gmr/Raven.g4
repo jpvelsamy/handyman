@@ -134,6 +134,7 @@ action:
     |alchemyInfo
     |alchemyAuthToken
     |alchemyResponse
+    |productResponse
     );
 
 
@@ -301,10 +302,10 @@ mapJsonContext :
       'map-json-into-context' 'as' name=STRING  'using'  '{'
                value=STRING
                                                    '}' ('on-condition' condition=expression)* ;
-                                                   
+
 sharePoint:
-	'sharepoint' 'as' name=STRING 'client-id' shpClientId=STRING 'tenant-id' shpTenantId=STRING 'client-secret' shpClientSecret=STRING 
-	'org-name' orgName=STRING 'action-type' actionType=STRING 'site-url' siteUrl=STRING 'source-relative-path' sourceRelativePath=STRING 
+	'sharepoint' 'as' name=STRING 'client-id' shpClientId=STRING 'tenant-id' shpTenantId=STRING 'client-secret' shpClientSecret=STRING
+	'org-name' orgName=STRING 'action-type' actionType=STRING 'site-url' siteUrl=STRING 'source-relative-path' sourceRelativePath=STRING
 	'file-name' fileName=STRING 'target-relative-path' targetRelativePath=STRING 'using'
 	'{'
 		value=STRING
@@ -913,8 +914,17 @@ alchemyResponse:
      querySet=STRING
     '}'('on-condition' condition=expression)*;
 
-//rules
+productResponse:
+    'productResponse' 'as' name=STRING
+    'tenantId' tenantId=STRING
+    'auth-token' token=STRING
+    'on-resource-conn' resourceConn=STRING
+    'using'  '{'
+     querySet=STRING
+    '}'('on-condition' condition=expression)*;
 
+//rules
+resource : STRING;
 fragment DIGIT : [0-9];
 fragment NON_Z_DIGIT : [1-9];
 fragment TWODIGIT : DIGIT DIGIT;

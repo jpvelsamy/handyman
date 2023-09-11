@@ -19,22 +19,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @ActionContext(
-    actionName = "Hwdetection"
+    actionName = "ProductResponse"
 )
-public class Hwdetection implements IActionContext {
+public class ProductResponse implements IActionContext {
   private String name;
+
+  private String tenantId;
+
+  private String token;
 
   private String resourceConn;
 
-  private String handwrittenTable;
-
-  private String auditTable;
-
-  private String directorypath;
-
-  private String modelpath;
-
-  private String input;
+  private String querySet;
 
   private Boolean condition = true;
 }
