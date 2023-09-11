@@ -50,18 +50,18 @@ public class WordcountAction implements IActionExecution {
     @Override
     public void execute() throws Exception {
         try {
-            log.info(aMarker, "<-------Word Count Action for {} has been started------->" + wordcount.getName());
+            log.info(aMarker, "Word Count Action for {} has been started" , wordcount.getName());
             AdapterInterface wordCountAdapter = new WordCountAdapter();
             int wordCount = wordCountAdapter.getThresholdScore(wordcount.getInputValue());
             int confidenceScore = wordCount <= Integer.parseInt(wordcount.getCountLimit())
                     ? Integer.parseInt(wordcount.getThresholdValue()) : 0;
             action.getContext().put(wordcount.getName().concat(".score"), String.valueOf(confidenceScore));
-            log.info(aMarker, "<-------Word Count Action for {} has been completed------->" + wordcount.getName());
+            log.info(aMarker, "Word Count Action for {} has been completed" , wordcount.getName());
 
         } catch (Exception ex) {
             action.getContext().put(wordcount.getName().concat(".error"), "true");
-            log.info(aMarker, "The Exception occurred ", ex);
-            throw new HandymanException("Failed to execute", ex);
+            log.error(aMarker, "The Exception occurred ", ex);
+            throw new HandymanException("Failed to execute", ex, action);
         }
     }
 
