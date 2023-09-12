@@ -21,12 +21,11 @@ class MailServerActionTest {
 
 
     MailServer mailServer= MailServer.builder()
-            .name("ner")
+            .name("mailserver")
             .condition(true)
-            .querySet("")
+            .querySet("select file_name, invoice_rejection from ref_data.validation_results;")
             .resourceConn("intics_agadia_db_conn")
             .resultTable("sor_transaction.adapter_result_123456")
-
             .build();
 
     ActionExecutionAudit actionExecutionAudit=new ActionExecutionAudit();
@@ -38,7 +37,7 @@ class MailServerActionTest {
             Map.entry("write.batch.size","5")));
 
 
-    MailServerAction mailServerAction=new MailServerAction(actionExecutionAudit,mailServer);
+    MailServerAction mailServerAction=new MailServerAction(actionExecutionAudit,log,mailServer);
     mailServerAction.execute();
 }
 }

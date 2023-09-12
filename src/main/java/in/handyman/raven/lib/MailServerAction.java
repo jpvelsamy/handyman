@@ -70,7 +70,7 @@ public class MailServerAction implements IActionExecution {
 
   private void sendEmail() {
     // Initialize SendGrid
-    SendGrid sendGrid = new SendGrid("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"); // Replace with your SendGrid API key
+    SendGrid sendGrid = new SendGrid("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"); // Replace with your SendGrid API key
     final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(mailServer.getResourceConn());
     List<MailServerQuerySet> extractedQuerySet = extractQuerySet(jdbi);
 
@@ -79,19 +79,24 @@ public class MailServerAction implements IActionExecution {
       Email from = new Email("admin@askjuno.com");
 
       // Create an Email object for the recipient
-      Email to = new Email("blokesh1701@gmail.com");
+      Email to = new Email("sanjeeya.v@zucisystems.com");
 
       // Create a subject for the email
       String subject = "Invoice Rejection";
 
-      // Create a Content object for the email body with HTML formatting
-      Content content = new Content("text/html", "<p style='text-align: center;'>I hope this message finds you well. We appreciate your prompt submission of the invoice for %s. However, after a thorough review, we regret to inform you that we cannot process this invoice due to the following reasons:%n%n\" +     \"To expedite the resolution process, we kindly request that you make the necessary adjustments and promptly submit a revised invoice. Once we receive the corrected invoice, we will proceed with the payment process.%n%n\" +     \"If you have any questions or require further clarification regarding these issues, please do not hesitate to contact our accounts payable department at %s. We value our partnership with your company and aim to resolve this matter as efficiently as possible.%n%n\" +     \"Thank you for your attention to this matter, and we appreciate your cooperation in resolving these discrepancies promptly.%n%n\" +     \"Sincerely</p>");
+      Content content = new Content("text/html",
+              "Greetings " + ",<br/><br/>" +
+                      "I hope this message finds you well. We appreciate your prompt submission of the invoice " + ". However, after a thorough review, we regret to inform you that we cannot process this invoice due to the following reasons:<br/><br/>" +
+                      "To expedite the resolution process, we kindly request that you make the necessary adjustments and promptly submit a revised invoice. Once we receive the corrected invoice, we will proceed with the payment process.<br/><br/>" +
+                      "If you have any questions or require further clarification regarding these issues, please do not hesitate to contact our accounts payable department at " + ". We value our partnership with your company and aim to resolve this matter as efficiently as possible.<br/><br/>" +
+                      "Thank you for your attention to this matter, and we appreciate your cooperation in resolving these discrepancies promptly.<br/><br/>" +
+                      "Sincerely,<br/>" );
 
       // Create a Mail object
       Mail mail = new Mail(from, subject, to, content);
 
       Attachments attachments = new Attachments();
-      attachments.setFilename(mailServerQuerySet.getFileName()); // Replace with the actual filename
+      attachments.setFilename("invoice_rejection.pdf"); // Replace with the actual filename
       attachments.setType("application/pdf"); // Set the correct MIME type for PDF
       attachments.setContentId("pdfAttachment"); // Content ID for the attachment
       attachments.setDisposition("attachment");

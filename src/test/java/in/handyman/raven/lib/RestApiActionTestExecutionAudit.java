@@ -83,7 +83,7 @@ class RestApiActionTestExecutionAudit {
                         Map.entry("tenant_id","TND-001"),
                         Map.entry("document_id","TMP-AGD-001"),
                         Map.entry("last_updated_user_id","-1"),
-                        Map.entry("dir_path","/home/logesh.b@zucisystems.com/workspace/dev/intics-agadia/pipeline/data/input/"),
+                        Map.entry("dir_path","/home/logesh.b@zucisystems.com/workspace/dev/intics-agadia/pipeline/data/input_oxy/CM1882524.pdf"),
                         Map.entry("target_directory_path","/home/logesh.b@zucisystems.com/workspace/dev/intics-agadia/pipeline/data/output")))
                 .build();
         log.info(request.toString());
@@ -101,7 +101,7 @@ class RestApiActionTestExecutionAudit {
                         Map.entry("tenant_id","TND-001"),
                         Map.entry("document_id","TMP-AGD-001"),
                         Map.entry("last_updated_user_id","-1"),
-                        Map.entry("dir_path","/home/anandh.andrews@zucisystems.com/W-space/pr1-lambdas/agadia/input/"),
+                        Map.entry("dir_path","/home/anandh.andrews@zucisystems.com/W-space/pr1-lambdas/agadia/input_oxy/"),
                         Map.entry("target_directory_path","/home/anandh.andrews@zucisystems.com/W-space/pr1-lambdas/agadia/agadia_output") ))
                 .build();
         log.info(request.toString());
