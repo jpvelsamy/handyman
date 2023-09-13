@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
 @Slf4j
 class AutoRotationActionTest {
 
@@ -34,6 +33,18 @@ class AutoRotationActionTest {
         action1.execute();
 
 
+    }
+
+    @Test
+    void tritonServer() throws Exception{
+        AutoRotation action= AutoRotation.builder()
+                .name("auto rotation testing after copro optimization")
+                .processId("138980744174170252")
+                .resourceConn("intics_agadia_db_conn")
+                .outputDir("/home/anandh.andrews@zucisystems.com/Downloads/QA_PAIR_OUTPUT/")
+                .condition(true)
+                .querySet("select 'INT-1' as origin_id,1 as group_id,'/home/anandh.andrews@zucisystems.com/W-space/pr1-lambdas/agadia/agadia_output/2/preprocess/autorotation/pdf_to_image/Humana_Form_4_merged/Humana_Form_4_merged_4.jpg' as file_path,1 as paper_no,'TND-1' as tenant_id,'TMP-1' as template_id,'138980744174170252' as process_id\n" )
+                .build();
     }
 
 }

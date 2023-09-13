@@ -2,12 +2,12 @@ package in.handyman.raven.lib;
 
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.DataExtraction;
+import in.handyman.raven.lib.model.TextExtraction.DataExtractionAction;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
 @Slf4j
 class DataExtractionActionTest {
     @Test

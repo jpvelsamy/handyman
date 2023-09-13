@@ -1,5 +1,6 @@
-package in.handyman.raven.lib;
+package in.handyman.raven.lib.model.hwDectection;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -8,7 +9,13 @@ import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
+import in.handyman.raven.lib.CoproProcessor;
 import in.handyman.raven.lib.model.HwDetection;
+import in.handyman.raven.lib.model.autoRotation.AutoRotationData;
+import in.handyman.raven.lib.model.autoRotation.AutoRotationRequest;
+import in.handyman.raven.lib.model.paperItemizer.PaperItemizerResponse;
+import in.handyman.raven.lib.model.triton.TritonInputRequest;
+import in.handyman.raven.lib.model.triton.TritonRequest;
 import in.handyman.raven.util.ExceptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -125,27 +132,40 @@ public class HwDetectionAction implements IActionExecution {
       List<HwClassificationOutputTable> parentObj = new ArrayList<>();
       final ObjectNode objectNode = mapper.createObjectNode();
       String entityFilePath = entity.getFilePath();
-
       Long actionId=action.getActionId();
-      final String PAPER_CLASSIFICATION_PROCESS="PAPER_CLASSIFICATION";
+      final String process="PAPER_CLASSIFICATION";
       long rootpipelineId= entity.getRootPipelineId();
+      String modelPath = action.getModelPath();
+      String filePath = String.valueOf(entity.getFilePath());
+      String outputDir = String.valueOf(entity.getOutputDir());
 
-      String modelPath = hwDetection.getModelPath();
-      String directoryPath = hwDetection.getDirectoryPath();
-      objectNode.put("inputFilePath", entityFilePath);
-      objectNode.put("modelPath", modelPath);
-      objectNode.put("outputDir", directoryPath);
-      //added rootpipelineId,actionId and process anem in the request
-      objectNode.put("rootPipelineId",rootpipelineId);
-      objectNode.put("actionId",actionId);
-      objectNode.put("process",PAPER_CLASSIFICATION_PROCESS);
-      log.info(aMarker, "Request List {}", objectNode);
-      log.info("request object node {}",objectNode);
+      //payload
+      HwDetectionPayload HwDetectionpayload = new HwDetectionPayload();
+      HwDetectionpayload.setRootPipelineId(Long.valueOf(rootpipelineId));
+      HwDetectionpayload.setActionId(actionId);
+      HwDetectionpayload.setProcess(process);
+      HwDetectionpayload.setInputFilePath(filePath);
+      HwDetectionpayload.setOutputDir(outputDir);
+      HwDetectionpayload.setModelPath(modelPath);
+
+      HwDetectionRequest requests = new HwDetectionRequest();
+      TritonRequest requestBody = new TritonRequest();
+      requestBody.setName("NER START");
+      requestBody.setShape(List.of(1, 1));
+      requestBody.setDatatype("BYTES");
+      requestBody.setData(Collections.singletonList(HwDetectionpayload));
+
+      TritonInputRequest tritonInputRequest=new TritonInputRequest();
+      tritonInputRequest.setInputs(Collections.singletonList(tritonInputRequest));
+
+      ObjectMapper objectMapper = new ObjectMapper();
+      String jsonRequest = objectMapper.writeValueAsString(tritonInputRequest);
+
       Request request = new Request.Builder().url(endpoint)
-              .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
+              .post(RequestBody.create(HwDetectionpayload.toString(), MediaTypeJSON)).build();
 
       if(log.isInfoEnabled()) {
-        log.info(aMarker, "Request has been build with the parameters \n coproUrl  {} ,inputFilePath : {} modelPath  {}  outputDir {} ", endpoint,entityFilePath,modelPath,directoryPath);
+        log.info(aMarker, "Request has been build with the parameters \n coproUrl  {} ,inputFilePath : {} modelPath  {}  outputDir {} ", endpoint,entityFilePath,modelPath,outputDir);
       }
       String createdUserId = entity.getCreatedUserId();
       String lastUpdatedUserId = entity.getLastUpdatedUserId();
@@ -158,27 +178,44 @@ public class HwDetectionAction implements IActionExecution {
       try (Response response = httpclient.newCall(request).execute()){
         String responseBody = Objects.requireNonNull(response.body()).string();
         if (response.isSuccessful()) {
-          log.info("copro api response body {}",responseBody);
-          String documentStatus = Optional.ofNullable(mapper.readTree(responseBody).get("document_status")).map(JsonNode::asText).orElse(null);
-          Long score = Optional.ofNullable(mapper.readTree(responseBody).get("confidence_score")).map(JsonNode::asLong).orElse(null);
+          ObjectMapper objectMappers = new ObjectMapper();
+          HwDetectionResponse Response = objectMappers.readValue(responseBody, HwDetectionResponse.class);
+          if (Response.getOutputs() != null && !Response.getOutputs().isEmpty()) {
+            Response.getOutputs().forEach(o -> {
+              o.getData().forEach(HwDetectionDataItem -> {
+                log.info("copro api response body {}", responseBody);
+                String documentStatus = null;
+                try {
+                  documentStatus = Optional.ofNullable(mapper.readTree(responseBody).get("document_status")).map(JsonNode::asText).orElse(null);
+                } catch (JsonProcessingException e) {
+                  throw new RuntimeException(e);
+                }
+                Long score = null;
+                try {
+                  score = Optional.ofNullable(mapper.readTree(responseBody).get("confidence_score")).map(JsonNode::asLong).orElse(null);
+                } catch (JsonProcessingException e) {
+                  throw new RuntimeException(e);
+                }
 
-          parentObj.add(HwClassificationOutputTable.builder()
-                  .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
-                  .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
-                  .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
-                  .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
-                  .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                  .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
-                  .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                  .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                  .documentType(documentStatus)
-                  .confidenceScore(score)
-                  .status("COMPLETED")
-                  .stage(STAGE)
-                  .message("Paper Classification Finished")
-                  .groupId(entity.groupId)
-                  .rootPipelineId(entity.rootPipelineId)
-                  .build());
+                parentObj.add(HwClassificationOutputTable.builder().createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
+                        .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
+                        .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                        .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                        .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                        .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
+                        .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                        .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                        .documentType(documentStatus)
+                        .confidenceScore(score)
+                        .status("COMPLETED")
+                        .stage(STAGE)
+                        .message("Paper Classification Finished")
+                        .groupId(entity.groupId)
+                        .rootPipelineId(entity.rootPipelineId)
+                        .build());
+              });
+            });
+          }
         }
         else {
           parentObj.add(HwClassificationOutputTable.builder()
@@ -239,6 +276,8 @@ public class HwDetectionAction implements IActionExecution {
     private String modelRegistryId;
     private String filePath;
     private Long rootPipelineId;
+    private String outputDir;
+
 
 
     @Override

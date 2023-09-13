@@ -21,9 +21,13 @@ public class AutoRotationInputTable implements CoproProcessor.Entity {
     private Long processId;
     private String outputDir;
     private Long rootPipelineId;
+    public String process;
 
     @Override
     public List<Object> getRowData() {
         return null;
     }
+
+
+
 }

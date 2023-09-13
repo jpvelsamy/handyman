@@ -1,7 +1,8 @@
 
 
-package in.handyman.raven.lib;
+package in.handyman.raven.lib.model.utModel;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -10,7 +11,13 @@ import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
+import in.handyman.raven.lib.CoproProcessor;
 import in.handyman.raven.lib.model.UrgencyTriageModel;
+import in.handyman.raven.lib.model.qrExtraction.QrExtractionData;
+import in.handyman.raven.lib.model.qrExtraction.QrExtractionRequest;
+import in.handyman.raven.lib.model.qrExtraction.QrExtractionResponse;
+import in.handyman.raven.lib.model.triton.TritonInputRequest;
+import in.handyman.raven.lib.model.triton.TritonRequest;
 import in.handyman.raven.util.ExceptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -122,28 +129,38 @@ public class UrgencyTriageModelAction implements IActionExecution {
 
     @Override
     public List<UrgencyTriageOutputTable> process(URL endpoint, UrgencyTriageInputTable entity) throws Exception {
-
       List<UrgencyTriageOutputTable> parentObj = new ArrayList<>();
-      final ObjectNode objectNode = mapper.createObjectNode();
+
       String inputFilePath = entity.getInputFilePath();
       String outputDir = urgencyTriageModel.getOutputDir();
       Long actionId= action.getActionId();
       Long rootpipelineId= entity.getRootPipelineId();
       final String UT_MODEL_PROCESS="URGENCY_TRIAGE_MODEL";
 
+//payload
+      UrgencyTriageModelPayload UrgencyTriageModelpayload = new UrgencyTriageModelPayload();
+      UrgencyTriageModelpayload.setRootPipelineId(Long.valueOf(String.valueOf(entity.getRootPipelineId())));
+      UrgencyTriageModelpayload.setProcess("QR");
+      UrgencyTriageModelpayload.setInputFilePath(entity.getInputFilePath());
+      UrgencyTriageModelpayload.setActionId(action.getActionId());
 
-      objectNode.put("inputFilePath", inputFilePath);
-      objectNode.put("outputDir", outputDir);
 
-      //added rootpipelineId,actionId,process to the object node
-      objectNode.put("rootPipelineId",rootpipelineId);
-      objectNode.put("actionId",actionId);
-      objectNode.put("process",UT_MODEL_PROCESS);
-      
-      log.info("request builder object node {}",objectNode);
+
+      UregencyTriageModelRequest requests = new UregencyTriageModelRequest();
+      TritonRequest requestBody = new TritonRequest();
+      requestBody.setName("NER START");
+      requestBody.setShape(List.of(1, 1));
+      requestBody.setDatatype("BYTES");
+      requestBody.setData(Collections.singletonList(UrgencyTriageModelpayload));
+
+      TritonInputRequest tritonInputRequest=new TritonInputRequest();
+      tritonInputRequest.setInputs(Collections.singletonList(tritonInputRequest));
+
+      ObjectMapper objectMapper = new ObjectMapper();
+      String jsonRequest = objectMapper.writeValueAsString(UrgencyTriageModelpayload);
 
       Request request = new Request.Builder().url(endpoint)
-              .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
+              .post(RequestBody.create(requestBody.toString(), MediaTypeJSON)).build();
 
       if(log.isInfoEnabled()) {
         log.info(aMarker, "Request has been build with the parameters \n coproUrl  {} ,inputFilePath : {} ,outputDir {} ", endpoint,inputFilePath,outputDir);
@@ -162,28 +179,54 @@ public class UrgencyTriageModelAction implements IActionExecution {
         final String responseBody = Objects.requireNonNull(response.body()).string();
         if (response.isSuccessful()) {
           log.info("Response Details: {}",response);
-          final String paperType = Optional.ofNullable(mapper.readTree(responseBody).get("paper_type")).map(JsonNode::asText).orElse(null);
-          final Long confidenceScore = Optional.ofNullable(mapper.readTree(responseBody).get("confidence_score")).map(JsonNode::asLong).orElse(null);
-          final String bboxes = Optional.ofNullable(mapper.readTree(responseBody).get("bboxes")).map(JsonNode::toString).orElse(null);
-          parentObj.add(UrgencyTriageOutputTable.builder()
-                  .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
-                  .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
-                  .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
-                  .processId(Optional.ofNullable(processId).map(String::valueOf).map(Long::parseLong).orElse(null))
-                  .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                  .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
-                  .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                  .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
-                  .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                  .utResult(paperType)
-                  .confScore(confidenceScore)
-                  .bbox(bboxes)
-                  .status("COMPLETED")
-                  .stage("URGENCY_TRIAGE_MODEL")
-                  .message("Urgency Triage Finished")
-                  .rootPipelineId(entity.rootPipelineId)
-                  .build());
-          log.info(aMarker, "Execute for urgency triage {}",response);
+
+          String responses = Objects.requireNonNull(response.body()).string();
+          UrgencyTriageModelResponse modelResponse = objectMapper.readValue(responses, UrgencyTriageModelResponse.class);
+
+          if (modelResponse.getOutputs() != null && !modelResponse.getOutputs().isEmpty()) {
+            modelResponse.getOutputs().forEach(o -> {
+              o.getData().forEach(PaperItemizerDataItem -> {
+
+                final String paperType;
+                try {
+                  paperType = Optional.ofNullable(mapper.readTree(responseBody).get("paper_type")).map(JsonNode::asText).orElse(null);
+                } catch (JsonProcessingException e) {
+                  throw new RuntimeException(e);
+                }
+                final Long confidenceScore;
+                try {
+                  confidenceScore = Optional.ofNullable(mapper.readTree(responseBody).get("confidence_score")).map(JsonNode::asLong).orElse(null);
+                } catch (JsonProcessingException e) {
+                  throw new RuntimeException(e);
+                }
+                final String bboxes;
+                try {
+                  bboxes = Optional.ofNullable(mapper.readTree(responseBody).get("bboxes")).map(JsonNode::toString).orElse(null);
+                } catch (JsonProcessingException e) {
+                  throw new RuntimeException(e);
+                }
+                parentObj.add(UrgencyTriageOutputTable.builder()
+                        .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
+                        .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
+                        .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                        .processId(Optional.ofNullable(processId).map(String::valueOf).map(Long::parseLong).orElse(null))
+                        .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                        .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                        .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                        .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
+                        .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                        .utResult(paperType)
+                        .confScore(confidenceScore)
+                        .bbox(bboxes)
+                        .status("COMPLETED")
+                        .stage("URGENCY_TRIAGE_MODEL")
+                        .message("Urgency Triage Finished")
+                        .rootPipelineId(entity.rootPipelineId)
+                        .build());
+                log.info(aMarker, "Execute for urgency triage {}", response);
+              });
+            });
+          }
         } else {
           parentObj.add(UrgencyTriageOutputTable.builder()
                   .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))

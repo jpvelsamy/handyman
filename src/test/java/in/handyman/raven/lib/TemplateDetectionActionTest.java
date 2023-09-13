@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @Slf4j
 class TemplateDetectionActionTest {
 
@@ -40,7 +38,7 @@ class TemplateDetectionActionTest {
                 Map.entry("consumer.API.count","1"),
                 Map.entry("write.batch.size","5")));
 
-        TemplateDetectionAction templateDetectionAction=new TemplateDetectionAction(actionExecutionAudit,log,templateDetection);
+        TemplateDetectionAction templateDetectionAction=new TemplateDetectionAction(actionExecutionAudit,  log,templateDetection);
         templateDetectionAction.execute();
     }
 }

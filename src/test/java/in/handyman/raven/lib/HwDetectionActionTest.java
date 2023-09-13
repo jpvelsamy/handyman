@@ -1,8 +1,9 @@
 package in.handyman.raven.lib;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.HwDetection;
+import in.handyman.raven.lib.model.hwDectection.HwDetectionAction;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
 import static org.reflections.Reflections.log;
 class HwDetectionActionTest {
     @Test

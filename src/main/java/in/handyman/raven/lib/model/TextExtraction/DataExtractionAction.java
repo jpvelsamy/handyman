@@ -1,15 +1,18 @@
-package in.handyman.raven.lib;
+package in.handyman.raven.lib.model.TextExtraction;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
+import in.handyman.raven.lib.CoproProcessor;
 import in.handyman.raven.lib.model.DataExtraction;
+import in.handyman.raven.lib.model.autoRotation.AutoRotationModelResponse;
+import in.handyman.raven.lib.model.triton.TritonInputRequest;
+import in.handyman.raven.lib.model.triton.TritonRequest;
 import in.handyman.raven.util.ExceptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,12 +23,12 @@ import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.argument.Arguments;
 import org.jdbi.v3.core.argument.NullArgument;
 import org.json.JSONObject;
-import org.mariadb.jdbc.message.client.LongDataPacket;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Timestamp;
@@ -84,7 +87,7 @@ public class DataExtractionAction implements IActionExecution {
         }
       }).collect(Collectors.toList())).orElse(Collections.emptyList());
 
-      final CoproProcessor<DataExtractionAction.DataExtractionInputTable, DataExtractionAction.DataExtractionOutputTable> coproProcessor = new CoproProcessor<>(new LinkedBlockingQueue<>(), DataExtractionAction.DataExtractionOutputTable.class, DataExtractionAction.DataExtractionInputTable.class, jdbi, log, new DataExtractionAction.DataExtractionInputTable(), urls, action);
+      final CoproProcessor<DataExtractionInputTable, DataExtractionOutputTable> coproProcessor = new CoproProcessor<>(new LinkedBlockingQueue<>(), DataExtractionAction.DataExtractionOutputTable.class, DataExtractionAction.DataExtractionInputTable.class, jdbi, log, new DataExtractionAction.DataExtractionInputTable(), urls, action);
       coproProcessor.startProducer(dataExtraction.getQuerySet(), Integer.valueOf(action.getContext().get("read.batch.size")));
       Thread.sleep(1000);
       coproProcessor.startConsumer(insertQuery, Integer.valueOf(action.getContext().get("text.extraction.consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")), new DataExtractionAction.DataExtractionConsumerProcess(log, aMarker, action));
@@ -119,16 +122,34 @@ public class DataExtractionAction implements IActionExecution {
     @Override
     public List<DataExtractionAction.DataExtractionOutputTable> process(URL endpoint, DataExtractionAction.DataExtractionInputTable entity) throws JsonProcessingException {
       List<DataExtractionAction.DataExtractionOutputTable> parentObj = new ArrayList<>();
-      final ObjectNode objectNode = mapper.createObjectNode();
       String inputFilePath = entity.getFilePath();
-    final String DATA_EXTRACTION_PROCESS="DATA_EXTRACTION";
+      final String DATA_EXTRACTION_PROCESS="DATA_EXTRACTION";
       Long rootpipelineId=entity.rootPipelineId;
       Long actionId=action.getActionId();
-      objectNode.put("inputFilePath", inputFilePath);
-      objectNode.put("rootPipelineId",rootpipelineId);
-      objectNode.put("actionId",actionId);
-      objectNode.put("process",DATA_EXTRACTION_PROCESS);
-      Request request = new Request.Builder().url(endpoint).post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
+      String process = String.valueOf(entity.process);
+      String filePath = String.valueOf(entity.getFilePath());
+
+      //payload
+      DataExtractionData DataExtractiondata = new DataExtractionData();
+      DataExtractiondata.setRootPipelineId(Long.valueOf(rootpipelineId));
+      DataExtractiondata.setActionId(actionId);
+      DataExtractiondata.setProcess(process);
+      DataExtractiondata.setInputFilePath(filePath);
+
+      DataExtractionRequest requests = new  DataExtractionRequest();
+      TritonRequest requestBody = new TritonRequest();
+      requestBody.setName("NER START");
+      requestBody.setShape(List.of(1, 1));
+      requestBody.setDatatype("BYTES");
+      requestBody.setData(Collections.singletonList(DataExtractiondata));
+
+      TritonInputRequest tritonInputRequest=new TritonInputRequest();
+      tritonInputRequest.setInputs(Collections.singletonList(tritonInputRequest));
+
+      ObjectMapper objectMapper = new ObjectMapper();
+      String jsonRequest = objectMapper.writeValueAsString(requests);
+
+      Request request = new Request.Builder().url(endpoint).post(RequestBody.create(DataExtractiondata.toString(), MediaTypeJSON)).build();
 
       if(log.isInfoEnabled()) {
         log.info(aMarker, "Request has been build with the parameters \n URI : {}, with inputFilePath {} ", endpoint, inputFilePath);
@@ -136,30 +157,41 @@ public class DataExtractionAction implements IActionExecution {
 
       String originId = entity.getOriginId();
       Integer groupId = entity.getGroupId();
+
       try (Response response = httpclient.newCall(request).execute()) {
         String responseBody = Objects.requireNonNull(response.body()).string();
         if (response.isSuccessful()) {
-          JSONObject parentResponseObject = new JSONObject(responseBody);
-          final String contentString=Optional.ofNullable(parentResponseObject.get("pageContent")).map(String::valueOf).orElse(null);
-          final String flag=(!Objects.isNull(contentString) && contentString.length() > 5 ) ? "no" : "yes";
-          parentObj.add(DataExtractionOutputTable.builder()
-                  .filePath(new File(entity.getFilePath()).getAbsolutePath())
-                  .extractedText(contentString)
-                  .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
-                  .groupId(groupId)
-                  .fileName(Optional.ofNullable(parentResponseObject.get("fileName")).map(String::valueOf).orElse(null))
-                  .paperNo(entity.paperNo)
-                          .status("COMPLETED")
-                          .stage("DATA_EXTRACTION")
-                          .message("Data extraction macro completed")
-                          .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                          .tenantId(entity.tenantId)
-                          .templateId(entity.templateId)
-                          .processId(entity.processId)
-                          .isBlankPage(flag)
-                          .templateName(entity.templateName)
-                          .rootPipelineId(entity.rootPipelineId)
-                  .build());
+          ObjectMapper objectMappers = new ObjectMapper();
+         DataExtractionResponse modelResponse = objectMappers.readValue(responseBody, DataExtractionResponse.class);
+         if (modelResponse.getOutputs() != null && !modelResponse.getOutputs().isEmpty()) {
+           modelResponse.getOutputs().forEach(o -> {
+             o.getData().forEach(DataExtractionDataItem -> {
+
+               JSONObject parentResponseObject = new JSONObject(responseBody);
+               final String contentString=Optional.ofNullable(parentResponseObject.get("pageContent")).map(String::valueOf).orElse(null);
+               final String flag=(!Objects.isNull(contentString) && contentString.length() > 5 ) ? "no" : "yes";
+
+               parentObj.add(DataExtractionOutputTable.builder()
+                       .filePath(new File(entity.getFilePath()).getAbsolutePath())
+                       .extractedText(contentString)
+                       .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                       .groupId(groupId)
+                       .fileName(Optional.ofNullable(parentResponseObject.get("fileName")).map(String::valueOf).orElse(null))
+                       .paperNo(entity.paperNo)
+                       .status("COMPLETED")
+                       .stage("DATA_EXTRACTION")
+                       .message("Data extraction macro completed")
+                       .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                       .tenantId(entity.tenantId)
+                       .templateId(entity.templateId)
+                       .processId(entity.processId)
+                       .isBlankPage(flag)
+                       .templateName(entity.templateName)
+                       .rootPipelineId(entity.rootPipelineId)
+                       .build());
+             });
+           });
+         }
         }else{
           parentObj.add(DataExtractionOutputTable.builder()
                   .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
@@ -213,6 +245,7 @@ public class DataExtractionAction implements IActionExecution {
   @NoArgsConstructor
   @Builder
   public static class DataExtractionInputTable implements CoproProcessor.Entity {
+    public String process;
     private String originId;
     private Integer groupId;
     private String filePath;
@@ -271,4 +304,6 @@ public class DataExtractionAction implements IActionExecution {
     private String pageContent;
   }
 
-}
+} catch (IOException e) {
+          throw new RuntimeException(e);
+      }

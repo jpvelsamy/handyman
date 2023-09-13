@@ -1,4 +1,4 @@
-package in.handyman.raven.lib;
+package in.handyman.raven.lib.model.NerAdaptors;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import in.handyman.raven.exception.HandymanException;
@@ -6,7 +6,10 @@ import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
+import in.handyman.raven.lib.*;
 import in.handyman.raven.lib.model.*;
+import in.handyman.raven.lib.model.paperItemizer.PaperItemizerAction;
+import in.handyman.raven.lib.model.paperItemizer.PaperItemizerData;
 import in.handyman.raven.util.ExceptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -143,7 +146,6 @@ public class NerAdapterAction implements IActionExecution {
             URI = String.valueOf(endpoint);
             multiverseValidator = Boolean.parseBoolean(action.getContext().get("validation.multiverse-mode"));
             restrictedAnswers = action.getContext().get("validation.restricted-answers").split(",");
-
             log.info(aMarker, "Build 19-coproProcessor consumer process started with endpoint {} and entity {}", endpoint, result);
             List<NerOutputTable> parentObj = new ArrayList<>();
             String inputValue = result.getInputValue();
@@ -170,6 +172,7 @@ public class NerAdapterAction implements IActionExecution {
 
             updateEmptyValueIfLowCf(result, valConfidenceScore);
             updateEmptyValueForRestrictedAns(result, inputValue);
+
 
             AtomicInteger atomicInteger = new AtomicInteger();
             log.info(aMarker, "coproProcessor consumer confidence score  {}", valConfidenceScore);
