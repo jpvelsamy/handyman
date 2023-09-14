@@ -1,4 +1,4 @@
-package in.handyman.raven.lib;
+package in.handyman.raven.lib.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -9,7 +9,13 @@ import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
+import in.handyman.raven.lib.CoproProcessor;
 import in.handyman.raven.lib.model.Intellimatch;
+import in.handyman.raven.lib.model.common.ComparisonPayload;
+import in.handyman.raven.lib.model.common.ComparisonResponse;
+import in.handyman.raven.lib.model.common.ComparisonResquest;
+import in.handyman.raven.lib.model.triton.TritonInputRequest;
+import in.handyman.raven.lib.model.triton.TritonRequest;
 import in.handyman.raven.util.ExceptionUtil;
 import in.handyman.raven.util.InstanceUtil;
 import lombok.AllArgsConstructor;
@@ -144,21 +150,38 @@ public class IntellimatchAction implements IActionExecution {
       List<IntellimatchOutputTable> parentObj = new ArrayList<>();
       AtomicInteger atomicInteger = new AtomicInteger();
 
-
-
       if (result.getActualValue() != null) {
-        final ObjectNode objectNode = mapper.createObjectNode();
-        List<String> comparableSentence = Arrays.asList(result.getExtractedValue());
-        final String intellimatchProcessName="CONTROL_DATA";
+        List<String> sentence = Arrays.asList(result.getExtractedValue());
+        final String process="CONTROL_DATA";
         Long actionId= action.getActionId();
         Long rootpipelineId=result.rootPipelineId;
-        objectNode.put("rootPipelineId",rootpipelineId);
-        objectNode.put("actionId",actionId);
-        objectNode.put("process",intellimatchProcessName);
-        objectNode.put("inputSentence", result.getActualValue());
-        objectNode.putPOJO("sentences", comparableSentence);
+        String inputSentence = result.extractedValue;
+
+
+        ComparisonPayload Comparisonpayload = new ComparisonPayload();
+        Comparisonpayload.setRootPipelineId(rootpipelineId);
+        Comparisonpayload.setActionId(actionId);
+        Comparisonpayload.setProcess(process);
+        Comparisonpayload.setInputSentence(inputSentence);
+        Comparisonpayload.setSentence(sentence);
+
+
+        ComparisonResquest requests = new ComparisonResquest();
+        TritonRequest requestBody = new TritonRequest();
+        requestBody.setName("NER START");
+        requestBody.setShape(List.of(1, 1));
+        requestBody.setDatatype("BYTES");
+        requestBody.setData(Collections.singletonList(Comparisonpayload));
+
+        TritonInputRequest tritonInputRequest=new TritonInputRequest();
+        tritonInputRequest.setInputs(Collections.singletonList(tritonInputRequest));
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonRequest = objectMapper.writeValueAsString(tritonInputRequest);
+
+
           final Request request = new Request.Builder().url(endpoint)
-                .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
+                .post(RequestBody.create(Comparisonpayload.toString(), MediaTypeJSON)).build();
         log.info("intellimatch reqest body {}", request);
         try (Response response = httpclient.newCall(request).execute()) {
           String responseBody = Objects.requireNonNull(response.body()).string();
@@ -166,24 +189,34 @@ public class IntellimatchAction implements IActionExecution {
           if (response.isSuccessful()) {
             List<ControlDataCopro> output = mapper.readValue(responseBody, new TypeReference<>() {
             });
-            log.info("copro response body {} ", output);
+
             double matchPercent = output.get(0) != null ? Math.round(output.get(0).getSimilarityPercent() * 100.0) / 100.0 : 0.0;
-            parentObj.add(IntellimatchOutputTable.builder().
-                    fileName(result.fileName).
-                    originId(result.originId).
-                    groupId(result.groupId).
-                    createdOn(Timestamp.valueOf(LocalDateTime.now())).
-                    rootPipelineId(result.rootPipelineId).
-                    actualValue(result.actualValue).
-                    extractedValue(result.extractedValue).
-                    similarity(result.similarity).
-                    confidenceScore(result.confidenceScore).
-                    intelliMatch(matchPercent).
-                    status("completed").
-                    stage("control data").
-                    message("data insertion is completed").
-                    build()
-            );
+            ObjectMapper objectMappers = new ObjectMapper();
+            ComparisonResponse Response = objectMappers.readValue(responseBody, ComparisonResponse.class);
+            if (Response.getOutputs() != null && !Response.getOutputs().isEmpty()) {
+              Response.getOutputs().forEach(o -> {
+                o.getData().forEach(ComparisonDataItem -> {
+                  log.info("copro response body {} ", output);
+                  double similarityPercent = output.get(0) != null ? Math.round(output.get(0).getSimilarityPercent() * 100.0) / 100.0 : 0.0;
+                  parentObj.add(IntellimatchOutputTable.builder().
+                          fileName(result.fileName).
+                          originId(result.originId).
+                          groupId(result.groupId).
+                          createdOn(Timestamp.valueOf(LocalDateTime.now())).
+                          rootPipelineId(result.rootPipelineId).
+                          actualValue(result.actualValue).
+                          extractedValue(result.extractedValue).
+                          similarity(result.similarity).
+                          confidenceScore(result.confidenceScore).
+                          intelliMatch(ComparisonDataItem.getSimilarityPercent()).
+                          status("completed").
+                          stage("control data").
+                          message("data insertion is completed").
+                          build()
+                  );
+                });
+              });
+            }
 
 
           } else {

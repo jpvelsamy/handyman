@@ -1,4 +1,4 @@
-package in.handyman.raven.lib.model.paperItemizer;
+package in.handyman.raven.lib.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
@@ -23,6 +23,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import in.handyman.raven.lib.model.paperItemizer.PaperItemizerData;
+import in.handyman.raven.lib.model.paperItemizer.PaperItemizerResponse;
 import in.handyman.raven.lib.model.triton.TritonInputRequest;
 import in.handyman.raven.lib.model.triton.TritonRequest;
 import lombok.AllArgsConstructor;

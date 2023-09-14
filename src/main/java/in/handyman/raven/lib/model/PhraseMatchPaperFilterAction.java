@@ -1,4 +1,4 @@
-package in.handyman.raven.lib.model.pharseMatch;
+package in.handyman.raven.lib.model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,10 +8,11 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.CoproProcessor;
-import in.handyman.raven.lib.model.PhraseMatchPaperFilter;
+import in.handyman.raven.lib.model.pharseMatch.PharseMatchData;
+import in.handyman.raven.lib.model.pharseMatch.PharseMatchRequest;
+import in.handyman.raven.lib.model.pharseMatch.PharseMatchResponse;
 import in.handyman.raven.lib.model.triton.TritonInputRequest;
 import in.handyman.raven.lib.model.triton.TritonRequest;
-import in.handyman.raven.lib.model.zeroShotClassifier.ZeroShotClassifierDataEntityConfidenceScore;
 import in.handyman.raven.util.ExceptionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

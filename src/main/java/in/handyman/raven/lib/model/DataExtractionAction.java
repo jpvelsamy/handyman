@@ -1,4 +1,4 @@
-package in.handyman.raven.lib.model.TextExtraction;
+package in.handyman.raven.lib.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -9,8 +9,9 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.CoproProcessor;
-import in.handyman.raven.lib.model.DataExtraction;
-import in.handyman.raven.lib.model.autoRotation.AutoRotationModelResponse;
+import in.handyman.raven.lib.model.TextExtraction.DataExtractionData;
+import in.handyman.raven.lib.model.TextExtraction.DataExtractionRequest;
+import in.handyman.raven.lib.model.TextExtraction.DataExtractionResponse;
 import in.handyman.raven.lib.model.triton.TritonInputRequest;
 import in.handyman.raven.lib.model.triton.TritonRequest;
 import in.handyman.raven.util.ExceptionUtil;
@@ -28,7 +29,6 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Timestamp;
@@ -304,6 +304,4 @@ public class DataExtractionAction implements IActionExecution {
     private String pageContent;
   }
 
-} catch (IOException e) {
-          throw new RuntimeException(e);
-      }
+}

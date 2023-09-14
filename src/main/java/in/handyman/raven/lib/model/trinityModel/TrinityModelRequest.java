@@ -1,4 +1,4 @@
-package in.handyman.raven.lib.model.templateDetection;
+package in.handyman.raven.lib.model.trinityModel;
 
 import in.handyman.raven.lib.model.triton.TritonRequest;
 import lombok.AllArgsConstructor;
@@ -7,13 +7,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TemplateDetectionRequest {
+@Data
+public class TrinityModelRequest {
 
-        private List<TritonRequest> inputs;
+
+    private List<TritonRequest> inputs;
 
 }
-

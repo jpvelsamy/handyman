@@ -1,6 +1,5 @@
-package in.handyman.raven.lib.model.NerAdaptors;
+package in.handyman.raven.lib.model.common;
 
-import in.handyman.raven.lib.model.hwDectection.HwDetectionDataItem;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,12 +10,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class NerAdapterOutput {
-
+public class ComparisonOutput {
         private String name;
         private String datatype;
         private List<Integer> shape;
-        private List<NerAdapterDataItem> data;
+        private List<ComparisonDataItem> data;
     }
 
 

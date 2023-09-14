@@ -1,4 +1,4 @@
-package in.handyman.raven.lib.model.hwDectection;
+package in.handyman.raven.lib.model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -13,6 +13,9 @@ import in.handyman.raven.lib.CoproProcessor;
 import in.handyman.raven.lib.model.HwDetection;
 import in.handyman.raven.lib.model.autoRotation.AutoRotationData;
 import in.handyman.raven.lib.model.autoRotation.AutoRotationRequest;
+import in.handyman.raven.lib.model.hwDectection.HwDetectionPayload;
+import in.handyman.raven.lib.model.hwDectection.HwDetectionRequest;
+import in.handyman.raven.lib.model.hwDectection.HwDetectionResponse;
 import in.handyman.raven.lib.model.paperItemizer.PaperItemizerResponse;
 import in.handyman.raven.lib.model.triton.TritonInputRequest;
 import in.handyman.raven.lib.model.triton.TritonRequest;
@@ -130,7 +133,6 @@ public class HwDetectionAction implements IActionExecution {
     public List<HwClassificationOutputTable> process(URL endpoint, HwClassificationInputTable entity) throws Exception {
 
       List<HwClassificationOutputTable> parentObj = new ArrayList<>();
-      final ObjectNode objectNode = mapper.createObjectNode();
       String entityFilePath = entity.getFilePath();
       Long actionId=action.getActionId();
       final String process="PAPER_CLASSIFICATION";
@@ -316,5 +318,4 @@ public class HwDetectionAction implements IActionExecution {
 
     }
   }
-
 }

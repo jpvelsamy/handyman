@@ -1,4 +1,4 @@
-package in.handyman.raven.lib.model.qrExtraction;
+package in.handyman.raven.lib.model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -12,6 +12,9 @@ import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.CoproProcessor;
 import in.handyman.raven.lib.model.pharseMatch.PharseMatchRequest;
 import in.handyman.raven.lib.model.QrExtraction;
+import in.handyman.raven.lib.model.qrExtraction.QrExtractionData;
+import in.handyman.raven.lib.model.qrExtraction.QrExtractionRequest;
+import in.handyman.raven.lib.model.qrExtraction.QrExtractionResponse;
 import in.handyman.raven.lib.model.triton.TritonInputRequest;
 import in.handyman.raven.lib.model.triton.TritonRequest;
 import in.handyman.raven.util.ExceptionUtil;

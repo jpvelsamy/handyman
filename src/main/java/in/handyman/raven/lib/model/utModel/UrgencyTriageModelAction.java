@@ -58,6 +58,7 @@ public class UrgencyTriageModelAction implements IActionExecution {
   private final Marker aMarker;
   private final String URI;
 
+
   public UrgencyTriageModelAction(final ActionExecutionAudit action, final Logger log,
                                   final Object UrgencyTriageModel) {
     UrgencyTriageModelAction.urgencyTriageModel = (UrgencyTriageModel) UrgencyTriageModel;

@@ -1,10 +1,11 @@
-package in.handyman.raven.lib;
+package in.handyman.raven.lib.model;
 
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
+import in.handyman.raven.lib.CoproProcessor;
 import in.handyman.raven.lib.agadia.xenon.model.TemplateDetectionConsumerProcess;
 import in.handyman.raven.lib.agadia.xenon.model.TemplateDetectionInputTable;
 import in.handyman.raven.lib.agadia.xenon.model.TemplateDetectionOutputTable;
