@@ -2,7 +2,7 @@ package in.handyman.raven.lib.modelTest;
 
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.TemplateDetection;
-import in.handyman.raven.lib.model.TemplateDetectionAction;
+import in.handyman.raven.lib.TemplateDetectionAction;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 

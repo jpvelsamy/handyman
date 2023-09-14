@@ -1,4 +1,4 @@
-package in.handyman.raven.lib.model;
+package in.handyman.raven.lib;
 
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;

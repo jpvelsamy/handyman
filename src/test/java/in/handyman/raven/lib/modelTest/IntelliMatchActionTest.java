@@ -2,7 +2,7 @@ package in.handyman.raven.lib.modelTest;
 
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.Intellimatch;
-import in.handyman.raven.lib.model.IntellimatchAction;
+import in.handyman.raven.lib.IntellimatchAction;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 

@@ -1,9 +1,9 @@
 package in.handyman.raven.lib.modelTest;
 
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
-import in.handyman.raven.lib.model.PhraseMatchPaperFilterAction;
+import in.handyman.raven.lib.PhraseMatchPaperFilterAction;
 import in.handyman.raven.lib.model.PhraseMatchPaperFilter;
-import in.handyman.raven.lib.model.zeroShotClassifier.ZeroShotClassifierPaperFilterAction;
+import in.handyman.raven.lib.ZeroShotClassifierPaperFilterAction;
 import in.handyman.raven.lib.model.ZeroShotClassifierPaperFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

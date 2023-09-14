@@ -1,8 +1,8 @@
 package in.handyman.raven.lib.modelTest;
 
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
-import in.handyman.raven.lib.model.IntellimatchAction;
-import in.handyman.raven.lib.model.MasterdataComparisonAction;
+import in.handyman.raven.lib.IntellimatchAction;
+import in.handyman.raven.lib.MasterdataComparisonAction;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 

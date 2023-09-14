@@ -2,7 +2,7 @@ package in.handyman.raven.lib.modelTest;
 
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.NerAdapter;
-import in.handyman.raven.lib.model.NerAdapterAction;
+import in.handyman.raven.lib.NerAdapterAction;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 

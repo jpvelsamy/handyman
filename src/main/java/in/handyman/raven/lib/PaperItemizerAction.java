@@ -1,4 +1,4 @@
-package in.handyman.raven.lib.model;
+package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
@@ -8,9 +8,20 @@ import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.CoproProcessor;
 import in.handyman.raven.lib.model.PaperItemizer;
-import java.lang.Exception;
-import java.lang.Object;
-import java.lang.Override;
+import in.handyman.raven.lib.model.paperItemizer.PaperItemizerData;
+import in.handyman.raven.lib.model.paperItemizer.PaperItemizerInputTable;
+import in.handyman.raven.lib.model.paperItemizer.PaperItemizerOutputTable;
+import in.handyman.raven.lib.model.paperItemizer.PaperItemizerResponse;
+import in.handyman.raven.lib.model.triton.TritonInputRequest;
+import in.handyman.raven.lib.model.triton.TritonRequest;
+import okhttp3.*;
+import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.argument.Arguments;
+import org.jdbi.v3.core.argument.NullArgument;
+import org.slf4j.Logger;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Timestamp;
@@ -21,23 +32,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import in.handyman.raven.lib.model.paperItemizer.PaperItemizerData;
-import in.handyman.raven.lib.model.paperItemizer.PaperItemizerResponse;
-import in.handyman.raven.lib.model.triton.TritonInputRequest;
-import in.handyman.raven.lib.model.triton.TritonRequest;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import okhttp3.*;
-import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.core.argument.Arguments;
-import org.jdbi.v3.core.argument.NullArgument;
-import org.slf4j.Logger;
-import org.slf4j.Marker;
-import org.slf4j.MarkerFactory;
 
 import static org.checkerframework.checker.units.UnitsTools.s;
 
@@ -174,9 +168,9 @@ public class PaperItemizerAction implements IActionExecution {
       AtomicInteger atomicInteger = new AtomicInteger();
       String originId = entity.getOriginId();
       Integer groupId = entity.getGroupId();
-      String templateId = entity.templateId;
-      String tenantId = entity.tenantId;
-      Long processId = entity.processId;
+      String templateId = entity.getTemplateId();
+      String tenantId = entity.getTenantId();
+      Long processId = entity.getProcessId();
 
 
       try(Response response=httpclient.newCall(request).execute()){
@@ -259,50 +253,8 @@ public class PaperItemizerAction implements IActionExecution {
     return paperItemizer.getCondition();
   }
   //1. input pojo from select query, which implements CoproProcessor.Entity
-  @Data
-  @AllArgsConstructor
-  @NoArgsConstructor
-  @Builder
-  public static class PaperItemizerInputTable implements CoproProcessor.Entity {
-    private String originId;
-    private Long processId;
-    private Integer groupId;
-    private String tenantId;
-    private String templateId;
-    private String filePath;
-    private String outputDir;
-    private Long rootPipelineId;
-
-    @Override
-    public List<Object> getRowData() {
-      return null;
-    }
-  }
 
   //2. output pojo for table, which implements CoproProcessor.Entity
-  @Data
-  @AllArgsConstructor
-  @NoArgsConstructor
-  @Builder
-  public static class PaperItemizerOutputTable implements CoproProcessor.Entity {
 
-    private String originId;
-    private Integer groupId;
-    private String tenantId;
-    private Long processId;
-    private String templateId;
-    private String processedFilePath;
-    private Integer paperNo;
-    private String status;
-    private String stage;
-    private String message;
-    private Timestamp createdOn;
-    private Long rootPipelineId;
-
-    @Override
-    public List<Object> getRowData() {
-      return Stream.of(this.originId, this.groupId,this.tenantId,this.templateId, this.processedFilePath,
-              this.paperNo,this.status,this.stage,this.message,this.createdOn,this.processId,this.rootPipelineId).collect(Collectors.toList());
-    }
   }
-}
+
