@@ -124,11 +124,11 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
         public List<PaperFilteringZeroShotClassifierOutputTable> process(URL endpoint, PaperFilteringZeroShotClassifierInputTable entity) throws JsonProcessingException {
             List<PaperFilteringZeroShotClassifierOutputTable> parentObj = new ArrayList<>();
 
-            String originId = entity.originId;
-            String groupId = entity.groupId;
+            String originId = entity.getOriginId();
+            String groupId = entity.getGroupId();
             String pipelineId = String.valueOf(entity.pipelineId);
-            String processId = String.valueOf(entity.processId);
-            String paperNo = String.valueOf(entity.paperNo);
+            String processId = String.valueOf(entity.getProcessId());
+            String paperNo = String.valueOf(entity.getPaperNo());
             Long actionId = action.getActionId();
 
             //payload
@@ -244,27 +244,6 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
         }
     }
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class PaperFilteringZeroShotClassifierInputTable implements CoproProcessor.Entity {
-
-        public String pipelineId;
-        private String originId;
-        private Integer paperNo;
-        private String groupId;
-        private String pageContent;
-        //        private String truthEntity;
-        private String truthPlaceholder;
-        private String processId;
-        private Long rootPipelineId;
-
-        @Override
-        public List<Object> getRowData() {
-            return null;
-        }
-    }
 
 
 
