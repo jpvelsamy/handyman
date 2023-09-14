@@ -1,9 +1,12 @@
-package in.handyman.raven.lib.model.autoRotation;
+package in.handyman.raven.lib.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.*;
+import in.handyman.raven.lib.model.autoRotation.AutoRotationData;
+import in.handyman.raven.lib.model.autoRotation.AutoRotationModelResponse;
+import in.handyman.raven.lib.model.autoRotation.AutoRotationRequest;
 import in.handyman.raven.lib.model.triton.TritonInputRequest;
 import in.handyman.raven.lib.model.triton.TritonRequest;
 import in.handyman.raven.util.ExceptionUtil;
@@ -107,10 +110,10 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
 
                 if (modelResponse.getOutputs() != null && !modelResponse.getOutputs().isEmpty()) {
                     modelResponse.getOutputs().forEach(o -> {
-                        o.getData().forEach(autoRotationData -> {
+                        o.getData().forEach(autoRotationDataItem -> {
                             parentObj.add(AutoRotationOutputTable
                                     .builder()
-                                    .processedFilePath(autoRotationData.getProcessedFilePaths())
+                                    .processedFilePath(autoRotationDataItem.getProcessedFilePaths())
                                     .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                                     .groupId(groupId)
                                     .processId(processId)
