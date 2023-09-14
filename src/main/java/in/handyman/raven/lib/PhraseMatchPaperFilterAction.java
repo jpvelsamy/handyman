@@ -51,20 +51,20 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
     @Override
     public void execute() throws Exception {
         try {
-        final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(phraseMatchPaperFilter.getResourceConn());
-        jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
-        log.info(aMarker, "<-------Phrase match paper filter Action for {} has been started------->", phraseMatchPaperFilter.getName());
-        final String processId = Optional.ofNullable(phraseMatchPaperFilter.getProcessID()).map(String::valueOf).orElse(null);
-        final String insertQuery = "INSERT INTO paper.phrase_match_filtering_result_" + processId + "(origin_id,group_id,paper_no,truth_entity, synonym, is_key_present,status,stage,message, created_on,root_pipeline_id) " +
-                " VALUES(?,?,?,?,?,?,?,?,?,now(), ?)";
-        final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.paper-filtering-phrase-match.url")).map(s -> Arrays.stream(s.split(",")).map(url -> {
-            try {
-                return new URL(url);
-            } catch (MalformedURLException e) {
-                log.error("Error in processing the URL {} ", url, e);
-                throw new HandymanException("Error in processing the URL", e, action);
-            }
-        }).collect(Collectors.toList())).orElse(Collections.emptyList());
+            final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(phraseMatchPaperFilter.getResourceConn());
+            jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
+            log.info(aMarker, "<-------Phrase match paper filter Action for {} has been started------->", phraseMatchPaperFilter.getName());
+            final String processId = Optional.ofNullable(phraseMatchPaperFilter.getProcessID()).map(String::valueOf).orElse(null);
+            final String insertQuery = "INSERT INTO paper.phrase_match_filtering_result_" + processId + "(origin_id,group_id,paper_no,truth_entity, synonym, is_key_present,status,stage,message, created_on,root_pipeline_id) " +
+                    " VALUES(?,?,?,?,?,?,?,?,?,now(), ?)";
+            final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.paper-filtering-phrase-match.url")).map(s -> Arrays.stream(s.split(",")).map(url -> {
+                try {
+                    return new URL(url);
+                } catch (MalformedURLException e) {
+                    log.error("Error in processing the URL {} ", url, e);
+                    throw new HandymanException("Error in processing the URL", e, action);
+                }
+            }).collect(Collectors.toList())).orElse(Collections.emptyList());
 
             final CoproProcessor<PhraseMatchInputTable, PhraseMatchOutputTable> coproProcessor =
                     new CoproProcessor<>(new LinkedBlockingQueue<>(),
