@@ -1,4 +1,4 @@
-package in.handyman.raven.lib;
+package in.handyman.raven.lib.modelTest;
 
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.TemplateDetection;

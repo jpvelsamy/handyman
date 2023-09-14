@@ -1,40 +1,35 @@
-package in.handyman.raven.lib;
+package in.handyman.raven.lib.modelTest;
 
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
-import in.handyman.raven.lib.model.QrExtraction;
-import in.handyman.raven.lib.model.utModel.UregencyTriageModelRequest;
-import in.handyman.raven.lib.model.utModel.UrgencyTriageModelAction;
+import in.handyman.raven.lib.model.IntellimatchAction;
+import in.handyman.raven.lib.model.MasterdataComparisonAction;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 @Slf4j
-public class UrgencyTriageModelActionTest {
+public class MasterDataComparisonActionTest {
 
     @Test
     void tritonServer() throws Exception {
 
-        final UrgencyTriageAction build = UrgencyTriageAction.builder()
+        final MasterdataComparisonAction build = MasterdataComparisonAction.builder()
                 .condition(true)
-                .name("urgencyTriageModel")
+                .name("MasterDataComparison")
                 .resourceConn("intics_agadia_db_conn")
-                .outputDir("/home/balasoundarya.thanga@zucisystems.com/workspace/pr1-lambdas/output")
+                .matchResult("")
                 .build();
-
-
-
 
         ActionExecutionAudit actionExecutionAudit = new ActionExecutionAudit();
         actionExecutionAudit.getContext().put("copro.autorotation.url", "/copro/preprocess/autorotation");
         actionExecutionAudit.setProcessId(138980079308730208L);
         actionExecutionAudit.getContext().putAll(Map.ofEntries(Map.entry("read.batch.size", "5"),
-                Map.entry("consumer.API.count", "1"),
+                Map.entry("consumer.masterdata.API.count", "1"),
                 Map.entry("write.batch.size", "5")));
 
-     UrgencyTriageModelAction action1 = new UrgencyTriageModelAction(actionExecutionAudit, log, build);
+        IntellimatchAction action1 = new IntellimatchAction(actionExecutionAudit, log, build);
         action1.execute();
-
-
-
     }
 }
+
+
