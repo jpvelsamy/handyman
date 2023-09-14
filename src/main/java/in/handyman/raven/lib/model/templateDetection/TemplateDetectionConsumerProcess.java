@@ -1,4 +1,4 @@
-package in.handyman.raven.lib.agadia.xenon.model;
+package in.handyman.raven.lib.model.templateDetection;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
@@ -6,8 +6,6 @@ import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.audit.ExecutionStatus;
 import in.handyman.raven.lib.CoproProcessor;
 import in.handyman.raven.lib.TemplateDetectionAction;
-import in.handyman.raven.lib.model.templateDetection.*;
-import in.handyman.raven.lib.model.templateDetection.TemplateDetectionResponse;
 import in.handyman.raven.lib.model.triton.TritonInputRequest;
 import in.handyman.raven.lib.model.triton.TritonRequest;
 import in.handyman.raven.util.ExceptionUtil;

@@ -1,4 +1,4 @@
-package in.handyman.raven.lib.agadia.xenon.model;
+package in.handyman.raven.lib.model.templateDetection;
 
 import in.handyman.raven.lib.CoproProcessor;
 import lombok.AllArgsConstructor;
