@@ -2,7 +2,7 @@ package in.handyman.raven.lib.modelTest;
 
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.PaperItemizer;
-import in.handyman.raven.lib.model.PaperItemizerAction;
+import in.handyman.raven.lib.PaperItemizerAction;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import java.util.Map;

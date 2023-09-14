@@ -2,7 +2,7 @@ package in.handyman.raven.lib.modelTest;
 
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.DataExtraction;
-import in.handyman.raven.lib.model.DataExtractionAction;
+import in.handyman.raven.lib.DataExtractionAction;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 

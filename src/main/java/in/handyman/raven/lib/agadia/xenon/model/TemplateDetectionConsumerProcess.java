@@ -5,7 +5,7 @@ import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.audit.ExecutionStatus;
 import in.handyman.raven.lib.CoproProcessor;
-import in.handyman.raven.lib.model.TemplateDetectionAction;
+import in.handyman.raven.lib.TemplateDetectionAction;
 import in.handyman.raven.lib.model.templateDetection.*;
 import in.handyman.raven.lib.model.templateDetection.TemplateDetectionResponse;
 import in.handyman.raven.lib.model.triton.TritonInputRequest;

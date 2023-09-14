@@ -1,33 +1,21 @@
 
 
-package in.handyman.raven.lib.model.utModel;
+package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
-import in.handyman.raven.lib.CoproProcessor;
 import in.handyman.raven.lib.model.UrgencyTriageModel;
-import in.handyman.raven.lib.model.qrExtraction.QrExtractionData;
-import in.handyman.raven.lib.model.qrExtraction.QrExtractionRequest;
-import in.handyman.raven.lib.model.qrExtraction.QrExtractionResponse;
 import in.handyman.raven.lib.model.triton.TritonInputRequest;
 import in.handyman.raven.lib.model.triton.TritonRequest;
+import in.handyman.raven.lib.model.utModel.*;
 import in.handyman.raven.util.ExceptionUtil;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import okhttp3.*;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.argument.Arguments;
 import org.jdbi.v3.core.argument.NullArgument;
@@ -42,7 +30,6 @@ import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 /**
@@ -222,7 +209,7 @@ public class UrgencyTriageModelAction implements IActionExecution {
                         .status("COMPLETED")
                         .stage("URGENCY_TRIAGE_MODEL")
                         .message("Urgency Triage Finished")
-                        .rootPipelineId(entity.rootPipelineId)
+                        .rootPipelineId(entity.getRootPipelineId())
                         .build());
                 log.info(aMarker, "Execute for urgency triage {}", response);
               });
@@ -242,7 +229,7 @@ public class UrgencyTriageModelAction implements IActionExecution {
                   .status("FAILED")
                   .stage("URGENCY_TRIAGE_MODEL")
                   .message(response.message())
-                  .rootPipelineId(entity.rootPipelineId)
+                  .rootPipelineId(entity.getRootPipelineId())
                   .build());
           log.error(aMarker, "The Exception occurred in urgency triage {}",response);
         }
@@ -260,7 +247,7 @@ public class UrgencyTriageModelAction implements IActionExecution {
                 .status("FAILED")
                 .stage("URGENCY_TRIAGE_MODEL")
                 .message(ExceptionUtil.toString(e))
-                .rootPipelineId(entity.rootPipelineId)
+                .rootPipelineId(entity.getRootPipelineId())
                 .build());
         log.error(aMarker, "The Exception occurred in urgency triage", e);
         HandymanException handymanException = new HandymanException(e);
@@ -270,55 +257,7 @@ public class UrgencyTriageModelAction implements IActionExecution {
     }
   }
 
-  @AllArgsConstructor
-  @NoArgsConstructor
-  @Data
-  @Builder
-  public static class UrgencyTriageInputTable implements CoproProcessor.Entity {
-    private String createdUserId;
-    private String lastUpdatedUserId;
-    private String tenantId;
-    private Long processId;
-    private Integer groupId;
-    private String originId;
-    private Integer paperNo;
-    private String templateId;
-    private String modelRegistryId;
-    private String inputFilePath;
-    private Long rootPipelineId;
 
-    @Override
-    public List<Object> getRowData() {
-      return null;
-    }
-  }
 
-  @AllArgsConstructor
-  @NoArgsConstructor
-  @Data
-  @Builder
-  public static class UrgencyTriageOutputTable implements CoproProcessor.Entity {
-    private String createdUserId;
-    private String lastUpdatedUserId;
-    private Long processId;
-    private Integer groupId;
-    private String tenantId;
-    private Long confScore;
-    private String originId;
-    private Integer paperNo;
-    private String templateId;
-    private Integer modelRegistryId;
-    private String status;
-    private String stage;
-    private String message;
-    private String utResult;
-    private String bbox;
-    private Long rootPipelineId;
 
-    @Override
-    public List<Object> getRowData() {
-      return Stream.of(this.createdUserId, this.lastUpdatedUserId, this.processId, this.groupId, this.tenantId, this.confScore,
-              this.originId, this.paperNo, this.templateId, this.modelRegistryId, this.status, this.stage, this.message, this.utResult, this.bbox, this.rootPipelineId).collect(Collectors.toList());
-    }
-  }
 }

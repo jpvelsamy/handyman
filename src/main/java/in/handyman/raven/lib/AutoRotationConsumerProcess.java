@@ -1,4 +1,4 @@
-package in.handyman.raven.lib.model;
+package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;

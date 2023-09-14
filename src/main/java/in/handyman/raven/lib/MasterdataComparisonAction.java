@@ -1,7 +1,7 @@
 
 
 
-package in.handyman.raven.lib.model;
+package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -13,10 +13,7 @@ import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.CoproProcessor;
 import in.handyman.raven.lib.model.MasterdataComparison;
-import in.handyman.raven.lib.model.common.ComparisonPayload;
-import in.handyman.raven.lib.model.common.ComparisonResponse;
-import in.handyman.raven.lib.model.common.ComparisonResquest;
-import in.handyman.raven.lib.model.paperItemizer.PaperItemizerResponse;
+import in.handyman.raven.lib.model.common.*;
 import in.handyman.raven.lib.model.triton.TritonInputRequest;
 import in.handyman.raven.lib.model.triton.TritonRequest;
 import in.handyman.raven.util.ExceptionUtil;
@@ -29,7 +26,6 @@ import okhttp3.*;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.argument.Arguments;
 import org.jdbi.v3.core.argument.NullArgument;
-import org.junit.platform.commons.util.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -44,7 +40,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 @Builder
 /**
  /**
@@ -168,14 +163,14 @@ public class MasterdataComparisonAction implements IActionExecution {
       AtomicInteger atomicInteger = new AtomicInteger();
 
 
-      String eocIdentifier = result.eocIdentifier;
-      String extractedValue = result.extractedValue;
-      String actualValue = result.actualValue;
-      Integer paperNo = result.paperNo;
+      String eocIdentifier = result.getEocIdentifier();
+      String extractedValue = result.getExtractedValue();
+      String actualValue = result.getActualValue();
+      Integer paperNo = result.getPaperNo();
       String originId = result.getOriginId();
       String process="MASTER_DATA";
       Long actionId= action.getActionId();
-      Long rootpipelineId=result.rootPipelineId;
+      Long rootpipelineId= result.getRootPipelineId();
       String inputSentence = result.getActualValue();
       List<String> sentence = Collections.singletonList(result.getExtractedValue());
 //payload
@@ -314,50 +309,5 @@ public class MasterdataComparisonAction implements IActionExecution {
     double similarityPercent;
   }
 
-  @AllArgsConstructor
-  @NoArgsConstructor
-  @Data
-  @Builder
-  @JsonIgnoreProperties(ignoreUnknown = true)
-  public static class MasterDataInputTable implements CoproProcessor.Entity {
-    String originId;
-    Integer paperNo;
-    String eocIdentifier;
-    String extractedValue;
-    String actualValue;
-    private Long rootPipelineId;
 
-    @Override
-    public List<Object> getRowData() {
-      return null;
-    }
-  }
-
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Data
-    @Builder
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class MasterDataOutputTable implements CoproProcessor.Entity {
-        String originId;
-        Integer paperNo;
-        String eocIdentifier;
-        private Timestamp createdOn;
-        String extractedValue;
-        String actualValue;
-        double intelliMatch;
-        String status;
-        String stage;
-        String message;
-        private Long rootPipelineId;
-
-
-    @Override
-    public List<Object> getRowData() {
-      return Stream.of(this.originId, this.paperNo, this.eocIdentifier, this.createdOn, this.actualValue,
-              this.extractedValue,
-              this.intelliMatch, this.status, this.stage, this.message, this.rootPipelineId
-      ).collect(Collectors.toList());
-    }
-  }
 }
