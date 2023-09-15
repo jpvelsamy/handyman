@@ -1,5 +1,6 @@
 package in.handyman.raven.lib;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
@@ -69,8 +70,8 @@ public class PaperItemizerAction implements IActionExecution {
       log.info(aMarker, "paper itemizer Action output directory {}",outputDir);
       //5. build insert prepare statement with output table columns
       final String insertQuery = "INSERT INTO " +paperItemizer.getResultTable()+
-              "(origin_id,group_id,tenant_id,template_id,processed_file_path,paper_no, status,stage,message,created_on,process_id,root_pipeline_id) " +
-              " VALUES(?,?, ?,?, ?,?, ?,?,?,? ,?,  ?)";
+              "(origin_id,group_id,tenant_id,template_id,processed_file_path,paper_no, status,stage,message,created_on,process_id,root_pipeline_id,model_name,model_version) " +
+              " VALUES(?,?, ?,?, ?,?, ?,?,?,? ,?,  ?,?,?)";
       log.info(aMarker, "paper itemizer Insert query {}", insertQuery);
 
       //3. initiate copro processor and copro urls
@@ -137,7 +138,7 @@ public class PaperItemizerAction implements IActionExecution {
       Long rootPipelineId=entity.getRootPipelineId();
       final String paperItemizerProcessName = "PAPER_ITEMIZER";
       Long actionId=action.getActionId();
-
+      ObjectMapper objectMapper = new ObjectMapper();
 //payload
       PaperItemizerData paperitemizerData = new PaperItemizerData();
       paperitemizerData.setRootPipelineId(rootPipelineId);
@@ -145,22 +146,24 @@ public class PaperItemizerAction implements IActionExecution {
       paperitemizerData.setInputFilePath(inputFilePath);
       paperitemizerData.setOutputDir(outputDir);
       paperitemizerData.setActionId(actionId);
+      String jsonInputRequest = objectMapper.writeValueAsString(paperitemizerData);
+      JsonNode jsonNodeRequest = objectMapper.readTree(jsonInputRequest);
 
       TritonRequest requestBody = new TritonRequest();
-      requestBody.setName("NER START");
+      requestBody.setName("PAPER_ITEMIZER");
       requestBody.setShape(List.of(1, 1));
       requestBody.setDatatype("BYTES");
-      requestBody.setData(Collections.singletonList(paperitemizerData));
+     requestBody.setData(Collections.singletonList(jsonNodeRequest));
 
       TritonInputRequest tritonInputRequest=new TritonInputRequest();
       tritonInputRequest.setInputs(Collections.singletonList(requestBody));
 
-      ObjectMapper objectMapper = new ObjectMapper();
+
       String jsonRequest = objectMapper.writeValueAsString(tritonInputRequest);
 
-      log.info(aMarker,"coproProcessor mapper object node {}",paperitemizerData);
+      log.info(aMarker,"coproProcessor mapper object node {}",jsonRequest);
       Request request = new Request.Builder().url(endpoint)
-              .post(RequestBody.create(paperitemizerData.toString(), MediaTypeJSON)).build();
+              .post(RequestBody.create(jsonRequest, MediaTypeJSON)).build();
 
       if(log.isInfoEnabled()) {
         log.info(aMarker, "Request has been build with the parameters \n URI : {}, with inputFilePath {} and outputDir {}", endpoint, inputFilePath, outputDir);
@@ -180,9 +183,9 @@ public class PaperItemizerAction implements IActionExecution {
         if (response.isSuccessful()) {
           String responseBody = response.body().string();
           ObjectMapper objectMappers = new ObjectMapper();
-          PaperItemizerResponse Response = objectMappers.readValue(responseBody, PaperItemizerResponse.class);
-          if (Response.getOutputs() != null && !Response.getOutputs().isEmpty()) {
-            Response.getOutputs().forEach(o -> {
+          PaperItemizerResponse paperItemizerResponse = objectMappers.readValue(responseBody, PaperItemizerResponse.class);
+          if (paperItemizerResponse.getOutputs() != null && !paperItemizerResponse.getOutputs().isEmpty()) {
+            paperItemizerResponse.getOutputs().forEach(o -> {
                 o.getData().forEach(PaperItemizerDataItem -> {
                   parentObj.add(
                           PaperItemizerOutputTable
@@ -199,7 +202,10 @@ public class PaperItemizerAction implements IActionExecution {
                                   .message("Paper Itemizer macro completed")
                                   .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                                   .rootPipelineId(rootPipelineId)
+                                  .model_name(paperItemizerResponse.getModel_name())
+                                  .model_version(paperItemizerResponse.getModel_version())
                                   .build());
+
                 });
             });
            }
