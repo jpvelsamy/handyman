@@ -3,6 +3,7 @@ package in.handyman.raven.lib.modelTest;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.IntellimatchAction;
 import in.handyman.raven.lib.MasterdataComparisonAction;
+import in.handyman.raven.lib.model.MasterdataComparison;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +14,7 @@ public class MasterDataComparisonActionTest {
     @Test
     void tritonServer() throws Exception {
 
-        final MasterdataComparisonAction build = MasterdataComparisonAction.builder()
+        final MasterdataComparison build = MasterdataComparison.builder()
                 .condition(true)
                 .name("MasterDataComparison")
                 .resourceConn("intics_agadia_db_conn")

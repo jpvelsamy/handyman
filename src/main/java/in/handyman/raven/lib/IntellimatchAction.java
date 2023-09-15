@@ -2,6 +2,7 @@ package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
@@ -152,6 +153,7 @@ public class IntellimatchAction implements IActionExecution {
                 Long actionId = action.getActionId();
                 Long rootpipelineId = result.getRootPipelineId();
                 String inputSentence = result.getExtractedValue();
+                ObjectMapper objectMapper = new ObjectMapper();
 
 
                 ComparisonPayload Comparisonpayload = new ComparisonPayload();
@@ -160,24 +162,27 @@ public class IntellimatchAction implements IActionExecution {
                 Comparisonpayload.setProcess(process);
                 Comparisonpayload.setInputSentence(inputSentence);
                 Comparisonpayload.setSentence(sentence);
+                String jsonInputRequest = objectMapper.writeValueAsString(Comparisonpayload);
+
 
 
                 ComparisonResquest requests = new ComparisonResquest();
                 TritonRequest requestBody = new TritonRequest();
-                requestBody.setName("NER START");
+                requestBody.setName("INTELLIMATCH START");
                 requestBody.setShape(List.of(1, 1));
                 requestBody.setDatatype("BYTES");
-                requestBody.setData(Collections.singletonList(Comparisonpayload));
+                requestBody.setData(Collections.singletonList(jsonInputRequest));
+
+                //    requestBody.setData(Collections.singletonList(Comparisonpayload));
 
                 TritonInputRequest tritonInputRequest = new TritonInputRequest();
-                tritonInputRequest.setInputs(Collections.singletonList(tritonInputRequest));
+                tritonInputRequest.setInputs(Collections.singletonList(requestBody));
 
-                ObjectMapper objectMapper = new ObjectMapper();
                 String jsonRequest = objectMapper.writeValueAsString(tritonInputRequest);
 
 
                 final Request request = new Request.Builder().url(endpoint)
-                        .post(RequestBody.create(Comparisonpayload.toString(), MediaTypeJSON)).build();
+                        .post(RequestBody.create(jsonRequest.toString(), MediaTypeJSON)).build();
                 log.info("intellimatch reqest body {}", request);
                 try (Response response = httpclient.newCall(request).execute()) {
                     String responseBody = Objects.requireNonNull(response.body()).string();

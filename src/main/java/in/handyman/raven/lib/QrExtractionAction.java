@@ -139,6 +139,7 @@ public class QrExtractionAction implements IActionExecution {
             String pipelineId = String.valueOf(entity.getRootPipelineId());
             Long actionId = action.getActionId();
             String InputFilePath = String.valueOf(entity.getFilePath());
+            ObjectMapper objectMapper = new ObjectMapper();
 
             //payload
             QrExtractionData QrExtractiondata = new QrExtractionData();
@@ -146,18 +147,24 @@ public class QrExtractionAction implements IActionExecution {
             QrExtractiondata.setProcess("QR");
             QrExtractiondata.setInputFilePath(entity.getFilePath());
             QrExtractiondata.setActionId(action.getActionId());
+            String jsonInputRequest = objectMapper.writeValueAsString(QrExtractiondata);
+
 
             QrExtractionRequest requests = new QrExtractionRequest();
             TritonRequest requestBody = new TritonRequest();
-            requestBody.setName("NER START");
+            requestBody.setName("QR START");
             requestBody.setShape(List.of(1, 1));
             requestBody.setDatatype("BYTES");
-            requestBody.setData(Collections.singletonList(QrExtractiondata));
+            requestBody.setData(Collections.singletonList(jsonInputRequest));
+
+            // requestBody.setData(Collections.singletonList(jsonNodeRequest));
+
+
+            //   requestBody.setData(Collections.singletonList(QrExtractiondata));
 
             TritonInputRequest tritonInputRequest=new TritonInputRequest();
-            tritonInputRequest.setInputs(Collections.singletonList(tritonInputRequest));
+            tritonInputRequest.setInputs(Collections.singletonList(requestBody));
 
-            ObjectMapper objectMapper = new ObjectMapper();
             String jsonRequest = objectMapper.writeValueAsString(QrExtractiondata);
 
 
@@ -165,7 +172,7 @@ public class QrExtractionAction implements IActionExecution {
                 log.info("input object node in the consumer process  inputFilePath {}", filePath);
             }
 
-            Request Requests = new Request.Builder().url(endpoint).post(RequestBody.create(requestBody.toString(), MediaTypeJSON)).build();
+            Request Requests = new Request.Builder().url(endpoint).post(RequestBody.create(jsonRequest, MediaTypeJSON)).build();
 
             if (log.isInfoEnabled()) {
                 log.info("input object node in the consumer process coproURL {}, inputFilePath {}", endpoint, filePath);

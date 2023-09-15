@@ -124,6 +124,7 @@ public class UrgencyTriageModelAction implements IActionExecution {
       Long actionId= action.getActionId();
       Long rootpipelineId= entity.getRootPipelineId();
       final String UT_MODEL_PROCESS="URGENCY_TRIAGE_MODEL";
+      ObjectMapper objectMapper = new ObjectMapper();
 
 //payload
       UrgencyTriageModelPayload UrgencyTriageModelpayload = new UrgencyTriageModelPayload();
@@ -131,24 +132,29 @@ public class UrgencyTriageModelAction implements IActionExecution {
       UrgencyTriageModelpayload.setProcess("QR");
       UrgencyTriageModelpayload.setInputFilePath(entity.getInputFilePath());
       UrgencyTriageModelpayload.setActionId(action.getActionId());
+      String jsonInputRequest = objectMapper.writeValueAsString(UrgencyTriageModelpayload);
+
 
 
 
       UregencyTriageModelRequest requests = new UregencyTriageModelRequest();
       TritonRequest requestBody = new TritonRequest();
-      requestBody.setName("NER START");
+      requestBody.setName("UT START");
       requestBody.setShape(List.of(1, 1));
       requestBody.setDatatype("BYTES");
-      requestBody.setData(Collections.singletonList(UrgencyTriageModelpayload));
+      requestBody.setData(Collections.singletonList(jsonInputRequest));
+
+      // requestBody.setData(Collections.singletonList(jsonNodeRequest));
+
+      //  requestBody.setData(Collections.singletonList(UrgencyTriageModelpayload));
 
       TritonInputRequest tritonInputRequest=new TritonInputRequest();
-      tritonInputRequest.setInputs(Collections.singletonList(tritonInputRequest));
+      tritonInputRequest.setInputs(Collections.singletonList(requestBody));
 
-      ObjectMapper objectMapper = new ObjectMapper();
       String jsonRequest = objectMapper.writeValueAsString(UrgencyTriageModelpayload);
 
       Request request = new Request.Builder().url(endpoint)
-              .post(RequestBody.create(requestBody.toString(), MediaTypeJSON)).build();
+              .post(RequestBody.create(jsonRequest, MediaTypeJSON)).build();
 
       if(log.isInfoEnabled()) {
         log.info(aMarker, "Request has been build with the parameters \n coproUrl  {} ,inputFilePath : {} ,outputDir {} ", endpoint,inputFilePath,outputDir);

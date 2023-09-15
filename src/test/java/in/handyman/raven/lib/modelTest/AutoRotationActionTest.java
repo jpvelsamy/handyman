@@ -42,16 +42,16 @@ class AutoRotationActionTest {
                 .name("auto rotation testing after copro optimization")
                 .processId("138980744174170252")
                 .resourceConn("intics_agadia_db_conn")
-                .outputDir("/home/balasoundarya.thanga@zucisystems.com/workspace/pr1-lambdas/output")
+                .outputDir("/data/output")
                 .condition(true)
-                .querySet("SELECT 'INT-1' AS origin_id, 1 AS group_id, '/home/balasoundarya.thanga@zucisystems.com/workspace/pr1-lambdas/agadia/H_Hart_Packet.pdf' AS file_path, 'TND-1' AS tenant_id, 'TMP-1' AS template_id, '138980184199100180' AS process_id \n")
+                .querySet("SELECT 'INT-1' AS origin_id, 1 AS group_id, '/data/input/elixir-2page/SYNT_166838894_c1.pdf' AS file_path, 'TND-1' AS tenant_id, 'TMP-1' AS template_id, '138980184199100180' AS process_id \n")
                 .build();
 
         ActionExecutionAudit actionExecutionAudit = new ActionExecutionAudit();
-        actionExecutionAudit.getContext().put("copro.autorotation.url", "http://localhost:10181/copro/preprocess/autorotation");
+        actionExecutionAudit.getContext().put("copro.autorotation.url", "http://localhost:8200/v2/models/auto-rotator-service/versions/1/infer");
         actionExecutionAudit.setProcessId(138980079308730208L);
         actionExecutionAudit.getContext().putAll(Map.ofEntries(Map.entry("read.batch.size", "5"),
-                Map.entry("consumer.API.count", "1"),
+                Map.entry("auto.rotation.consumer.API.count", "1"),
                 Map.entry("write.batch.size", "5")));
 
         AutoRotationAction action1 = new AutoRotationAction(actionExecutionAudit, log, action);

@@ -1,6 +1,7 @@
 package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
@@ -121,6 +122,8 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
             String processId = String.valueOf(entity.getProcessId());
             String paperNo = String.valueOf(entity.getPaperNo());
             Long actionId = action.getActionId();
+            ObjectMapper objectMapper = new ObjectMapper();
+
 
 
             //payload
@@ -132,17 +135,22 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
             data.setPaperNo(paperNo);
             data.setGroupId(groupId);
 
+            String jsonInputRequest = objectMapper.writeValueAsString(data);
+
             PharseMatchRequest requests = new PharseMatchRequest();
             TritonRequest requestBody = new TritonRequest();
-            requestBody.setName("NER START");
+            requestBody.setName("PHARSE MATCH START");
             requestBody.setShape(List.of(1, 1));
             requestBody.setDatatype("BYTES");
-            requestBody.setData(Collections.singletonList(data));
+            requestBody.setData(Collections.singletonList(jsonInputRequest));
+
+            //  requestBody.setData(Collections.singletonList(jsonNodeRequest));
+
+            //  requestBody.setData(Collections.singletonList(data));
 
             TritonInputRequest tritonInputRequest=new TritonInputRequest();
-            tritonInputRequest.setInputs(Collections.singletonList(tritonInputRequest));
+            tritonInputRequest.setInputs(Collections.singletonList(requestBody));
 
-            ObjectMapper objectMapper = new ObjectMapper();
             String jsonRequest = objectMapper.writeValueAsString(requests);
 
             try {
@@ -150,7 +158,7 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
 
                 log.info(aMarker, " Input variables id : {}", action.getActionId());
                 Request request = new Request.Builder().url(endpoint)
-                        .post(RequestBody.create(data.toString(), MediaTypeJSON)).build();
+                        .post(RequestBody.create(jsonRequest.toString(), MediaTypeJSON)).build();
 
                 if (log.isInfoEnabled()) {
                     log.info(aMarker, "Input variables id : {}", actionId);

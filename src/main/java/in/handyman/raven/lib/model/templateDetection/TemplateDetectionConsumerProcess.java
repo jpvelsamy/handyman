@@ -1,5 +1,6 @@
 package in.handyman.raven.lib.model.templateDetection;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
@@ -60,6 +61,8 @@ public class TemplateDetectionConsumerProcess implements CoproProcessor.Consumer
         Long rootPipelineId = entity.getRootPipelineId();
         Long actionId = action.getActionId();
         final String TemplateDetectionProcessname = "TEMPLATE_DETECTION";
+        ObjectMapper objectMapper = new ObjectMapper();
+
 
         //payload
         TemplateDetectionData TemplateDetectiondata = new TemplateDetectionData();
@@ -68,21 +71,29 @@ public class TemplateDetectionConsumerProcess implements CoproProcessor.Consumer
         TemplateDetectiondata.setRootPipelineId(rootPipelineId);
         TemplateDetectiondata.setActionId(actionId);
         TemplateDetectiondata.setProcess(TemplateDetectionProcessname);
+        String jsonInputRequest = objectMapper.writeValueAsString(TemplateDetectiondata);
+
 
 
         TritonRequest requestBody = new TritonRequest();
-        requestBody.setName("NER START");
+        requestBody.setName("TEMPLATE DETECTION START");
         requestBody.setShape(List.of(1, 1));
         requestBody.setDatatype("BYTES");
-        requestBody.setData(Collections.singletonList(TemplateDetectiondata));
+        requestBody.setData(Collections.singletonList(jsonInputRequest));
+
+        //  requestBody.setData(Collections.singletonList(jsonNodeRequest));
+
+        //  requestBody.setData(Collections.singletonList(TemplateDetectiondata));
 
         TritonInputRequest tritonInputRequest = new TritonInputRequest();
         tritonInputRequest.setInputs(Collections.singletonList(requestBody));
+        String jsonRequest = objectMapper.writeValueAsString(TemplateDetectiondata);
+
 
         log.info(aMarker, "Input request object for template detection filePath is {} and questions size {}", inputFilePath, attributes.size());
 
         Request request = new Request.Builder().url(endpoint)
-                .post(RequestBody.create(TemplateDetectiondata.toString(), MediaTypeJSON)).build();
+                .post(RequestBody.create(jsonRequest, MediaTypeJSON)).build();
 
         log.info(aMarker, "Request object  endpoint {}", endpoint);
 
@@ -97,7 +108,6 @@ public class TemplateDetectionConsumerProcess implements CoproProcessor.Consumer
             Timestamp createdOn = Timestamp.valueOf(LocalDateTime.now());
             if (response.isSuccessful()) {
                 String responseBody = response.body().string();
-                ObjectMapper objectMapper = new ObjectMapper();
                 TemplateDetectionResponse Response = objectMapper.readValue(responseBody, TemplateDetectionResponse.class);
 
                 if (Response.getOutputs() != null && !Response.getOutputs().isEmpty()) {

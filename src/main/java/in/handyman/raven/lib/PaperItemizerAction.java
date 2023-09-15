@@ -147,13 +147,12 @@ public class PaperItemizerAction implements IActionExecution {
       paperitemizerData.setOutputDir(outputDir);
       paperitemizerData.setActionId(actionId);
       String jsonInputRequest = objectMapper.writeValueAsString(paperitemizerData);
-      JsonNode jsonNodeRequest = objectMapper.readTree(jsonInputRequest);
 
       TritonRequest requestBody = new TritonRequest();
-      requestBody.setName("PAPER_ITEMIZER");
+      requestBody.setName("PAPER ITERATOR START");
       requestBody.setShape(List.of(1, 1));
       requestBody.setDatatype("BYTES");
-     requestBody.setData(Collections.singletonList(jsonNodeRequest));
+     requestBody.setData(Collections.singletonList(jsonInputRequest));
 
       TritonInputRequest tritonInputRequest=new TritonInputRequest();
       tritonInputRequest.setInputs(Collections.singletonList(requestBody));

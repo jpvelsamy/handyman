@@ -3,6 +3,7 @@ package in.handyman.raven.lib.modelTest;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.UrgencyTriageAction;
 import in.handyman.raven.lib.UrgencyTriageModelAction;
+import in.handyman.raven.lib.model.UrgencyTriage;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
@@ -13,10 +14,9 @@ public class UrgencyTriageModelActionTest {
     @Test
     void tritonServer() throws Exception {
 
-        final UrgencyTriageAction build = UrgencyTriageAction.builder()
+        final UrgencyTriage build = UrgencyTriage.builder()
                 .condition(true)
                 .name("urgencyTriageModel")
-                .resourceConn("intics_agadia_db_conn")
                 .outputDir("/home/balasoundarya.thanga@zucisystems.com/workspace/pr1-lambdas/output")
                 .build();
 

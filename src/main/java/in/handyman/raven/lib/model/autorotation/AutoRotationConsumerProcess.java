@@ -1,5 +1,6 @@
 package in.handyman.raven.lib.model.autorotation;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
@@ -24,8 +25,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-@Builder
-
 public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProcess<AutoRotationInputTable, AutoRotationOutputTable> {
     private final Logger log;
     private final Marker aMarker;
@@ -68,6 +67,8 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
         String filePath = String.valueOf(entity.getFilePath());
         String outputDir = String.valueOf(entity.getOutputDir());
         Long actionId = action.getActionId();
+        ObjectMapper objectMapper = new ObjectMapper();
+
 
         //payload
         AutoRotationData autoRotationRequest = new AutoRotationData();
@@ -76,19 +77,20 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
         autoRotationRequest.setProcess(process);
         autoRotationRequest.setInputFilePath(filePath);
         autoRotationRequest.setOutputDir(outputDir);
+        String jsonInputRequest = objectMapper.writeValueAsString(autoRotationRequest);
 
 
         AutoRotationRequest requests = new AutoRotationRequest();
         TritonRequest requestBody = new TritonRequest();
-        requestBody.setName("NER START");
+        requestBody.setName("AUTO ROTATOR START");
         requestBody.setShape(List.of(1, 1));
         requestBody.setDatatype("BYTES");
-        requestBody.setData(Collections.singletonList(autoRotationRequest));
+        requestBody.setData(Collections.singletonList(jsonInputRequest));
 
-        TritonInputRequest tritonInputRequest=new TritonInputRequest();
-        tritonInputRequest.setInputs(Collections.singletonList(tritonInputRequest));
 
-        ObjectMapper objectMapper = new ObjectMapper();
+        TritonInputRequest tritonInputRequest = new TritonInputRequest();
+        tritonInputRequest.setInputs(Collections.singletonList(requestBody));
+
         String jsonRequest = objectMapper.writeValueAsString(tritonInputRequest);
 
 
@@ -131,7 +133,6 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
                             );
                         });
                     });
-
 
 
                 }

@@ -5,6 +5,7 @@ package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
@@ -40,7 +41,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-@Builder
+
 /**
  /**
  /**
@@ -173,6 +174,8 @@ public class MasterdataComparisonAction implements IActionExecution {
       Long rootpipelineId= result.getRootPipelineId();
       String inputSentence = result.getActualValue();
       List<String> sentence = Collections.singletonList(result.getExtractedValue());
+      ObjectMapper objectMapper = new ObjectMapper();
+
 //payload
       ComparisonPayload Comparisonpayload = new ComparisonPayload();
       Comparisonpayload.setRootPipelineId(rootpipelineId);
@@ -180,23 +183,28 @@ public class MasterdataComparisonAction implements IActionExecution {
       Comparisonpayload.setProcess(process);
       Comparisonpayload.setInputSentence(inputSentence);
       Comparisonpayload.setSentence(sentence);
+      String jsonInputRequest = objectMapper.writeValueAsString(Comparisonpayload);
 
       ComparisonResquest requests = new ComparisonResquest();
       TritonRequest requestBody = new TritonRequest();
-      requestBody.setName("NER START");
+      requestBody.setName("MASTERDATA COMPARISON START");
       requestBody.setShape(List.of(1, 1));
       requestBody.setDatatype("BYTES");
-      requestBody.setData(Collections.singletonList(Comparisonpayload));
+      requestBody.setData(Collections.singletonList(jsonInputRequest));
+
+      //  requestBody.setData(Collections.singletonList(jsonNodeRequest));
+
+
+     // requestBody.setData(Collections.singletonList(Comparisonpayload));
 
       TritonInputRequest tritonInputRequest=new TritonInputRequest();
-      tritonInputRequest.setInputs(Collections.singletonList(tritonInputRequest));
+      tritonInputRequest.setInputs(Collections.singletonList(requestBody));
 
-      ObjectMapper objectMapper = new ObjectMapper();
       String jsonRequest = objectMapper.writeValueAsString(tritonInputRequest);
 
       if (result.getActualValue() != null) {
         final Request request = new Request.Builder().url(endpoint)
-                .post(RequestBody.create(Comparisonpayload.toString(), MediaTypeJSON)).build();
+                .post(RequestBody.create(jsonInputRequest.toString(), MediaTypeJSON)).build();
         log.info("master data comparison reqest body {}",request);
         try (Response response = httpclient.newCall(request).execute()) {
           log.info("master data comparison response body {}",response.body());

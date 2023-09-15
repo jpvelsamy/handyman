@@ -1,5 +1,6 @@
 package in.handyman.raven.lib;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
@@ -188,6 +189,8 @@ public class NerAdapterAction implements IActionExecution {
             Long actionId=action.getActionId();
             String process = String.valueOf("NER");
             String inputString = inputValue;
+            ObjectMapper objectMapper = new ObjectMapper();
+
 
             //payload
             NerAdapterPayload NerAdaptorpayload = new NerAdapterPayload();
@@ -196,21 +199,26 @@ public class NerAdapterAction implements IActionExecution {
             NerAdaptorpayload.setActionId(actionId);
             NerAdaptorpayload.setInputString(Collections.singletonList(inputValue));
 
+            String jsonInputRequest = objectMapper.writeValueAsString(NerAdaptorpayload);
+
             NerAdapterRequest requests = new NerAdapterRequest();
             TritonRequest requestBody = new TritonRequest();
             requestBody.setName("NER START");
             requestBody.setShape(List.of(1, 1));
             requestBody.setDatatype("BYTES");
-            requestBody.setData(Collections.singletonList(NerAdaptorpayload));
+            requestBody.setData(Collections.singletonList(jsonInputRequest));
+
+            //   requestBody.setData(Collections.singletonList(jsonNodeRequest));
+
+            //  requestBody.setData(Collections.singletonList(NerAdaptorpayload));
 
             TritonInputRequest tritonInputRequest=new TritonInputRequest();
-            tritonInputRequest.setInputs(Collections.singletonList(tritonInputRequest));
+            tritonInputRequest.setInputs(Collections.singletonList(requestBody));
 
-            ObjectMapper objectMapper = new ObjectMapper();
             String jsonRequest = objectMapper.writeValueAsString(tritonInputRequest);
 
             Request request = new Request.Builder().url(endpoint)
-                    .post(RequestBody.create(NerAdaptorpayload.toString(), MediaTypeJSON)).build();
+                    .post(RequestBody.create(jsonRequest, MediaTypeJSON)).build();
 
             if(log.isInfoEnabled()) {
                 log.info(aMarker, "Request has been build with the parameters \n coproUrl  {} ,action : {} rootPipelineId {}  process {} ", endpoint,actionId,rootPipelineId,process);

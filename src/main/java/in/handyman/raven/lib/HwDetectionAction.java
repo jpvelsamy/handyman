@@ -129,6 +129,7 @@ public class HwDetectionAction implements IActionExecution {
       String modelPath = action.getModelPath();
       String filePath = String.valueOf(entity.getFilePath());
       String outputDir = String.valueOf(entity.getOutputDir());
+      ObjectMapper objectMapper = new ObjectMapper();
 
       //payload
       HwDetectionPayload HwDetectionpayload = new HwDetectionPayload();
@@ -139,21 +140,27 @@ public class HwDetectionAction implements IActionExecution {
       HwDetectionpayload.setOutputDir(outputDir);
       HwDetectionpayload.setModelPath(modelPath);
 
+      String jsonInputRequest = objectMapper.writeValueAsString(HwDetectionpayload);
+
+
       HwDetectionRequest requests = new HwDetectionRequest();
       TritonRequest requestBody = new TritonRequest();
       requestBody.setName("NER START");
       requestBody.setShape(List.of(1, 1));
       requestBody.setDatatype("BYTES");
-      requestBody.setData(Collections.singletonList(HwDetectionpayload));
+      requestBody.setData(Collections.singletonList(jsonInputRequest));
+
+      //requestBody.setData(Collections.singletonList(jsonNodeRequest));
+
+   //   requestBody.setData(Collections.singletonList(HwDetectionpayload));
 
       TritonInputRequest tritonInputRequest=new TritonInputRequest();
-      tritonInputRequest.setInputs(Collections.singletonList(tritonInputRequest));
+      tritonInputRequest.setInputs(Collections.singletonList(requestBody));
 
-      ObjectMapper objectMapper = new ObjectMapper();
       String jsonRequest = objectMapper.writeValueAsString(tritonInputRequest);
 
       Request request = new Request.Builder().url(endpoint)
-              .post(RequestBody.create(HwDetectionpayload.toString(), MediaTypeJSON)).build();
+              .post(RequestBody.create(jsonRequest.toString(), MediaTypeJSON)).build();
 
       if(log.isInfoEnabled()) {
         log.info(aMarker, "Request has been build with the parameters \n coproUrl  {} ,inputFilePath : {} modelPath  {}  outputDir {} ", endpoint,entityFilePath,modelPath,outputDir);

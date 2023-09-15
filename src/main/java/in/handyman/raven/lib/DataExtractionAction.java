@@ -2,6 +2,7 @@ package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
@@ -125,6 +126,8 @@ public class DataExtractionAction implements IActionExecution {
       Long actionId=action.getActionId();
       String process = String.valueOf(entity.process);
       String filePath = String.valueOf(entity.getFilePath());
+      ObjectMapper objectMapper = new ObjectMapper();
+
 
       //payload
       DataExtractionData DataExtractiondata = new DataExtractionData();
@@ -132,21 +135,27 @@ public class DataExtractionAction implements IActionExecution {
       DataExtractiondata.setActionId(actionId);
       DataExtractiondata.setProcess(process);
       DataExtractiondata.setInputFilePath(filePath);
+      String jsonInputRequest = objectMapper.writeValueAsString(DataExtractiondata);
+
+
 
       DataExtractionRequest requests = new  DataExtractionRequest();
       TritonRequest requestBody = new TritonRequest();
-      requestBody.setName("NER START");
+      requestBody.setName("DATA EXTRACTION START");
       requestBody.setShape(List.of(1, 1));
       requestBody.setDatatype("BYTES");
-      requestBody.setData(Collections.singletonList(DataExtractiondata));
+      requestBody.setData(Collections.singletonList(jsonInputRequest));
+
+      // requestBody.setData(Collections.singletonList(jsonNodeRequest));
+
+      //  requestBody.setData(Collections.singletonList(DataExtractiondata));
 
       TritonInputRequest tritonInputRequest=new TritonInputRequest();
-      tritonInputRequest.setInputs(Collections.singletonList(tritonInputRequest));
+      tritonInputRequest.setInputs(Collections.singletonList(requestBody));
 
-      ObjectMapper objectMapper = new ObjectMapper();
       String jsonRequest = objectMapper.writeValueAsString(requests);
 
-      Request request = new Request.Builder().url(endpoint).post(RequestBody.create(DataExtractiondata.toString(), MediaTypeJSON)).build();
+      Request request = new Request.Builder().url(endpoint).post(RequestBody.create(jsonRequest.toString(), MediaTypeJSON)).build();
 
       if(log.isInfoEnabled()) {
         log.info(aMarker, "Request has been build with the parameters \n URI : {}, with inputFilePath {} ", endpoint, inputFilePath);
