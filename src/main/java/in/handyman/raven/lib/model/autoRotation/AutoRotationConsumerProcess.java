@@ -1,17 +1,14 @@
-package in.handyman.raven.lib.model.autorotation;
+package in.handyman.raven.lib.model.autoRotation;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.*;
-import in.handyman.raven.lib.model.autoRotation.AutoRotationData;
-import in.handyman.raven.lib.model.autoRotation.AutoRotationModelResponse;
-import in.handyman.raven.lib.model.autoRotation.AutoRotationRequest;
+import in.handyman.raven.lib.model.triton.ConsumerProcessApiStatus;
 import in.handyman.raven.lib.model.triton.TritonInputRequest;
 import in.handyman.raven.lib.model.triton.TritonRequest;
 import in.handyman.raven.util.ExceptionUtil;
-import lombok.Builder;
 import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -36,6 +33,7 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
     public final ActionExecutionAudit action;
     private final OkHttpClient httpclient;
     private final AutoRotationAction aAction;
+    private final String  AUTO_ROTATION="AUTO_ROTATION";
 
     private final int timeOut;
 
@@ -58,6 +56,7 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
 
     @Override
     public List<AutoRotationOutputTable> process(URL endpoint, AutoRotationInputTable entity) throws IOException {
+
         List<AutoRotationOutputTable> parentObj = new ArrayList<>();
         String entityFilePath = entity.getFilePath();
 
@@ -65,9 +64,7 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
         String rootpipelineId = String.valueOf(entity.getRootPipelineId());
         String process = String.valueOf(entity.process);
         String filePath = String.valueOf(entity.getFilePath());
-        String outputDir = String.valueOf(entity.getOutputDir());
         Long actionId = action.getActionId();
-        ObjectMapper objectMapper = new ObjectMapper();
 
 
         //payload
@@ -77,10 +74,9 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
         autoRotationRequest.setProcess(process);
         autoRotationRequest.setInputFilePath(filePath);
         autoRotationRequest.setOutputDir(outputDir);
-        String jsonInputRequest = objectMapper.writeValueAsString(autoRotationRequest);
+        String jsonInputRequest = mapper.writeValueAsString(autoRotationRequest);
 
 
-        AutoRotationRequest requests = new AutoRotationRequest();
         TritonRequest requestBody = new TritonRequest();
         requestBody.setName("AUTO ROTATOR START");
         requestBody.setShape(List.of(1, 1));
@@ -91,7 +87,7 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
         TritonInputRequest tritonInputRequest = new TritonInputRequest();
         tritonInputRequest.setInputs(Collections.singletonList(requestBody));
 
-        String jsonRequest = objectMapper.writeValueAsString(tritonInputRequest);
+        String jsonRequest = mapper.writeValueAsString(tritonInputRequest);
 
 
         log.info(aMarker, " Input variables id : {}", action.getActionId());
@@ -109,31 +105,55 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
         try (Response response = httpclient.newCall(request).execute()) {
             if (response.isSuccessful()) {
                 String responseBody = response.body().string();
-                ObjectMapper objectMappers = new ObjectMapper();
-                AutoRotationModelResponse modelResponse = objectMappers.readValue(responseBody, AutoRotationModelResponse.class);
+                AutoRotationModelResponse modelResponse = mapper.readValue(responseBody, AutoRotationModelResponse.class);
 
                 if (modelResponse.getOutputs() != null && !modelResponse.getOutputs().isEmpty()) {
-                    modelResponse.getOutputs().forEach(o -> {
-                        o.getData().forEach(autoRotationDataItem -> {
+                    modelResponse.getOutputs().forEach(o -> o.getData().forEach(autoRotationDataItem -> {
+                        try {
+                            AutoRotationDataItem autoRotationFilePath = mapper.readValue(autoRotationDataItem, AutoRotationDataItem.class);
+
                             parentObj.add(AutoRotationOutputTable
                                     .builder()
-                                    .processedFilePath(autoRotationDataItem.getProcessedFilePaths())
+                                    .processedFilePath(autoRotationFilePath.getProcessedFilePaths())
                                     .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                                     .groupId(groupId)
                                     .processId(processId)
                                     .tenantId(tenantId)
                                     .templateId(templateId)
                                     .paperNo(paperNo)
-                                    .status("COMPLETED")
-                                    .stage("AUTO_ROTATION")
+                                    .status(ConsumerProcessApiStatus.COMPLETED.getStatusDescription())
+                                    .stage(AUTO_ROTATION)
                                     .message("Auto rotation macro completed")
                                     .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                                     .rootPipelineId(Long.valueOf(rootpipelineId))
                                     .build()
-                            );
-                        });
-                    });
+                        );
+                        } catch (JsonProcessingException e) {
 
+                            parentObj.add(
+                                    AutoRotationOutputTable
+                                            .builder()
+                                            .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
+                                            .groupId(groupId)
+                                            .processId(processId)
+                                            .tenantId(tenantId)
+                                            .templateId(templateId)
+                                            .paperNo(paperNo)
+                                            .status(ConsumerProcessApiStatus.FAILED.getStatusDescription())
+                                            .stage(AUTO_ROTATION)
+                                            .message(ExceptionUtil.toString(e))
+                                            .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                                            .rootPipelineId(Long.valueOf(rootpipelineId))
+                                            .build());
+                            log.error(aMarker, "The Exception occurred in processing response {}", ExceptionUtil.toString(e));
+                            HandymanException handymanException = new HandymanException(e);
+                            HandymanException.insertException("AutoRotation consumer failed for batch/group " + groupId,
+                                    handymanException,
+                                    this.action);
+                        }
+
+
+                    }));
 
                 }
 
@@ -147,13 +167,13 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
                                 .tenantId(tenantId)
                                 .templateId(templateId)
                                 .paperNo(paperNo)
-                                .status("FAILED")
-                                .stage("AUTO_ROTATION")
+                                .status(ConsumerProcessApiStatus.FAILED.getStatusDescription())
+                                .stage(AUTO_ROTATION)
                                 .message(response.message())
                                 .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                                 .rootPipelineId(Long.valueOf(rootpipelineId))
                                 .build());
-                log.info(aMarker, "Error in response {}", response.message());
+                log.info(aMarker, "Error in getting response {}", response.message());
             }
         } catch (Exception e) {
             parentObj.add(
@@ -165,8 +185,8 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
                             .tenantId(tenantId)
                             .templateId(templateId)
                             .paperNo(paperNo)
-                            .status("FAILED")
-                            .stage("AUTO_ROTATION")
+                            .status(ConsumerProcessApiStatus.FAILED.getStatusDescription())
+                            .stage(AUTO_ROTATION)
                             .message(ExceptionUtil.toString(e))
                             .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                             .rootPipelineId(Long.valueOf(rootpipelineId))

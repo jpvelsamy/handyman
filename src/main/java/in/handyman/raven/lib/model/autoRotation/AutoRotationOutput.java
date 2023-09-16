@@ -14,6 +14,6 @@ public class AutoRotationOutput {
         private String name;
         private String datatype;
         private List<Integer> shape;
-        private List<AutoRotationDataItem> data;
+        private List<String> data;
 }
 

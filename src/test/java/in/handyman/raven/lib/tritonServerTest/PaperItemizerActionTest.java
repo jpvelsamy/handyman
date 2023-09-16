@@ -1,11 +1,12 @@
-package in.handyman.raven.lib.modelTest;
+package in.handyman.raven.lib.tritonServerTest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.PaperItemizer;
 import in.handyman.raven.lib.PaperItemizerAction;
-import in.handyman.raven.lib.model.paperItemizer.PaperItemizerData;
+import in.handyman.raven.lib.model.paperItemizer.PaperItemizerDataItem;
+import in.handyman.raven.lib.model.paperItemizer.PaperItemizerResponse;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -54,7 +55,7 @@ class PaperItemizerActionTest {
                 .build();
         ActionExecutionAudit actionExecutionAudit = new ActionExecutionAudit();
 
-        actionExecutionAudit.getContext().putAll(Map.ofEntries(Map.entry("copro.paper-itemizer.url", "http://localhost:8100/v2/models/paper-iterator-service/versions/1/infer"),
+        actionExecutionAudit.getContext().putAll(Map.ofEntries(Map.entry("copro.paper-itemizer.url", "http://192.168.10.245:8100/v2/models/paper-iterator-service/versions/1/infer"),
                 Map.entry("paper.itemizer.consumer.API.count", "1"),
                 Map.entry("read.batch.size", "5"),
                 Map.entry("write.batch.size", "5")));
@@ -65,13 +66,16 @@ class PaperItemizerActionTest {
 
     @Test
     void testJsonBody() throws JsonProcessingException {
-        ObjectDef objectDef = new ObjectDef();
-        objectDef.setF1("Hello");
-        objectDef.setF2("world");
-        ObjectMapper objectMapper = new ObjectMapper();
-        String objectMapper1 = objectMapper.writeValueAsString(objectMapper.toString());
-        // output : "{ \"f1\":\"Hello\" \"f2\":\"world\" }"
-        System.out.println(objectMapper1);
+//        String jsonString="{\"model_name\":\"paper-iterator-service\",\"model_version\":\"1\",\"outputs\":[{\"name\":\"PAPER ITERATOR END\",\"datatype\":\"BYTES\",\"shape\":[1],\"data\":[\"{'itemizedPapers': ['/data/output/pdf_to_image/SYNT_166838894_c1/SYNT_166838894_c1_0.jpg', '/data/output/pdf_to_image/SYNT_166838894_c1/SYNT_166838894_c1_1.jpg']}\"]}]}";
+//      ObjectMapper objectMapper=new ObjectMapper();
+//        PaperItemizerResponse paperItemizerResponse = objectMapper.readValue(jsonString, PaperItemizerResponse.class);
+//        System.out.println(paperItemizerResponse.getOutputs().toString());
+
+        String inputJsonString="\"{'itemizedPapers': ['/data/output/pdf_to_image/SYNT_166838894_c1/SYNT_166838894_c1_0.jpg', '/data/output/pdf_to_image/SYNT_166838894_c1/SYNT_166838894_c1_1.jpg']}\"";
+        ObjectMapper objectMapper1=new ObjectMapper();
+        PaperItemizerDataItem paperItemizerResponseData = objectMapper1.readValue(inputJsonString, PaperItemizerDataItem.class);
+        System.out.println(paperItemizerResponseData.getItemizedPapers().toString());
+
     }
 
     @Data

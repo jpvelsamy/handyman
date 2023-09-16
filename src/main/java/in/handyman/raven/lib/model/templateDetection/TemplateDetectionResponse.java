@@ -1,5 +1,6 @@
 package in.handyman.raven.lib.model.templateDetection;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import in.handyman.raven.lib.model.NerAdaptors.NerAdapterOutput;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,8 +14,12 @@ import java.util.List;
 @Data
 public class TemplateDetectionResponse {
 
-        private String model_name;
-        private String model_version;
+    @JsonProperty("model_name")
+    private String modelName;
+
+    @JsonProperty("model_version")
+    private String modelVersion;
+
         private List<TemplateDetectionOutput> outputs;
     }
 

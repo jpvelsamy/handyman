@@ -1,9 +1,10 @@
-package in.handyman.raven.lib.modelTest;
+package in.handyman.raven.lib.tritonServerTest;
 
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.AutoRotationAction;
 import in.handyman.raven.lib.model.AutoRotation;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -56,6 +57,8 @@ class AutoRotationActionTest {
 
         AutoRotationAction action1 = new AutoRotationAction(actionExecutionAudit, log, action);
         action1.execute();
+
+
 
     }
 

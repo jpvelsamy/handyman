@@ -16,6 +16,6 @@ public class TemplateDetectionOutput {
         private String name;
         private String datatype;
         private List<Integer> shape;
-        private List<TemplateDetectionDataItem> data;
+        private List<String> data;
     }
 

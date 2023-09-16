@@ -1,4 +1,4 @@
-package in.handyman.raven.lib.model.autorotation;
+package in.handyman.raven.lib.model.autoRotation;
 
 import in.handyman.raven.lib.CoproProcessor;
 import lombok.AllArgsConstructor;

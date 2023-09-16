@@ -14,5 +14,5 @@ public class PaperItemizerOutput {
     private String name;
     private String datatype;
     private List<Integer> shape;
-    private List<PaperItemizerDataItem> data;
+    private List<String> data;
 }

@@ -1,4 +1,4 @@
-package in.handyman.raven.lib.modelTest;
+package in.handyman.raven.lib.tritonServerTest;
 
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.NerAdapter;

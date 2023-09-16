@@ -19,16 +19,4 @@ public class TemplateDetectionDataItem {
     private List<TemplateDetectionAttributes> attribute;
 
 
-    public static Integer ImageWidth() {
-        return ImageWidth();
-    }
-
-
-    public static Integer ImageDPI() {
-        return ImageDPI();
-    }
-
-    public static String ExtractedImageUnit() {
-        return ExtractedImageUnit();
-    }
 }

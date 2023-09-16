@@ -1,5 +1,6 @@
 package in.handyman.raven.lib.model.autoRotation;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +12,9 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class AutoRotationModelResponse {
-    private String model_name;
-    private String model_version;
+    @JsonProperty("model_name")
+    private String modelName;
+    @JsonProperty("model_version")
+    private String modelVersion;
     private List<AutoRotationOutput> outputs;
 }

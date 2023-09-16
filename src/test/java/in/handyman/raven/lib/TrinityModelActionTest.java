@@ -2,7 +2,6 @@ package in.handyman.raven.lib;
 
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.TrinityModel;
-import in.handyman.raven.lib.model.trinityModel.TrinityModelAction;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
