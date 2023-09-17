@@ -126,6 +126,8 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
                                     .message("Auto rotation macro completed")
                                     .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                                     .rootPipelineId(Long.valueOf(rootpipelineId))
+                                    .modelName(modelResponse.getModelName())
+                                    .modelVersion(modelResponse.getModelVersion())
                                     .build()
                         );
                         } catch (JsonProcessingException e) {

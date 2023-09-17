@@ -28,13 +28,14 @@ import java.util.stream.Stream;
         String stage;
         String message;
         private Long rootPipelineId;
+        private String modelName;
+        private String modelVersion;
 
 
         @Override
         public List<Object> getRowData() {
-            return Stream.of(this.originId, this.paperNo, this.eocIdentifier, this.createdOn, this.actualValue,
-                    this.extractedValue,
-                    this.intelliMatch, this.status, this.stage, this.message, this.rootPipelineId
+            return Stream.of(this.originId, this.paperNo, this.eocIdentifier, this.createdOn, this.actualValue, this.extractedValue,
+                    this.intelliMatch, this.status, this.stage, this.message, this.rootPipelineId,  this.modelName, this.modelVersion
             ).collect(Collectors.toList());
         }
     }

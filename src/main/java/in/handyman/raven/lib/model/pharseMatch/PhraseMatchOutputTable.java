@@ -28,12 +28,15 @@ public class PhraseMatchOutputTable implements CoproProcessor.Entity {
 
     private String message;
     private Long rootPipelineId;
+    private String modelName;
+    private String modelVersion;
+
 
 
     @Override
     public List<Object> getRowData() {
         return Stream.of(this.originId, this.groupId, this.paperNo, this.truthEntity, this.entity,
-                this.isKeyPresent, this.status, this.stage, this.message,this.rootPipelineId).collect(Collectors.toList());
+                this.isKeyPresent, this.status, this.stage, this.message,this.rootPipelineId,this.modelName, this.modelVersion).collect(Collectors.toList());
     }
 }
 

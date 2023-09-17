@@ -32,6 +32,9 @@ import java.util.stream.Stream;
         private String status;
         private String stage;
         private String message;
+        private String modelName;
+        private String modelVersion;
+
 
         @Override
         public List<Object> getRowData() {
@@ -48,7 +51,9 @@ import java.util.stream.Stream;
                     this.intelliMatch,
                     this.status,
                     this.stage,
-                    this.message
+                    this.message,
+                    this.modelName,
+                    this.modelVersion
 
             ).collect(Collectors.toList());
         }

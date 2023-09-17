@@ -31,11 +31,13 @@ public class UrgencyTriageOutputTable implements CoproProcessor.Entity {
     private String utResult;
     private String bbox;
     private Long rootPipelineId;
+    private String modelName;
+    private String modelVersion;
 
     @Override
     public List<Object> getRowData() {
         return Stream.of(this.createdUserId, this.lastUpdatedUserId, this.processId, this.groupId, this.tenantId, this.confScore,
-                this.originId, this.paperNo, this.templateId, this.modelRegistryId, this.status, this.stage, this.message, this.utResult, this.bbox, this.rootPipelineId).collect(Collectors.toList());
+                this.originId, this.paperNo, this.templateId, this.modelRegistryId, this.status, this.stage, this.message, this.utResult, this.bbox, this.rootPipelineId, this.modelName, this.modelVersion).collect(Collectors.toList());
     }
 
 }

@@ -81,8 +81,8 @@ public class IntellimatchAction implements IActionExecution {
             jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
             // build insert prepare statement with output table columns
             final String insertQuery = "INSERT INTO " + intellimatch.getMatchResult() +
-                    " ( file_name,origin_id,group_id,created_on,root_pipeline_id,actual_value, extracted_value,similarity,confidence_score,intelli_match,status,stage,message)" +
-                    " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?);";
+                    " ( file_name,origin_id,group_id,created_on,root_pipeline_id,actual_value, extracted_value,similarity,confidence_score,intelli_match,status,stage,message,model_name,model_version)" +
+                    " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
             log.info(aMarker, "intelli match Insert query {}", insertQuery);
 
             //3. initiate copro processor and copro urls
