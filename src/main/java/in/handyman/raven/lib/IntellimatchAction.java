@@ -168,7 +168,7 @@ public class IntellimatchAction implements IActionExecution {
 
                 ComparisonResquest requests = new ComparisonResquest();
                 TritonRequest requestBody = new TritonRequest();
-                requestBody.setName("INTELLIMATCH START");
+                requestBody.setName("COS START");
                 requestBody.setShape(List.of(1, 1));
                 requestBody.setDatatype("BYTES");
                 requestBody.setData(Collections.singletonList(jsonInputRequest));

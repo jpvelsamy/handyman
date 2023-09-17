@@ -76,7 +76,7 @@ public class TemplateDetectionConsumerProcess implements CoproProcessor.Consumer
 
 
         TritonRequest requestBody = new TritonRequest();
-        requestBody.setName("TEMPLATE DETECTION START");
+        requestBody.setName("ERNIE START");
         requestBody.setShape(List.of(1, 1));
         requestBody.setDatatype("BYTES");
         requestBody.setData(Collections.singletonList(jsonInputRequest));

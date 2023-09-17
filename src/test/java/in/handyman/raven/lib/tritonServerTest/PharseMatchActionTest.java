@@ -38,7 +38,7 @@ public class PharseMatchActionTest {
         final ActionExecutionAudit action = ActionExecutionAudit.builder()
                 .build();
         action.setRootPipelineId(11011L);
-        action.getContext().put("copro.paper-filtering-phrase-match.url", "http://localhost:10189/copro/filtering/phrase_match");
+        action.getContext().put("copro.paper-filtering-phrase-match.url", "http://localhost:8500/v2/models/pm-service/versions/1/infer");
 
         final PhraseMatchPaperFilterAction zeroShotClassifierPaperFilterAction = new PhraseMatchPaperFilterAction(action, log, build);
         zeroShotClassifierPaperFilterAction.execute();

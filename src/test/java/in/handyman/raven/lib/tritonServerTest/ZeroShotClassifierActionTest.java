@@ -110,7 +110,7 @@ class ZeroShotClassifierActionTest {
         final ActionExecutionAudit action = ActionExecutionAudit.builder()
                 .build();
         action.setRootPipelineId(11011L);
-        action.getContext().put("copro.paper-filtering-zero-shot-classifier.url", "http://localhost:10189/copro/filtering/zero_shot_classifier");
+        action.getContext().put("copro.paper-filtering-zero-shot-classifier.url", "http://localhost:8400/v2/models/zsc-service/versions/1/infer");
 
         final ZeroShotClassifierPaperFilterAction zeroShotClassifierPaperFilterAction = new ZeroShotClassifierPaperFilterAction(action, log, build);
         zeroShotClassifierPaperFilterAction.execute();

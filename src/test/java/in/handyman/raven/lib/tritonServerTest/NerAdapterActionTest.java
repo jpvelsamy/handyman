@@ -72,7 +72,7 @@ class NerAdapterActionTest {
         actionExecutionAudit.getContext().put("copro.text-validation.url","http://localhost:10190/copro/text-validation/patient");
         actionExecutionAudit.setProcessId(138980079308730208L);
         actionExecutionAudit.getContext().putAll(Map.ofEntries(Map.entry("read.batch.size","5"),
-                Map.entry("consumer.API.count","1"),
+                Map.entry("ner.consumer.API.count","1"),
                 Map.entry("write.batch.size","5")));
 
         NerAdapterAction action=new NerAdapterAction(actionExecutionAudit,log,nerAdapter);

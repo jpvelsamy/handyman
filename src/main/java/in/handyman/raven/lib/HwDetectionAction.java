@@ -145,7 +145,7 @@ public class HwDetectionAction implements IActionExecution {
 
       HwDetectionRequest requests = new HwDetectionRequest();
       TritonRequest requestBody = new TritonRequest();
-      requestBody.setName("NER START");
+      requestBody.setName("PAPER CLASSIFIER START");
       requestBody.setShape(List.of(1, 1));
       requestBody.setDatatype("BYTES");
       requestBody.setData(Collections.singletonList(jsonInputRequest));

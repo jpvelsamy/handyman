@@ -139,7 +139,7 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
 
             PharseMatchRequest requests = new PharseMatchRequest();
             TritonRequest requestBody = new TritonRequest();
-            requestBody.setName("PHARSE MATCH START");
+            requestBody.setName("PM START");
             requestBody.setShape(List.of(1, 1));
             requestBody.setDatatype("BYTES");
             requestBody.setData(Collections.singletonList(jsonInputRequest));

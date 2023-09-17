@@ -203,7 +203,7 @@ public class NerAdapterAction implements IActionExecution {
 
             NerAdapterRequest requests = new NerAdapterRequest();
             TritonRequest requestBody = new TritonRequest();
-            requestBody.setName("NER START");
+            requestBody.setName("TEXT EXTRACTOR START");
             requestBody.setShape(List.of(1, 1));
             requestBody.setDatatype("BYTES");
             requestBody.setData(Collections.singletonList(jsonInputRequest));

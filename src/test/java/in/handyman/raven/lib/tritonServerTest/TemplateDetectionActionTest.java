@@ -49,9 +49,9 @@ class TemplateDetectionActionTest {
         TemplateDetection templateDetection=TemplateDetection.builder()
                 .condition(true)
                 .name("template detection")
-                .coproUrl("http://localhost:10193/copro/attribution/kvp-printed-old")
+                .coproUrl("http://localhost:8900/v2/models/ernie-service/versions/1/infer")
                 .inputTable("info.auto_rotation")
-                .ouputTable("macro.template_detection_response_12345")
+                .ouputTable("info.text_extraction")
                 .resourceConn("intics_agadia_db_conn")
                 .processId("12345")
                 .querySet("select  ar.origin_id ,ar.paper_no ,ar.group_id ,ar.processed_file_path as file_path, ar.tenant_id\n" +
@@ -65,10 +65,10 @@ class TemplateDetectionActionTest {
                 .build();
 
         ActionExecutionAudit actionExecutionAudit=new ActionExecutionAudit();
-        actionExecutionAudit.getContext().put("copro.data-extraction.url","http://localhost:10182/copro/preprocess/text_extraction");
+        actionExecutionAudit.getContext().put("copro.data-extraction.url","http://localhost:8900/v2/models/ernie-service/versions/1/infer");
         actionExecutionAudit.setProcessId(138980079308730208L);
         actionExecutionAudit.getContext().putAll(Map.ofEntries(Map.entry("read.batch.size","5"),
-                Map.entry("consumer.API.count","1"),
+                Map.entry("template.detection.consumer.API.count","1"),
                 Map.entry("write.batch.size","5")));
 
         TemplateDetectionAction templateDetectionAction=new TemplateDetectionAction(actionExecutionAudit,  log,templateDetection);

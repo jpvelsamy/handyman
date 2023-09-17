@@ -23,10 +23,10 @@ public class QrExtractionActionTest {
                 .build();
 
         ActionExecutionAudit actionExecutionAudit = new ActionExecutionAudit();
-        actionExecutionAudit.getContext().put("copro.autorotation.url", "/copro/preprocess/autorotation");
+        actionExecutionAudit.getContext().put("copro.qr-attribution.url", "/http://localhost:8700/v2/models/qr-service/versions/1/infer");
         actionExecutionAudit.setProcessId(138980079308730208L);
         actionExecutionAudit.getContext().putAll(Map.ofEntries(Map.entry("read.batch.size", "5"),
-                Map.entry("consumer.API.count", "1"),
+                Map.entry("qr.consumer.API.count", "1"),
                 Map.entry("write.batch.size", "5")));
 
       QrExtractionAction action1 = new QrExtractionAction(actionExecutionAudit, log, build);

@@ -21,7 +21,7 @@ public class IntelliMatchActionTest {
                 .matchResult("")
                 .build();
         ActionExecutionAudit actionExecutionAudit = new ActionExecutionAudit();
-        actionExecutionAudit.getContext().put("copro.autorotation.url", "/copro/preprocess/autorotation");
+        actionExecutionAudit.getContext().put("copro.intelli-match.url", "http://localhost:9200/v2/models/cos-service/versions/1/infer");
         actionExecutionAudit.setProcessId(138980079308730208L);
         actionExecutionAudit.getContext().putAll(Map.ofEntries(Map.entry("read.batch.size", "5"),
                 Map.entry("consumer.intellimatch.API.count", "1"),

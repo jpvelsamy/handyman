@@ -141,7 +141,7 @@ public class DataExtractionAction implements IActionExecution {
 
       DataExtractionRequest requests = new  DataExtractionRequest();
       TritonRequest requestBody = new TritonRequest();
-      requestBody.setName("DATA EXTRACTION START");
+      requestBody.setName("TEXT EXTRACTOR START");
       requestBody.setShape(List.of(1, 1));
       requestBody.setDatatype("BYTES");
       requestBody.setData(Collections.singletonList(jsonInputRequest));
