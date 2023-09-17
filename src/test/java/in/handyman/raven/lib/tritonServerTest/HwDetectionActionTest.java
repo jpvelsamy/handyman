@@ -36,7 +36,7 @@ class HwDetectionActionTest {
                 .condition(true)
                 .resourceConn("intics_agadia_db_conn")
                 .directoryPath("/data/output")
-                .modelPath("/home/sanjeeya.v@zucisystems.com/Documents/agadia/pr2/v1/hw_detection_v2.0.pth")
+                .modelPath("")
                 .querySet("SELECT 'INT-1' as originId, '1234567' as preprocessedFileId, 1 as paperNo,'/data/input/elixir-2page/SYNT_166838894_c1.pdf'  as filePath, '123456' as createdUserId, '123456y' as lastUpdatedUserId, '12345643' as tenantId,-1 as templateId, 90.00 as modelScore, 123 as modelRegistryId;")
                 .build();
         final ActionExecutionAudit action = ActionExecutionAudit.builder()
