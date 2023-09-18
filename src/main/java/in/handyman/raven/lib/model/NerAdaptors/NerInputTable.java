@@ -37,7 +37,7 @@ public class NerInputTable implements CoproProcessor.Entity {
     private String bbox;
     private int sorItemId;
     private String createdUserId;
-    private String tenantId;
+    private Long tenantId;
     private double wordScore;
     private double charScore;
     private double validatorScore;

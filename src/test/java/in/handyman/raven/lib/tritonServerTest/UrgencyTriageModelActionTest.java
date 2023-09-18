@@ -16,7 +16,7 @@ public class UrgencyTriageModelActionTest {
         final UrgencyTriage build = UrgencyTriage.builder()
                 .condition(true)
                 .name("urgencyTriageModel")
-                .resourceConn("intics_agadia_db_conn")
+                //.resourceConn("intics_agadia_db_conn")
                 .outputDir("/data/output")
                 .build();
 

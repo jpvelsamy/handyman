@@ -14,7 +14,7 @@ class HwDetectionActionTest {
                 .resourceConn("intics_agadia_db_conn")
                 .directoryPath("/home/sanjeeya.v@zucisystems.com/workspace/updated_jupyter/output")
                 .modelPath("/home/sanjeeya.v@zucisystems.com/Documents/agadia/pr2/v1/hw_detection_v2.0.pth")
-                .querySet("SELECT 'INT-1' as originId, '1234567' as preprocessedFileId, 1 as paperNo,'/home/sanjeeya.v@zucisystems.com/workspace/updated_jupyter/Humana_Form_1_1.jpg'  as filePath, '123456' as createdUserId, '123456y' as lastUpdatedUserId, '12345643' as tenantId,-1 as templateId, 90.00 as modelScore, 123 as modelRegistryId;")
+                .querySet("SELECT 'INT-1' as originId, '1234567' as preprocessedFileId, 1 as paperNo,'/home/sanjeeya.v@zucisystems.com/workspace/updated_jupyter/Humana_Form_1_1.jpg'  as filePath, '123456' as createdUserId, '123456y' as lastUpdatedUserId, '12345643' as tenantId,-1 as templateId, 90.00 as modelScore, 123 as modelId;")
                 .build();
         final ActionExecutionAudit action = ActionExecutionAudit.builder()
                 .build();

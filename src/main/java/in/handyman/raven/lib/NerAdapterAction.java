@@ -1,13 +1,11 @@
 package in.handyman.raven.lib;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
-import in.handyman.raven.lib.*;
 import in.handyman.raven.lib.model.*;
 import in.handyman.raven.lib.model.NerAdaptors.*;
 import in.handyman.raven.lib.model.triton.TritonInputRequest;
@@ -41,16 +39,12 @@ import java.util.stream.Collectors;
         actionName = "NerAdapter"
 )
 public class NerAdapterAction implements IActionExecution {
+    public static final String COLUMN_LIST = "origin_id, paper_no, group_id, process_id, sor_id, sor_item_id, sor_item_name, question, answer,weight, created_user_id, tenant_id, created_on, word_score, char_score, validator_score_allowed, validator_score_negative, confidence_score, validation_name, b_box,status,stage,message,vqa_score,question_id,synonym_id,model_name,model_version";
+    private static final String HTTP_CLIENT_TIMEOUT = "";
     private final ActionExecutionAudit action;
-
     private final Logger log;
-
     private final NerAdapter nerAdapter;
-
     private final Marker aMarker;
-
-    private static String httpClientTimeout = new String();
-
 
 
     public NerAdapterAction(final ActionExecutionAudit action, final Logger log,
@@ -71,7 +65,6 @@ public class NerAdapterAction implements IActionExecution {
             final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(nerAdapter.getResourceConn());
             jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
             // build insert prepare statement with output table columns
-            String COLUMN_LIST = "origin_id, paper_no, group_id, process_id, sor_id, sor_item_id, sor_item_name, question, answer,weight, created_user_id, tenant_id, created_on, word_score, char_score, validator_score_allowed, validator_score_negative, confidence_score, validation_name, b_box,status,stage,message,vqa_score,question_id,synonym_id,model_name,model_version";
             final String insertQuery = "INSERT INTO " + nerAdapter.getResultTable() +
                     "(" + COLUMN_LIST + ")" +
                     " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?,?, ?, ?, ?, ?, ?,?,?,?  ,? ,?,?,?,?);";
@@ -113,7 +106,15 @@ public class NerAdapterAction implements IActionExecution {
         }
     }
 
+    @Override
+    public boolean executeIf() throws Exception {
+        return nerAdapter.getCondition();
+    }
+
     public static class NerAdapterConsumerProcess implements CoproProcessor.ConsumerProcess<NerInputTable, NerOutputTable> {
+        private static final MediaType MediaTypeJSON = MediaType
+                .parse("application/json; charset=utf-8");
+        public final ActionExecutionAudit action;
         private final Logger log;
         private final Marker aMarker;
         private final NervalidatorAction nerAction;
@@ -123,20 +124,16 @@ public class NerAdapterAction implements IActionExecution {
         private final NumericvalidatorAction numericAction;
         private final AlphanumericvalidatorAction alphaNumericAction;
         private final DatevalidatorAction dateAction;
-        public final ActionExecutionAudit action;
+        private final String PHONE_NUMBER_REGEX = "^\\(?(\\d{3})\\)?[-]?(\\d{3})[-]?(\\d{4})$";
+        private final String NUMBER_REGEX = "^[+-]?(\\d+\\.?\\d*|\\.\\d+)$";
+        private final OkHttpClient httpclient = new OkHttpClient.Builder()
+                .connectTimeout(Long.parseLong(HTTP_CLIENT_TIMEOUT), TimeUnit.MINUTES)
+                .writeTimeout(Long.parseLong(HTTP_CLIENT_TIMEOUT), TimeUnit.MINUTES)
+                .readTimeout(Long.parseLong(HTTP_CLIENT_TIMEOUT), TimeUnit.MINUTES)
+                .build();
         boolean multiverseValidator;
         String[] restrictedAnswers;
         String URI;
-        private final String PHONE_NUMBER_REGEX = "^\\(?(\\d{3})\\)?[-]?(\\d{3})[-]?(\\d{4})$";
-        private final String NUMBER_REGEX = "^[+-]?(\\d+\\.?\\d*|\\.\\d+)$";
-        private static final MediaType MediaTypeJSON = MediaType
-                .parse("application/json; charset=utf-8");
-
-        private final OkHttpClient httpclient = new OkHttpClient.Builder()
-                .connectTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
-                .writeTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
-                .readTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
-                .build();
 
         public NerAdapterConsumerProcess(Logger log, Marker aMarker, ActionExecutionAudit action) {
             this.log = log;
@@ -151,6 +148,11 @@ public class NerAdapterAction implements IActionExecution {
             this.dateAction = new DatevalidatorAction(action, log, Datevalidator.builder().build());
         }
 
+        private static void updateEmptyValueAndCf(NerInputTable result) {
+            result.setInputValue("");
+            result.setVqaScore(0);
+        }
+
         @Override
         public List<NerOutputTable> process(URL endpoint, NerInputTable result) throws Exception {
             URI = String.valueOf(endpoint);
@@ -161,7 +163,7 @@ public class NerAdapterAction implements IActionExecution {
             String inputValue = result.getInputValue();
             int wordScore = wordcountAction.getWordCount(inputValue,
                     result.getWordLimit(), result.getWordThreshold());
-            int charScore = charactercountAction.getCharCount(inputValue,
+            int charScore = CharactercountAction.getCharCount(inputValue,
                     result.getCharLimit(), result.getCharThreshold());
             Validator configurationDetails = Validator.builder()
                     .inputValue(inputValue)
@@ -186,8 +188,8 @@ public class NerAdapterAction implements IActionExecution {
             updateEmptyValueForRestrictedAns(result, inputValue);
 
             String rootPipelineId = action.getContext().get("gen_id.root_pipeline_id");
-            Long actionId=action.getActionId();
-            String process = String.valueOf("NER");
+            Long actionId = action.getActionId();
+            String process = "NER";
             String inputString = inputValue;
             ObjectMapper objectMapper = new ObjectMapper();
 
@@ -212,7 +214,7 @@ public class NerAdapterAction implements IActionExecution {
 
             //  requestBody.setData(Collections.singletonList(NerAdaptorpayload));
 
-            TritonInputRequest tritonInputRequest=new TritonInputRequest();
+            TritonInputRequest tritonInputRequest = new TritonInputRequest();
             tritonInputRequest.setInputs(Collections.singletonList(requestBody));
 
             String jsonRequest = objectMapper.writeValueAsString(tritonInputRequest);
@@ -220,8 +222,8 @@ public class NerAdapterAction implements IActionExecution {
             Request request = new Request.Builder().url(endpoint)
                     .post(RequestBody.create(jsonRequest, MediaTypeJSON)).build();
 
-            if(log.isInfoEnabled()) {
-                log.info(aMarker, "Request has been build with the parameters \n coproUrl  {} ,action : {} rootPipelineId {}  process {} ", endpoint,actionId,rootPipelineId,process);
+            if (log.isInfoEnabled()) {
+                log.info(aMarker, "Request has been build with the parameters \n coproUrl  {} ,action : {} rootPipelineId {}  process {} ", endpoint, actionId, rootPipelineId, process);
             }
 
             AtomicInteger atomicInteger = new AtomicInteger();
@@ -229,7 +231,7 @@ public class NerAdapterAction implements IActionExecution {
             String originId = result.getOriginId();
             Integer groupId = result.getGroupId();
             int sorId = result.getSorId();
-            String tenantId = result.getTenantId();
+            Long tenantId = result.getTenantId();
             String processId = result.getProcessId();
             int paperNo = result.getPaperNo();
             int sorItemId = result.getSorItemId();
@@ -246,50 +248,46 @@ public class NerAdapterAction implements IActionExecution {
 
                 if (response.isSuccessful()) {
                     ObjectMapper objectMappers = new ObjectMapper();
-                    NerAdapterResponse Response = objectMappers.readValue(responseBody, NerAdapterResponse.class);
-                    if (Response.getOutputs() != null && !Response.getOutputs().isEmpty()) {
-                        Response.getOutputs().forEach(o -> {
-                            o.getData().forEach(NerAdapterDataItem -> {
+                    NerAdapterResponse nerAdapterResponse = objectMappers.readValue(responseBody, NerAdapterResponse.class);
+                    if (nerAdapterResponse.getOutputs() != null && !nerAdapterResponse.getOutputs().isEmpty()) {
+                        nerAdapterResponse.getOutputs().forEach(o -> {
+                            o.getData().forEach(nerAdapterDataItem -> {
 
-                                NerAdapterDataItem.getNerAdapterprediction().forEach(NerAdapterPrediction -> {
+                                nerAdapterDataItem.getNerAdapterprediction().forEach(nerAdapterPrediction -> {
                                     in.handyman.raven.lib.model.NerAdaptors.NerAdapterPrediction score = new NerAdapterPrediction();
-                                    String inputName = score.getInputName();
-                                    int predictionScore = score.getPredictionScore();
-                                    String predictionTag = score.getPredictionTag();
-                                    String predictedLabel = score.getPredictedLabel();
 
-                                            if (valConfidenceScore >= 0) {
-                                                parentObj.add(
-                                                        NerOutputTable
-                                                                .builder()
-                                                                .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
-                                                                .groupId(groupId)
-                                                                .sorId(sorId)
-                                                                .tenantId(tenantId)
-                                                                .processId(processId)
-                                                                .paperNo(paperNo)
-                                                                .sorItemId(sorItemId)
-                                                                .sorItemName(sorKey)
-                                                                .question(question)
-                                                                .answer(inputValue)
-                                                                .vqaScore(vqaScore)
-                                                                .weight(weight)
-                                                                .createdUserId(createdUserId)
-                                                                .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                                                                .wordScore(wordScore)
-                                                                .charScore(charScore)
-                                                                .validatorScoreAllowed(validatorScore)
-                                                                .validatorScoreNegative(validatorNegativeScore)
-                                                                .confidenceScore(valConfidenceScore)
-                                                                .validationName(result.getAllowedAdapter())
-                                                                .bBox(result.getBbox())
-                                                                .questionId(result.getQuestionId())
-                                                                .synonymId(result.getSynonymId())
-                                                                .status("COMPLETED")
-                                                                .stage("SCALAR_VALIDATION")
-                                                                .message("Ner validation macro completed")
-                                                                .build());
-                                            }
+                                    if (valConfidenceScore >= 0) {
+                                        parentObj.add(
+                                                NerOutputTable
+                                                        .builder()
+                                                        .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                                                        .groupId(groupId)
+                                                        .sorId(sorId)
+                                                        .tenantId(tenantId)
+                                                        .processId(processId)
+                                                        .paperNo(paperNo)
+                                                        .sorItemId(sorItemId)
+                                                        .sorItemName(sorKey)
+                                                        .question(question)
+                                                        .answer(inputValue)
+                                                        .vqaScore(vqaScore)
+                                                        .weight(weight)
+                                                        .createdUserId(createdUserId)
+                                                        .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                                                        .wordScore(wordScore)
+                                                        .charScore(charScore)
+                                                        .validatorScoreAllowed(validatorScore)
+                                                        .validatorScoreNegative(validatorNegativeScore)
+                                                        .confidenceScore(valConfidenceScore)
+                                                        .validationName(result.getAllowedAdapter())
+                                                        .bBox(result.getBbox())
+                                                        .questionId(result.getQuestionId())
+                                                        .synonymId(result.getSynonymId())
+                                                        .status("COMPLETED")
+                                                        .stage("SCALAR_VALIDATION")
+                                                        .message("Ner validation macro completed")
+                                                        .build());
+                                    }
                                 });
                             });
                         });
@@ -355,10 +353,10 @@ public class NerAdapterAction implements IActionExecution {
                     case "date":
                         confidenceScore = this.dateAction.getDateScore(inputDetail);
                         break;
-                    case "phone-reg":
+                    case "phone_reg":
                         confidenceScore = regValidator(inputDetail, PHONE_NUMBER_REGEX);
                         break;
-                    case "numeric-reg":
+                    case "numeric_reg":
                         confidenceScore = regValidator(inputDetail, NUMBER_REGEX);
                         break;
                 }
@@ -392,11 +390,6 @@ public class NerAdapterAction implements IActionExecution {
             }
         }
 
-        private static void updateEmptyValueAndCf(NerInputTable result) {
-            result.setInputValue("");
-            result.setVqaScore(0);
-        }
-
         private int regValidator(Validator validator, String regForm) {
             String inputValue = validator.getInputValue();
             inputValue = replaceSplChars(validator.getAllowedSpecialChar(), inputValue);
@@ -416,12 +409,6 @@ public class NerAdapterAction implements IActionExecution {
             return input;
         }
 
-    }
-
-
-    @Override
-    public boolean executeIf() throws Exception {
-        return nerAdapter.getCondition();
     }
 
 

@@ -28,6 +28,7 @@ class ScalarAdapterActionTest {
     "                     WHERE dp.group_id = '1' AND si.allowed_adapter ='ner' AND dp.answer is not null" +
                         " AND dp.sor_item_name ='patient_name';\n" +
     "   ")
+
                 .resourceConn("intics_agadia_db_conn")
 
                 .build();

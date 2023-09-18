@@ -17,7 +17,7 @@ public class AutoRotationInputTable implements CoproProcessor.Entity {
     private Integer paperNo;
     private Integer groupId;
     private String filePath;
-    private String tenantId;
+    private Long tenantId;
     private String templateId;
     private Long processId;
     private String outputDir;

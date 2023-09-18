@@ -29,7 +29,7 @@ public class NerOutputTable implements CoproProcessor.Entity {
     private String question;
     private String answer;
     private String createdUserId;
-    private String tenantId;
+    private Long tenantId;
     private Timestamp createdOn;
     private float vqaScore;
     private double wordScore;

@@ -20,7 +20,7 @@ public class PaperItemizerOutputTable implements CoproProcessor.Entity {
 
     private String originId;
     private Integer groupId;
-    private String tenantId;
+    private Long tenantId;
     private Long processId;
     private String templateId;
     private String processedFilePath;

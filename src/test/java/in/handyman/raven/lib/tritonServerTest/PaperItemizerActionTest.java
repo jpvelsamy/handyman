@@ -45,17 +45,18 @@ class PaperItemizerActionTest {
     @Test
     void tritonServer() throws Exception {
         PaperItemizer paperItemizer = PaperItemizer.builder()
-                .name("Data extraction macro test after copro optimization")
+                .name("paper itemizer macro test after copro optimization")
                 .resourceConn("intics_agadia_db_conn")
                 .condition(true)
                 .processId("138980184199100180")
                 .resultTable("info.paper_itemizer")
                 .outputDir("/data/output")
-                .querySet("SELECT 'INT-1' AS origin_id, 1 AS group_id, '/data/input/elixir-2page/SYNT_166838894_c1.pdf' AS file_path, 'TND-1' AS tenant_id, 'TMP-1' AS template_id, '138980184199100180' AS process_id \n")
+                .querySet("SELECT 'INT-1' AS origin_id, 1 AS group_id, '/data/input/elixir-2page/SYNT_166838894_c1.pdf' AS file_path, 1 AS tenant_id, 'TMP-1' AS template_id, '138980184199100180' AS process_id \n")
                 .build();
         ActionExecutionAudit actionExecutionAudit = new ActionExecutionAudit();
 
         actionExecutionAudit.getContext().putAll(Map.ofEntries(Map.entry("copro.paper-itemizer.url", "http://192.168.10.245:8100/v2/models/paper-iterator-service/versions/1/infer"),
+                Map.entry("gen_group_id.group_id","1"),
                 Map.entry("paper.itemizer.consumer.API.count", "1"),
                 Map.entry("read.batch.size", "5"),
                 Map.entry("write.batch.size", "5")));

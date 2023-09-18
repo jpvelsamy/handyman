@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 public class TemplateDetectionOutputTable implements CoproProcessor.Entity {
     private String originId;
     private Integer groupId;
-    private String tenantId;
+    private Long tenantId;
     private String templateId;
     private Long processId;
 
@@ -40,7 +40,7 @@ public class TemplateDetectionOutputTable implements CoproProcessor.Entity {
     private String modelVersion;
 
 
-    public TemplateDetectionOutputTable(String originId, Integer groupId, String tenantId, String templateId, Long processId, String processedFilePath,  Integer paperNo, String status, String stage, String message, Timestamp createdOn, Long rootPipelineId) {
+    public TemplateDetectionOutputTable(String originId, Integer groupId, Long tenantId, String templateId, Long processId, String processedFilePath,  Integer paperNo, String status, String stage, String message, Timestamp createdOn, Long rootPipelineId) {
         this.originId = originId;
         this.groupId = groupId;
         this.tenantId = tenantId;
@@ -73,11 +73,11 @@ public class TemplateDetectionOutputTable implements CoproProcessor.Entity {
         this.groupId = groupId;
     }
 
-    public String getTenantId() {
+    public Long getTenantId() {
         return tenantId;
     }
 
-    public void setTenantId(String tenantId) {
+    public void setTenantId(Long tenantId) {
         this.tenantId = tenantId;
     }
 

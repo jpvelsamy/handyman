@@ -22,18 +22,13 @@ class TemplateDetectionActionTest {
                 .ouputTable("macro.template_detection_response_12345")
                 .resourceConn("intics_agadia_db_conn")
                 .processId("12345")
-                .querySet("select  ar.origin_id ,ar.paper_no ,ar.group_id ,ar.processed_file_path as file_path, ar.tenant_id\n" +
-                        ",ar.template_id ,ar.process_id ,ar.root_pipeline_id ,array_agg(sq.question)  as questions\n" +
-                        "from info.auto_rotation ar\n" +
-                        "join sor_meta.sor_tsynonym st on 1=1\n" +
-                        "join sor_meta.sor_question sq on st.synonym_id  =sq.synonym_id\n" +
-                        "where st.synonym ='Template Name' and ar.status ='COMPLETED' and ar.group_id='19'\n" +
-                        "group by ar.origin_id ,ar.paper_no ,ar.group_id ,ar.processed_file_path , ar.tenant_id \n" +
-                        ",ar.template_id ,ar.process_id ,ar.root_pipeline_id ;")
+                .querySet("select  'INT-1' as origin_id , 1 as paper_no ,1 as group_id , '/data/output/pdf_to_image/SYNT_166838894_c1/SYNT_166838894_c1_0.jpg' as file_path,'TNT-1' as tenant_id\n" +
+                        ",'TMP-1' as template_id ,134 as process_id ,12435 as root_pipeline_id , '{\"what is patient name\"}'  as questions\n"
+                )
                                                                                         .build();
 
         ActionExecutionAudit actionExecutionAudit=new ActionExecutionAudit();
-        actionExecutionAudit.getContext().put("copro.data-extraction.url","http://localhost:10182/copro/preprocess/text_extraction");
+        actionExecutionAudit.getContext().put("copro.template.detection.url","http://localhost:10182/copro/preprocess/text_extraction");
         actionExecutionAudit.setProcessId(138980079308730208L);
         actionExecutionAudit.getContext().putAll(Map.ofEntries(Map.entry("read.batch.size","5"),
                 Map.entry("consumer.API.count","1"),
@@ -49,26 +44,20 @@ class TemplateDetectionActionTest {
         TemplateDetection templateDetection=TemplateDetection.builder()
                 .condition(true)
                 .name("template detection")
-                .coproUrl("http://localhost:8900/v2/models/ernie-service/versions/1/infer")
+                .coproUrl("http://192.168.10.239:8900/v2/models/ernie-service/versions/1/infer")
                 .inputTable("info.auto_rotation")
-                .ouputTable("info.text_extraction")
+                .ouputTable("macro.template_detection_response_12345")
                 .resourceConn("intics_agadia_db_conn")
                 .processId("12345")
-                .querySet("select  ar.origin_id ,ar.paper_no ,ar.group_id ,ar.processed_file_path as file_path, ar.tenant_id\n" +
-                        ",ar.template_id ,ar.process_id ,ar.root_pipeline_id ,array_agg(sq.question)  as questions\n" +
-                        "from info.auto_rotation ar\n" +
-                        "join sor_meta.sor_tsynonym st on 1=1\n" +
-                        "join sor_meta.sor_question sq on st.synonym_id  =sq.synonym_id\n" +
-                        "where st.synonym ='Template Name' and ar.status ='COMPLETED' and ar.group_id='19'\n" +
-                        "group by ar.origin_id ,ar.paper_no ,ar.group_id ,ar.processed_file_path , ar.tenant_id \n" +
-                        ",ar.template_id ,ar.process_id ,ar.root_pipeline_id ;")
+                .querySet("select  'INT-1' as origin_id , 1 as paper_no ,1 as group_id , '/data/output/pdf_to_image/SYNT_166838894_c1/SYNT_166838894_c1_0.jpg' as file_path,'TNT-1' as tenant_id\n" +
+                        ",'TMP-1' as template_id ,134 as process_id ,12435 as root_pipeline_id , ARRAY['what is patient name']  as questions\n" )
                 .build();
 
         ActionExecutionAudit actionExecutionAudit=new ActionExecutionAudit();
-        actionExecutionAudit.getContext().put("copro.data-extraction.url","http://localhost:8900/v2/models/ernie-service/versions/1/infer");
+        actionExecutionAudit.getContext().put("copro.template.detection.url","http://192.168.10.239:8900/v2/models/ernie-service/versions/1/infer");
         actionExecutionAudit.setProcessId(138980079308730208L);
         actionExecutionAudit.getContext().putAll(Map.ofEntries(Map.entry("read.batch.size","5"),
-                Map.entry("template.detection.consumer.API.count","1"),
+                Map.entry("consumer.API.count","1"),
                 Map.entry("write.batch.size","5")));
 
         TemplateDetectionAction templateDetectionAction=new TemplateDetectionAction(actionExecutionAudit,  log,templateDetection);

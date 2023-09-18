@@ -15,13 +15,13 @@ import java.util.List;
     public class HwClassificationInputTable implements CoproProcessor.Entity{
         private String createdUserId;
         private String lastUpdatedUserId;
-        private String tenantId;
+        private Long tenantId;
         private Double modelScore;
         private String originId;
         private Integer paperNo;
         private Integer groupId;
         private String templateId;
-        private String modelRegistryId;
+        private Long modelId;
         private String filePath;
         private Long rootPipelineId;
         private String outputDir;

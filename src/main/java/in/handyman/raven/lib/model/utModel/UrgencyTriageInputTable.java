@@ -15,13 +15,13 @@ import java.util.List;
     public class UrgencyTriageInputTable implements CoproProcessor.Entity {
         private String createdUserId;
         private String lastUpdatedUserId;
-        private String tenantId;
+        private Long tenantId;
         private Long processId;
         private Integer groupId;
         private String originId;
         private Integer paperNo;
         private String templateId;
-        private String modelRegistryId;
+        private Long modelId;
         private String inputFilePath;
         private Long rootPipelineId;
 

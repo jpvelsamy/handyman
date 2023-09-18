@@ -64,7 +64,7 @@ public class DocnetResultAction implements IActionExecution {
                     final String fileRefId = Optional.ofNullable(jsonData.get("file_ref_id")).map(String::valueOf).orElse(null);
                     final String sorAttributionType = Optional.ofNullable(jsonData.get("sor_item_name")).map(String::valueOf).orElse(null);
                     final String createdUserId = Optional.ofNullable(jsonData.get("created_user_id")).map(String::valueOf).orElse(null);
-                    final String tenantId = Optional.ofNullable(jsonData.get("tenant_id")).map(String::valueOf).orElse(null);
+                    final Long tenantId = Optional.ofNullable(jsonData.get("tenant_id")).map(String::valueOf).map(Long::valueOf).orElse(null);
                     final String response = Optional.ofNullable(jsonData.get("response")).map(String::valueOf).orElse(null);
 
                     JSONArray jObj = new JSONArray(Objects.requireNonNull(response));
@@ -201,7 +201,7 @@ public class DocnetResultAction implements IActionExecution {
         private String question;
         private String answer;
         private String createdUserId;
-        private String tenantId;
+        private Long tenantId;
         private Integer confidenceScore;
     }
 

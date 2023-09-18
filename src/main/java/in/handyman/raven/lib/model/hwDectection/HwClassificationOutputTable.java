@@ -18,12 +18,12 @@ public class HwClassificationOutputTable implements CoproProcessor.Entity{
 
     private String createdUserId;
     private String lastUpdatedUserId;
-    private String tenantId;
+    private Long tenantId;
     private String originId;
     private Integer groupId;
     private Integer paperNo;
     private String templateId;
-    private Integer modelRegistryId;
+    private Long modelId;
     private String documentType;
     private Long confidenceScore;
     private String status;
@@ -38,7 +38,7 @@ public class HwClassificationOutputTable implements CoproProcessor.Entity{
     @Override
     public List<Object> getRowData() {
         return Stream.of(this.createdUserId,this.lastUpdatedUserId, this.tenantId,
-                this.originId, this.paperNo, this.templateId, this.modelRegistryId,
+                this.originId, this.paperNo, this.templateId, this.modelId,
                 this.documentType, this.status, this.stage, this.message, this.groupId,this.rootPipelineId, this.confidenceScore, this.modelName,
                 this.modelVersion).collect(Collectors.toList());
 

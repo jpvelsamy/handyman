@@ -194,7 +194,7 @@ public class BlankPageRemoverAction implements IActionExecution {
         private String originId;
         private Integer groupId;
         private String inboundId;
-        private String tenantId;
+        private Long tenantId;
         private String filePath;
         private String outputDir;
         private String documentId;

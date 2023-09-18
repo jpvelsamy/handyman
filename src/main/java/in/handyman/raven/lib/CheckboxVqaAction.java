@@ -60,7 +60,7 @@ public class CheckboxVqaAction implements IActionExecution {
       final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(checkboxVqa.getResourceConn());
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
       log.info(aMarker, "Urgency Triage Action for {} has been started", checkboxVqa.getName());
-      final String insertQuery = "INSERT INTO urgency_triage.chk_triage_transaction_"+checkboxVqa.getProcessID()+"(created_on, created_user_id, last_updated_on, last_updated_user_id, process_id, group_id, tenant_id, model_score, origin_id, paper_no, template_id, model_registry_id, triage_label, triage_state, paper_type, status, stage, message, checkbox_bbox)" +
+      final String insertQuery = "INSERT INTO urgency_triage.chk_triage_transaction_"+checkboxVqa.getProcessID()+"(created_on, created_user_id, last_updated_on, last_updated_user_id, process_id, group_id, tenant_id, model_score, origin_id, paper_no, template_id, model_id, triage_label, triage_state, paper_type, status, stage, message, checkbox_bbox)" +
               "values(now(),?,now(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
       final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.checkbox-vqa.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
         try {
@@ -135,14 +135,14 @@ public class CheckboxVqaAction implements IActionExecution {
 
       String createdUserId = entity.getCreatedUserId();
       String lastUpdatedUserId = entity.getLastUpdatedUserId();
-      String tenantId = entity.getTenantId();
+      Long tenantId = entity.getTenantId();
       Double modelScore = entity.getModelScore();
       Long processId = entity.getProcessId();
       Integer groupId = entity.getGroupId();
       String originId = entity.getOriginId();
       Integer paperNo = entity.getPaperNo();
       String templateId = entity.getTemplateId();
-      String modelRegistryId = entity.getModelRegistryId();
+      String modelId = entity.getModelId();
       try (Response response = httpclient.newCall(request).execute()) {
         String responseBody = Objects.requireNonNull(response.body()).string();
         if (response.isSuccessful()) {
@@ -153,14 +153,14 @@ public class CheckboxVqaAction implements IActionExecution {
           parentObj.add(CheckboxVqaOutputTable.builder()
                   .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
                   .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
-                  .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                  .tenantId(Optional.ofNullable(tenantId).map(Long::valueOf).orElse(null))
                   .modelScore(Optional.ofNullable(modelScore).map(String::valueOf).map(Double::parseDouble).orElse(null))
                   .processId(Optional.ofNullable(processId).map(String::valueOf).map(Long::parseLong).orElse(null))
                   .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                   .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
-                  .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .modelId(Optional.ofNullable(modelId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .triageLabel(extractedPrintedText)
                   .bBox(checkboxBoundingBox)
                   .triageState(checkboxState)
@@ -174,14 +174,14 @@ public class CheckboxVqaAction implements IActionExecution {
           parentObj.add(CheckboxVqaOutputTable.builder()
                   .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
                   .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
-                  .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                  .tenantId(Optional.ofNullable(tenantId).map(Long::valueOf).orElse(null))
                   .modelScore(Optional.ofNullable(modelScore).map(String::valueOf).map(Double::parseDouble).orElse(null))
                   .processId(Optional.ofNullable(checkboxVqa.getProcessID()).map(String::valueOf).map(Long::parseLong).orElse(null))
                   .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                   .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
-                  .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .modelId(Optional.ofNullable(modelId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .status("FAILED")
                   .stage("TRIAGE_CHECKBOX")
                   .message(response.message())
@@ -192,14 +192,14 @@ public class CheckboxVqaAction implements IActionExecution {
         parentObj.add(CheckboxVqaOutputTable.builder()
                 .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
                 .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
-                .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                .tenantId(Optional.ofNullable(tenantId).map(Long::valueOf).orElse(null))
                 .modelScore(Optional.ofNullable(modelScore).map(String::valueOf).map(Double::parseDouble).orElse(null))
                 .processId(Optional.ofNullable(checkboxVqa.getProcessID()).map(String::valueOf).map(Long::parseLong).orElse(null))
                 .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                 .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
-                .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                .modelId(Optional.ofNullable(modelId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .status("FAILED")
                 .stage("TRIAGE_CHECKBOX")
                 .message(ExceptionUtil.toString(e))
@@ -220,14 +220,14 @@ public class CheckboxVqaAction implements IActionExecution {
   public static class CheckboxVqaInputTable implements CoproProcessor.Entity {
     private String createdUserId;
     private String lastUpdatedUserId;
-    private String tenantId;
+    private Long tenantId;
     private Double modelScore;
     private Long processId;
     private Integer groupId;
     private String originId;
     private Integer paperNo;
     private String templateId;
-    private String modelRegistryId;
+    private String modelId;
     private String filePath;
 
     @Override
@@ -245,14 +245,14 @@ public class CheckboxVqaAction implements IActionExecution {
 
     private String createdUserId;
     private String lastUpdatedUserId;
-    private String tenantId;
+    private Long tenantId;
     private Double modelScore;
     private Long processId;
     private Integer groupId;
     private String originId;
     private Integer paperNo;
     private String templateId;
-    private Integer modelRegistryId;
+    private Integer modelId;
     private String triageState;
     private String triageLabel;
     private String paperType;
@@ -264,7 +264,7 @@ public class CheckboxVqaAction implements IActionExecution {
     @Override
     public List<Object> getRowData() {
       return Stream.of(this.createdUserId, this.lastUpdatedUserId, this.processId, this.groupId, this.tenantId, this.modelScore,
-              this.originId, this.paperNo, this.templateId, this.modelRegistryId, this.triageLabel, this.triageState,
+              this.originId, this.paperNo, this.templateId, this.modelId, this.triageLabel, this.triageState,
               this.paperType, this.status, this.stage, this.message, this.bBox
       ).collect(Collectors.toList());
     }

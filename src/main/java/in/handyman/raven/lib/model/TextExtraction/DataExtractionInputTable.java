@@ -18,7 +18,7 @@ public class DataExtractionInputTable implements CoproProcessor.Entity {
     private Integer groupId;
     private String filePath;
     private Integer paperNo;
-    private String tenantId;
+    private Long tenantId;
     private String templateId;
     private Long processId;
     private Long rootPipelineId;

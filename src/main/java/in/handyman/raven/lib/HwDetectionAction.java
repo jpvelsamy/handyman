@@ -63,7 +63,7 @@ public class HwDetectionAction implements IActionExecution {
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
 
       log.info(aMarker, "Handwritten Classification Action for {} has been started", hwDetection.getName());
-      final String insertQuery = "INSERT INTO paper_classification.paper_classification_result(created_on, created_user_id, last_updated_on, last_updated_user_id, tenant_id, origin_id, paper_no, template_id, model_registry_id, document_type, status, stage, message, group_id, root_pipeline_id, confidence_score,model_name,model_version)" +
+      final String insertQuery = "INSERT INTO paper_classification.paper_classification_result(created_on, created_user_id, last_updated_on, last_updated_user_id, tenant_id, origin_id, paper_no, template_id, model_id, document_type, status, stage, message, group_id, root_pipeline_id, confidence_score,model_name,model_version)" +
               "values(now(),?,now(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
       final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.hw-detection.url")).map(s -> Arrays.stream(s.split(",")).map(url -> {
         try {
@@ -124,7 +124,7 @@ public class HwDetectionAction implements IActionExecution {
       List<HwClassificationOutputTable> parentObj = new ArrayList<>();
       String entityFilePath = entity.getFilePath();
       Long actionId=action.getActionId();
-      final String process="PAPER_CLASSIFICATION";
+      final String PAPER_CLASSIFICATION_PROCESS="PAPER_CLASSIFICATION";
       long rootpipelineId= entity.getRootPipelineId();
       String modelPath = action.getModelPath();
       String filePath = String.valueOf(entity.getFilePath());
@@ -135,7 +135,7 @@ public class HwDetectionAction implements IActionExecution {
       HwDetectionPayload HwDetectionpayload = new HwDetectionPayload();
       HwDetectionpayload.setRootPipelineId(Long.valueOf(rootpipelineId));
       HwDetectionpayload.setActionId(actionId);
-      HwDetectionpayload.setProcess(process);
+      HwDetectionpayload.setProcess(PAPER_CLASSIFICATION_PROCESS);
       HwDetectionpayload.setInputFilePath(filePath);
       HwDetectionpayload.setOutputDir(outputDir);
       HwDetectionpayload.setModelPath(modelPath);
@@ -167,20 +167,20 @@ public class HwDetectionAction implements IActionExecution {
       }
       String createdUserId = entity.getCreatedUserId();
       String lastUpdatedUserId = entity.getLastUpdatedUserId();
-      String tenantId = entity.getTenantId();
+      Long tenantId = entity.getTenantId();
       String originId = entity.getOriginId();
       Integer paperNo = entity.getPaperNo();
       String templateId = entity.getTemplateId();
-      String modelRegistryId = entity.getModelRegistryId();
+      Long modelId = entity.getModelId();
       Integer groupId = entity.getGroupId();
       try (Response response = httpclient.newCall(request).execute()){
         String responseBody = Objects.requireNonNull(response.body()).string();
         if (response.isSuccessful()) {
           ObjectMapper objectMappers = new ObjectMapper();
-          HwDetectionResponse Response = objectMappers.readValue(responseBody, HwDetectionResponse.class);
-          if (Response.getOutputs() != null && !Response.getOutputs().isEmpty()) {
-            Response.getOutputs().forEach(o -> {
-              o.getData().forEach(HwDetectionDataItem -> {
+          HwDetectionResponse hwDetectionResponse = objectMappers.readValue(responseBody, HwDetectionResponse.class);
+          if (hwDetectionResponse.getOutputs() != null && !hwDetectionResponse.getOutputs().isEmpty()) {
+            hwDetectionResponse.getOutputs().forEach(o -> {
+              o.getData().forEach(hwDetectionDataItem -> {
                 log.info("copro api response body {}", responseBody);
                 String documentStatus = null;
                 try {
@@ -197,11 +197,11 @@ public class HwDetectionAction implements IActionExecution {
 
                 parentObj.add(HwClassificationOutputTable.builder().createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
                         .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
-                        .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                        .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).map(Long::valueOf).orElse(null))
                         .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                         .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
                         .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
-                        .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                        .modelId(Optional.ofNullable(modelId).map(String::valueOf).map(Long::parseLong).orElse(null))
                         .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                         .documentType(documentStatus)
                         .confidenceScore(score)
@@ -219,11 +219,11 @@ public class HwDetectionAction implements IActionExecution {
           parentObj.add(HwClassificationOutputTable.builder()
                   .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
                   .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
-                  .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                  .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).map(Long::valueOf).orElse(null))
                   .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                   .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
-                  .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .modelId(Optional.ofNullable(modelId).map(String::valueOf).map(Long::parseLong).orElse(null))
                   .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .status("FAILED")
                   .stage(STAGE)
@@ -237,11 +237,11 @@ public class HwDetectionAction implements IActionExecution {
         parentObj.add(HwClassificationOutputTable.builder()
                 .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
                 .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
-                .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).map(Long::valueOf).orElse(null))
                 .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                 .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
-                .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                .modelId(Optional.ofNullable(modelId).map(String::valueOf).map(Long::parseLong).orElse(null))
                 .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .status("FAILED")
                 .stage(STAGE)

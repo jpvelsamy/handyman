@@ -19,7 +19,7 @@ public class AutoRotationOutputTable implements CoproProcessor.Entity {
 
     private String originId;
     private Integer groupId;
-    private String tenantId;
+    private Long tenantId;
     private String templateId;
     private Long processId;
     private String processedFilePath;

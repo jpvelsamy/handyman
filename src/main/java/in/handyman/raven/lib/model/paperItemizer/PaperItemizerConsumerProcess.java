@@ -87,7 +87,7 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
         String originId = entity.getOriginId();
         Integer groupId = entity.getGroupId();
         String templateId = entity.getTemplateId();
-        String tenantId = entity.getTenantId();
+        Long tenantId = entity.getTenantId();
         Long processId = entity.getProcessId();
 
 

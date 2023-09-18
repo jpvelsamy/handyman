@@ -62,7 +62,7 @@ public class UrgencyTriageModelAction implements IActionExecution {
       final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(urgencyTriageModel.getResourceConn());
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
       log.info(aMarker, "Urgency Triage Action for {} has been started", urgencyTriageModel.getName());
-      final String insertQuery = "INSERT INTO urgency_triage.ut_model_result(created_on, created_user_id, last_updated_on, last_updated_user_id, process_id, group_id, tenant_id, confidence_score, origin_id, paper_no, template_id, model_registry_id, status, stage, message, paper_type, bboxes, root_pipeline_id, model_name,model_version)" +
+      final String insertQuery = "INSERT INTO urgency_triage.ut_model_result(created_on, created_user_id, last_updated_on, last_updated_user_id, process_id, group_id, tenant_id, confidence_score, origin_id, paper_no, template_id, model_id, status, stage, message, paper_type, bboxes, root_pipeline_id, model_name,model_version)" +
               "values(now(),?,now(),?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?,?,?)";
       final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.urgency-triage-model.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
         try {
@@ -127,31 +127,25 @@ public class UrgencyTriageModelAction implements IActionExecution {
       ObjectMapper objectMapper = new ObjectMapper();
 
 //payload
-      UrgencyTriageModelPayload UrgencyTriageModelpayload = new UrgencyTriageModelPayload();
-      UrgencyTriageModelpayload.setRootPipelineId(Long.valueOf(String.valueOf(entity.getRootPipelineId())));
-      UrgencyTriageModelpayload.setProcess("QR");
-      UrgencyTriageModelpayload.setInputFilePath(entity.getInputFilePath());
-      UrgencyTriageModelpayload.setActionId(action.getActionId());
-      String jsonInputRequest = objectMapper.writeValueAsString(UrgencyTriageModelpayload);
+      UrgencyTriageModelPayload urgencyTriageModelPayload = new UrgencyTriageModelPayload();
+      urgencyTriageModelPayload.setRootPipelineId(Long.valueOf(String.valueOf(entity.getRootPipelineId())));
+      urgencyTriageModelPayload.setProcess("QR");
+      urgencyTriageModelPayload.setInputFilePath(entity.getInputFilePath());
+      urgencyTriageModelPayload.setActionId(action.getActionId());
+      String jsonInputRequest = objectMapper.writeValueAsString(urgencyTriageModelPayload);
 
 
-
-
-      UregencyTriageModelRequest requests = new UregencyTriageModelRequest();
       TritonRequest requestBody = new TritonRequest();
       requestBody.setName("UT START");
       requestBody.setShape(List.of(1, 1));
       requestBody.setDatatype("BYTES");
       requestBody.setData(Collections.singletonList(jsonInputRequest));
 
-      // requestBody.setData(Collections.singletonList(jsonNodeRequest));
-
-      //  requestBody.setData(Collections.singletonList(UrgencyTriageModelpayload));
 
       TritonInputRequest tritonInputRequest=new TritonInputRequest();
       tritonInputRequest.setInputs(Collections.singletonList(requestBody));
 
-      String jsonRequest = objectMapper.writeValueAsString(UrgencyTriageModelpayload);
+      String jsonRequest = objectMapper.writeValueAsString(urgencyTriageModelPayload);
 
       Request request = new Request.Builder().url(endpoint)
               .post(RequestBody.create(jsonRequest, MediaTypeJSON)).build();
@@ -162,13 +156,13 @@ public class UrgencyTriageModelAction implements IActionExecution {
 
       String createdUserId = entity.getCreatedUserId();
       String lastUpdatedUserId = entity.getLastUpdatedUserId();
-      String tenantId = entity.getTenantId();
+      Long tenantId = entity.getTenantId();
       Long processId = entity.getProcessId();
       Integer groupId = entity.getGroupId();
       String originId = entity.getOriginId();
       Integer paperNo = entity.getPaperNo();
       String templateId = entity.getTemplateId();
-      String modelRegistryId = entity.getModelRegistryId();
+      Long modelId = entity.getModelId();
       try (Response response = httpclient.newCall(request).execute()) {
         final String responseBody = Objects.requireNonNull(response.body()).string();
         if (response.isSuccessful()) {
@@ -202,13 +196,13 @@ public class UrgencyTriageModelAction implements IActionExecution {
                 parentObj.add(UrgencyTriageOutputTable.builder()
                         .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
                         .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
-                        .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                        .tenantId(Optional.ofNullable(tenantId).map(Long::valueOf).orElse(null))
                         .processId(Optional.ofNullable(processId).map(String::valueOf).map(Long::parseLong).orElse(null))
                         .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                         .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                         .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
                         .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
-                        .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                        .modelId(Optional.ofNullable(modelId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                         .utResult(paperType)
                         .confScore(confidenceScore)
                         .bbox(bboxes)
@@ -225,13 +219,13 @@ public class UrgencyTriageModelAction implements IActionExecution {
           parentObj.add(UrgencyTriageOutputTable.builder()
                   .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
                   .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
-                  .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                  .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).map(Long::valueOf).orElse(null))
                   .processId(Optional.ofNullable(processId).map(String::valueOf).map(Long::parseLong).orElse(null))
                   .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                   .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
-                  .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                  .modelId(Optional.ofNullable(modelId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                   .status("FAILED")
                   .stage("URGENCY_TRIAGE_MODEL")
                   .message(response.message())
@@ -243,13 +237,13 @@ public class UrgencyTriageModelAction implements IActionExecution {
         parentObj.add(UrgencyTriageOutputTable.builder()
                 .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
                 .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
-                .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).orElse(null))
+                .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).map(Long::valueOf).orElse(null))
                 .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .processId(Optional.ofNullable(processId).map(String::valueOf).map(Long::parseLong).orElse(null))
                 .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                 .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
-                .modelRegistryId(Optional.ofNullable(modelRegistryId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                .modelId(Optional.ofNullable(modelId).map(String::valueOf).map(Integer::parseInt).orElse(null))
                 .status("FAILED")
                 .stage("URGENCY_TRIAGE_MODEL")
                 .message(ExceptionUtil.toString(e))
