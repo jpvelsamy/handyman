@@ -67,6 +67,7 @@ public class TemplateDetectionConsumerProcess implements CoproProcessor.Consumer
         //payload
         TemplateDetectionData templateDetectionDataInput = new TemplateDetectionData();
         templateDetectionDataInput.setAttributes(attributes);
+        templateDetectionDataInput.setPaperType("Printed");
         templateDetectionDataInput.setInputFilePath(inputFilePath);
         templateDetectionDataInput.setRootPipelineId(rootPipelineId);
         templateDetectionDataInput.setActionId(actionId);
@@ -104,15 +105,15 @@ public class TemplateDetectionConsumerProcess implements CoproProcessor.Consumer
             Timestamp createdOn = Timestamp.valueOf(LocalDateTime.now());
             if (response.isSuccessful()) {
                 String responseBody = response.body().string();
-                TemplateDetectionResponse Response = objectMapper.readValue(responseBody, TemplateDetectionResponse.class);
+                TemplateDetectionResponse templateDetectionResponse = objectMapper.readValue(responseBody, TemplateDetectionResponse.class);
 
-                if (Response.getOutputs() != null && !Response.getOutputs().isEmpty()) {
-                    Response.getOutputs().forEach(output -> {
+                if (templateDetectionResponse.getOutputs() != null && !templateDetectionResponse.getOutputs().isEmpty()) {
+                    templateDetectionResponse.getOutputs().forEach(output -> {
                         output.getData().forEach(templateDetectionData -> {
                             try {
                                 TemplateDetectionDataItem templateDetectionDataItem=objectMapper.readValue(templateDetectionData,TemplateDetectionDataItem.class);
-                                templateDetectionDataItem.getAttribute().forEach(attribute -> {
-                                    String string = attribute.getBboxes();
+                                templateDetectionDataItem.getAttributes().forEach(attribute -> {
+                                    String bboxStr = String.valueOf(attribute.getBboxes());
                                     String question = attribute.getQuestion();
                                     Float scores = attribute.getScores();
                                     String predictedAttributionValue = attribute.getPredictedAttributionValue();
@@ -125,7 +126,7 @@ public class TemplateDetectionConsumerProcess implements CoproProcessor.Consumer
                                                     .predictedAttributionValue(predictedAttributionValue)
                                                     .question(question)
                                                     .scores(scores)
-                                                    .bboxes(string)
+                                                    .bboxes(bboxStr)
                                                     .imageWidth(templateDetectionDataItem.getImageWidth())
                                                     .imageDPI(templateDetectionDataItem.getImageDPI())
                                                     .extractedImageUnit(templateDetectionDataItem.getExtractedImageUnit())
@@ -136,6 +137,8 @@ public class TemplateDetectionConsumerProcess implements CoproProcessor.Consumer
                                                     .createdOn(createdOn)
                                                     .status(ExecutionStatus.COMPLETED.toString())
                                                     .stage(TEMPLATE_DETECTION)
+                                                    .modelName(templateDetectionResponse.getModelName())
+                                                    .modelVersion(templateDetectionResponse.getModelVersion())
                                                     .message("Template detection completed for group_id " + groupId + " and origin_id " + originId)
                                                     .processedFilePath(inputFilePath)
                                                     .build()

@@ -15,8 +15,8 @@ public class TemplateDetectionDataItem {
     private List<XenonResult> attributes;
     private Integer imageDPI;
     private Integer imageWidth;
+    private Integer imageHeight;
     private String extractedImageUnit;
-    private List<TemplateDetectionAttributes> attribute;
 
 
 }
