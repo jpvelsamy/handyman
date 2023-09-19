@@ -1,7 +1,7 @@
 package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
@@ -56,8 +56,8 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
             jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
             log.info(aMarker, "<-------Phrase match paper filter Action for {} has been started------->", phraseMatchPaperFilter.getName());
             final String processId = Optional.ofNullable(phraseMatchPaperFilter.getProcessID()).map(String::valueOf).orElse(null);
-            final String insertQuery = "INSERT INTO paper.phrase_match_filtering_result_" + processId + "(origin_id,group_id,paper_no,truth_entity, synonym, is_key_present,status,stage,message, created_on,root_pipeline_id) " +
-                    " VALUES(?,?,?,?,?,?,?,?,?,now(), ?)";
+            final String insertQuery = "INSERT INTO paper.phrase_match_filtering_result_" + processId + "(origin_id,group_id,paper_no,truth_entity, synonym, is_key_present,status,stage,message, created_on,root_pipeline_id,model_name,model_version) " +
+                    " VALUES(?,?,?,?,?,?,?,?,?,now(), ?, ?,?)";
             final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.paper-filtering-phrase-match.url")).map(s -> Arrays.stream(s.split(",")).map(url -> {
                 try {
                     return new URL(url);
@@ -118,13 +118,9 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
             List<PhraseMatchOutputTable> parentObj = new ArrayList<>();
             String originId = entity.getOriginId();
             String groupId = entity.getGroupId();
-            String pipelineId = String.valueOf(entity.getRootPipelineId());
-            String processId = String.valueOf(entity.getProcessId());
             String paperNo = String.valueOf(entity.getPaperNo());
             Long actionId = action.getActionId();
             ObjectMapper objectMapper = new ObjectMapper();
-
-
 
             //payload
             PharseMatchData data = new PharseMatchData();
@@ -134,7 +130,13 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
             data.setOriginId(originId);
             data.setPaperNo(paperNo);
             data.setGroupId(groupId);
+            data.setPageContent(entity.getPageContent());
 
+
+            Map<String,List<String>> keysToFilterObject = objectMapper.readValue(entity.getTruthPlaceholder(), new TypeReference<Map<String, List<String>>>() {
+            });
+
+            data.setKeysToFilter(keysToFilterObject);
             String jsonInputRequest = objectMapper.writeValueAsString(data);
 
             PharseMatchRequest requests = new PharseMatchRequest();
@@ -144,9 +146,7 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
             requestBody.setDatatype("BYTES");
             requestBody.setData(Collections.singletonList(jsonInputRequest));
 
-            //  requestBody.setData(Collections.singletonList(jsonNodeRequest));
-
-            //  requestBody.setData(Collections.singletonList(data));
+            requests.setInputs(Collections.singletonList(requestBody));
 
             TritonInputRequest tritonInputRequest=new TritonInputRequest();
             tritonInputRequest.setInputs(Collections.singletonList(requestBody));
@@ -154,15 +154,15 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
             String jsonRequest = objectMapper.writeValueAsString(requests);
 
             try {
-                String truthPlaceholder = entity.getTruthPlaceholder();
+
 
                 log.info(aMarker, " Input variables id : {}", action.getActionId());
                 Request request = new Request.Builder().url(endpoint)
-                        .post(RequestBody.create(jsonRequest.toString(), MediaTypeJSON)).build();
+                        .post(RequestBody.create(jsonRequest, MediaTypeJSON)).build();
 
                 if (log.isInfoEnabled()) {
                     log.info(aMarker, "Input variables id : {}", actionId);
-                    log.info(aMarker, "Request has been built with the parameters\nURI: {}, with truthPlaceHolder {}, originId {}, groupId {}, paperNo {}", endpoint, truthPlaceholder, originId, groupId, paperNo);
+                    log.info(aMarker, "Request has been built with the parameters\nURI: {}, with truthPlaceHolder {}, originId {}, groupId {}, paperNo {}", endpoint, keysToFilterObject, originId, groupId, paperNo);
                 }
                 coproAPIProcessor(entity, parentObj, request);
             } catch (Exception e) {
@@ -185,22 +185,37 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
 
                 if (response.isSuccessful()) {
                     ObjectMapper objectMapper = new ObjectMapper();
-                    PharseMatchResponse modelResponse = objectMapper.readValue(responseBody, PharseMatchResponse.class);
-                    if (modelResponse.getOutputs() != null && !modelResponse.getOutputs().isEmpty()) {
-                        modelResponse.getOutputs().forEach(o -> {
-                            o.getData().forEach(PharseMatchDataItem -> {
-                                    parentObj.add(
-                                            PhraseMatchOutputTable
-                                                    .builder()
-                                                    .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
-                                                    .groupId(Optional.ofNullable(groupId).map(String::valueOf).orElse(null))
-                                                    .entity(Optional.ofNullable(entity).map(String::valueOf).orElse(null))
-                                                    .paperNo(paperNo)
-                                                    .status("COMPLETED")
-                                                    .stage(actionName)
-                                                    .message("Completed API call zero shot classifier")
-                                                    .rootPipelineId(rootPipelineId)
-                                                    .build());
+                    PharseMatchResponse pharseMatchResponse = objectMapper.readValue(responseBody, PharseMatchResponse.class);
+                    if (pharseMatchResponse.getOutputs() != null && !pharseMatchResponse.getOutputs().isEmpty()) {
+                        pharseMatchResponse.getOutputs().forEach(o -> {
+                            o.getData().forEach(phraseMatchDataItem -> {
+
+                                try {
+                                    List<PharseMatchDataItem> phraseMatchDataItem1=objectMapper.readValue(phraseMatchDataItem, new TypeReference<>() {
+                                    });
+                                    phraseMatchDataItem1.forEach(pharseMatchKeyDataItem -> {
+                                        parentObj.add(
+                                                PhraseMatchOutputTable
+                                                        .builder()
+                                                        .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                                                        .groupId(Optional.ofNullable(groupId).map(String::valueOf).orElse(null))
+                                                        .truthEntity(Optional.ofNullable(pharseMatchKeyDataItem.getTruthEntity()).map(String::valueOf).orElse(null))
+                                                        .entity(Optional.ofNullable(pharseMatchKeyDataItem.getEntity()).map(String::valueOf).orElse(null))
+                                                        .isKeyPresent(Optional.ofNullable(pharseMatchKeyDataItem.getIsKeyPresent()).map(String::valueOf).orElse(null))
+                                                        .modelName(pharseMatchResponse.getModelName())
+                                                        .modelVersion(pharseMatchResponse.getModelNersion())
+                                                        .paperNo(paperNo)
+                                                        .status("COMPLETED")
+                                                        .stage(actionName)
+                                                        .message("Completed API call zero shot classifier")
+                                                        .rootPipelineId(rootPipelineId)
+                                                        .build());
+                                    });
+
+                                } catch (JsonProcessingException e) {
+                                    throw new RuntimeException(e);
+                                }
+
 
                             });
                         });

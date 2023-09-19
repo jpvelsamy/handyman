@@ -1,5 +1,6 @@
 package in.handyman.raven.lib.model.pharseMatch;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import in.handyman.raven.lib.CoproProcessor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,8 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
-    @Data
+@Data
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
@@ -21,7 +23,6 @@ import java.util.List;
         private String truthPlaceholder;
         private String processId;
         private Long rootPipelineId;
-//        private String truthEntity;
 
         @Override
         public List<Object> getRowData() {

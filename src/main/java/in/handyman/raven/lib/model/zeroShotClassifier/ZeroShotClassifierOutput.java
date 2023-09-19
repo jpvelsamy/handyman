@@ -15,7 +15,6 @@ public class ZeroShotClassifierOutput {
     private String name;
     private String datatype;
     private List<Integer> shape;
-    private List<ZeroShotClassifierDataItem> data;
-
+    private List<String> data;
 
 }

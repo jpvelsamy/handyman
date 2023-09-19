@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.Map;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,8 +19,7 @@ public class ZeroShotClassifierData {
         private String originId;
         private String paperNo;
         private String groupId;
-        private ZeroShotClassifierKeyfilter keysToFilter;
+        private Map<String, List<String>> keysToFilter;
         private String pageContent;
-
     }
 

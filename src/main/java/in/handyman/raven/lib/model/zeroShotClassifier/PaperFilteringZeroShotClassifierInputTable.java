@@ -16,7 +16,6 @@ import java.util.List;
     @Builder
     public class PaperFilteringZeroShotClassifierInputTable implements CoproProcessor.Entity {
 
-        public String pipelineId;
         private String originId;
         private Integer paperNo;
         private String groupId;

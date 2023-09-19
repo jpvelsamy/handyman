@@ -44,7 +44,7 @@ class DataExtractionActionTest {
                 .querySet("select a.process_id, a.tenant_id, a.template_id, a.group_id, a.origin_id, a.paper_no, a.processed_file_path as file_path,b.root_pipeline_id,c.template_name")
                 .build();
         ActionExecutionAudit actionExecutionAudit=new ActionExecutionAudit();
-        actionExecutionAudit.getContext().put("copro.data-extraction.url","http://localhost:8300/v2/models/text-extractor-service/versions/1/infer");
+        actionExecutionAudit.getContext().put("copro.data-extraction.url","http://192.168.10.245:8300/v2/models/text-extractor-service/versions/1/infer");
         actionExecutionAudit.setProcessId(138980079308730208L);
         actionExecutionAudit.getContext().putAll(Map.ofEntries(Map.entry("read.batch.size","5"),
                 Map.entry("okhttp.client.timeout","20"),

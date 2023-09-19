@@ -12,13 +12,11 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class ZeroShotClassifierDataItem {
-    private Long rootPipelineId;
-    private String process;
-    private String inputFilePath;
-    private Long actionId;
-    private String page_content;
-    private List <String>Entity_confidence_score;
-    private List<ZeroShotClassifierDataEntityConfidenceScore>entityConfidenceScores;
-
+    private String originId;
+    private String groupId;
+    private String isKeyPresent;
+    private Integer paperNo;
+    private String truthEntity;
+    private String entity;
 
 }

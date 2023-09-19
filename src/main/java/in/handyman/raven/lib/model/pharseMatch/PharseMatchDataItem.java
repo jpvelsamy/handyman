@@ -13,6 +13,7 @@ import java.util.List;
 public class PharseMatchDataItem {
         private String originId;
         private String groupId;
+        private String isKeyPresent;
         private Integer paperNo;
         private String truthEntity;
         private String entity;

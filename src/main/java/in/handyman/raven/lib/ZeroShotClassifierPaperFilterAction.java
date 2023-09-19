@@ -1,6 +1,7 @@
 package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -127,34 +128,35 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
 
             String originId = entity.getOriginId();
             String groupId = entity.getGroupId();
-            String pipelineId = String.valueOf(entity.pipelineId);
-            String processId = String.valueOf(entity.getProcessId());
             String paperNo = String.valueOf(entity.getPaperNo());
             Long actionId = action.getActionId();
             ObjectMapper objectMapper = new ObjectMapper();
-
+            String entityPageContent = entity.getPageContent();
+            String entityProcessId = entity.getProcessId();
 
             //payload
 
             ZeroShotClassifierData data = new ZeroShotClassifierData();
             data.setRootPipelineId("1");
             data.setActionId(actionId);
-            data.setProcess(entity.getProcessId());
+            data.setProcess(entityProcessId);
             data.setOriginId(originId);
             data.setPaperNo(paperNo);
             data.setGroupId(groupId);
+
+            data.setPageContent(entityPageContent);
+
+            Map<String,List<String>> keysToFilterObject = objectMapper.readValue(entity.getTruthPlaceholder(), new TypeReference<Map<String, List<String>>>() {
+            });
+
+            data.setKeysToFilter(keysToFilterObject);
             String jsonInputRequest = objectMapper.writeValueAsString(data);
 
-            ZeroShotClassifierRequest requests = new ZeroShotClassifierRequest();
             TritonRequest requestBody = new TritonRequest();
             requestBody.setName("ZSC START");
             requestBody.setShape(List.of(1, 1));
             requestBody.setDatatype("BYTES");
             requestBody.setData(Collections.singletonList(jsonInputRequest));
-
-            // requestBody.setData(Collections.singletonList(jsonNodeRequest));
-
-            //   requestBody.setData(Collections.singletonList(data));
 
             TritonInputRequest tritonInputRequest=new TritonInputRequest();
             tritonInputRequest.setInputs(Collections.singletonList(requestBody));
@@ -163,7 +165,6 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
             String jsonRequest = objectMapper.writeValueAsString(tritonInputRequest);
 
             try {
-                String truthPlaceholder = entity.getTruthPlaceholder();
 
                 Request request = new Request.Builder().url(endpoint)
                         .post(RequestBody.create(jsonRequest, MediaTypeJSON)).build();
@@ -180,7 +181,7 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
             return parentObj;
         }
 
-        private <EntityConfidenceScore> void coproAPIProcessor(PaperFilteringZeroShotClassifierInputTable entity, List<PaperFilteringZeroShotClassifierOutputTable> parentObj, Request request) throws IOException {
+        private void coproAPIProcessor(PaperFilteringZeroShotClassifierInputTable entity, List<PaperFilteringZeroShotClassifierOutputTable> parentObj, Request request) throws IOException {
             String originId = entity.getOriginId();
             String groupId = entity.getGroupId();
 
@@ -194,8 +195,8 @@ public class ZeroShotClassifierPaperFilterAction implements IActionExecution {
                     ZeroShotClassifierModelResponse modelResponse = objectMapper.readValue(responseBody, ZeroShotClassifierModelResponse.class);
                     if (modelResponse.getOutputs() != null && !modelResponse.getOutputs().isEmpty()) {
                         modelResponse.getOutputs().forEach(o -> {
-                            o.getData().forEach(ZeroShotClassifierDataItem -> {
-                                 ZeroShotClassifierDataItem.getEntity_confidence_score().forEach(ZeroShotClassifierDataEntityConfidenceScore -> {
+                            o.getData().forEach(zeroShotClassifierDataItem -> {
+                                 zeroShotClassifierDataItem.getEntity_confidence_score().forEach(ZeroShotClassifierDataEntityConfidenceScore -> {
                                      in.handyman.raven.lib.model.zeroShotClassifier.ZeroShotClassifierDataEntityConfidenceScore score = new ZeroShotClassifierDataEntityConfidenceScore();
                                      String truthEntity = score.getTruthEntity();
                                      String key = score.getKey();

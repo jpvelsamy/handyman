@@ -14,5 +14,5 @@ public class PharseMatchOutput {
     private String name;
     private String datatype;
     private List<Integer> shape;
-    private List<PharseMatchDataItem> data;
+    private List<String> data;
 }
