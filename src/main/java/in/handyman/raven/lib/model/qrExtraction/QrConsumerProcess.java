@@ -27,7 +27,6 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static in.handyman.raven.lib.HwDetectionAction.httpClientTimeout;
 
 public class QrConsumerProcess implements CoproProcessor.ConsumerProcess<QrInputEntity, QrOutputEntity> {
 
@@ -38,11 +37,11 @@ public class QrConsumerProcess implements CoproProcessor.ConsumerProcess<QrInput
             .parse("application/json; charset=utf-8");
 
     public final ActionExecutionAudit action;
-
+    public static String httpClientTimeout = new String();
     final OkHttpClient httpclient = new OkHttpClient.Builder()
-            .connectTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
-            .writeTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
-            .readTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
+            .connectTimeout(10, TimeUnit.MINUTES)
+            .writeTimeout(10, TimeUnit.MINUTES)
+            .readTimeout(10, TimeUnit.MINUTES)
             .build();
 
 
@@ -50,7 +49,7 @@ public class QrConsumerProcess implements CoproProcessor.ConsumerProcess<QrInput
         this.log = log;
         this.aMarker = aMarker;
         this.action = action;
-
+        this.httpClientTimeout = action.getContext().get("okhttp.client.timeout");
     }
 
     //7. overwrite the method process in coproprocessor, write copro api logic inside this method
@@ -61,36 +60,32 @@ public class QrConsumerProcess implements CoproProcessor.ConsumerProcess<QrInput
 
         String filePath = entity.getFilePath();
         final String qrExtractionProcess="QR_EXTRACTION";
-        String pipelineId = String.valueOf(entity.getRootPipelineId());
+        String rootPipelineId = String.valueOf(entity.getRootPipelineId());
         Long actionId = action.getActionId();
-        String InputFilePath = String.valueOf(entity.getFilePath());
+
+
         ObjectMapper objectMapper = new ObjectMapper();
 
         //payload
         QrExtractionData QrExtractiondata = new QrExtractionData();
-        QrExtractiondata.setRootPipelineId(String.valueOf(entity.getRootPipelineId()));
-        QrExtractiondata.setProcess("QR");
-        QrExtractiondata.setInputFilePath(entity.getFilePath());
-        QrExtractiondata.setActionId(action.getActionId());
+        QrExtractiondata.setRootPipelineId(rootPipelineId);
+        QrExtractiondata.setProcess(qrExtractionProcess);
+        QrExtractiondata.setInputFilePath(filePath);
+        QrExtractiondata.setActionId(actionId);
         String jsonInputRequest = objectMapper.writeValueAsString(QrExtractiondata);
 
 
-        QrExtractionRequest requests = new QrExtractionRequest();
         TritonRequest requestBody = new TritonRequest();
         requestBody.setName("QR START");
         requestBody.setShape(List.of(1, 1));
         requestBody.setDatatype("BYTES");
         requestBody.setData(Collections.singletonList(jsonInputRequest));
 
-        // requestBody.setData(Collections.singletonList(jsonNodeRequest));
-
-
-        //   requestBody.setData(Collections.singletonList(QrExtractiondata));
 
         TritonInputRequest tritonInputRequest=new TritonInputRequest();
         tritonInputRequest.setInputs(Collections.singletonList(requestBody));
 
-        String jsonRequest = objectMapper.writeValueAsString(QrExtractiondata);
+        String jsonRequest = objectMapper.writeValueAsString(tritonInputRequest);
 
 
         if (log.isInfoEnabled()) {
@@ -111,13 +106,12 @@ public class QrConsumerProcess implements CoproProcessor.ConsumerProcess<QrInput
             if (response.isSuccessful()) {
                 String responseBody = Objects.requireNonNull(response.body()).string();
                 QrExtractionResponse modelResponse = objectMapper.readValue(responseBody, QrExtractionResponse.class);
-
                 if (modelResponse.getOutputs() != null && !modelResponse.getOutputs().isEmpty()) {
                     modelResponse.getOutputs().forEach(o -> {
                         o.getData().forEach(PaperItemizerDataItem -> {
                             List<QrReader> qrLineItems = null;
                             try {
-                                qrLineItems = mapper.readValue(responseBody, new TypeReference<>() {
+                                qrLineItems = mapper.readValue(PaperItemizerDataItem, new TypeReference<>() {
                                 });
                             } catch (JsonProcessingException e) {
                                 throw new RuntimeException(e);
@@ -141,6 +135,8 @@ public class QrConsumerProcess implements CoproProcessor.ConsumerProcess<QrInput
                                             .status("COMPLETED")
                                             .stage("QR_EXTRACTION")
                                             .message("qr extraction completed")
+                                            .modelName(modelResponse.getModelName())
+                                            .modelVersion(modelResponse.getModelVersion())
                                             .build());
                                 });
                             }

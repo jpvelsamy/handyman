@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class QrExtractionBoundingBox {
-    private int topLeftX;
-    private int topLeftY;
-    private int bottomRightX;
-    private int bottomRightY;
+    private Integer topLeftX;
+    private Integer topLeftY;
+    private Integer bottomRightX;
+    private Integer bottomRightY;
 }

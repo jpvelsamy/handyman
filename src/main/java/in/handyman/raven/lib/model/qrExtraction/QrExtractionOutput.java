@@ -14,5 +14,5 @@ public class QrExtractionOutput {
         private String name;
         private String datatype;
         private List<Integer> shape;
-        private List<QrExtractionDataItem> data;
+        private List<String> data;
 }

@@ -46,6 +46,7 @@ class HwDetectionActionTest {
         action.getContext().put("read.batch.size", "1");
         action.getContext().put("paper.classification.consumer.API.count", "1");
         action.getContext().put("write.batch.size", "1");
+        action.getContext().put("okhttp.client.timeout", "10");
 
         HwDetectionAction hwDetectionAction=new HwDetectionAction(action,log,hwDetection);
         hwDetectionAction.execute();

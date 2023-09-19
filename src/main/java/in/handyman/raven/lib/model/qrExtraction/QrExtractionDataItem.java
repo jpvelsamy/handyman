@@ -1,5 +1,6 @@
 package in.handyman.raven.lib.model.qrExtraction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,10 +16,11 @@ public class QrExtractionDataItem {
 
         private String value;
         private String type;
-        private String confidenceScore;
+        private Double confidenceScore;
         private QrExtractionBoundingBox boundingBox;
-        private int angle;
-        private String decode_type;
+        private Integer angle;
+        @JsonProperty("decode_type")
+        private String decodeType;
 
 }
 

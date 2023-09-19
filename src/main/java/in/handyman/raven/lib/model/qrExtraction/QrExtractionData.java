@@ -14,5 +14,5 @@ public class QrExtractionData {
     private Long actionId;
     private String process;
     private String inputFilePath;
-    private String outputDir;
+
 }
