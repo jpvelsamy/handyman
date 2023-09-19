@@ -12,9 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class NerAdapterDataItem {
-    private List<String> prediction;
-    private List<NerAdapterPrediction> NerAdapterprediction;
-
+    private List<NerAdapterPrediction> prediction;
 
 }
 

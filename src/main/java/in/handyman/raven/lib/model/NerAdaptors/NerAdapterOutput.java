@@ -16,7 +16,7 @@ public class NerAdapterOutput {
         private String name;
         private String datatype;
         private List<Integer> shape;
-        private List<NerAdapterDataItem> data;
+        private List<String> data;
     }
 
 

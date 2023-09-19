@@ -19,15 +19,4 @@ public class TritonRequest {
         private String datatype;
         private List<Object> data;
 
-        @Override
-        public String toString() {
-                return  "{" +
-                        "\"name\":\"" + name + "\"," +
-                        "\"shape\":" + shape + "," +
-                        "\"datatype\":\"" + datatype + "\"," +
-                        "\"data\":" + data +
-                        '}';
-
-        }
-
 }

@@ -6,19 +6,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TrinityModelResultLineItem {
+public class TrinityModelQueryResult {
 
-        private List<TrinityModelResult> attributes;
-        private double imageDPI;
-        private double imageWidth;
-        private double imageHeight;
-        private String extractedImageUnit;
-    }
+    private String filePath;
+    private String question;
+    private String paperType;
 
-
+}

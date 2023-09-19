@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 public class NerAdapterPrediction {
 
     private String inputName;
-    private int predictionScore;
+    private Long predictionScore;
     private String predictionTag;
-    private String predictedLabel;
+    private boolean predictedLabel;
 
 }

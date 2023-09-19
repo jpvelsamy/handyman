@@ -1,5 +1,6 @@
 package in.handyman.raven.lib.model.trinityModel;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import in.handyman.raven.lib.model.autoRotation.AutoRotationOutput;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,8 +14,11 @@ import java.util.List;
 @Builder
 public class TrinityModelResponse {
 
-        private String model_name;
-        private String model_version;
+        @JsonProperty("model_name")
+        private String modelName;
+
+        @JsonProperty("model_version")
+        private String modelVersion;
         private List<TrinityModelOutput> outputs;
 
 

@@ -17,6 +17,7 @@ public class TemplateDetectionDataItem {
     private Integer imageWidth;
     private Integer imageHeight;
     private String extractedImageUnit;
+    private List<TemplateDetectionAttributes> attribute;
 
 
 }

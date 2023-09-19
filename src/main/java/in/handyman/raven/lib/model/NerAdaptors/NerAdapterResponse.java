@@ -1,5 +1,6 @@
 package in.handyman.raven.lib.model.NerAdaptors;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import in.handyman.raven.lib.model.hwDectection.HwDetectionOutput;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,8 +13,10 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class NerAdapterResponse {
-        private String model_name;
-        private String model_version;
+        @JsonProperty("model_name")
+        private String modelName;
+        @JsonProperty("model_version")
+        private String modelVersion;
         private List<NerAdapterOutput> outputs;
     }
 

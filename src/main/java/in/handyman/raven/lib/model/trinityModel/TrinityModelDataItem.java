@@ -6,15 +6,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TrinityModelOutput {
-
-        private String name;
-        private String datatype;
-        private List<Integer> shape;
-        private List<String> data;
+public class TrinityModelDataItem {
+    private List<TrinityModelDataLineItem> attributes;
+    private Integer imageDPI;
+    private Integer imageWidth;
+    private Integer imageHeight;
+    private String extractedImageUnit;
 
 }
