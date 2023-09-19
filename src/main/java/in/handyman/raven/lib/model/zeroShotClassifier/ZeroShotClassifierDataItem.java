@@ -1,5 +1,6 @@
 package in.handyman.raven.lib.model.zeroShotClassifier;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,9 +15,10 @@ import java.util.List;
 public class ZeroShotClassifierDataItem {
     private String originId;
     private String groupId;
-    private String isKeyPresent;
     private Integer paperNo;
-    private String truthEntity;
-    private String entity;
+    @JsonProperty("page_content")
+    private String pageContent;
+    @JsonProperty("entity_confidence_score")
+    private List<ZeroShotClassifierDataEntityConfidenceScore> entityConfidenceScore;
 
 }
