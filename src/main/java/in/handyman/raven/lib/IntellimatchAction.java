@@ -213,6 +213,8 @@ public class IntellimatchAction implements IActionExecution {
                                             status("completed").
                                             stage("control data").
                                             message("data insertion is completed").
+                                            modelName(Response.getModelName()).
+                                            modelVersion(Response.getModelVersion()).
                                             build()
                                     );
                                 });
