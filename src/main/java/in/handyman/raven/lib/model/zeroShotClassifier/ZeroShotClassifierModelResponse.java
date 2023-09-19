@@ -13,10 +13,12 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class ZeroShotClassifierModelResponse {
-        @JsonProperty("model_name")
-        private String modelName;
-        @JsonProperty("model_version")
-        private String modelNersion;
+    @JsonProperty("model_name")
+    private String modelName;
+    @JsonProperty("model_version")
+    private String modelVersion;
         private List<ZeroShotClassifierOutput> outputs;
+
+
 }
 

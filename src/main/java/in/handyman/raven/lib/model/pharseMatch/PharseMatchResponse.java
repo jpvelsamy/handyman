@@ -7,14 +7,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class PharseMatchResponse {
-        @JsonProperty("model_name")
-        private String modelName;
-        @JsonProperty("model_version")
-        private String modelNersion;
-        private List<PharseMatchOutput> outputs;
+    @JsonProperty("model_name")
+    private String modelName;
+    @JsonProperty("model_version")
+    private String modelNersion;
+    private List<PharseMatchOutput> outputs;
 }
