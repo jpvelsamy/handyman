@@ -15,9 +15,11 @@ public class QrExtractionActionTest {
     void tritonServer() throws Exception {
 
         final QrExtraction build = QrExtraction.builder()
+
                 .condition(true)
                 .name("qr-extraction")
                 .resourceConn("intics_agadia_db_conn")
+                .processId("")
                 .outputTable("qr_extraction.qr_extraction_result_${init_process_id.process_id}")
                 .querySet("\t\t\t\tSELECT asset.file_path,sot.origin_id,asset.file_id,sot.paper_no,sot.group_id,'${gen_id.root_pipeline_id}' as root_pipeline_id\n")
                 .build();

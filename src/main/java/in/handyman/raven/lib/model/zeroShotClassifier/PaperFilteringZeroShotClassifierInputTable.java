@@ -23,6 +23,7 @@ import java.util.List;
         private String truthPlaceholder;
         private String processId;
         private Long rootPipelineId;
+        private String keyToFilter;
 
         @Override
         public List<Object> getRowData() {

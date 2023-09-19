@@ -203,7 +203,7 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
                                                         .entity(Optional.ofNullable(pharseMatchKeyDataItem.getEntity()).map(String::valueOf).orElse(null))
                                                         .isKeyPresent(Optional.ofNullable(pharseMatchKeyDataItem.getIsKeyPresent()).map(String::valueOf).orElse(null))
                                                         .modelName(pharseMatchResponse.getModelName())
-                                                        .modelVersion(pharseMatchResponse.getModelNersion())
+                                                        .modelVersion(pharseMatchResponse.getModelVersion())
                                                         .paperNo(paperNo)
                                                         .status("COMPLETED")
                                                         .stage(actionName)

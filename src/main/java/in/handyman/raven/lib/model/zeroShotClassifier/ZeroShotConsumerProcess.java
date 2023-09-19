@@ -1,11 +1,13 @@
 package in.handyman.raven.lib.model.zeroShotClassifier;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.CoproProcessor;
+import in.handyman.raven.lib.model.paperItemizer.PaperItemizerDataItem;
 import in.handyman.raven.lib.model.triton.TritonInputRequest;
 import in.handyman.raven.lib.model.triton.TritonRequest;
 import in.handyman.raven.util.ExceptionUtil;
@@ -49,34 +51,38 @@ import java.util.concurrent.TimeUnit;
 
             String originId = entity.getOriginId();
             String groupId = entity.getGroupId();
-            String pipelineId = String.valueOf(entity.pipelineId);
+            String rootPipelineId = String.valueOf(entity.getRootPipelineId());
             String processId = String.valueOf(entity.getProcessId());
             String paperNo = String.valueOf(entity.getPaperNo());
             Long actionId = action.getActionId();
+            String pageContent = String.valueOf(entity.getPageContent());
+
+
             ObjectMapper objectMapper = new ObjectMapper();
+            Map<String,List<String>> keysToFilterObject = objectMapper.readValue(entity.getTruthPlaceholder(), new TypeReference<Map<String, List<String>>>() {
+            });
 
 
             //payload
 
             ZeroShotClassifierData data = new ZeroShotClassifierData();
-            data.setRootPipelineId("1");
+            data.setRootPipelineId(rootPipelineId);
             data.setActionId(actionId);
             data.setProcess(entity.getProcessId());
             data.setOriginId(originId);
             data.setPaperNo(paperNo);
             data.setGroupId(groupId);
+            data.setPageContent(pageContent);
+            data.setKeysToFilter(keysToFilterObject);
             String jsonInputRequest = objectMapper.writeValueAsString(data);
 
-            ZeroShotClassifierRequest requests = new ZeroShotClassifierRequest();
+
             TritonRequest requestBody = new TritonRequest();
             requestBody.setName("ZSC START");
             requestBody.setShape(List.of(1, 1));
             requestBody.setDatatype("BYTES");
             requestBody.setData(Collections.singletonList(jsonInputRequest));
 
-            // requestBody.setData(Collections.singletonList(jsonNodeRequest));
-
-            //   requestBody.setData(Collections.singletonList(data));
 
             TritonInputRequest tritonInputRequest=new TritonInputRequest();
             tritonInputRequest.setInputs(Collections.singletonList(requestBody));
@@ -117,28 +123,35 @@ import java.util.concurrent.TimeUnit;
                     if (modelResponse.getOutputs() != null && !modelResponse.getOutputs().isEmpty()) {
                         modelResponse.getOutputs().forEach(o -> {
                             o.getData().forEach(ZeroShotClassifierDataItem -> {
-                                ZeroShotClassifierDataItem.getEntity_confidence_score().forEach(ZeroShotClassifierDataEntityConfidenceScore -> {
-                                    ZeroShotClassifierDataEntityConfidenceScore score = new ZeroShotClassifierDataEntityConfidenceScore();
-                                    String truthEntity = score.getTruthEntity();
-                                    String key = score.getKey();
-                                    double scoreValue = score.getScore();
 
-                                    parentObj.add(PaperFilteringZeroShotClassifierOutputTable
-                                            .builder()
-                                            .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
-                                            .groupId(Optional.ofNullable(groupId).map(String::valueOf).orElse(null))
-                                            .truthEntity(Optional.ofNullable(truthEntity).map(String::valueOf).orElse(null))
-                                            .entity(Optional.ofNullable(key).map(String::valueOf).orElse(null))
-                                            .confidenceScore(Optional.of(scoreValue).map(String::valueOf).orElse(null))
-                                            .paperNo(paperNo)
-                                            .status("COMPLETED")
-                                            .stage(actionName)
-                                            .message("Completed API call zero shot classifier")
-                                            .rootPipelineId(rootPipelineId)
-                                            .modelName(modelResponse.getModelName())
-                                            .modelVersion(modelResponse.getModelVersion())
-                                            .build());
-                                });
+                                    try {
+                                                    ZeroShotClassifierDataItem zeroshotclassifierOutputData = objectMapper.readValue(ZeroShotClassifierDataItem, ZeroShotClassifierDataItem.class);
+                                                    zeroshotclassifierOutputData. getEntityConfidenceScore().forEach(score -> {
+                                                    String truthEntity = score.getTruthEntity();
+                                                    String key = score.getKey();
+                                                    double scoreValue = score.getScore();
+
+                                                    parentObj.add(PaperFilteringZeroShotClassifierOutputTable
+                                                            .builder()
+                                                        .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                                                        .groupId(Optional.ofNullable(groupId).map(String::valueOf).orElse(null))
+                                                        .truthEntity(Optional.ofNullable(truthEntity).map(String::valueOf).orElse(null))
+                                                        .entity(Optional.ofNullable(key).map(String::valueOf).orElse(null))
+                                                        .confidenceScore(Optional.of(scoreValue).map(String::valueOf).orElse(null))
+                                                        .paperNo(paperNo)
+                                                        .status("COMPLETED")
+                                                        .stage(actionName)
+                                                        .message("Completed API call zero shot classifier")
+                                                        .rootPipelineId(rootPipelineId)
+                                                        .modelName(modelResponse.getModelName())
+                                                        .modelVersion(modelResponse.getModelVersion())
+                                                        .build());
+                                                });
+                                    } catch (JsonMappingException e) {
+                                        throw new RuntimeException(e);
+                                    } catch (JsonProcessingException e) {
+                                        throw new RuntimeException(e);
+                                    }
                             });
                         });
                     }

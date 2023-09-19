@@ -16,6 +16,6 @@ public class PharseMatchResponse {
     @JsonProperty("model_name")
     private String modelName;
     @JsonProperty("model_version")
-    private String modelNersion;
+    private String modelVersion;
     private List<PharseMatchOutput> outputs;
 }
