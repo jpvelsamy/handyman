@@ -155,7 +155,6 @@ public class ProductResponseAction implements IActionExecution {
     }
 
     @AllArgsConstructor
-    @NoArgsConstructor
     @Data
     @Builder
     public static class ProductResponseOutputTable implements CoproProcessor.Entity {
