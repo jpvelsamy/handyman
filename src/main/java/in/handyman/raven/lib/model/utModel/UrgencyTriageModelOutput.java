@@ -15,5 +15,5 @@ public class UrgencyTriageModelOutput {
     private String name;
     private String datatype;
     private List<Integer> shape;
-    private List<UrgencyTriageModelDataItem> data;
+    private List<String> data;
 }
