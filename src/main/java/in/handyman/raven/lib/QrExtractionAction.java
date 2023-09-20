@@ -78,8 +78,8 @@ public class QrExtractionAction implements IActionExecution {
 
             //5. build insert prepare statement with output table columns
             final String insertQuery = "INSERT INTO " + qrExtraction.getOutputTable() +
-                    "            (origin_id, group_id, paper_no, created_on,   qr_format, qr_format_id, extracted_value,   file_id, b_box, angle, confidence_score, status, stage, message,decode_type)" +
-                    "VALUES(?,?,?,?,  ?,?,? ,?,?,  ?,?,?, ?,?  ,?)";
+                    "            (origin_id, group_id, paper_no, created_on,   qr_format, qr_format_id, extracted_value,   file_id, b_box, angle, confidence_score, status, stage, message,decode_type, model_name, model_version,root_pipeline_id)" +
+                    "VALUES(?,?,?,?,  ?,?,? ,?,?,  ?,?,?, ?,?  ,?, ?,? , ?)";
             final CoproProcessor<QrInputEntity, QrOutputEntity> coproProcessor =
                     new CoproProcessor<>(new LinkedBlockingQueue<>(),
                             QrOutputEntity.class,

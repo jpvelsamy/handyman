@@ -20,7 +20,7 @@ public class QrExtractionActionTest {
                 .name("qr-extraction")
                 .resourceConn("intics_agadia_db_conn")
                 .processId("1234")
-                .outputTable("/data/output")
+                .outputTable("qr_extraction.qr_extraction_result_1234")
                 .querySet("SELECT '/data/output/pdf_to_image/SYNT_166838894_c1/SYNT_166838894_c1_1.jpg' as file_path, 'INT-1' as origin_id, 1 as file_id, 1 as paper_no, 1 as group_id, 1 as root_pipeline_id")
                 .build();
 

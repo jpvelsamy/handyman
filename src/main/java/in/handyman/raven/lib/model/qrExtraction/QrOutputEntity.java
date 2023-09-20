@@ -27,6 +27,7 @@ public class QrOutputEntity implements CoproProcessor.Entity {
     private Integer confidenceScore;
     private Integer angle;
     private String b_box;
+    private Long rootPipelineId;
     private String status;
     private String stage;
     private String message;
@@ -37,7 +38,7 @@ public class QrOutputEntity implements CoproProcessor.Entity {
 
     @Override
     public List<Object> getRowData() {
-        return Stream.of(this.originId, this.groupId, this.paperNo, this.createdOn, this.qrFormat, this.qrFormatId, this.extractedValue, this.fileId, this.b_box, this.angle, this.confidenceScore, this.status, this.stage, this.message,this.decodeType, this.modelName, this.modelVersion).collect(Collectors.toList());
+        return Stream.of(this.originId, this.groupId, this.paperNo, this.createdOn, this.qrFormat, this.qrFormatId, this.extractedValue, this.fileId, this.b_box, this.angle, this.confidenceScore, this.status, this.stage, this.message,this.decodeType, this.modelName, this.modelVersion,this.rootPipelineId).collect(Collectors.toList());
     }
 
 }
