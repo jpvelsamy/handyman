@@ -66,15 +66,15 @@ public class ProductResponseAction implements IActionExecution {
                 }
             }).collect(Collectors.toList())).orElse(Collections.emptyList());
 
-            final CoproProcessor<AlchemyInfoAction.AlchemyInfoInputTable, AlchemyInfoAction.AlchemyInfoOutputTable> coproProcessor =
+            final CoproProcessor<ProductResponseAction.ProductResponseInputTable, ProductResponseAction.ProductResponseOutputTable> coproProcessor =
                     new CoproProcessor<>(new LinkedBlockingQueue<>(),
-                            AlchemyInfoAction.AlchemyInfoOutputTable.class,
-                            AlchemyInfoAction.AlchemyInfoInputTable.class,
+                            ProductResponseAction.ProductResponseOutputTable.class,
+                            ProductResponseAction.ProductResponseInputTable.class,
                             jdbi, log,
-                            new AlchemyInfoAction.AlchemyInfoInputTable(), urls, action);
+                            new ProductResponseAction.ProductResponseInputTable(), urls, action);
             coproProcessor.startProducer(productResponse.getQuerySet(), Integer.valueOf(action.getContext().get("read.batch.size")));
             Thread.sleep(1000);
-            coproProcessor.startConsumer(insertQuery, 1, Integer.valueOf(action.getContext().get("write.batch.size")), new AlchemyInfoAction.AlchemyInfoConsumerProcess(log, aMarker, action));
+            coproProcessor.startConsumer(insertQuery, 1, Integer.valueOf(action.getContext().get("write.batch.size")), new ProductResponseAction.ProductResponseConsumerProcess(log, aMarker, action));
             log.info(aMarker, "Product Response has been completed {}  ", productResponse.getName());
         } catch (Exception t) {
             action.getContext().put(productResponse.getName() + ".isSuccessful", "false");
@@ -117,7 +117,7 @@ public class ProductResponseAction implements IActionExecution {
 
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), "");
 
-            URL url = new URL(endpoint.toString() + "/" + entity.getRootPipelineId() + "/" + entity.getOriginId() + "/?tenantId=" + this.tenantId);
+            URL url = new URL(endpoint.toString() + "/" + entity.getAlchemyRootPipelineId() + "/" + entity.getAlchemyOriginId() + "/?tenantId=" + this.tenantId);
             Request request = new Request.Builder().url(url)
                     .addHeader("accept", "*/*")
                     .addHeader("Authorization", "Bearer " + authToken)
@@ -125,7 +125,7 @@ public class ProductResponseAction implements IActionExecution {
                     .post(requestBody)
                     .build();
 
-            String pipelineOriginId = entity.getOriginId();
+            String pipelineOriginId = entity.getAlchemyOriginId();
             try (Response response = httpclient.newCall(request).execute()) {
                 if (response.isSuccessful()) {
                     log.info("Response Details: {}", response);
@@ -145,8 +145,8 @@ public class ProductResponseAction implements IActionExecution {
     @Data
     @Builder
     public static class ProductResponseInputTable implements CoproProcessor.Entity {
-        private String originId;
-        private Long rootPipelineId;
+        private String alchemyOriginId;
+        private String alchemyRootPipelineId;
 
         @Override
         public List<Object> getRowData() {
@@ -155,7 +155,6 @@ public class ProductResponseAction implements IActionExecution {
     }
 
     @AllArgsConstructor
-    @NoArgsConstructor
     @Data
     @Builder
     public static class ProductResponseOutputTable implements CoproProcessor.Entity {
