@@ -19,16 +19,18 @@ class AlchemyInfoActionTest {
                 .name("alchemy info action")
                 .querySet("SELECT so.tenant_id::bigint, so.origin_id, ampq.root_pipeline_id, so.group_id, at.file_path from info.source_of_origin so join info.asset at on so.file_id = at.file_id\n" +
                         "            join alchemy_migration.alchemy_migration_payload_queue ampq on ampq.origin_id = so.origin_id;")
-                .resourceConn("intics_agadia_db_conn")
-                .token("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJpc3MiOiJJbnRpY3NBSSBBbGNoZW15IiwiZXhwIjoxNjg5MzU1MjA2LCJpYXQiOjE2ODkzMTIwMDYsImVtYWlsIjoiZGVtb0BpbnRpY3MuY29tIn0.0AUSfuHkA1iEGHr0qQ0EYl2zdJci0ZhOFWylE1wdHxM")
+                .resourceConn("intics_zio_db_conn")
+                .token("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJpc3MiOiJJbnRpY3NBSSBBbGNoZW15IiwiZXhwIjoxNjk0ODA4MDEzLCJpYXQiOjE2OTQ3NjQ4MTMsImVtYWlsIjoiYWdhZGlhQGludGljcy5haSJ9.2IQEewH-cQ5TK3L8wKpk_UAXrojAnWqSTi9ORwQJyOU")
                 .build();
         ActionExecutionAudit actionExecutionAudit=new ActionExecutionAudit();
 
         actionExecutionAudit.getContext().put("alchemy.origin.upload.url","http://localhost:8189/alchemy/api/v1/info/origin/upload");
-        actionExecutionAudit.getContext().put("alchemyAuth.token","eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJpc3MiOiJJbnRpY3NBSSBBbGNoZW15IiwiZXhwIjoxNjg5MzU1MjA2LCJpYXQiOjE2ODkzMTIwMDYsImVtYWlsIjoiZGVtb0BpbnRpY3MuY29tIn0.0AUSfuHkA1iEGHr0qQ0EYl2zdJci0ZhOFWylE1wdHxM");
+        actionExecutionAudit.getContext().put("alchemyAuth.token","eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJpc3MiOiJJbnRpY3NBSSBBbGNoZW15IiwiZXhwIjoxNjk0ODA4MDEzLCJpYXQiOjE2OTQ3NjQ4MTMsImVtYWlsIjoiYWdhZGlhQGludGljcy5haSJ9.2IQEewH-cQ5TK3L8wKpk_UAXrojAnWqSTi9ORwQJyOU");
         actionExecutionAudit.getContext().put("alchemyAuth.tenantId","1");
         actionExecutionAudit.getContext().put("gen_group_id.group_id","1");
         actionExecutionAudit.getContext().put("read.batch.size","1");
+        actionExecutionAudit.getContext().put("write.batch.size","1");
+
 
         AlchemyInfoAction alchemyInfoAction = new AlchemyInfoAction(actionExecutionAudit, log, alchemyInfo);
         alchemyInfoAction.execute();
