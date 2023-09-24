@@ -137,6 +137,8 @@ action:
     |productResponse
     |tableExtraction
     |mailServer
+    |alchemyKvpResponse
+    |alchemyTableResponse
     );
 
 
@@ -945,7 +947,26 @@ mailServer:
 		querySet=STRING
 	'}' ('on-condition' condition=expression)* ;
 
+alchemyKvpResponse:
+    'alchemyKvpResponse' 'as' name=STRING
+    'result-table' resultTable=STRING
+    'processId' processId=STRING
+    'resource-conn' resourceConn=STRING
+    'using' '{'
+    		querySet=STRING
+    	'}' ('on-condition' condition=expression)* ;
+
+alchemyTableResponse:
+    'alchemyTableResponse' 'as' name=STRING
+    'result-table' resultTable=STRING
+    'processId' processId=STRING
+    'resource-conn' resourceConn=STRING
+    'using' '{'
+    		querySet=STRING
+    	'}' ('on-condition' condition=expression)* ;
+
 //rules
+
 resource : STRING;
 fragment DIGIT : [0-9];
 fragment NON_Z_DIGIT : [1-9];
