@@ -1,6 +1,8 @@
 package in.handyman.raven.lib.model.TextExtraction;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import in.handyman.raven.exception.HandymanException;
@@ -10,6 +12,8 @@ import in.handyman.raven.lib.model.triton.TritonInputRequest;
 import in.handyman.raven.lib.model.triton.TritonRequest;
 import in.handyman.raven.util.ExceptionUtil;
 import okhttp3.*;
+import org.apache.commons.text.StringEscapeUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -31,10 +35,11 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
 
     public final ActionExecutionAudit action;
     final OkHttpClient httpclient = new OkHttpClient.Builder()
-            .connectTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
-            .writeTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
-            .readTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
+            .connectTimeout(10, TimeUnit.MINUTES)
+            .writeTimeout(10, TimeUnit.MINUTES)
+            .readTimeout(10, TimeUnit.MINUTES)
             .build();
+
     public DataExtractionConsumerProcess(final Logger log, final Marker aMarker, ActionExecutionAudit action) {
         this.log = log;
         this.aMarker = aMarker;
@@ -45,12 +50,11 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
     @Override
     public List<DataExtractionOutputTable> process(URL endpoint, DataExtractionInputTable entity) throws JsonProcessingException {
         List<DataExtractionOutputTable> parentObj = new ArrayList<>();
-        final ObjectNode objectNode = mapper.createObjectNode();
+
         String inputFilePath = entity.getFilePath();
-        final String DATA_EXTRACTION_PROCESS="DATA_EXTRACTION";
-        Long rootpipelineId=entity.getRootPipelineId();
-        Long actionId=action.getActionId();
-        String process = String.valueOf(entity.process);
+        Long rootpipelineId = entity.getRootPipelineId();
+        Long actionId = action.getActionId();
+        String process = "TEXT_EXTRACTOR";
         String filePath = String.valueOf(entity.getFilePath());
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -64,26 +68,21 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
         String jsonInputRequest = objectMapper.writeValueAsString(DataExtractiondata);
 
 
-
-        DataExtractionRequest requests = new  DataExtractionRequest();
         TritonRequest requestBody = new TritonRequest();
         requestBody.setName("TEXT EXTRACTOR START");
         requestBody.setShape(List.of(1, 1));
         requestBody.setDatatype("BYTES");
         requestBody.setData(Collections.singletonList(jsonInputRequest));
 
-        // requestBody.setData(Collections.singletonList(jsonNodeRequest));
 
-        //  requestBody.setData(Collections.singletonList(DataExtractiondata));
-
-        TritonInputRequest tritonInputRequest=new TritonInputRequest();
+        TritonInputRequest tritonInputRequest = new TritonInputRequest();
         tritonInputRequest.setInputs(Collections.singletonList(requestBody));
 
-        String jsonRequest = objectMapper.writeValueAsString(requests);
+        String jsonRequest = objectMapper.writeValueAsString(tritonInputRequest);
 
-        Request request = new Request.Builder().url(endpoint).post(RequestBody.create(jsonRequest.toString(), MediaTypeJSON)).build();
+        Request request = new Request.Builder().url(endpoint).post(RequestBody.create(jsonRequest, MediaTypeJSON)).build();
 
-        if(log.isInfoEnabled()) {
+        if (log.isInfoEnabled()) {
             log.info(aMarker, "Request has been build with the parameters \n URI : {}, with inputFilePath {} ", endpoint, inputFilePath);
         }
 
@@ -92,41 +91,40 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
 
         try (Response response = httpclient.newCall(request).execute()) {
             String responseBody = Objects.requireNonNull(response.body()).string();
+
             if (response.isSuccessful()) {
                 ObjectMapper objectMappers = new ObjectMapper();
                 DataExtractionResponse modelResponse = objectMappers.readValue(responseBody, DataExtractionResponse.class);
                 if (modelResponse.getOutputs() != null && !modelResponse.getOutputs().isEmpty()) {
                     modelResponse.getOutputs().forEach(o -> {
-                        o.getData().forEach(DataExtractionDataItem -> {
+                        JSONArray jsonArrayObj = new JSONArray(o.getData());
+                        String pageContent = jsonArrayObj.getString(0);
+                        String pageCont = extractPageContent(pageContent);
+                        String dataExtractionDataItem1 = StringEscapeUtils.escapeJava(pageCont);
+                        System.out.println(dataExtractionDataItem1);
+                        parentObj.add(DataExtractionOutputTable.builder()
+                                .filePath(new File(entity.getFilePath()).getAbsolutePath())
+                                .pageContent(dataExtractionDataItem1)
+                                .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                                .groupId(groupId)
+                                .paperNo(entity.getPaperNo())
+                                .status("COMPLETED")
+                                .stage("DATA_EXTRACTION")
+                                .message("Data extraction macro completed")
+                                .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                                .tenantId(entity.getTenantId())
+                                .templateId(entity.getTemplateId())
+                                .processId(entity.getProcessId())
+                                .templateName(entity.getTemplateName())
+                                .rootPipelineId(entity.getRootPipelineId())
+                                .modelName(modelResponse.getModelName())
+                                .modelVersion(modelResponse.getModelVersion())
+                                .build());
 
-                            JSONObject parentResponseObject = new JSONObject(responseBody);
-                            final String contentString= Optional.ofNullable(parentResponseObject.get("pageContent")).map(String::valueOf).orElse(null);
-                            final String flag=(!Objects.isNull(contentString) && contentString.length() > 5 ) ? "no" : "yes";
 
-                            parentObj.add(DataExtractionOutputTable.builder()
-                                    .filePath(new File(entity.getFilePath()).getAbsolutePath())
-                                    .extractedText(contentString)
-                                    .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
-                                    .groupId(groupId)
-                                    .fileName(Optional.ofNullable(parentResponseObject.get("fileName")).map(String::valueOf).orElse(null))
-                                    .paperNo(entity.getPaperNo())
-                                    .status("COMPLETED")
-                                    .stage("DATA_EXTRACTION")
-                                    .message("Data extraction macro completed")
-                                    .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                                    .tenantId(entity.getTenantId())
-                                    .templateId(entity.getTemplateId())
-                                    .processId(entity.getProcessId())
-                                    .isBlankPage(flag)
-                                    .templateName(entity.getTemplateName())
-                                    .rootPipelineId(entity.getRootPipelineId())
-                                    .modelName(modelResponse.getModelName())
-                                    .modelVersion(modelResponse.getModelVersion())
-                                    .build());
-                        });
                     });
                 }
-            }else{
+            } else {
                 parentObj.add(DataExtractionOutputTable.builder()
                         .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                         .groupId(groupId)
@@ -161,10 +159,29 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
 
             log.error(aMarker, "The Exception occurred ", e);
             HandymanException handymanException = new HandymanException(e);
-            HandymanException.insertException("test extraction consumer failed for batch/group "+ groupId, handymanException, this.action);
+            HandymanException.insertException("test extraction consumer failed for batch/group " + groupId, handymanException, this.action);
 
         }
         return parentObj;
     }
 
+    private static String extractPageContent(String jsonString) {
+        int startIndex = jsonString.indexOf("\"pageContent\":") + "\"pageContent\":".length();
+        int endIndex = jsonString.lastIndexOf("}");
+
+        if (startIndex != -1 && endIndex != -1) {
+            String pageContent = jsonString.substring(startIndex, endIndex).trim();
+            if (pageContent.startsWith("\"")) {
+                pageContent = pageContent.substring(1);
+            }
+            if (pageContent.endsWith("\"")) {
+                pageContent = pageContent.substring(0, pageContent.length() - 1);
+            }
+            return pageContent;
+        } else {
+            return "";
+        }
+    }
+
 }
+

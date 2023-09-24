@@ -14,5 +14,5 @@ public class DataExtractionOutput {
         private String name;
         private String datatype;
         private List<Integer> shape;
-        private List<DataExtractionDataItem> data;
+        private List<String> data;
 }

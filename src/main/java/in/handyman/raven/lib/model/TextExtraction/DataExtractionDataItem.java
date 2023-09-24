@@ -1,5 +1,6 @@
 package in.handyman.raven.lib.model.TextExtraction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,9 +12,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class DataExtractionDataItem {
 
-        private String filePath;
-        private String fileName;
-        private String PageContent;
+
+    private String pageContent;
+
     }
 
 
