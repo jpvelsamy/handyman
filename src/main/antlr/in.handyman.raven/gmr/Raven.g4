@@ -139,6 +139,7 @@ action:
     |mailServer
     |alchemyKvpResponse
     |alchemyTableResponse
+    |productOutboundZipfile
     );
 
 
@@ -965,6 +966,15 @@ alchemyTableResponse:
     		querySet=STRING
     	'}' ('on-condition' condition=expression)* ;
 
+productOutboundZipfile:
+    'productOutboundZipfile' 'as' name=STRING
+    'result-table' resultTable=STRING
+    'outputdirectory' outputDir=STRING
+    'processId' processId=STRING
+    'resource-conn' resourceConn=STRING
+    'using' '{'
+    		querySet=STRING
+    	'}' ('on-condition' condition=expression)* ;
 //rules
 
 resource : STRING;
