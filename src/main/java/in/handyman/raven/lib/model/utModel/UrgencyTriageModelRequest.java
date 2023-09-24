@@ -4,7 +4,7 @@ import in.handyman.raven.lib.model.triton.TritonRequest;
 
 import java.util.List;
 
-public class UregencyTriageModelRequest {
+public class UrgencyTriageModelRequest {
 
     private List<TritonRequest> inputs;
 
