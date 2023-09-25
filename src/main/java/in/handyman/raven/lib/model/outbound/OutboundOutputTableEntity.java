@@ -1,4 +1,4 @@
-package in.handyman.raven.lib.outbound;
+package in.handyman.raven.lib.model.outbound;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-
-public class OutboundInputTableEntity {
+public class OutboundOutputTableEntity {
 
     private String originId;
     private Long rootPipelineId;
@@ -22,6 +21,10 @@ public class OutboundInputTableEntity {
     private String kvpResponse;
     private String tableResponse;
     private Long tenantId;
+    private String zipFilePath;
+    private String status;
+    private String stage;
+    private String message;
     private String fileName;
 
 

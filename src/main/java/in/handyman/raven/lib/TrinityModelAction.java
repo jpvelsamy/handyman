@@ -32,10 +32,10 @@ import java.util.stream.Collectors;
         actionName = "TrinityModel"
 )
 public class TrinityModelAction implements IActionExecution {
-  public static final String COLUMN_LIST = "process_id,file_path,question, predicted_attribution_value,b_box, image_dpi , image_width , image_height , extracted_image_unit , action_id, root_pipeline_id,status,stage,paper_type, score,model_name,model_version";
-  public static final String CREATE_TABLE_COLUMN = "id bigserial not null, file_path text,question text, predicted_attribution_value text , score float8 NULL, b_box json null, image_dpi int8 null, image_width int8 null, image_height int8 null, extracted_image_unit varchar null, action_id bigint, root_pipeline_id bigint,process_id bigint, created_on timestamp not null default now(),status varchar NULL,stage varchar NULL ,paper_type varchar NULL";
-  public static final String CREATE_ERROR_TABLE_COLUMN = "id bigserial not null, file_path text,error_message text,  action_id bigint, root_pipeline_id bigint,process_id bigint, created_on timestamp not null default now() ";
-  private final ActionExecutionAudit action;
+    public static final String COLUMN_LIST = "process_id,file_path,question, predicted_attribution_value,b_box, image_dpi , image_width , image_height , extracted_image_unit , action_id, root_pipeline_id,status,stage,paper_type, score,model_name,model_version";
+    public static final String CREATE_TABLE_COLUMN = "id bigserial not null, file_path text,question text, predicted_attribution_value text , score float8 NULL, b_box json null, image_dpi int8 null, image_width int8 null, image_height int8 null, extracted_image_unit varchar null, action_id bigint, root_pipeline_id bigint,process_id bigint, created_on timestamp not null default now(),status varchar NULL,stage varchar NULL ,paper_type varchar NULL";
+    public static final String CREATE_ERROR_TABLE_COLUMN = "id bigserial not null, file_path text,error_message text,  action_id bigint, root_pipeline_id bigint,process_id bigint, created_on timestamp not null default now() ";
+    private final ActionExecutionAudit action;
 
     private final Logger log;
 
@@ -160,12 +160,12 @@ public class TrinityModelAction implements IActionExecution {
                     ObjectMapper mapper = new ObjectMapper();
                     try {
                         TrinityModelDataItem trinityModelDataItems = mapper.readValue(trinityModelResultLineItem, TrinityModelDataItem.class);
-                      log.info("TrinityModelLineItem size {}", trinityModelDataItems.getAttributes().size());
+                        log.info("TrinityModelLineItem size {}", trinityModelDataItems.getAttributes().size());
 
                         log.info(aMarker, "completed {}", trinityModelDataItems.getAttributes().size());
 
                         jdbi.useTransaction(handle -> {
-                          final PreparedBatch batch = handle.prepareBatch("INSERT INTO macro." + trinityModel.getResponseAs() + " (" + COLUMN_LIST + ") VALUES(" + action.getPipelineId() + ",:filePath,:question,:predictedAttributionValue, :bBoxes::json, :imageDpi, :imageWidth, :imageHeight , :extractedImageUnit, " + action.getActionId() + "," + action.getRootPipelineId() + ",:status,:stage,:paperType, :scores, :modelName, :modelVersion);");
+                            final PreparedBatch batch = handle.prepareBatch("INSERT INTO macro." + trinityModel.getResponseAs() + " (" + COLUMN_LIST + ") VALUES(" + action.getPipelineId() + ",:filePath,:question,:predictedAttributionValue, :bBoxes::json, :imageDpi, :imageWidth, :imageHeight , :extractedImageUnit, " + action.getActionId() + "," + action.getRootPipelineId() + ",:status,:stage,:paperType, :scores, :modelName, :modelVersion);");
 
                             Lists.partition(trinityModelDataItems.getAttributes(), 100).forEach(resultLineItems -> {
                                 log.info(aMarker, "inserting into trinity model_action {}", resultLineItems.size());
@@ -215,7 +215,7 @@ public class TrinityModelAction implements IActionExecution {
         return trinityModel.getCondition();
     }
 
-    public String getHttpClientTimeout(){
+    public String getHttpClientTimeout() {
         return httpClientTimeout;
     }
 

@@ -140,6 +140,8 @@ action:
     |alchemyKvpResponse
     |alchemyTableResponse
     |productOutboundZipfile
+    |mailServer
+    |fileMergerPdf
     );
 
 
@@ -975,6 +977,17 @@ productOutboundZipfile:
     'using' '{'
     		querySet=STRING
     	'}' ('on-condition' condition=expression)* ;
+
+fileMergerPdf:
+    'file-merger-pdf' 'as' name=STRING
+    'result-table' outputTable=STRING
+    'resource-conn' resourceConn=STRING
+    'output-directory' outputDir=STRING
+    'using' '{'
+        		querySet=STRING
+        	'}' ('on-condition' condition=expression)* ;
+
+
 //rules
 
 resource : STRING;

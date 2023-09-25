@@ -5,9 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
-import in.handyman.raven.lib.AutoRotationAction;
 import in.handyman.raven.lib.TrinityModelAction;
-import in.handyman.raven.lib.model.TrinityModel;
 import in.handyman.raven.lib.model.triton.TritonRequest;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
@@ -58,10 +56,19 @@ public class TrinityModelApiCaller {
         String jsonInputRequest = objectMapper.writeValueAsString(trinityModelPayload);
 
         TritonRequest tritonRequest = new TritonRequest();
-        tritonRequest.setShape(List.of(1, 1));
-        tritonRequest.setName("PAPER ITERATOR START");
-        tritonRequest.setDatatype("BYTES");
-        tritonRequest.setData(Collections.singletonList(jsonInputRequest));
+
+        if(Objects.equals(paperType,"Printed")){
+            tritonRequest.setShape(List.of(1, 1));
+            tritonRequest.setName("ERNIE START");
+            tritonRequest.setDatatype("BYTES");
+            tritonRequest.setData(Collections.singletonList(jsonInputRequest));
+        } else if (Objects.equals(paperType,"Handwritten")) {
+            tritonRequest.setShape(List.of(1, 1));
+            tritonRequest.setName("DONUT START");
+            tritonRequest.setDatatype("BYTES");
+            tritonRequest.setData(Collections.singletonList(jsonInputRequest));
+            
+        }
 
 
         TrinityModelRequest trinityModelRequest = new TrinityModelRequest();

@@ -101,7 +101,6 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
                         String pageContent = jsonArrayObj.getString(0);
                         String pageCont = extractPageContent(pageContent);
                         String dataExtractionDataItem1 = StringEscapeUtils.escapeJava(pageCont);
-                        System.out.println(dataExtractionDataItem1);
                         parentObj.add(DataExtractionOutputTable.builder()
                                 .filePath(new File(entity.getFilePath()).getAbsolutePath())
                                 .pageContent(dataExtractionDataItem1)
