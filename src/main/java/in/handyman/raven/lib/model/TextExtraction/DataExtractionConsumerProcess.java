@@ -101,9 +101,13 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
                         String pageContent = jsonArrayObj.getString(0);
                         String pageCont = extractPageContent(pageContent);
                         String dataExtractionDataItem1 = StringEscapeUtils.escapeJava(pageCont);
+
+                        final String flag=(!Objects.isNull(dataExtractionDataItem1) && dataExtractionDataItem1.length() > 5 ) ? "no" : "yes";
+
+
                         parentObj.add(DataExtractionOutputTable.builder()
                                 .filePath(new File(entity.getFilePath()).getAbsolutePath())
-                                .pageContent(dataExtractionDataItem1)
+                                .extractedText(dataExtractionDataItem1)
                                 .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                                 .groupId(groupId)
                                 .paperNo(entity.getPaperNo())
@@ -111,6 +115,7 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
                                 .stage("DATA_EXTRACTION")
                                 .message("Data extraction macro completed")
                                 .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                                .isBlankPage(flag)
                                 .tenantId(entity.getTenantId())
                                 .templateId(entity.getTemplateId())
                                 .processId(entity.getProcessId())

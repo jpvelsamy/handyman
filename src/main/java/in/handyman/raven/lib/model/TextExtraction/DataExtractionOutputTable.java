@@ -35,7 +35,6 @@ public class DataExtractionOutputTable implements CoproProcessor.Entity {
     private String templateName;
     private String modelName;
     private String modelVersion;
-    private String pageContent;
 
 
     @Override
