@@ -925,6 +925,7 @@ productResponse:
     'productResponse' 'as' name=STRING
     'tenantId' tenantId=STRING
     'auth-token' token=STRING
+    'result-table' resultTable=STRING
     'on-resource-conn' resourceConn=STRING
     'using'  '{'
      querySet=STRING
