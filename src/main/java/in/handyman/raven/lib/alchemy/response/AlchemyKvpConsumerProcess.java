@@ -65,7 +65,7 @@ public class AlchemyKvpConsumerProcess implements CoproProcessor.ConsumerProcess
         log.info(aMarker, "Request object  endpoint {} ", endpoint);
 
         Long tenantId = entity.getTenant_id();
-        String endPointFinalUrl = endpoint + "/" + originId + "/kie?tenantId=" + tenantId;
+        String endPointFinalUrl = endpoint + "/" + originId + "/?tenantId=" + tenantId;
 
         Request request = new Request.Builder()
                 .url(endPointFinalUrl)
