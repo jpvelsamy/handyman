@@ -283,7 +283,7 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
         try (FileWriter fileWriter = new FileWriter(filePath)) {
             if (jsonString != null) {
                 fileWriter.write(jsonString);
-                fileWriter.close();
+
             } else {
                 log.info("No json content present in the response  {}", jsonString);
             }
