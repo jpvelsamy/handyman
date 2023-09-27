@@ -1,4 +1,4 @@
-package in.handyman.raven.lib.alchemy.response;
+package in.handyman.raven.lib.model.outbound;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import in.handyman.raven.lib.CoproProcessor;

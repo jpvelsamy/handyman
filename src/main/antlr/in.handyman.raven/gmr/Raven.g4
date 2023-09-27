@@ -143,6 +143,7 @@ action:
     |mailServer
     |fileMergerPdf
     |zipFileCreationOutbound
+    |outboundKvpResponse
     );
 
 
@@ -1000,7 +1001,14 @@ zipFileCreationOutbound:
     		querySet=STRING
     	'}' ('on-condition' condition=expression)* ;
 
-
+outboundKvpResponse:
+    'outboundKvpResponse' 'as' name=STRING
+    'result-table' resultTable=STRING
+    'processId' processId=STRING
+    'resource-conn' resourceConn=STRING
+    'using' '{'
+    		querySet=STRING
+    	'}' ('on-condition' condition=expression)* ;
 //rules
 
 resource : STRING;
