@@ -26,6 +26,7 @@ public class OutboundOutputTableEntity {
     private String stage;
     private String message;
     private String fileName;
+    private String alchemyOriginId;
 
 
 }

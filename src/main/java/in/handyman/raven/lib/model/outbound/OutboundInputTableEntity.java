@@ -23,6 +23,8 @@ public class OutboundInputTableEntity {
     private String tableResponse;
     private Long tenantId;
     private String fileName;
+    private String alchemyOriginId;
+
 
 
 }

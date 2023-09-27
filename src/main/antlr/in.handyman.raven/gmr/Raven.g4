@@ -142,6 +142,7 @@ action:
     |productOutboundZipfile
     |mailServer
     |fileMergerPdf
+    |zipFileCreationOutbound
     );
 
 
@@ -987,6 +988,17 @@ fileMergerPdf:
     'using' '{'
         		querySet=STRING
         	'}' ('on-condition' condition=expression)* ;
+
+
+zipFileCreationOutbound:
+    'outbound-Zipfile' 'as' name=STRING
+    'result-table' resultTable=STRING
+    'outputdirectory' outputDir=STRING
+    'processId' processId=STRING
+    'resource-conn' resourceConn=STRING
+    'using' '{'
+    		querySet=STRING
+    	'}' ('on-condition' condition=expression)* ;
 
 
 //rules
