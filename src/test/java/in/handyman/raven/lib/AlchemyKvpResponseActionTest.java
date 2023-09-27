@@ -36,9 +36,9 @@ class AlchemyKvpResponseActionTest {
         actionExecutionAudit.getContext().put("gen_group_id.group_id","1");
         actionExecutionAudit.getContext().put("alchemyAuth.token","eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJpc3MiOiJJbnRpY3NBSSBBbGNoZW15IiwiZXhwIjoxNjk1NTgxNjA4LCJpYXQiOjE2OTU1Mzg0MDgsImVtYWlsIjoiYWdhZGlhQGludGljcy5haSJ9.rNzD31_3AxBBx966Tb5IhIVp14f-3TKPB8NGT0usD4o");
         actionExecutionAudit.getContext().put("group_id","1");
-       // AlchemyKvpResponseAction alchemyKvpResponseAction= new AlchemyKvpResponseAction(actionExecutionAudit,log,alchemyKvpResponse,100);
+        AlchemyKvpResponseAction alchemyKvpResponseAction= new AlchemyKvpResponseAction(actionExecutionAudit,log,alchemyKvpResponse,100);
 
-        //alchemyKvpResponseAction.execute();
+        alchemyKvpResponseAction.execute();
 
     }
 
