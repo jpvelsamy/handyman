@@ -92,14 +92,17 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
 
     private void kvpZipGeneration(OutboundInputTableEntity outboundInputTableEntity, String sourceOutputFolderPath, List<OutboundOutputTableEntity> outboundOutputTableEntities, Jdbi jdbi) {
         String tenantPathStr = sourceOutputFolderPath + File.separator + outboundInputTableEntity.getTenantId() + File.separator;
+        String sourcePdfName = outboundInputTableEntity.getFileName();
 
-        final String originFolderPath = tenantPathStr + OUTBOUND_FILES + File.separator + outboundInputTableEntity.getOriginId() + File.separator;
-        final String originKvpFolderPath = tenantPathStr + File.separator + OUTBOUND_FILES + File.separator + outboundInputTableEntity.getOriginId() + File.separator + "Kvp" + File.separator;
-        final String originTableFolderPath = tenantPathStr + File.separator + OUTBOUND_FILES + File.separator + outboundInputTableEntity.getOriginId() + File.separator + "Table" + File.separator;
-        final String originZipPath = tenantPathStr + File.separator + "zip-files" + File.separator + outboundInputTableEntity.getOriginId() + File.separator;
+
+        final String originFolderPath = tenantPathStr + OUTBOUND_FILES + File.separator + outboundInputTableEntity.getOriginId() + File.separator + sourcePdfName + File.separator;
+
+        final String originKvpFolderPath = tenantPathStr + File.separator + OUTBOUND_FILES + File.separator + outboundInputTableEntity.getOriginId() +  File.separator + sourcePdfName + File.separator+ "Kvp" + File.separator;
+        final String originTableFolderPath = tenantPathStr + File.separator + OUTBOUND_FILES + File.separator + outboundInputTableEntity.getOriginId() + File.separator + sourcePdfName + File.separator+ "Table" + File.separator;
+        final String originZipPath = tenantPathStr + File.separator + "zip-files" + File.separator + outboundInputTableEntity.getOriginId() + File.separator + sourcePdfName + File.separator;
         String sourceCleanedPdfPath = outboundInputTableEntity.getCleanedPdfPath();
         String sourceOriginPdfPath = outboundInputTableEntity.getOriginPdfPath();
-        String sourcePdfName = outboundInputTableEntity.getFileName();
+
         String sourceJsonString = outboundInputTableEntity.getProductJson();
         String sourceKvpJsonString = outboundInputTableEntity.getKvpResponse();
         String sourceTableJsonString = outboundInputTableEntity.getTableResponse();
