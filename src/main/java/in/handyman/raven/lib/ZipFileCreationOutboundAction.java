@@ -47,6 +47,7 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
     private final Marker aMarker;
 
     private final String OUTBOUND_FILES = "outbound-files";
+
     public ZipFileCreationOutboundAction(final ActionExecutionAudit action, final Logger log,
                                          final Object zipFileCreationOutbound) {
         this.zipFileCreationOutbound = (ZipFileCreationOutbound) zipFileCreationOutbound;
@@ -81,64 +82,71 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
 
         tableInfos.forEach(outboundInputTableEntity -> {
 
-            String tenantPathStr = sourceOutputFolderPath + File.separator + outboundInputTableEntity.getTenantId() + File.separator;
-
-            final String originFolderPath = tenantPathStr + OUTBOUND_FILES + File.separator + outboundInputTableEntity.getOriginId() + File.separator;
-            final String originKvpFolderPath = tenantPathStr + File.separator + OUTBOUND_FILES + File.separator + outboundInputTableEntity.getOriginId() + File.separator + "Kvp" + File.separator;
-            final String originTableFolderPath = tenantPathStr + File.separator + OUTBOUND_FILES + File.separator + outboundInputTableEntity.getOriginId() + File.separator + "Table" + File.separator;
-            final String originZipPath = tenantPathStr + File.separator + "zip-files" + File.separator + outboundInputTableEntity.getOriginId() + File.separator;
-            String sourceCleanedPdfPath = outboundInputTableEntity.getCleanedPdfPath();
-            String sourceOriginPdfPath = outboundInputTableEntity.getOriginPdfPath();
-            String sourcePdfName = outboundInputTableEntity.getFileName();
-            String sourceJsonString = outboundInputTableEntity.getProductJson();
-            String sourceKvpJsonString = outboundInputTableEntity.getKvpResponse();
-            String sourceTableJsonString = outboundInputTableEntity.getTableResponse();
-            String fileNameStr = outboundInputTableEntity.getFileName();
-
-            createFolder(originFolderPath);
-            createFolder(originKvpFolderPath);
-            createFolder(originTableFolderPath);
-            createFolder(originZipPath);
-
-
-            createJsonFile(sourceJsonString, originFolderPath, sourcePdfName + "_product");
-            createJsonFile(sourceKvpJsonString, originKvpFolderPath, sourcePdfName + "_kvp");
-            createJsonFile(sourceTableJsonString, originTableFolderPath, sourcePdfName + "_table");
-            moveFileIntoOrigin(sourceCleanedPdfPath, originFolderPath);
-            moveFileIntoOrigin(sourceOriginPdfPath, originFolderPath);
-            try {
-                String ZipFileNameStr = String.valueOf(outboundInputTableEntity.getRootPipelineId());
-                String outboundZipFilePath = createZipFile(originFolderPath, originZipPath, ZipFileNameStr);
-
-                OutboundOutputTableEntity outboundOutputTableEntity = OutboundOutputTableEntity.builder()
-                        .originId(outboundInputTableEntity.getOriginId())
-                        .groupId(outboundInputTableEntity.getGroupId())
-                        .rootPipelineId(outboundInputTableEntity.getRootPipelineId())
-                        .processId(outboundInputTableEntity.getProcessId())
-                        .cleanedPdfPath(outboundInputTableEntity.getCleanedPdfPath())
-                        .originPdfPath(outboundInputTableEntity.getOriginPdfPath())
-                        .productJson(outboundInputTableEntity.getProductJson())
-                        .kvpResponse(outboundInputTableEntity.getKvpResponse())
-                        .tableResponse(outboundInputTableEntity.getTableResponse())
-                        .tenantId(outboundInputTableEntity.getTenantId())
-                        .zipFilePath(outboundZipFilePath)
-                        .alchemyOriginId(outboundInputTableEntity.getAlchemyOriginId())
-                        .fileName(fileNameStr)
-                        .stage("PRODUCT_OUTBOUND")
-                        .status("COMPLETED")
-                        .message("completed for the outbound zip file creation ")
-                        .build();
-                outboundOutputTableEntities.add(outboundOutputTableEntity);
-
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-            consumerBatch(jdbi, outboundOutputTableEntities);
+            kvpZipGeneration(outboundInputTableEntity, sourceOutputFolderPath, outboundOutputTableEntities, jdbi);
+            //  kvpZipGeneration(outboundInputTableEntity, sourceOutputFolderPath, outboundOutputTableEntities, jdbi);
 
         });
 
 
     }
+
+    private void kvpZipGeneration(OutboundInputTableEntity outboundInputTableEntity, String sourceOutputFolderPath, List<OutboundOutputTableEntity> outboundOutputTableEntities, Jdbi jdbi) {
+        String tenantPathStr = sourceOutputFolderPath + File.separator + outboundInputTableEntity.getTenantId() + File.separator;
+
+        final String originFolderPath = tenantPathStr + OUTBOUND_FILES + File.separator + outboundInputTableEntity.getOriginId() + File.separator;
+        final String originKvpFolderPath = tenantPathStr + File.separator + OUTBOUND_FILES + File.separator + outboundInputTableEntity.getOriginId() + File.separator + "Kvp" + File.separator;
+        final String originTableFolderPath = tenantPathStr + File.separator + OUTBOUND_FILES + File.separator + outboundInputTableEntity.getOriginId() + File.separator + "Table" + File.separator;
+        final String originZipPath = tenantPathStr + File.separator + "zip-files" + File.separator + outboundInputTableEntity.getOriginId() + File.separator;
+        String sourceCleanedPdfPath = outboundInputTableEntity.getCleanedPdfPath();
+        String sourceOriginPdfPath = outboundInputTableEntity.getOriginPdfPath();
+        String sourcePdfName = outboundInputTableEntity.getFileName();
+        String sourceJsonString = outboundInputTableEntity.getProductJson();
+        String sourceKvpJsonString = outboundInputTableEntity.getKvpResponse();
+        String sourceTableJsonString = outboundInputTableEntity.getTableResponse();
+        String fileNameStr = outboundInputTableEntity.getFileName();
+
+        createFolder(originFolderPath);
+        createFolder(originKvpFolderPath);
+        createFolder(originTableFolderPath);
+        createFolder(originZipPath);
+
+
+        createJsonFile(sourceJsonString, originFolderPath, sourcePdfName + "_product");
+        createJsonFile(sourceKvpJsonString, originKvpFolderPath, sourcePdfName + "_kvp");
+        createJsonFile(sourceTableJsonString, originTableFolderPath, sourcePdfName + "_table");
+
+
+        moveFileIntoOrigin(sourceCleanedPdfPath, originFolderPath);
+        moveFileIntoOrigin(sourceOriginPdfPath, originFolderPath);
+        try {
+            String outboundZipFilePath = createZipFile(originFolderPath, originZipPath, sourcePdfName);
+
+            OutboundOutputTableEntity outboundOutputTableEntity = OutboundOutputTableEntity.builder()
+                    .originId(outboundInputTableEntity.getOriginId())
+                    .groupId(outboundInputTableEntity.getGroupId())
+                    .rootPipelineId(outboundInputTableEntity.getRootPipelineId())
+                    .processId(outboundInputTableEntity.getProcessId())
+                    .cleanedPdfPath(outboundInputTableEntity.getCleanedPdfPath())
+                    .originPdfPath(outboundInputTableEntity.getOriginPdfPath())
+                    .productJson(outboundInputTableEntity.getProductJson())
+                    .kvpResponse(outboundInputTableEntity.getKvpResponse())
+                    .tableResponse(outboundInputTableEntity.getTableResponse())
+                    .tenantId(outboundInputTableEntity.getTenantId())
+                    .zipFilePath(outboundZipFilePath)
+                    .alchemyOriginId(outboundInputTableEntity.getAlchemyOriginId())
+                    .fileName(fileNameStr)
+                    .stage("PRODUCT_OUTBOUND")
+                    .status("COMPLETED")
+                    .message("completed for the outbound zip file creation ")
+                    .build();
+            outboundOutputTableEntities.add(outboundOutputTableEntity);
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        consumerBatch(jdbi, outboundOutputTableEntities);
+    }
+
 
     @Override
     public boolean executeIf() throws Exception {
@@ -221,8 +229,6 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
         String zipFileAbsolutePath;
         try {
 
-            if (!Files.exists(Paths.get(inputFolder)))
-                log.info(aMarker, "{} inputFolder Folder not found", inputFolder);
             zipFileAbsolutePath = outputZipPath + File.separator + fileName + ".zip";
             FileOutputStream fos = new FileOutputStream(zipFileAbsolutePath);
             ZipOutputStream zipOut = new ZipOutputStream(fos);
