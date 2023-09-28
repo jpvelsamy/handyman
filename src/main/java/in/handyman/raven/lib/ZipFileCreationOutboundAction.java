@@ -1,5 +1,7 @@
 package in.handyman.raven.lib;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.action.ActionExecution;
@@ -44,6 +46,7 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
 
     private final Marker aMarker;
 
+    private final String OUTBOUND_FILES = "outbound-files";
     public ZipFileCreationOutboundAction(final ActionExecutionAudit action, final Logger log,
                                          final Object zipFileCreationOutbound) {
         this.zipFileCreationOutbound = (ZipFileCreationOutbound) zipFileCreationOutbound;
@@ -79,12 +82,14 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
         tableInfos.forEach(outboundInputTableEntity -> {
 
             String tenantPathStr = sourceOutputFolderPath + File.separator + outboundInputTableEntity.getTenantId() + File.separator;
-            final String originFolderPath = tenantPathStr + "outbound-files" + File.separator + outboundInputTableEntity.getOriginId() + File.separator;
-            final String originKvpFolderPath = tenantPathStr + File.separator + "outbound-files" + File.separator + outboundInputTableEntity.getOriginId() + File.separator + "Kvp" + File.separator;
-            final String originTableFolderPath = tenantPathStr + File.separator + "outbound-files" + File.separator + outboundInputTableEntity.getOriginId() + File.separator + "Table" + File.separator;
+
+            final String originFolderPath = tenantPathStr + OUTBOUND_FILES + File.separator + outboundInputTableEntity.getOriginId() + File.separator;
+            final String originKvpFolderPath = tenantPathStr + File.separator + OUTBOUND_FILES + File.separator + outboundInputTableEntity.getOriginId() + File.separator + "Kvp" + File.separator;
+            final String originTableFolderPath = tenantPathStr + File.separator + OUTBOUND_FILES + File.separator + outboundInputTableEntity.getOriginId() + File.separator + "Table" + File.separator;
             final String originZipPath = tenantPathStr + File.separator + "zip-files" + File.separator + outboundInputTableEntity.getOriginId() + File.separator;
             String sourceCleanedPdfPath = outboundInputTableEntity.getCleanedPdfPath();
             String sourceOriginPdfPath = outboundInputTableEntity.getOriginPdfPath();
+            String sourcePdfName = outboundInputTableEntity.getFileName();
             String sourceJsonString = outboundInputTableEntity.getProductJson();
             String sourceKvpJsonString = outboundInputTableEntity.getKvpResponse();
             String sourceTableJsonString = outboundInputTableEntity.getTableResponse();
@@ -96,9 +101,9 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
             createFolder(originZipPath);
 
 
-            createJsonFile(sourceJsonString, originFolderPath, "productJson");
-            createJsonFile(sourceKvpJsonString, originKvpFolderPath, "kvpJson");
-            createJsonFile(sourceTableJsonString, originTableFolderPath, "TableJson");
+            createJsonFile(sourceJsonString, originFolderPath, sourcePdfName + "_product");
+            createJsonFile(sourceKvpJsonString, originKvpFolderPath, sourcePdfName + "_kvp");
+            createJsonFile(sourceTableJsonString, originTableFolderPath, sourcePdfName + "_table");
             moveFileIntoOrigin(sourceCleanedPdfPath, originFolderPath);
             moveFileIntoOrigin(sourceOriginPdfPath, originFolderPath);
             try {
@@ -282,7 +287,10 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
 
         try (FileWriter fileWriter = new FileWriter(filePath)) {
             if (jsonString != null) {
-                fileWriter.write(jsonString);
+                ObjectMapper objectMapper = new ObjectMapper();
+                ObjectWriter writer = objectMapper.writerWithDefaultPrettyPrinter();
+                String formattedJson = writer.writeValueAsString(objectMapper.readTree(jsonString));
+                fileWriter.write(formattedJson);
 
             } else {
                 log.info("No json content present in the response  {}", jsonString);

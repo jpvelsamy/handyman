@@ -2,34 +2,26 @@ package in.handyman.raven.lib.model.outbound;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
-import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.CoproProcessor;
 import in.handyman.raven.lib.OutboundKvpResponseAction;
 import in.handyman.raven.lib.alchemy.common.AlchemyApiPayload;
-import in.handyman.raven.lib.model.OutboundKvpResponse;
 import in.handyman.raven.util.ExceptionUtil;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.core.argument.Arguments;
-import org.jdbi.v3.core.argument.NullArgument;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Timestamp;
-import java.sql.Types;
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
-public class OutboundKvpConsumerProcess implements CoproProcessor.ConsumerProcess<AlchemyKvpInputEntity,AlchemyKvpOutputEntity> {
+public class OutboundKvpConsumerProcess implements CoproProcessor.ConsumerProcess<AlchemyKvpInputEntity, AlchemyKvpOutputEntity> {
 
     private final Logger log;
     private final Marker aMarker;
@@ -49,7 +41,7 @@ public class OutboundKvpConsumerProcess implements CoproProcessor.ConsumerProces
         this.action = action;
         this.aaction = aaction;
         this.authToken = action.getContext().get("alchemyAuth.token");
-        this.httpclient=new OkHttpClient.Builder()
+        this.httpclient = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.MINUTES)
                 .writeTimeout(10, TimeUnit.MINUTES)
                 .readTimeout(10, TimeUnit.MINUTES)
@@ -125,6 +117,6 @@ public class OutboundKvpConsumerProcess implements CoproProcessor.ConsumerProces
 
         return parentObj;
     }
-            }
+}
 
 

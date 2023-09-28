@@ -69,8 +69,8 @@ public class TableExtractionAction implements IActionExecution {
             log.info(aMarker, "Table Extraction Action output directory {}", outputDir);
             //5. build insert prepare statement with output table columns
             final String insertQuery = "INSERT INTO " + tableExtraction.getResultTable() +
-                    "(origin_id,group_id,tenant_id,template_id,processed_file_path,paper_no, status,stage,message,created_on,process_id,root_pipeline_id) " +
-                    " VALUES(?,?, ?,?, ?,?, ?,?,?,? ,?,  ?)";
+                    "(origin_id,group_id,tenant_id,template_id,processed_file_path,paper_no, status,stage,message,created_on,process_id,root_pipeline_id,table_response) " +
+                    " VALUES(?,?, ?,?, ?,?, ?,?,?,? ,?,  ?, ?)";
             log.info(aMarker, "table extraction Insert query {}", insertQuery);
 
             //3. initiate copro processor and copro urls
@@ -173,6 +173,7 @@ public class TableExtractionAction implements IActionExecution {
                     log.info(aMarker, "coproProcessor consumer process response body {}", responseParse);
                     JSONObject parentResponse = new JSONObject(responseParse);
                     JSONArray filePathArray = new JSONArray(parentResponse.get("csvTablesPath").toString());
+                    JSONArray tableResponseArray = new JSONArray(parentResponse.get("table_response").toString());
                     log.info(aMarker, "coproProcessor consumer process response body filePathArray {}", filePathArray);
                     filePathArray.forEach(s -> {
                         parentObj.add(
@@ -187,6 +188,7 @@ public class TableExtractionAction implements IActionExecution {
                                         .paperNo(atomicInteger.incrementAndGet())
                                         .status("COMPLETED")
                                         .stage(tableExtractionProcessName)
+                                        .tableResponse(String.valueOf(tableResponseArray))
                                         .message("Table Extraction macro completed")
                                         .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                                         .rootPipelineId(rootPipelineId)
@@ -282,11 +284,12 @@ public class TableExtractionAction implements IActionExecution {
         private String message;
         private Timestamp createdOn;
         private Long rootPipelineId;
+        private String tableResponse;
 
         @Override
         public List<Object> getRowData() {
             return Stream.of(this.originId, this.groupId, this.tenantId, this.templateId, this.processedFilePath,
-                    this.paperNo, this.status, this.stage, this.message, this.createdOn, this.processId, this.rootPipelineId).collect(Collectors.toList());
+                    this.paperNo, this.status, this.stage, this.message, this.createdOn, this.processId, this.rootPipelineId,this.tableResponse).collect(Collectors.toList());
         }
     }
 }
