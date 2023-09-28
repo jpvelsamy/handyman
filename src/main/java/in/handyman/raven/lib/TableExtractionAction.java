@@ -185,8 +185,11 @@ public class TableExtractionAction implements IActionExecution {
                     log.info(aMarker, "coproProcessor consumer process response body filePathArray {}", filePathArray);
                     filePathArray.forEach(s -> {
                         Map<String, Object> processedJsonNode = mapper.convertValue(s, Map.class);
+                        log.info(aMarker, "coproProcessor consumer process response body processedJsonNode {}", processedJsonNode);
+
                         processedJsonNode.forEach((schemaName, csvFilePathNode ) ->{
                             try {
+                                log.info(aMarker, "coproProcessor consumer process response body scheme {} and csv file path {}", schemaName,csvFilePathNode);
                                 String csvFilePath = tableDataJson(String.valueOf(csvFilePathNode));
 
                                 parentObj.add(
