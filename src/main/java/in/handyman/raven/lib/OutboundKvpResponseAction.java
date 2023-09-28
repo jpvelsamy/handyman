@@ -61,16 +61,16 @@ public class OutboundKvpResponseAction implements IActionExecution {
 
       final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(outboundKvpResponse.getResourceConn());
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
-      log.info(aMarker, "paper itemizer Action output table {}",outboundKvpResponse.getResultTable());
+      log.info(aMarker, "alchemy table response Action output table {}",outboundKvpResponse.getResultTable());
       //5. build insert prepare statement with output table columns
       final String insertQuery = "INSERT INTO " +outboundKvpResponse.getResultTable()+
               "(process_id,group_Id,alchemy_origin_id,pipeline_origin_id,kvp_response, tenant_id,file_name,root_pipeline_id,status,stage,message) " +
               " VALUES(?,?,?,?,?,?,?,?,?,?,?)";
 
-      log.info(aMarker, "paper itemizer Insert query {}", insertQuery);
+      log.info(aMarker, "alchemy kvp Insert query {}", insertQuery);
 
       //3. initiate copro processor and copro urls
-      final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.product.outbound.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
+      final List<URL> urls = Optional.ofNullable(action.getContext().get("alchemy.outbound.kvp.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
         try {
           return new URL(s1);
         } catch (MalformedURLException e) {
@@ -78,7 +78,7 @@ public class OutboundKvpResponseAction implements IActionExecution {
           throw new HandymanException("Error in processing the URL", e, action);
         }
       }).collect(Collectors.toList())).orElse(Collections.emptyList());
-      log.info(aMarker, "paper itemizer copro urls {}", urls);
+      log.info(aMarker, "alchemy kvp copro urls {}", urls);
 
       final CoproProcessor<AlchemyKvpInputEntity, AlchemyKvpOutputEntity> coproProcessor =
               new CoproProcessor<>(new LinkedBlockingQueue<>(),
@@ -87,7 +87,7 @@ public class OutboundKvpResponseAction implements IActionExecution {
                       jdbi, log,
                       new AlchemyKvpInputEntity(), urls, action);
 
-      log.info(aMarker, "paper itemizer copro coproProcessor initialization  {}", coproProcessor);
+      log.info(aMarker, "alchemy kvp copro coproProcessor initialization  {}", coproProcessor);
 
       //4. call the method start producer from coproprocessor
       coproProcessor.startProducer(outboundKvpResponse.getQuerySet(), Integer.valueOf(action.getContext().get("read.batch.size")));

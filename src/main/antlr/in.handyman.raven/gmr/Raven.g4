@@ -144,6 +144,7 @@ action:
     |fileMergerPdf
     |zipFileCreationOutbound
     |outboundKvpResponse
+    |outboundTableResponse
     );
 
 
@@ -1003,6 +1004,15 @@ zipFileCreationOutbound:
 
 outboundKvpResponse:
     'outboundKvpResponse' 'as' name=STRING
+    'result-table' resultTable=STRING
+    'processId' processId=STRING
+    'resource-conn' resourceConn=STRING
+    'using' '{'
+    		querySet=STRING
+    	'}' ('on-condition' condition=expression)* ;
+
+outboundTableResponse:
+    'outboundTableResponse' 'as' name=STRING
     'result-table' resultTable=STRING
     'processId' processId=STRING
     'resource-conn' resourceConn=STRING
