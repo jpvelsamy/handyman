@@ -30,6 +30,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -49,6 +50,7 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
     private final ZipFileCreationOutbound zipFileCreationOutbound;
 
     private final Marker aMarker;
+    private final ObjectMapper mapper = new ObjectMapper();
 
     private final String OUTBOUND_FILES = "outbound-files";
 
@@ -121,7 +123,17 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
                 String originPaperTablePath=originTableFolderPath+File.separator+truthPaperList1.getPaperNo();
                 createFolder(originPaperTablePath);
                 moveFileIntoOrigin(truthPaperList1.getFilePath(), originPaperTablePath);
-                moveFileIntoOrigin(truthPaperList1.getProcessedFilePath(), originPaperTablePath);
+                String processedJsonNodePath = truthPaperList1.getProcessedFilePath();
+                Map<String, Object> processedFileJsonNode;
+                try {
+                    processedFileJsonNode = mapper.readValue(processedJsonNodePath.toString(), Map.class);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                processedFileJsonNode.forEach((s, o) -> {
+                    moveFileIntoOrigin(o.toString(), originPaperTablePath);
+                });
+
             });
             try {
                 String outboundZipFilePath = createZipFile(originFolderPath, originZipPath, sourcePdfName);
