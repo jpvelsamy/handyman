@@ -31,6 +31,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -113,17 +114,21 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
 
             createJsonFile(sourceJsonString, originFolderPath, sourcePdfName + "_product");
             createJsonFile(sourceKvpJsonString, originKvpFolderPath, sourcePdfName + "_kvp");
-            createJsonFile(sourceTableJsonString, originTableFolderPath, sourcePdfName + "_table");
 
             moveFileIntoOrigin(sourceCleanedPdfPath, originFolderPath);
             moveFileIntoOrigin(sourceOriginPdfPath, originFolderPath);
 
             List<TruthPaperList> truthPaperList = getTruthPaperList(outboundInputTableEntity.getOriginId(),  jdbi);
-            truthPaperList.forEach(truthPaperList1 -> {
+            truthPaperList.stream().filter(Objects::nonNull).forEach(truthPaperList1 -> {
+
                 String originPaperTablePath=originTableFolderPath+File.separator+truthPaperList1.getPaperNo();
                 createFolder(originPaperTablePath);
+
+                createJsonFile(truthPaperList1.getTableResponse(), originPaperTablePath, sourcePdfName +"_"+truthPaperList1.getPaperNo()+ "_table");
+
                 moveFileIntoOrigin(truthPaperList1.getFilePath(), originPaperTablePath);
                 String processedJsonNodePath = truthPaperList1.getProcessedFilePath();
+
                 Map<String, Object> processedFileJsonNode;
                 try {
                     processedFileJsonNode = mapper.readValue(processedJsonNodePath.toString(), Map.class);
@@ -332,8 +337,9 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
     }
 
     public List<TruthPaperList> getTruthPaperList(String originId,Jdbi jdbi){
-        String querySet="select a.file_path,sot.origin_id,sot.paper_no,ter.processed_file_path" +
-                " from info.source_of_truth sot join info.asset a on sot.preprocessed_file_id  =a.file_id " +
+        String querySet="select a.file_path,sot.origin_id,sot.paper_no,ter.processed_file_path,atr.table_response " +
+                "from info.source_of_truth sot join info.asset a on sot.preprocessed_file_id  =a.file_id " +
+                "join alchemy_response.alchemy_table_response atr on atr.pipeline_origin_id=sot.origin_id and atr.paper_no=sot.paper_no " +
                 "join table_extraction.table_extraction_result ter on ter.origin_id =sot.origin_id and ter.paper_no =sot.paper_no " +
                 "where sot.origin_id='"+originId+"';";
         List<TruthPaperList> tableInfos =new ArrayList<>();
@@ -365,5 +371,6 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
         private String filePath;
         private String originId;
         private String processedFilePath;
+        private String tableResponse;
     }
 }
