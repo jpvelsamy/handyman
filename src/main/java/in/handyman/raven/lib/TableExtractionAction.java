@@ -15,6 +15,7 @@ import in.handyman.raven.lib.model.TableExtraction;
 import in.handyman.raven.lib.model.outbound.OutboundInputTableEntity;
 import in.handyman.raven.util.CommonQueryUtil;
 import in.handyman.raven.util.UniqueID;
+import jakarta.json.JsonObject;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -200,8 +201,8 @@ public class TableExtractionAction implements IActionExecution {
                             try {
                                 log.info(aMarker, "coproProcessor consumer process response body scheme {} and csv file path {}", schemaName, csvFilePathNode);
 
-                                String csvFilePath = tableDataJson(String.valueOf(csvFilePathNode));
-                                Long paperNo = fileNamePaperNo(csvFilePath);
+                                String csvJsonObject = tableDataJson(String.valueOf(csvFilePathNode));
+                                Long paperNo = fileNamePaperNo(String.valueOf(csvFilePathNode));
 
                                 parentObj.add(
                                         TableExtractionOutputTable
@@ -215,7 +216,7 @@ public class TableExtractionAction implements IActionExecution {
                                                 .paperNo(paperNo)
                                                 .status("COMPLETED")
                                                 .stage(tableExtractionProcessName)
-                                                .tableResponse(csvFilePath)
+                                                .tableResponse(csvJsonObject)
                                                 .message("Table Extraction macro completed")
                                                 .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                                                 .rootPipelineId(rootPipelineId)
