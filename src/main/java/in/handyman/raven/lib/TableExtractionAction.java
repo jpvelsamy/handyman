@@ -1,5 +1,6 @@
 package in.handyman.raven.lib;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -11,6 +12,8 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.TableExtraction;
+import in.handyman.raven.lib.model.outbound.OutboundInputTableEntity;
+import in.handyman.raven.util.CommonQueryUtil;
 import in.handyman.raven.util.UniqueID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,12 +23,15 @@ import okhttp3.*;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.argument.Arguments;
 import org.jdbi.v3.core.argument.NullArgument;
+import org.jdbi.v3.core.result.ResultIterable;
+import org.jdbi.v3.core.statement.Query;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -113,7 +119,6 @@ public class TableExtractionAction implements IActionExecution {
     }
 
 
-
     public static class TableExtractionConsumerProcess implements CoproProcessor.ConsumerProcess<TableExtractionInputTable, TableExtractionOutputTable> {
 
         private final Logger log;
@@ -145,14 +150,13 @@ public class TableExtractionAction implements IActionExecution {
             String inputFilePath = entity.getFilePath();
             Long uniqueId = UniqueID.getId();
             String uniqueIdStr = String.valueOf(uniqueId);
-            String outputDirectory = outputDir.concat("/").concat(String.valueOf(entity.getRootPipelineId())).concat("/").concat(entity.getOriginId()).concat("/").concat(uniqueIdStr);
             Long rootPipelineId = entity.getRootPipelineId();
             final String tableExtractionProcessName = "TABLE_EXTRACTION";
-            Long actionId = action.getActionId();
+            Long actionId = 1234567L;
             objectNode.put("rootPipelineId", rootPipelineId);
             objectNode.put("process", tableExtractionProcessName);
             objectNode.put("inputFilePath", inputFilePath);
-            objectNode.put("outputDir", outputDirectory);
+            objectNode.put("outputDir", outputDir);
             objectNode.put("actionId", actionId);
 
             log.info(aMarker, "coproProcessor mapper object node {}", objectNode);
@@ -160,7 +164,7 @@ public class TableExtractionAction implements IActionExecution {
                     .post(RequestBody.create(objectNode.toString(), MediaTypeJSON)).build();
 
             if (log.isInfoEnabled()) {
-                log.info(aMarker, "Request has been build with the parameters \n URI : {}, with inputFilePath {} and outputDir {}", endpoint, inputFilePath, outputDirectory);
+                log.info(aMarker, "Request has been build with the parameters \n URI : {}, with inputFilePath {} and outputDir {}", endpoint, inputFilePath, outputDir);
             }
             AtomicInteger atomicInteger = new AtomicInteger();
             String originId = entity.getOriginId();
@@ -184,13 +188,20 @@ public class TableExtractionAction implements IActionExecution {
                     JSONArray tableResponseArray = new JSONArray(parentResponse.get("table_response").toString());
                     log.info(aMarker, "coproProcessor consumer process response body filePathArray {}", filePathArray);
                     filePathArray.forEach(s -> {
-                        Map<String, Object> processedJsonNode = mapper.convertValue(s, Map.class);
+                        Map<String, Object> processedJsonNode;
+                        try {
+                            processedJsonNode = mapper.readValue(s.toString(), Map.class);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                         log.info(aMarker, "coproProcessor consumer process response body processedJsonNode {}", processedJsonNode);
 
-                        processedJsonNode.forEach((schemaName, csvFilePathNode ) ->{
+                        processedJsonNode.forEach((schemaName, csvFilePathNode) -> {
                             try {
-                                log.info(aMarker, "coproProcessor consumer process response body scheme {} and csv file path {}", schemaName,csvFilePathNode);
+                                log.info(aMarker, "coproProcessor consumer process response body scheme {} and csv file path {}", schemaName, csvFilePathNode);
+
                                 String csvFilePath = tableDataJson(String.valueOf(csvFilePathNode));
+                                Long paperNo = fileNamePaperNo(csvFilePath);
 
                                 parentObj.add(
                                         TableExtractionOutputTable
@@ -201,7 +212,7 @@ public class TableExtractionAction implements IActionExecution {
                                                 .templateId(templateId)
                                                 .tenantId(tenantId)
                                                 .processId(processId)
-                                                .paperNo(atomicInteger.incrementAndGet())
+                                                .paperNo(paperNo)
                                                 .status("COMPLETED")
                                                 .stage(tableExtractionProcessName)
                                                 .tableResponse(csvFilePath)
@@ -212,7 +223,7 @@ public class TableExtractionAction implements IActionExecution {
                             } catch (JsonProcessingException e) {
                                 throw new RuntimeException(e);
                             }
-                        } );
+                        });
                     });
                 } else {
                     parentObj.add(
@@ -223,7 +234,6 @@ public class TableExtractionAction implements IActionExecution {
                                     .processId(processId)
                                     .templateId(templateId)
                                     .tenantId(tenantId)
-                                    .paperNo(atomicInteger.incrementAndGet())
                                     .status("FAILED")
                                     .stage(tableExtractionProcessName)
                                     .message(response.message())
@@ -241,7 +251,6 @@ public class TableExtractionAction implements IActionExecution {
                                 .processId(processId)
                                 .templateId(templateId)
                                 .tenantId(tenantId)
-                                .paperNo(atomicInteger.incrementAndGet())
                                 .status("FAILED")
                                 .stage(tableExtractionProcessName)
                                 .message(exception.getMessage())
@@ -301,6 +310,39 @@ public class TableExtractionAction implements IActionExecution {
         }
     }
 
+    public static Long fileNamePaperNo(String filePath) {
+        Long extractedNumber = null;
+        File file = new File(filePath);
+
+        String fileNameStr = file.getName();
+
+        String[] parts = fileNameStr.split("_");
+
+        // Check if there are at least two parts (0 and 1 after the first underscore)
+        if (parts.length >= 2) {
+            // Extract the second part (index 1 in the array after splitting)
+            String number = parts[parts.length - 2];
+
+            // Convert the extracted string to an integer if needed
+            extractedNumber = Long.parseLong(number);
+
+            // Print the extracted number
+            return extractedNumber;
+        }
+
+        return extractedNumber;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class OriginPaperList {
+
+        private String paperNo;
+        private String filePath;
+        private String originId;
+    }
     //1. input pojo from select query, which implements CoproProcessor.Entity
     @Data
     @AllArgsConstructor
@@ -336,7 +378,7 @@ public class TableExtractionAction implements IActionExecution {
         private Long processId;
         private String templateId;
         private String processedFilePath;
-        private Integer paperNo;
+        private Long paperNo;
         private String status;
         private String stage;
         private String message;

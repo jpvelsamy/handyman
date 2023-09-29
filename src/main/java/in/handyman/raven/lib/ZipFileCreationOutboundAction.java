@@ -111,7 +111,7 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
 
             moveFileIntoOrigin(sourceCleanedPdfPath, originFolderPath);
             moveFileIntoOrigin(sourceOriginPdfPath, originFolderPath);
-            moveFileIntoOrigin(sourceOriginPdfPath, originFolderPath);
+
             try {
                 String outboundZipFilePath = createZipFile(originFolderPath, originZipPath, sourcePdfName);
 
