@@ -99,6 +99,11 @@
             <artifactId>antlr4-runtime</artifactId>
             <version>${antlr4.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>5.5.1</version> <!-- You can check for the latest version on Maven Central -->
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.squareup/javapoet -->
         <dependency>
