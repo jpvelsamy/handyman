@@ -335,7 +335,7 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
         String querySet="select a.file_path,sot.origin_id,sot.paper_no,ter.processed_file_path" +
                 " from info.source_of_truth sot join info.asset a on sot.preprocessed_file_id  =a.file_id " +
                 "join table_extraction.table_extraction_result ter on ter.origin_id =sot.origin_id and ter.paper_no =sot.paper_no " +
-                "where sot.origin_id='"+originId+";";
+                "where sot.origin_id='"+originId+"';";
         List<TruthPaperList> tableInfos =new ArrayList<>();
         jdbi.useTransaction(handle -> {
             final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(querySet);
