@@ -160,7 +160,8 @@ public class AlchemyResponseAction implements IActionExecution {
                 alchemyRequestTable.setState(entity.getState());
             }
             if(feature.equals("TABLE_EXTRACT")){
-                alchemyRequestTable.setTableData(entity.getTableData());
+                JsonNode tableNode = mapper.readTree(entity.getTableData());
+                alchemyRequestTable.setTableData(tableNode);
             }
 
 
@@ -207,7 +208,7 @@ public class AlchemyResponseAction implements IActionExecution {
         private String bbox;
         private String feature;
         private String state;
-        private JsonNode tableData;
+        private String tableData;
 
         @Override
         public List<Object> getRowData() {
