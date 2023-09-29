@@ -12,6 +12,10 @@ import in.handyman.raven.lib.model.outbound.OutboundInputTableEntity;
 import in.handyman.raven.lib.model.outbound.OutboundOutputTableEntity;
 import in.handyman.raven.util.CommonQueryUtil;
 import in.handyman.raven.util.ExceptionUtil;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.result.ResultIterable;
 import org.jdbi.v3.core.statement.Query;
@@ -112,6 +116,13 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
             moveFileIntoOrigin(sourceCleanedPdfPath, originFolderPath);
             moveFileIntoOrigin(sourceOriginPdfPath, originFolderPath);
 
+            List<TruthPaperList> truthPaperList = getTruthPaperList(outboundInputTableEntity.getOriginId(), outboundInputTableEntity.getPaperNo(), jdbi);
+            truthPaperList.forEach(truthPaperList1 -> {
+                String originPaperTablePath=originTableFolderPath+File.separator+truthPaperList1.getPaperNo();
+                createFolder(originPaperTablePath);
+                moveFileIntoOrigin(truthPaperList1.getFilePath(), originPaperTablePath);
+                moveFileIntoOrigin(truthPaperList1.getProcessedFilePath(), originPaperTablePath);
+            });
             try {
                 String outboundZipFilePath = createZipFile(originFolderPath, originZipPath, sourcePdfName);
 
@@ -306,5 +317,41 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
 
         }
 
+    }
+
+    public List<TruthPaperList> getTruthPaperList(String originId,String paperNo,Jdbi jdbi){
+        String querySet="select a.file_path,sot.origin_id,sot.paper_no,ter.processed_file_path" +
+                " from info.source_of_truth sot join info.asset a on sot.preprocessed_file_id  =a.file_id " +
+                "join table_extraction.table_extraction_result ter on ter.origin_id =sot.origin_id and ter.paper_no =sot.paper_no " +
+                "where sot.origin_id='"+originId+";";
+        List<TruthPaperList> tableInfos =new ArrayList<>();
+        jdbi.useTransaction(handle -> {
+            final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(querySet);
+            AtomicInteger i = new AtomicInteger(0);
+            formattedQuery.forEach(sqlToExecute -> {
+                log.info(aMarker, "executing  query {} from index {}", sqlToExecute, i.getAndIncrement());
+                Query query = handle.createQuery(sqlToExecute);
+                ResultIterable<TruthPaperList> resultIterable = query.mapToBean(TruthPaperList.class);
+                List<TruthPaperList> detailList = resultIterable.stream().collect(Collectors.toList());
+                tableInfos.addAll(detailList);
+                log.info(aMarker, "executed query from index {}", i.get());
+            });
+        });
+       return tableInfos;
+
+    }
+
+
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class TruthPaperList {
+
+        private String paperNo;
+        private String filePath;
+        private String originId;
+        private String processedFilePath;
     }
 }

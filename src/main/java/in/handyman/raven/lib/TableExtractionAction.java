@@ -328,22 +328,14 @@ public class TableExtractionAction implements IActionExecution {
             extractedNumber = Long.parseLong(number);
 
             // Print the extracted number
-            return extractedNumber;
+            return extractedNumber+1;
         }
 
         return extractedNumber;
     }
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class OriginPaperList {
 
-        private String paperNo;
-        private String filePath;
-        private String originId;
-    }
+
     //1. input pojo from select query, which implements CoproProcessor.Entity
     @Data
     @AllArgsConstructor
