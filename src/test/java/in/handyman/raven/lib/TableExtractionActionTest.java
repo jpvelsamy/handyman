@@ -1,5 +1,6 @@
 package in.handyman.raven.lib;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.TableExtraction;
 import lombok.extern.slf4j.Slf4j;
@@ -60,4 +61,14 @@ class TableExtractionActionTest {
         }
     }
 
+    @Test
+    void tableCsvTest() throws JsonProcessingException {
+        ActionExecutionAudit actionExecutionAudit=new ActionExecutionAudit();
+        TableExtraction tableExtraction=new TableExtraction();
+
+        TableExtractionAction tableExtractionAction=new TableExtractionAction(actionExecutionAudit,log,tableExtraction);
+
+        String tableExtractionAction2=tableExtractionAction.tableDataJson("");
+        System.out.println(tableExtractionAction2);
+    }
 }

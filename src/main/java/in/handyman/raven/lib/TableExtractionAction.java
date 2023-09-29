@@ -275,8 +275,9 @@ public class TableExtractionAction implements IActionExecution {
         return tableExtraction.getCondition();
     }
 
-    private static String tableDataJson(String filePath) throws JsonProcessingException {
+    public static String tableDataJson(String filePath) throws JsonProcessingException {
         try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
+            reader.readNext();
             String[] headers = reader.readNext(); // Read the headers
 
             JSONArray dataArray = new JSONArray(); // Array for data rows
@@ -288,6 +289,7 @@ public class TableExtractionAction implements IActionExecution {
             }
 
             String[] row;
+
             while ((row = reader.readNext()) != null) {
                 JSONArray rowArray = new JSONArray();
 
