@@ -118,7 +118,7 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
             moveFileIntoOrigin(sourceCleanedPdfPath, originFolderPath);
             moveFileIntoOrigin(sourceOriginPdfPath, originFolderPath);
 
-            List<TruthPaperList> truthPaperList = getTruthPaperList(outboundInputTableEntity.getOriginId(), outboundInputTableEntity.getPaperNo(), jdbi);
+            List<TruthPaperList> truthPaperList = getTruthPaperList(outboundInputTableEntity.getOriginId(),  jdbi);
             truthPaperList.forEach(truthPaperList1 -> {
                 String originPaperTablePath=originTableFolderPath+File.separator+truthPaperList1.getPaperNo();
                 createFolder(originPaperTablePath);
@@ -331,7 +331,7 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
 
     }
 
-    public List<TruthPaperList> getTruthPaperList(String originId,String paperNo,Jdbi jdbi){
+    public List<TruthPaperList> getTruthPaperList(String originId,Jdbi jdbi){
         String querySet="select a.file_path,sot.origin_id,sot.paper_no,ter.processed_file_path" +
                 " from info.source_of_truth sot join info.asset a on sot.preprocessed_file_id  =a.file_id " +
                 "join table_extraction.table_extraction_result ter on ter.origin_id =sot.origin_id and ter.paper_no =sot.paper_no " +
