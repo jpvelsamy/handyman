@@ -8,6 +8,7 @@ import in.handyman.raven.lib.CoproProcessor;
 import in.handyman.raven.lib.model.triton.TritonInputRequest;
 import in.handyman.raven.lib.model.triton.TritonRequest;
 import okhttp3.*;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
@@ -198,7 +199,7 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
         Long extractedNumber = null;
         File file = new File(filePath);
 
-        String fileNameStr = file.getName();
+        String fileNameStr = FilenameUtils.removeExtension(file.getName());
 
         String[] parts = fileNameStr.split("_");
 

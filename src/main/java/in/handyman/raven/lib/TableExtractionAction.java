@@ -17,6 +17,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import okhttp3.*;
+import org.apache.commons.io.FilenameUtils;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.argument.Arguments;
 import org.jdbi.v3.core.argument.NullArgument;
@@ -311,7 +312,7 @@ public class TableExtractionAction implements IActionExecution {
         Long extractedNumber = null;
         File file = new File(filePath);
 
-        String fileNameStr = file.getName();
+        String fileNameStr = FilenameUtils.removeExtension(file.getName());
 
         String[] parts = fileNameStr.split("_");
 
