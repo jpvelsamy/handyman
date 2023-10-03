@@ -11,6 +11,7 @@ import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
+import java.io.File;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -20,8 +21,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.checkerframework.checker.units.UnitsTools.s;
 
 public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProcess<PaperItemizerInputTable, PaperItemizerOutputTable> {
 
@@ -106,24 +105,25 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
                                 try {
                                     PaperItemizerDataItem paperItemizeOutputData = objectMappers.readValue(paperItemizerDataItem, PaperItemizerDataItem.class);
                                     paperItemizeOutputData.getItemizedPapers().forEach(itemizerPapers -> {
+                                        Long paperNo = getPaperNobyFileName(itemizerPapers);
                                         parentObj.add(
-                                        PaperItemizerOutputTable
-                                                .builder()
-                                                .processedFilePath(itemizerPapers)
-                                                .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
-                                                .groupId(groupId)
-                                                .templateId(templateId)
-                                                .tenantId(tenantId)
-                                                .processId(processId)
-                                                .paperNo(atomicInteger.incrementAndGet())
-                                                .status("COMPLETED")
-                                                .stage(paperItemizerProcessName)
-                                                .message("Paper Itemizer macro completed")
-                                                .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                                                .rootPipelineId(rootPipelineId)
-                                                .modelName(paperItemizerResponse.getModelName())
-                                                .modelVersion(paperItemizerResponse.getModelVersion())
-                                                .build());
+                                                PaperItemizerOutputTable
+                                                        .builder()
+                                                        .processedFilePath(itemizerPapers)
+                                                        .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                                                        .groupId(groupId)
+                                                        .templateId(templateId)
+                                                        .tenantId(tenantId)
+                                                        .processId(processId)
+                                                        .paperNo(paperNo)
+                                                        .status("COMPLETED")
+                                                        .stage(paperItemizerProcessName)
+                                                        .message("Paper Itemizer macro completed")
+                                                        .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                                                        .rootPipelineId(rootPipelineId)
+                                                        .modelName(paperItemizerResponse.getModelName())
+                                                        .modelVersion(paperItemizerResponse.getModelVersion())
+                                                        .build());
                                     });
 
                                 } catch (JsonProcessingException e) {
@@ -135,7 +135,6 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
                                                     .processId(processId)
                                                     .templateId(templateId)
                                                     .tenantId(tenantId)
-                                                    .paperNo(atomicInteger.incrementAndGet())
                                                     .status("FAILED")
                                                     .stage(paperItemizerProcessName)
                                                     .message(e.getMessage())
@@ -148,7 +147,7 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
                                 }
 
 
-                }
+                            }
                     ));
                 }
 
@@ -161,7 +160,6 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
                                 .processId(processId)
                                 .templateId(templateId)
                                 .tenantId(tenantId)
-                                .paperNo(atomicInteger.incrementAndGet())
                                 .status("FAILED")
                                 .stage(paperItemizerProcessName)
                                 .message(response.message())
@@ -180,7 +178,6 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
                             .processId(processId)
                             .templateId(templateId)
                             .tenantId(tenantId)
-                            .paperNo(atomicInteger.incrementAndGet())
                             .status("FAILED")
                             .stage(paperItemizerProcessName)
                             .message(exception.getMessage())
@@ -195,4 +192,29 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
         log.info(aMarker, "coproProcessor consumer process with output entity {}", parentObj);
         return parentObj;
     }
+
+
+    public static Long getPaperNobyFileName(String filePath) {
+        Long extractedNumber = null;
+        File file = new File(filePath);
+
+        String fileNameStr = file.getName();
+
+        String[] parts = fileNameStr.split("_");
+
+        // Check if there are at least two parts (0 and 1 after the first underscore)
+        if (parts.length >= 1) {
+            // Extract the second part (index 1 in the array after splitting)
+            String number = parts[parts.length - 1];
+
+            // Convert the extracted string to an integer if needed
+            extractedNumber = Long.parseLong(number);
+
+            // Print the extracted number
+            return extractedNumber + 1;
+        }
+
+        return extractedNumber;
+    }
+
 }

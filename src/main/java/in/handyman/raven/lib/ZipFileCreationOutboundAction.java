@@ -96,8 +96,8 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
 
             final String originFolderPath = tenantPathStr + OUTBOUND_FILES + File.separator + outboundInputTableEntity.getOriginId() + File.separator + sourcePdfName + File.separator;
 
-            final String originKvpFolderPath = tenantPathStr + File.separator + OUTBOUND_FILES + File.separator + outboundInputTableEntity.getOriginId() +  File.separator + sourcePdfName + File.separator+ "Kvp" + File.separator;
-            final String originTableFolderPath = tenantPathStr + File.separator + OUTBOUND_FILES + File.separator + outboundInputTableEntity.getOriginId() +  File.separator + sourcePdfName + File.separator+ "Table" + File.separator;
+            final String originKvpFolderPath = tenantPathStr + File.separator + OUTBOUND_FILES + File.separator + outboundInputTableEntity.getOriginId() + File.separator + sourcePdfName + File.separator + "Kvp" + File.separator;
+            final String originTableFolderPath = tenantPathStr + File.separator + OUTBOUND_FILES + File.separator + outboundInputTableEntity.getOriginId() + File.separator + sourcePdfName + File.separator + "Table" + File.separator;
             final String originZipPath = tenantPathStr + File.separator + "zip-files" + File.separator + outboundInputTableEntity.getOriginId() + File.separator + sourcePdfName + File.separator;
             String sourceCleanedPdfPath = outboundInputTableEntity.getCleanedPdfPath();
             String sourceOriginPdfPath = outboundInputTableEntity.getOriginPdfPath();
@@ -118,13 +118,13 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
             moveFileIntoOrigin(sourceCleanedPdfPath, originFolderPath);
             moveFileIntoOrigin(sourceOriginPdfPath, originFolderPath);
 
-            List<TruthPaperList> truthPaperList = getTruthPaperList(outboundInputTableEntity.getOriginId(),  jdbi);
+            List<TruthPaperList> truthPaperList = getTruthPaperList(outboundInputTableEntity.getOriginId(), jdbi);
             truthPaperList.stream().filter(Objects::nonNull).forEach(truthPaperList1 -> {
 
-                String originPaperTablePath=originTableFolderPath+File.separator+truthPaperList1.getPaperNo();
+                String originPaperTablePath = originTableFolderPath + File.separator + truthPaperList1.getPaperNo();
                 createFolder(originPaperTablePath);
 
-                createJsonFile(truthPaperList1.getTableResponse(), originPaperTablePath, sourcePdfName +"_"+truthPaperList1.getPaperNo()+ "_table");
+                createJsonFile(truthPaperList1.getTableResponse(), originPaperTablePath, sourcePdfName + "_" + truthPaperList1.getPaperNo() + "_table");
 
                 moveFileIntoOrigin(truthPaperList1.getFilePath(), originPaperTablePath);
                 String processedJsonNodePath = truthPaperList1.getProcessedFilePath();
@@ -336,13 +336,14 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
 
     }
 
-    public List<TruthPaperList> getTruthPaperList(String originId,Jdbi jdbi){
-        String querySet="select a.file_path,sot.origin_id,sot.paper_no,ter.processed_file_path,atr.table_response " +
-                "from info.source_of_truth sot join info.asset a on sot.preprocessed_file_id  =a.file_id " +
+    public List<TruthPaperList> getTruthPaperList(String originId, Jdbi jdbi) {
+        String querySet = "select a.file_path,sot.origin_id,sot.paper_no,ter.processed_file_path,atr.table_response " +
+                "from info.source_of_truth sot" +
+                " join info.asset a on sot.preprocessed_file_id  =a.file_id " +
                 "join alchemy_response.alchemy_table_response atr on atr.pipeline_origin_id=sot.origin_id and atr.paper_no=sot.paper_no " +
                 "join table_extraction.table_extraction_result ter on ter.origin_id =sot.origin_id and ter.paper_no =sot.paper_no " +
-                "where sot.origin_id='"+originId+"';";
-        List<TruthPaperList> tableInfos =new ArrayList<>();
+                "where sot.origin_id='" + originId + "';";
+        List<TruthPaperList> tableInfos = new ArrayList<>();
         jdbi.useTransaction(handle -> {
             final List<String> formattedQuery = CommonQueryUtil.getFormattedQuery(querySet);
             AtomicInteger i = new AtomicInteger(0);
@@ -355,10 +356,9 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
                 log.info(aMarker, "executed query from index {}", i.get());
             });
         });
-       return tableInfos;
+        return tableInfos;
 
     }
-
 
 
     @Data

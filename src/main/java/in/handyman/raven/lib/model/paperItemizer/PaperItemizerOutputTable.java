@@ -1,6 +1,5 @@
 package in.handyman.raven.lib.model.paperItemizer;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import in.handyman.raven.lib.CoproProcessor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +23,7 @@ public class PaperItemizerOutputTable implements CoproProcessor.Entity {
     private Long processId;
     private String templateId;
     private String processedFilePath;
-    private Integer paperNo;
+    private Long paperNo;
     private String status;
     private String stage;
     private String message;
@@ -35,8 +34,8 @@ public class PaperItemizerOutputTable implements CoproProcessor.Entity {
 
     @Override
     public List<Object> getRowData() {
-        return Stream.of(this.originId, this.groupId,this.tenantId,this.templateId, this.processedFilePath,
-                this.paperNo,this.status,this.stage,this.message,this.createdOn,this.processId,this.rootPipelineId,
+        return Stream.of(this.originId, this.groupId, this.tenantId, this.templateId, this.processedFilePath,
+                this.paperNo, this.status, this.stage, this.message, this.createdOn, this.processId, this.rootPipelineId,
                 this.modelName, this.modelVersion).collect(Collectors.toList());
     }
 }

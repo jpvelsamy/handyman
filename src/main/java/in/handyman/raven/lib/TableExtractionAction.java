@@ -1,6 +1,5 @@
 package in.handyman.raven.lib;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -12,10 +11,7 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.TableExtraction;
-import in.handyman.raven.lib.model.outbound.OutboundInputTableEntity;
-import in.handyman.raven.util.CommonQueryUtil;
 import in.handyman.raven.util.UniqueID;
-import jakarta.json.JsonObject;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,8 +20,6 @@ import okhttp3.*;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.argument.Arguments;
 import org.jdbi.v3.core.argument.NullArgument;
-import org.jdbi.v3.core.result.ResultIterable;
-import org.jdbi.v3.core.statement.Query;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -202,7 +196,7 @@ public class TableExtractionAction implements IActionExecution {
                                 log.info(aMarker, "coproProcessor consumer process response body scheme {} and csv file path {}", schemaName, csvFilePathNode);
 
                                 String csvJsonObject = tableDataJson(String.valueOf(csvFilePathNode));
-                                Long paperNo = fileNamePaperNo(String.valueOf(csvFilePathNode));
+                                Long paperNo = getPaperNobyFileName(String.valueOf(csvFilePathNode));
 
                                 parentObj.add(
                                         TableExtractionOutputTable
@@ -313,7 +307,7 @@ public class TableExtractionAction implements IActionExecution {
         }
     }
 
-    public static Long fileNamePaperNo(String filePath) {
+    public static Long getPaperNobyFileName(String filePath) {
         Long extractedNumber = null;
         File file = new File(filePath);
 
@@ -330,12 +324,11 @@ public class TableExtractionAction implements IActionExecution {
             extractedNumber = Long.parseLong(number);
 
             // Print the extracted number
-            return extractedNumber+1;
+            return extractedNumber + 1;
         }
 
         return extractedNumber;
     }
-
 
 
     //1. input pojo from select query, which implements CoproProcessor.Entity
