@@ -109,10 +109,9 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
 
             createFolder(originFolderPath);
             createFolder(originKvpFolderPath);
-            createFolder(originTableFolderPath);
             createFolder(originZipPath);
 
-            createJsonFile(sourceJsonString, originFolderPath, sourcePdfName + "_product");
+            createJsonFile(sourceJsonString, originFolderPath, sourcePdfName);
             createJsonFile(sourceKvpJsonString, originKvpFolderPath, sourcePdfName + "_kvp");
 
             moveFileIntoOrigin(sourceCleanedPdfPath, originFolderPath);
@@ -120,7 +119,7 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
 
             List<TruthPaperList> truthPaperList = getTruthPaperList(outboundInputTableEntity.getOriginId(), jdbi);
             truthPaperList.stream().filter(Objects::nonNull).forEach(truthPaperList1 -> {
-
+                createFolder(originTableFolderPath);
                 String originPaperTablePath = originTableFolderPath + File.separator + truthPaperList1.getPaperNo();
                 createFolder(originPaperTablePath);
 
