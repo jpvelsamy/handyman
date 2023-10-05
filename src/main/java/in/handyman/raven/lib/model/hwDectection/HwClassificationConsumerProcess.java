@@ -73,10 +73,6 @@ public class HwClassificationConsumerProcess implements CoproProcessor.ConsumerP
         requestBody.setDatatype("BYTES");
         requestBody.setData(Collections.singletonList(jsonInputRequest));
 
-        //requestBody.setData(Collections.singletonList(jsonNodeRequest));
-
-        //   requestBody.setData(Collections.singletonList(HwDetectionpayload));
-
         TritonInputRequest tritonInputRequest=new TritonInputRequest();
         tritonInputRequest.setInputs(Collections.singletonList(requestBody));
 

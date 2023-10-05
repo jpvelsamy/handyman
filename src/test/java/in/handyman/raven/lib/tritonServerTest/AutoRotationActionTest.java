@@ -45,16 +45,18 @@ class AutoRotationActionTest {
                 .resourceConn("intics_zio_db_conn")
                 .outputDir("/data/output")
                 .condition(true)
-                .querySet("SELECT 'INT-1' as origin_id,1 as group_id,'/data/output/pdf_to_image/SYNT_166838894_c1/SYNT_166838894_c1_1.jpg' as file_path,1 as paper_no,1 as tenant_id,'TMP-1' as template_id,12345 as process_id,1 as root_pipeline_id")
+                .querySet(" SELECT a.origin_id,a.group_id,a.processed_file_path as file_path,a.paper_no,a.tenant_id,a.template_id,a.process_id, 1234 as root_pipeline_id\n" +
+                        "\t\t            FROM info.paper_itemizer a\n" +
+                        "\t\t             where origin_id ='INT-146'")
                 .build();
 
         ActionExecutionAudit actionExecutionAudit = new ActionExecutionAudit();
-        actionExecutionAudit.getContext().put("copro.autorotation.url", "http://192.168.10.239:8200/v2/models/auto-rotator-service/versions/1/infer");
+        actionExecutionAudit.getContext().put("copro.autorotation.url", "http://192.168.10.245:8200/v2/models/auto-rotator-service/versions/1/infer");
         actionExecutionAudit.setProcessId(138980079308730208L);
-        actionExecutionAudit.getContext().putAll(Map.ofEntries(Map.entry("read.batch.size", "5"),
+        actionExecutionAudit.getContext().putAll(Map.ofEntries(Map.entry("read.batch.size", "1"),
                 Map.entry("gen_group_id.group_id","1"),
                 Map.entry("auto.rotation.consumer.API.count", "1"),
-                Map.entry("write.batch.size", "5")));
+                Map.entry("write.batch.size", "1")));
 
         AutoRotationAction action1 = new AutoRotationAction(actionExecutionAudit, log, action);
         action1.execute();
