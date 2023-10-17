@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.CoproProcessor;
+import in.handyman.raven.lib.model.autoRotation.AutoRotationInputTable;
+import in.handyman.raven.lib.model.autoRotation.AutoRotationOutputTable;
 import in.handyman.raven.lib.model.triton.TritonInputRequest;
 import in.handyman.raven.lib.model.triton.TritonRequest;
 import in.handyman.raven.util.ExceptionUtil;
@@ -25,7 +27,7 @@ public class HwClassificationConsumerProcess implements CoproProcessor.ConsumerP
     private final Marker aMarker;
     private final String STAGE="PAPER_CLASSIFICATION";
     private final ObjectMapper mapper = new ObjectMapper();
-    private static final MediaType MediaTypeJSON = MediaType
+    private static final MediaType mediaTypeJson = MediaType
             .parse("application/json; charset=utf-8");
     public final ActionExecutionAudit action;
 
@@ -55,18 +57,17 @@ public class HwClassificationConsumerProcess implements CoproProcessor.ConsumerP
         ObjectMapper objectMapper = new ObjectMapper();
 
         //payload
-        HwDetectionPayload HwDetectionpayload = new HwDetectionPayload();
-        HwDetectionpayload.setRootPipelineId(Long.valueOf(rootpipelineId));
-        HwDetectionpayload.setActionId(actionId);
-        HwDetectionpayload.setProcess(PAPER_CLASSIFICATION_PROCESS);
-        HwDetectionpayload.setInputFilePath(filePath);
-        HwDetectionpayload.setOutputDir(outputDir);
-        HwDetectionpayload.setModelPath(modelPath);
+        HwDetectionPayload hwDetectionPayload = new HwDetectionPayload();
+        hwDetectionPayload.setRootPipelineId(Long.valueOf(rootpipelineId));
+        hwDetectionPayload.setActionId(actionId);
+        hwDetectionPayload.setProcess(PAPER_CLASSIFICATION_PROCESS);
+        hwDetectionPayload.setInputFilePath(filePath);
+        hwDetectionPayload.setOutputDir(outputDir);
+        hwDetectionPayload.setModelPath(modelPath);
 
-        String jsonInputRequest = objectMapper.writeValueAsString(HwDetectionpayload);
+        String jsonInputRequest = objectMapper.writeValueAsString(hwDetectionPayload);
 
 
-        HwDetectionRequest requests = new HwDetectionRequest();
         TritonRequest requestBody = new TritonRequest();
         requestBody.setName("PAPER CLASSIFIER START");
         requestBody.setShape(List.of(1, 1));
@@ -78,12 +79,89 @@ public class HwClassificationConsumerProcess implements CoproProcessor.ConsumerP
 
         String jsonRequest = objectMapper.writeValueAsString(tritonInputRequest);
 
-        Request request = new Request.Builder().url(endpoint)
-                .post(RequestBody.create(jsonRequest.toString(), MediaTypeJSON)).build();
+
+        String tritonRequestActivator = action.getContext().get("triton.request.activator");
+
+
+        if (Objects.equals("true", tritonRequestActivator)) {
+            Request request = new Request.Builder().url(endpoint)
+                    .post(RequestBody.create(hwDetectionPayload.toString(), mediaTypeJson)).build();
+            coproRequestBuilder(entity, request, parentObj);
+        } else {
+            Request request = new Request.Builder().url(endpoint)
+                    .post(RequestBody.create(jsonRequest, mediaTypeJson)).build();
+            tritonRequestBuilder(entity, request, parentObj);
+        }
+
 
         if(log.isInfoEnabled()) {
             log.info(aMarker, "Request has been build with the parameters \n coproUrl  {} ,inputFilePath : {} modelPath  {}  outputDir {} ", endpoint,entityFilePath,modelPath,outputDir);
         }
+
+        return parentObj;
+    }
+
+    private void coproRequestBuilder(HwClassificationInputTable entity, Request request, List<HwClassificationOutputTable> parentObj) {
+        String createdUserId = entity.getCreatedUserId();
+        String lastUpdatedUserId = entity.getLastUpdatedUserId();
+        Long tenantId = entity.getTenantId();
+        String originId = entity.getOriginId();
+        Integer paperNo = entity.getPaperNo();
+        String templateId = entity.getTemplateId();
+        Long modelId = entity.getModelId();
+        Integer groupId = entity.getGroupId();
+        try (Response response = httpclient.newCall(request).execute()) {
+            if (response.isSuccessful()) {
+
+                String responseBody = Objects.requireNonNull(response.body()).string();
+
+                extractOutputDataRequest(entity, responseBody, parentObj, "", "");
+            } else {
+
+                parentObj.add(HwClassificationOutputTable.builder()
+                        .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
+                        .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
+                        .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).map(Long::valueOf).orElse(null))
+                        .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                        .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                        .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
+                        .modelId(Optional.ofNullable(modelId).map(String::valueOf).map(Long::parseLong).orElse(null))
+                        .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                        .status("FAILED")
+                        .stage(STAGE)
+                        .message(response.message())
+                        .groupId(entity.getGroupId())
+                        .rootPipelineId(entity.getRootPipelineId())
+                        .build());
+                log.info(aMarker, "The Exception occurred in paper classification response");
+            }
+
+
+        } catch (Exception e) {
+            parentObj.add(HwClassificationOutputTable.builder()
+                    .createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
+                    .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
+                    .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).map(Long::valueOf).orElse(null))
+                    .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                    .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                    .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
+                    .modelId(Optional.ofNullable(modelId).map(String::valueOf).map(Long::parseLong).orElse(null))
+                    .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                    .status("FAILED")
+                    .stage(STAGE)
+                    .message(ExceptionUtil.toString(e))
+                    .groupId(entity.getGroupId())
+                    .rootPipelineId(entity.getRootPipelineId())
+                    .build());
+            log.error(aMarker, "The Exception occurred in paper classification request", e);
+            HandymanException handymanException = new HandymanException(e);
+            HandymanException.insertException("Paper classification (hw-detection) consumer failed for batch/group "+ groupId, handymanException, this.action);
+
+        }
+    }
+
+
+    private void tritonRequestBuilder(HwClassificationInputTable entity, Request request, List<HwClassificationOutputTable> parentObj) {
         String createdUserId = entity.getCreatedUserId();
         String lastUpdatedUserId = entity.getLastUpdatedUserId();
         Long tenantId = entity.getTenantId();
@@ -100,39 +178,9 @@ public class HwClassificationConsumerProcess implements CoproProcessor.ConsumerP
                 if (hwDetectionResponse.getOutputs() != null && !hwDetectionResponse.getOutputs().isEmpty()) {
                     hwDetectionResponse.getOutputs().forEach(o -> {
                         o.getData().forEach(hwDetectionDataItem -> {
-                            log.info("copro api response body {}", responseBody);
-                            String documentStatus = null;
-                            try {
-                                documentStatus = Optional.ofNullable(mapper.readTree(responseBody).get("document_status")).map(JsonNode::asText).orElse(null);
-                            } catch (JsonProcessingException e) {
-                                throw new RuntimeException(e);
-                            }
-                            Long score = null;
-                            try {
-                                score = Optional.ofNullable(mapper.readTree(responseBody).get("confidence_score")).map(JsonNode::asLong).orElse(null);
-                            } catch (JsonProcessingException e) {
-                                throw new RuntimeException(e);
-                            }
+                            extractOutputDataRequest(entity, responseBody, parentObj,  "", "");
 
-                            parentObj.add(HwClassificationOutputTable.builder().createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
-                                    .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
-                                    .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).map(Long::valueOf).orElse(null))
-                                    .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
-                                    .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                                    .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
-                                    .modelId(Optional.ofNullable(modelId).map(String::valueOf).map(Long::parseLong).orElse(null))
-                                    .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                                    .documentType(documentStatus)
-                                    .confidenceScore(score)
-                                    .status("COMPLETED")
-                                    .stage(STAGE)
-                                    .message("Paper Classification Finished")
-                                    .groupId(entity.getGroupId())
-                                    .rootPipelineId(entity.getRootPipelineId())
-                                    .modelName(hwDetectionResponse.getModelName())
-                                    .modelVersion(hwDetectionResponse.getModelVersion())
-                                    .build());
-                        });
+                            });
                     });
                 }
             }
@@ -175,7 +223,49 @@ public class HwClassificationConsumerProcess implements CoproProcessor.ConsumerP
             HandymanException.insertException("Paper classification (hw-detection) consumer failed for batch/group "+ groupId, handymanException, this.action);
 
         }
-        return parentObj;
+    }
+
+    private void extractOutputDataRequest(HwClassificationInputTable entity, String responseBody, List<HwClassificationOutputTable> parentObj, String modelName, String modelVersion) {
+        String createdUserId = entity.getCreatedUserId();
+        String lastUpdatedUserId = entity.getLastUpdatedUserId();
+        Long tenantId = entity.getTenantId();
+        String originId = entity.getOriginId();
+        Integer paperNo = entity.getPaperNo();
+        String templateId = entity.getTemplateId();
+        Long modelId = entity.getModelId();
+        Integer groupId = entity.getGroupId();
+        log.info("copro api response body {}", responseBody);
+        String documentStatus = null;
+        try {
+            documentStatus = Optional.ofNullable(mapper.readTree(responseBody).get("document_status")).map(JsonNode::asText).orElse(null);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        Long score = null;
+        try {
+            score = Optional.ofNullable(mapper.readTree(responseBody).get("confidence_score")).map(JsonNode::asLong).orElse(null);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        parentObj.add(HwClassificationOutputTable.builder().createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
+                .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
+                .tenantId(Optional.ofNullable(tenantId).map(String::valueOf).map(Long::valueOf).orElse(null))
+                .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                .paperNo(Optional.ofNullable(paperNo).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
+                .modelId(Optional.ofNullable(modelId).map(String::valueOf).map(Long::parseLong).orElse(null))
+                .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
+                .documentType(documentStatus)
+                .confidenceScore(score)
+                .status("COMPLETED")
+                .stage(STAGE)
+                .message("Paper Classification Finished")
+                .groupId(entity.getGroupId())
+                .rootPipelineId(entity.getRootPipelineId())
+                .modelName(modelName)
+                .modelVersion(modelVersion)
+                .build());
     }
 }
 
