@@ -112,16 +112,7 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
             if (response.isSuccessful()) {
                 String responseBody = response.body().string();
                 ObjectMapper objectMappers = new ObjectMapper();
-                PaperItemizerResponse paperItemizerResponse = objectMappers.readValue(responseBody, PaperItemizerResponse.class);
-                if (paperItemizerResponse.getOutputs() != null && !paperItemizerResponse.getOutputs().isEmpty()) {
-                    paperItemizerResponse.getOutputs().forEach(o -> o.getData().forEach(paperItemizerDataItem ->
-                            {
-                                extractedOutputRequest(entity, request, objectMapper, parentObj, "", "" , paperItemizerDataItem);
-
-
-                            }
-                    ));
-                }
+                extractedOutputRequest(entity, objectMapper, parentObj, "", "" , responseBody);
 
             } else {
                 parentObj.add(
@@ -184,11 +175,7 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
                 if (paperItemizerResponse.getOutputs() != null && !paperItemizerResponse.getOutputs().isEmpty()) {
                     paperItemizerResponse.getOutputs().forEach(o -> o.getData().forEach(paperItemizerDataItem ->
                             {
-
-                                extractedOutputRequest(entity, request, objectMapper, parentObj, paperItemizerResponse.getModelName(), paperItemizerResponse.getModelVersion(), paperItemizerDataItem);
-
-
-
+                                extractedOutputRequest(entity, objectMapper, parentObj, paperItemizerResponse.getModelName(), paperItemizerResponse.getModelVersion(), paperItemizerDataItem);
 
                             }
                     ));
@@ -233,7 +220,7 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
         }
     }
 
-    private void extractedOutputRequest(PaperItemizerInputTable entity, Request request, ObjectMapper objectMapper, List<PaperItemizerOutputTable> parentObj, String modelName,String modelVersion, String paperItemizerDataItem) {
+    private void extractedOutputRequest(PaperItemizerInputTable entity, ObjectMapper objectMapper, List<PaperItemizerOutputTable> parentObj, String modelName,String modelVersion, String paperItemizerDataItem) {
         String originId = entity.getOriginId();
         Integer groupId = entity.getGroupId();
         String templateId = entity.getTemplateId();
@@ -281,7 +268,7 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
                             .build());
             HandymanException handymanException = new HandymanException(e);
             HandymanException.insertException("Paper Itemizer  consumer failed for originId " + originId, handymanException, this.action);
-            log.error(aMarker, "The Exception occurred in request {}", request, e);
+            log.error(aMarker, "The Exception occurred in request {}", e.toString());
         }
     }
 
