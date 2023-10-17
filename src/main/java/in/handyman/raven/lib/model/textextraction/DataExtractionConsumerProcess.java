@@ -1,4 +1,4 @@
-package in.handyman.raven.lib.model.TextExtraction;
+package in.handyman.raven.lib.model.textextraction;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,11 +24,11 @@ import java.util.concurrent.TimeUnit;
 public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerProcess<DataExtractionInputTable, DataExtractionOutputTable> {
     private final Logger log;
     private final Marker aMarker;
-    private final ObjectMapper mapper = new ObjectMapper();
     private static final MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
 
     public final ActionExecutionAudit action;
     private static final String PROCESS_NAME = "DATA_EXTRACTION";
+    private static final String FAILED_STR = "FAILED";
 
     final OkHttpClient httpclient = new OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.MINUTES)
@@ -56,12 +56,12 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
 
 
         //payload
-        DataExtractionData DataExtractiondata = new DataExtractionData();
-        DataExtractiondata.setRootPipelineId(Long.valueOf(rootpipelineId));
-        DataExtractiondata.setActionId(actionId);
-        DataExtractiondata.setProcess(process);
-        DataExtractiondata.setInputFilePath(filePath);
-        String jsonInputRequest = objectMapper.writeValueAsString(DataExtractiondata);
+        DataExtractionData dataExtractionData = new DataExtractionData();
+        dataExtractionData.setRootPipelineId(rootpipelineId);
+        dataExtractionData.setActionId(actionId);
+        dataExtractionData.setProcess(process);
+        dataExtractionData.setInputFilePath(filePath);
+        String jsonInputRequest = objectMapper.writeValueAsString(dataExtractionData);
 
 
         TritonRequest requestBody = new TritonRequest();
@@ -87,7 +87,7 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
 
         if (Objects.equals("true", tritonRequestActivator)) {
             Request request = new Request.Builder().url(endpoint)
-                    .post(RequestBody.create(DataExtractiondata.toString(), mediaType)).build();
+                    .post(RequestBody.create(dataExtractionData.toString(), mediaType)).build();
             coproRequestBuilder(entity, request, parentObj, originId, groupId);
         } else {
             Request request = new Request.Builder().url(endpoint)
@@ -113,7 +113,7 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
                         .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                         .groupId(groupId)
                         .paperNo(entity.getPaperNo())
-                        .status("FAILED")
+                        .status(FAILED_STR)
                         .stage(PROCESS_NAME)
                         .tenantId(entity.getTenantId())
                         .templateId(entity.getTemplateId())
@@ -130,7 +130,7 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
                     .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                     .groupId(groupId)
                     .paperNo(entity.getPaperNo())
-                    .status("FAILED")
+                    .status(FAILED_STR)
                     .stage(PROCESS_NAME)
                     .tenantId(entity.getTenantId())
                     .templateId(entity.getTemplateId())
@@ -141,7 +141,7 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
                     .templateName(entity.getTemplateName())
                     .build());
 
-            log.error(aMarker, "The Exception occurred ", e);
+            log.error(aMarker, "The Exception occurred {} ", e.toString());
             HandymanException handymanException = new HandymanException(e);
             HandymanException.insertException("test extraction consumer failed for batch/group " + groupId, handymanException, this.action);
 
@@ -167,7 +167,7 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
                         .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                         .groupId(groupId)
                         .paperNo(entity.getPaperNo())
-                        .status("FAILED")
+                        .status(FAILED_STR)
                         .stage(PROCESS_NAME)
                         .tenantId(entity.getTenantId())
                         .templateId(entity.getTemplateId())
@@ -184,7 +184,7 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
                     .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                     .groupId(groupId)
                     .paperNo(entity.getPaperNo())
-                    .status("FAILED")
+                    .status(FAILED_STR)
                     .stage(PROCESS_NAME)
                     .tenantId(entity.getTenantId())
                     .templateId(entity.getTemplateId())

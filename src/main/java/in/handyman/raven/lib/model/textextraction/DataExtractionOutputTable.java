@@ -1,4 +1,4 @@
-package in.handyman.raven.lib.model.TextExtraction;
+package in.handyman.raven.lib.model.textextraction;
 
 import in.handyman.raven.lib.CoproProcessor;
 import lombok.AllArgsConstructor;
