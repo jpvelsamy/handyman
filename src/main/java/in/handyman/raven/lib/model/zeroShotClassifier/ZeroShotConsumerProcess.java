@@ -121,9 +121,9 @@ import java.util.concurrent.TimeUnit;
                     ZeroShotClassifierModelResponse modelResponse = objectMapper.readValue(responseBody, ZeroShotClassifierModelResponse.class);
                     if (modelResponse.getOutputs() != null && !modelResponse.getOutputs().isEmpty()) {
                         modelResponse.getOutputs().forEach(o -> {
-                            o.getData().forEach(ZeroShotClassifierDataItem -> {
+                            o.getData().forEach(zeroShotClassifierDataItem -> {
 
-                                extractedOutputDataRequest(entity,parentObj, ZeroShotClassifierDataItem, objectMapper, modelResponse.getModelName(), modelResponse.getModelVersion());
+                                extractedOutputDataRequest(entity,parentObj, zeroShotClassifierDataItem, objectMapper, modelResponse.getModelName(), modelResponse.getModelVersion());
                             });
                         });
                     }
