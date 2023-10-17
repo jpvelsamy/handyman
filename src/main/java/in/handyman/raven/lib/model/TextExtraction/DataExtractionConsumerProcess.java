@@ -88,11 +88,11 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
         if (Objects.equals("true", tritonRequestActivator)) {
             Request request = new Request.Builder().url(endpoint)
                     .post(RequestBody.create(DataExtractiondata.toString(), mediaType)).build();
-            coproRequestBuilder(entity, request,parentObj,originId,groupId );
+            coproRequestBuilder(entity, request, parentObj, originId, groupId);
         } else {
             Request request = new Request.Builder().url(endpoint)
                     .post(RequestBody.create(jsonRequest, mediaType)).build();
-            tritonRequestBuilder(entity, request, parentObj,originId,groupId);
+            tritonRequestBuilder(entity, request, parentObj, originId, groupId);
         }
 
 
@@ -106,7 +106,7 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
             if (response.isSuccessful()) {
 
                 JSONArray jsonArrayObj = new JSONArray(responseBody);
-                extractedOutputDataRequest(entity, jsonArrayObj, parentObj, originId, groupId, "","");
+                extractedOutputDataRequest(entity, jsonArrayObj, parentObj, originId, groupId, "", "");
 
             } else {
                 parentObj.add(DataExtractionOutputTable.builder()
@@ -123,7 +123,7 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
                         .rootPipelineId(entity.getRootPipelineId())
                         .templateName(entity.getTemplateName())
                         .build());
-                log.error(aMarker, "The Exception occurred in response {}",response.message());
+                log.error(aMarker, "The Exception occurred in response {}", response.message());
             }
         } catch (Exception e) {
             parentObj.add(DataExtractionOutputTable.builder()
@@ -158,7 +158,7 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
                 if (modelResponse.getOutputs() != null && !modelResponse.getOutputs().isEmpty()) {
                     modelResponse.getOutputs().forEach(o -> {
                         JSONArray jsonArrayObj = new JSONArray(o.getData());
-                        extractedOutputDataRequest(entity, jsonArrayObj, parentObj, originId, groupId, modelResponse.getModelName(),modelResponse.getModelVersion());
+                        extractedOutputDataRequest(entity, jsonArrayObj, parentObj, originId, groupId, modelResponse.getModelName(), modelResponse.getModelVersion());
 
                     });
                 }
@@ -202,13 +202,13 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
         }
     }
 
-    private static void extractedOutputDataRequest(DataExtractionInputTable entity, JSONArray jsonArrayObj, List<DataExtractionOutputTable> parentObj, String originId, Integer groupId, String modelName,String modelVersion) {
+    private static void extractedOutputDataRequest(DataExtractionInputTable entity, JSONArray jsonArrayObj, List<DataExtractionOutputTable> parentObj, String originId, Integer groupId, String modelName, String modelVersion) {
 
         String pageContent = jsonArrayObj.getString(0);
         String pageCont = extractPageContent(pageContent);
         String dataExtractionDataItem1 = StringEscapeUtils.escapeJava(pageCont);
 
-        final String flag=(!Objects.isNull(dataExtractionDataItem1) && dataExtractionDataItem1.length() > 5 ) ? "no" : "yes";
+        final String flag = (!Objects.isNull(dataExtractionDataItem1) && dataExtractionDataItem1.length() > 5) ? "no" : "yes";
 
 
         parentObj.add(DataExtractionOutputTable.builder()
