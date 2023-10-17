@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
-import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.CoproProcessor;
 
@@ -14,32 +13,23 @@ import java.time.LocalDateTime;
 
 
 import in.handyman.raven.lib.model.FileMergerPdf;
-import in.handyman.raven.util.CommonQueryUtil;
-import in.handyman.raven.util.ExceptionUtil;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.core.result.ResultIterable;
-import org.jdbi.v3.core.statement.Query;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
-import org.slf4j.MarkerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 public class FileMergerPdfConsumerProcess implements CoproProcessor.ConsumerProcess<FileMergerpdfInputEntity, FileMergerpdfOutputEntity> {
-  private static final MediaType MediaTypeJSON = MediaType.parse("application/json; charset=utf-8");
+  private static final MediaType mediaTypeJSON = MediaType.parse("application/json; charset=utf-8");
   private final ActionExecutionAudit action;
 
   private final Logger log;
@@ -114,88 +104,22 @@ public class FileMergerPdfConsumerProcess implements CoproProcessor.ConsumerProc
                   tritonInputRequest.setInputs(Collections.singletonList(requestBody));
 
                   String jsonRequest = objectMapper.writeValueAsString(tritonInputRequest);
+                  String tritonRequestActivator = action.getContext().get("triton.request.activator");
 
 
-                  if (log.isInfoEnabled()) {
-                    log.info("input object node in the consumer fileMerger  inputFilePath {}", filePathString);
+                  if (Objects.equals("true", tritonRequestActivator)) {
+                    Request request = new Request.Builder().url(endpoint)
+                            .post(RequestBody.create(fileMergerPayload.toString(), mediaTypeJSON)).build();
+                    coproRequestBuilder(entity, request, parentObj);
+                  } else {
+                    Request request = new Request.Builder().url(endpoint)
+                            .post(RequestBody.create(jsonRequest, mediaTypeJSON)).build();
+                    tritonRequestBuilder(entity, request, parentObj);
                   }
-
-                  Request Requests = new Request.Builder().url(endpoint).post(RequestBody.create(jsonRequest, MediaTypeJSON)).build();
-
                   if (log.isInfoEnabled()) {
                     log.info("input object node in the consumer fileMerger coproURL {}, inputFilePath {}", endpoint, filePathString);
                   }
 
-                  try (Response response = new OkHttpClient().newCall(Requests).execute()) {
-                    String responseBody = Objects.requireNonNull(response.body()).string();
-                    if (response.isSuccessful()) {
-                      FileMergerResponse modelResponse = mapper.readValue(responseBody, FileMergerResponse.class);
-
-                      if (modelResponse.getOutputs() != null && !modelResponse.getOutputs().isEmpty()) {
-                        modelResponse.getOutputs().forEach(o -> o.getData().forEach(fileMergerDataItem -> {
-                          try {
-                            FileMergerDataItem fileMergerDataItem1 = mapper.readValue(fileMergerDataItem, new TypeReference<>() {
-                            });
-                            parentObj.add(FileMergerpdfOutputEntity
-                                    .builder()
-                                    .processedFilePath(fileMergerDataItem1.getProcessedFilePath())
-                                    .status(ConsumerProcessApiStatus.COMPLETED.getStatusDescription())
-                                    .stage(fileMerger)
-                                    .processId(entity.getProcessId())
-                                    .message("file merger macro completed")
-                                    .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                                    .lastUpdatedOn(Timestamp.valueOf(LocalDateTime.now()))
-                                    .rootPipelineId(rootPipelineId)
-                                    .modelName(modelResponse.getModelName())
-                                    .tenantId(tenantId)
-                                    .originId(entity.getOriginId())
-                                    .groupId(group_id)
-                                    .modelName(modelResponse.getModelName())
-                                    .fileName(outputFileName)
-                                    .processedFilePath(fileMergerDataItem1.getProcessedFilePath())
-                                    .modelVersion(modelResponse.getModelVersion())
-                                    .build());
-                          } catch (JsonMappingException e) {
-
-                            parentObj.add(FileMergerpdfOutputEntity
-                                    .builder()
-                                    .status(ConsumerProcessApiStatus.FAILED.getStatusDescription())
-                                    .stage(fileMerger)
-                                    .originId(entity.getOriginId())
-                                    .groupId(entity.getGroupId())
-                                    .message("file merger macro failed")
-                                    .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                                    .lastUpdatedOn(Timestamp.valueOf(LocalDateTime.now()))
-                                    .rootPipelineId(rootPipelineId)
-                                    .tenantId(tenantId)
-                                    .modelName(modelResponse.getModelName())
-                                    .modelVersion(modelResponse.getModelVersion())
-                                    .build());
-                            throw new HandymanException("exception in processing triton output response node",e,action);
-                          } catch (JsonProcessingException e) {
-                            parentObj.add(FileMergerpdfOutputEntity
-                                    .builder()
-                                    .status(ConsumerProcessApiStatus.FAILED.getStatusDescription())
-                                    .stage(fileMerger)
-                                    .originId(entity.getOriginId())
-                                    .groupId(entity.getGroupId())
-                                    .message("file merger macro failed")
-                                    .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                                    .lastUpdatedOn(Timestamp.valueOf(LocalDateTime.now()))
-                                    .rootPipelineId(rootPipelineId)
-                                    .tenantId(tenantId)
-                                    .modelName(modelResponse.getModelName())
-                                    .modelVersion(modelResponse.getModelVersion())
-                                    .build());
-                            throw new HandymanException("exception in processing triton input node",e,action);
-                          }
-                        }));
-                      }
-                    } else {
-                      // Handle non-successful response here
-                      log.error(aMarker, "Non-successful response received: {}", response.code());
-                    }
-                  }
 
 
                 } catch (IOException ex) {
@@ -214,7 +138,105 @@ public class FileMergerPdfConsumerProcess implements CoproProcessor.ConsumerProc
       return parentObj;
     }
 
+  private void coproRequestBuilder(FileMergerpdfInputEntity entity, Request request, List<FileMergerpdfOutputEntity> parentObj) {
+      try (Response response = new OkHttpClient().newCall(request).execute()) {
+        String responseBody = Objects.requireNonNull(response.body()).string();
+        if (response.isSuccessful()) {
+          FileMergerResponse modelResponse = mapper.readValue(responseBody, FileMergerResponse.class);
+
+          if (modelResponse.getOutputs() != null && !modelResponse.getOutputs().isEmpty()) {
+            modelResponse.getOutputs().forEach(o -> o.getData().forEach(fileMergerDataItem -> {
+              extractOutputDataRequest(entity, fileMergerDataItem, parentObj, "", "");
+            }));
+          }
+        } else {
+          // Handle non-successful response here
+          log.error(aMarker, "Non-successful response received: {}", response.code());
+        }
+      } catch (IOException e) {
+          throw new RuntimeException(e);
+      }
+  }
+
+
+
+  private void tritonRequestBuilder(FileMergerpdfInputEntity entity, Request request, List<FileMergerpdfOutputEntity> parentObj) throws IOException {
+    try (Response response = new OkHttpClient().newCall(request).execute()) {
+      String responseBody = Objects.requireNonNull(response.body()).string();
+      if (response.isSuccessful()) {
+        FileMergerResponse modelResponse = mapper.readValue(responseBody, FileMergerResponse.class);
+
+        if (modelResponse.getOutputs() != null && !modelResponse.getOutputs().isEmpty()) {
+          modelResponse.getOutputs().forEach(o -> o.getData().forEach(fileMergerDataItem -> {
+            extractOutputDataRequest(entity, fileMergerDataItem, parentObj, "", "");
+          }));
+        }
+      } else {
+        // Handle non-successful response here
+        log.error(aMarker, "Non-successful response received: {}", response.code());
+      }
     }
+  }
+
+  private void extractOutputDataRequest(FileMergerpdfInputEntity entity, String fileMergerDataItem, List<FileMergerpdfOutputEntity> parentObj, String modelName, String modelVersion) {
+    try {
+      FileMergerDataItem fileMergerDataItem1 = mapper.readValue(fileMergerDataItem, new TypeReference<>() {
+      });
+      parentObj.add(FileMergerpdfOutputEntity
+              .builder()
+              .processedFilePath(fileMergerDataItem1.getProcessedFilePath())
+              .status(ConsumerProcessApiStatus.COMPLETED.getStatusDescription())
+              .stage("fileMerger")
+              .processId(entity.getProcessId())
+              .message("file merger macro completed")
+              .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+              .lastUpdatedOn(Timestamp.valueOf(LocalDateTime.now()))
+              .rootPipelineId(entity.getRootPipelineId())
+              .tenantId(entity.getTenantId())
+              .originId(entity.getOriginId())
+              .groupId(entity.getGroupId())
+              .modelName(modelName)
+              .fileName(entity.getOutputFileName())
+              .processedFilePath(fileMergerDataItem1.getProcessedFilePath())
+              .modelVersion(modelVersion)
+              .build());
+    } catch (JsonMappingException e) {
+
+      parentObj.add(FileMergerpdfOutputEntity
+              .builder()
+              .status(ConsumerProcessApiStatus.FAILED.getStatusDescription())
+              .stage("fileMerger")
+              .originId(entity.getOriginId())
+              .groupId(entity.getGroupId())
+              .message("file merger macro failed")
+              .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+              .lastUpdatedOn(Timestamp.valueOf(LocalDateTime.now()))
+              .rootPipelineId(entity.getRootPipelineId())
+              .tenantId(entity.getTenantId())
+              .modelName(modelName)
+              .modelVersion(modelVersion)
+              .build());
+      throw new HandymanException("exception in processing triton output response node",e,action);
+    } catch (JsonProcessingException e) {
+      parentObj.add(FileMergerpdfOutputEntity
+              .builder()
+              .status(ConsumerProcessApiStatus.FAILED.getStatusDescription())
+              .stage("fileMerger")
+              .originId(entity.getOriginId())
+              .groupId(entity.getGroupId())
+              .message("file merger macro failed")
+              .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+              .lastUpdatedOn(Timestamp.valueOf(LocalDateTime.now()))
+              .rootPipelineId(entity.getRootPipelineId())
+              .tenantId(entity.getTenantId())
+              .modelName(modelName)
+              .modelVersion(modelVersion)
+              .build());
+      throw new HandymanException("exception in processing triton input node",e,action);
+    }
+  }
+
+}
 
 
 
