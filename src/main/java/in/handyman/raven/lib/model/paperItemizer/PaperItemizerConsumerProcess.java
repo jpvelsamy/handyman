@@ -16,19 +16,18 @@ import java.io.File;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.json.XMLTokener.entity;
 
 public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProcess<PaperItemizerInputTable, PaperItemizerOutputTable> {
 
     private final Logger log;
     private final Marker aMarker;
     private final ObjectMapper mapper = new ObjectMapper();
-    private static final MediaType MediaTypeJSON = MediaType
+    private static final MediaType mediaTypeJson = MediaType
             .parse("application/json; charset=utf-8");
     private final String outputDir;
 
@@ -76,21 +75,35 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
 
         String jsonRequest = objectMapper.writeValueAsString(tritonInputRequest);
 
-        log.info(aMarker, "coproProcessor mapper object node {}", jsonRequest);
-        Request request = new Request.Builder().url(endpoint)
-                .post(RequestBody.create(jsonRequest, MediaTypeJSON)).build();
+        String tritonRequestActivator = action.getContext().get("triton.request.activator");
+
+        if (Objects.equals("true", tritonRequestActivator)) {
+            Request request = new Request.Builder().url(endpoint)
+                    .post(RequestBody.create(paperitemizerData.toString(), mediaTypeJson)).build();
+            coproRequestBuider(entity, request,objectMapper, parentObj);
+        } else {
+            Request request = new Request.Builder().url(endpoint)
+                    .post(RequestBody.create(jsonRequest, mediaTypeJson)).build();
+            tritonRequestBuilder(entity, request,objectMapper, parentObj);
+        }
+
+
 
         if (log.isInfoEnabled()) {
             log.info(aMarker, "Request has been build with the parameters \n URI : {}, with inputFilePath {} and outputDir {}", endpoint, inputFilePath, outputDir);
         }
-        AtomicInteger atomicInteger = new AtomicInteger();
+
+
+        log.info(aMarker, "coproProcessor consumer process with output entity {}", parentObj);
+        return parentObj;
+    }
+
+    private void coproRequestBuider(PaperItemizerInputTable entity, Request request, ObjectMapper objectMapper, List<PaperItemizerOutputTable> parentObj) {
         String originId = entity.getOriginId();
         Integer groupId = entity.getGroupId();
         String templateId = entity.getTemplateId();
         Long tenantId = entity.getTenantId();
         Long processId = entity.getProcessId();
-
-
         try (Response response = httpclient.newCall(request).execute()) {
 
             if (log.isInfoEnabled()) {
@@ -103,49 +116,7 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
                 if (paperItemizerResponse.getOutputs() != null && !paperItemizerResponse.getOutputs().isEmpty()) {
                     paperItemizerResponse.getOutputs().forEach(o -> o.getData().forEach(paperItemizerDataItem ->
                             {
-                                try {
-                                    PaperItemizerDataItem paperItemizeOutputData = objectMappers.readValue(paperItemizerDataItem, PaperItemizerDataItem.class);
-                                    paperItemizeOutputData.getItemizedPapers().forEach(itemizerPapers -> {
-                                        Long paperNo = getPaperNobyFileName(itemizerPapers);
-                                        parentObj.add(
-                                                PaperItemizerOutputTable
-                                                        .builder()
-                                                        .processedFilePath(itemizerPapers)
-                                                        .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
-                                                        .groupId(groupId)
-                                                        .templateId(templateId)
-                                                        .tenantId(tenantId)
-                                                        .processId(processId)
-                                                        .paperNo(paperNo)
-                                                        .status("COMPLETED")
-                                                        .stage(paperItemizerProcessName)
-                                                        .message("Paper Itemizer macro completed")
-                                                        .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                                                        .rootPipelineId(rootPipelineId)
-                                                        .modelName(paperItemizerResponse.getModelName())
-                                                        .modelVersion(paperItemizerResponse.getModelVersion())
-                                                        .build());
-                                    });
-
-                                } catch (JsonProcessingException e) {
-                                    parentObj.add(
-                                            PaperItemizerOutputTable
-                                                    .builder()
-                                                    .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
-                                                    .groupId(groupId)
-                                                    .processId(processId)
-                                                    .templateId(templateId)
-                                                    .tenantId(tenantId)
-                                                    .status("FAILED")
-                                                    .stage(paperItemizerProcessName)
-                                                    .message(e.getMessage())
-                                                    .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                                                    .rootPipelineId(rootPipelineId)
-                                                    .build());
-                                    HandymanException handymanException = new HandymanException(e);
-                                    HandymanException.insertException("Paper Itemizer  consumer failed for originId " + originId, handymanException, this.action);
-                                    log.error(aMarker, "The Exception occurred in request {}", request, e);
-                                }
+                                extractedOutputRequest(entity, request, objectMapper, parentObj, "", "" , paperItemizerDataItem);
 
 
                             }
@@ -162,10 +133,10 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
                                 .templateId(templateId)
                                 .tenantId(tenantId)
                                 .status("FAILED")
-                                .stage(paperItemizerProcessName)
+                                .stage("paperItemizer")
                                 .message(response.message())
                                 .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                                .rootPipelineId(rootPipelineId)
+                                .rootPipelineId(entity.getRootPipelineId())
                                 .build());
                 log.error(aMarker, "Error in response {}", response.message());
             }
@@ -180,18 +151,138 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
                             .templateId(templateId)
                             .tenantId(tenantId)
                             .status("FAILED")
-                            .stage(paperItemizerProcessName)
+                            .stage("paperItemizer")
                             .message(exception.getMessage())
                             .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                            .rootPipelineId(rootPipelineId)
+                            .rootPipelineId(entity.getRootPipelineId())
                             .build());
             HandymanException handymanException = new HandymanException(exception);
             HandymanException.insertException("Paper Itemizer  consumer failed for originId " + originId, handymanException, this.action);
             log.error(aMarker, "The Exception occurred in request {}", request, exception);
         }
-        atomicInteger.set(0);
-        log.info(aMarker, "coproProcessor consumer process with output entity {}", parentObj);
-        return parentObj;
+    }
+
+
+
+    private void tritonRequestBuilder(PaperItemizerInputTable entity, Request request, ObjectMapper objectMapper, List<PaperItemizerOutputTable> parentObj) {
+        String originId = entity.getOriginId();
+        Integer groupId = entity.getGroupId();
+        String templateId = entity.getTemplateId();
+        Long tenantId = entity.getTenantId();
+        Long processId = entity.getProcessId();
+
+
+        try (Response response = httpclient.newCall(request).execute()) {
+
+
+            if (log.isInfoEnabled()) {
+                log.info(aMarker, "coproProcessor consumer process response with status{}, and message as {}, ", response.isSuccessful(), response.message());
+            }
+            if (response.isSuccessful()) {
+                String responseBody = response.body().string();
+                PaperItemizerResponse paperItemizerResponse = objectMapper.readValue(responseBody, PaperItemizerResponse.class);
+                if (paperItemizerResponse.getOutputs() != null && !paperItemizerResponse.getOutputs().isEmpty()) {
+                    paperItemizerResponse.getOutputs().forEach(o -> o.getData().forEach(paperItemizerDataItem ->
+                            {
+
+                                extractedOutputRequest(entity, request, objectMapper, parentObj, paperItemizerResponse.getModelName(), paperItemizerResponse.getModelVersion(), paperItemizerDataItem);
+
+
+
+
+                            }
+                    ));
+                }
+
+            } else {
+                parentObj.add(
+                        PaperItemizerOutputTable
+                                .builder()
+                                .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                                .groupId(groupId)
+                                .processId(processId)
+                                .templateId(templateId)
+                                .tenantId(tenantId)
+                                .status("FAILED")
+                                .stage("paperItemizer")
+                                .message(response.message())
+                                .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                                .rootPipelineId(entity.getRootPipelineId())
+                                .build());
+                log.error(aMarker, "Error in response {}", response.message());
+            }
+
+        } catch (Exception exception) {
+            parentObj.add(
+                    PaperItemizerOutputTable
+                            .builder()
+                            .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                            .groupId(groupId)
+                            .processId(processId)
+                            .templateId(templateId)
+                            .tenantId(tenantId)
+                            .status("FAILED")
+                            .stage("paperItemizer")
+                            .message(exception.getMessage())
+                            .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                            .rootPipelineId(entity.getRootPipelineId())
+                            .build());
+            HandymanException handymanException = new HandymanException(exception);
+            HandymanException.insertException("Paper Itemizer  consumer failed for originId " + originId, handymanException, this.action);
+            log.error(aMarker, "The Exception occurred in request {}", request, exception);
+        }
+    }
+
+    private void extractedOutputRequest(PaperItemizerInputTable entity, Request request, ObjectMapper objectMapper, List<PaperItemizerOutputTable> parentObj, String modelName,String modelVersion, String paperItemizerDataItem) {
+        String originId = entity.getOriginId();
+        Integer groupId = entity.getGroupId();
+        String templateId = entity.getTemplateId();
+        Long tenantId = entity.getTenantId();
+        Long processId = entity.getProcessId();
+        try {
+
+            PaperItemizerDataItem paperItemizeOutputData = objectMapper.readValue(paperItemizerDataItem, PaperItemizerDataItem.class);
+            paperItemizeOutputData.getItemizedPapers().forEach(itemizerPapers -> {
+                Long paperNo = getPaperNobyFileName(itemizerPapers);
+                parentObj.add(
+                        PaperItemizerOutputTable
+                                .builder()
+                                .processedFilePath(itemizerPapers)
+                                .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                                .groupId(groupId)
+                                .templateId(templateId)
+                                .tenantId(tenantId)
+                                .processId(processId)
+                                .paperNo(paperNo)
+                                .status("COMPLETED")
+                                .stage("paperItemizer")
+                                .message("Paper Itemizer macro completed")
+                                .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                                .rootPipelineId(entity.getRootPipelineId())
+                                .modelName(modelName)
+                                .modelVersion(modelVersion)
+                                .build());
+            });
+
+        } catch (JsonProcessingException e) {
+            parentObj.add(
+                    PaperItemizerOutputTable
+                            .builder()
+                            .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                            .groupId(groupId)
+                            .processId(processId)
+                            .templateId(templateId)
+                            .tenantId(tenantId)
+                            .status("FAILED")
+                            .stage("paperItemizer")
+                            .message(e.getMessage())
+                            .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                            .rootPipelineId(entity.getRootPipelineId())
+                            .build());
+            HandymanException handymanException = new HandymanException(e);
+            HandymanException.insertException("Paper Itemizer  consumer failed for originId " + originId, handymanException, this.action);
+            log.error(aMarker, "The Exception occurred in request {}", request, e);
+        }
     }
 
 
