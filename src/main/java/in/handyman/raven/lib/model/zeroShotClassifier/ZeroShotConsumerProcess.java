@@ -66,7 +66,7 @@ import java.util.concurrent.TimeUnit;
             //payload
 
             ZeroShotClassifierData data = new ZeroShotClassifierData();
-            data.setRootPipelineId(rootPipelineId);
+            data.setRootPipelineId(String.valueOf(rootPipelineId));
             data.setActionId(actionId);
             data.setProcess(entity.getProcessId());
             data.setOriginId(originId);

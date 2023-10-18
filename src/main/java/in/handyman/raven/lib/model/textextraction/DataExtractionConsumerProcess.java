@@ -103,10 +103,10 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
         try (Response response = httpclient.newCall(request).execute()) {
             String responseBody = Objects.requireNonNull(response.body()).string();
 
+            ObjectMapper mapper=new ObjectMapper();
+            DataExtractionDataItem dataExtractionDataItem=mapper.readValue(responseBody,DataExtractionDataItem.class);
             if (response.isSuccessful()) {
-
-                JSONArray jsonArrayObj = new JSONArray(responseBody);
-                extractedOutputDataRequest(entity, jsonArrayObj, parentObj, originId, groupId, "", "");
+                extractedOutputDataRequest(entity, dataExtractionDataItem.getPageContent(), parentObj, originId, groupId, "", "");
 
             } else {
                 parentObj.add(DataExtractionOutputTable.builder()
@@ -158,7 +158,7 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
                 if (modelResponse.getOutputs() != null && !modelResponse.getOutputs().isEmpty()) {
                     modelResponse.getOutputs().forEach(o -> {
                         JSONArray jsonArrayObj = new JSONArray(o.getData());
-                        extractedOutputDataRequest(entity, jsonArrayObj, parentObj, originId, groupId, modelResponse.getModelName(), modelResponse.getModelVersion());
+                        extractedOutputDataRequest(entity, jsonArrayObj.toString(), parentObj, originId, groupId, modelResponse.getModelName(), modelResponse.getModelVersion());
 
                     });
                 }
@@ -202,18 +202,14 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
         }
     }
 
-    private static void extractedOutputDataRequest(DataExtractionInputTable entity, JSONArray jsonArrayObj, List<DataExtractionOutputTable> parentObj, String originId, Integer groupId, String modelName, String modelVersion) {
-
-        String pageContent = jsonArrayObj.getString(0);
-        String pageCont = extractPageContent(pageContent);
-        String dataExtractionDataItem1 = StringEscapeUtils.escapeJava(pageCont);
-
-        final String flag = (!Objects.isNull(dataExtractionDataItem1) && dataExtractionDataItem1.length() > 5) ? "no" : "yes";
+    private static void extractedOutputDataRequest(DataExtractionInputTable entity, String stringDataItem, List<DataExtractionOutputTable> parentObj, String originId, Integer groupId, String modelName, String modelVersion) {
 
 
+
+        final String flag = (!Objects.isNull(stringDataItem) && stringDataItem.length() > 5) ? "no" : "yes";
         parentObj.add(DataExtractionOutputTable.builder()
                 .filePath(new File(entity.getFilePath()).getAbsolutePath())
-                .extractedText(dataExtractionDataItem1)
+                .extractedText(stringDataItem)
                 .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                 .groupId(groupId)
                 .paperNo(entity.getPaperNo())
