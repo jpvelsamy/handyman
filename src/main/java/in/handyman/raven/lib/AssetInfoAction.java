@@ -27,9 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -63,7 +61,7 @@ public class AssetInfoAction implements IActionExecution {
     @Override
     public void execute() throws Exception {
         try {
-            log.info(aMarker, "Asset Info Action for {} has been started" , assetInfo.getName());
+            log.info(aMarker, "Asset Info Action for {} has been started", assetInfo.getName());
 
             final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(assetInfo.getResourceConn());
             final List<inputResult> tableInfos = new ArrayList<>();
@@ -85,7 +83,7 @@ public class AssetInfoAction implements IActionExecution {
             tableInfos.forEach(tableInfo -> {
                 try {
                     log.info(aMarker, "executing  for the file {}", tableInfo);
-                    final String filePathString = Optional.ofNullable(tableInfo.getFile_path()).map(String::valueOf).orElse("[]");
+                    final String filePathString = Optional.ofNullable(tableInfo.getFilePath()).map(String::valueOf).orElse("[]");
                     log.info(aMarker, "file path string {}", filePathString);
                     File file = new File(filePathString);
                     log.info(aMarker, "created file {}", file);
@@ -120,7 +118,7 @@ public class AssetInfoAction implements IActionExecution {
                 } catch (Exception e) {
                     log.error(aMarker, "Error in file info for {}", tableInfo, e);
                     HandymanException handymanException = new HandymanException(e);
-                    HandymanException.insertException("Error in file info for "+ tableInfo, handymanException, action);
+                    HandymanException.insertException("Error in file info for " + tableInfo, handymanException, action);
                 }
             });
             if (!fileInfos.isEmpty()) {
@@ -137,7 +135,7 @@ public class AssetInfoAction implements IActionExecution {
             log.error(aMarker, "The Exception occurred ", e);
             throw new HandymanException("Exception occurred in asset info execute", e, action);
         }
-        log.info(aMarker, "Asset Info Action for {} has been completed" , assetInfo.getName());
+        log.info(aMarker, "Asset Info Action for {} has been completed", assetInfo.getName());
     }
 
     public FileInfo insertQuery(File file) {
@@ -153,18 +151,22 @@ public class AssetInfoAction implements IActionExecution {
             }
             log.info(aMarker, "checksum for file {} and its {}", file, sha1Hex);
             var fileSize = file.length() / 1024;
+            String fileExtension = FilenameUtils.getExtension(file.getName());
+            String fielAbsolutePath = file.getAbsolutePath();
+            String base64ForPathValue = getBase64ForPath(fielAbsolutePath, fileExtension);
             fileInfoBuilder = FileInfo.builder()
-                    .file_id(FilenameUtils.removeExtension(file.getName()) + "_" + ((int) (900000 * random() + 100000)))
-                    .file_checksum(sha1Hex)
-                    .file_extension(FilenameUtils.getExtension(file.getName()))
-                    .file_name(FilenameUtils.removeExtension(file.getName()))
-                    .file_path(file.getAbsolutePath())
-                    .file_size(String.valueOf(fileSize))
-                    .root_pipeline_id(Long.valueOf(action.getContext().get("pipeline-id")))
-                    .process_id(Long.valueOf(action.getContext().get("process-id")))
+                    .fileId(FilenameUtils.removeExtension(file.getName()) + "_" + ((int) (900000 * random() + 100000)))
+                    .fileChecksum(sha1Hex)
+                    .fileExtension(fileExtension)
+                    .fileName(FilenameUtils.removeExtension(file.getName()))
+                    .filePath(fielAbsolutePath)
+                    .fileSize(String.valueOf(fileSize))
+                    .rootPipelineId(Long.valueOf(action.getContext().get("pipeline-id")))
+                    .processId(Long.valueOf(action.getContext().get("process-id")))
+                    .encode(base64ForPathValue)
                     .build();
             log.info(aMarker, "File Info Builder {}", fileInfoBuilder);
-        } catch (Exception ex){
+        } catch (Exception ex) {
             log.error(aMarker, "error occurred in builder {}", ExceptionUtil.toString(ex));
             throw new HandymanException("Failed to execute {} ", ex, action);
         }
@@ -176,12 +178,12 @@ public class AssetInfoAction implements IActionExecution {
             resultQueue.forEach(insert -> {
                         jdbi.useTransaction(handle -> {
                             try {
-                                handle.createUpdate("INSERT INTO " + assetInfo.getAssetTable() + "(file_id,process_id,root_pipeline_id, file_checksum, file_extension, file_name, file_path, file_size)" +
-                                                "VALUES(:file_id,:process_id, :root_pipeline_id, :file_checksum, :file_extension, :file_name, :file_path, :file_size);")
+                                handle.createUpdate("INSERT INTO " + assetInfo.getAssetTable() + "(file_id,process_id,root_pipeline_id, file_checksum, file_extension, file_name, file_path, file_size,encode)" +
+                                                "VALUES(:fileId,:processId, :rootPipelineId, :fileChecksum, :fileExtension, :fileName, :filePath, :fileSize,:encode);")
                                         .bindBean(insert).execute();
                                 log.info(aMarker, "inserted {} into source of origin", insert);
                             } catch (Throwable t) {
-                                insertSummaryAudit(jdbi, 0, 0, 1, "failed in batch for " + insert.getFile_name());
+                                insertSummaryAudit(jdbi, 0, 0, 1, "failed in batch for " + insert.getFileName());
                                 log.error(aMarker, "error inserting result {}", resultQueue, t);
                             }
 
@@ -192,7 +194,7 @@ public class AssetInfoAction implements IActionExecution {
             insertSummaryAudit(jdbi, 0, 0, resultQueue.size(), "failed in batch insert");
             log.error(aMarker, "error inserting result {}", resultQueue, e);
             HandymanException handymanException = new HandymanException(e);
-            HandymanException.insertException("error inserting result"+ resultQueue, handymanException, action);
+            HandymanException.insertException("error inserting result" + resultQueue, handymanException, action);
         }
     }
 
@@ -219,6 +221,28 @@ public class AssetInfoAction implements IActionExecution {
         }
     }
 
+    public String getBase64ForPath(String imagePath,String fileExtension) throws IOException {
+        String base64Image = new String();
+        try {
+            if(!Objects.equals(fileExtension, "pdf")) {
+
+                // Read the image file into a byte array
+                byte[] imageBytes = Files.readAllBytes(Path.of(imagePath));
+
+                // Encode the byte array to Base64
+                base64Image = Base64.getEncoder().encodeToString(imageBytes);
+
+                // Print the Base64 encoded string
+                log.info(aMarker, "base 64 created for this file {}", imagePath);
+            }
+        } catch (Exception e) {
+            log.error(aMarker, "error occurred in creating base 64 {}", ExceptionUtil.toString(e));
+            throw new HandymanException("error occurred in creating base 64 {} ", e, action);
+        }
+
+        return base64Image;
+    }
+
 
     @Override
     public boolean executeIf() throws Exception {
@@ -231,14 +255,15 @@ public class AssetInfoAction implements IActionExecution {
     @NoArgsConstructor
     @Builder
     public static class FileInfo {
-        private String file_id;
-        private Long process_id;
-        private Long root_pipeline_id;
-        private String file_checksum;
-        private String file_extension;
-        private String file_name;
-        private String file_path;
-        private String file_size;
+        private String fileId;
+        private Long processId;
+        private Long rootPipelineId;
+        private String fileChecksum;
+        private String fileExtension;
+        private String fileName;
+        private String filePath;
+        private String fileSize;
+        private String encode;
     }
 
     @AllArgsConstructor
@@ -260,13 +285,13 @@ public class AssetInfoAction implements IActionExecution {
     @Builder
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class inputResult {
-        private int inbound_id;
-        private String created_on;
-        private String created_user_id;
-        private String last_updated_on;
-        private String last_updated_user_id;
-        private String tenant_id;
-        private String file_path;
-        private String document_id;
+        private int inboundId;
+        private String createdOn;
+        private String createdUserId;
+        private String lastUpdatedOn;
+        private String lastUpdatedUserId;
+        private String tenantId;
+        private String filePath;
+        private String documentId;
     }
 }
