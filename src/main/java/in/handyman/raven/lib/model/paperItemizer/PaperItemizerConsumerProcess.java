@@ -52,7 +52,7 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
         String inputFilePath = entity.getFilePath();
         Long rootPipelineId = entity.getRootPipelineId();
         final String paperItemizerProcessName = "PAPER_ITEMIZER";
-        Long actionId = action.getActionId();
+        Long  actionId = Long.parseLong(action.getContext().get("actionId")) ;
         ObjectMapper objectMapper = new ObjectMapper();
 //payload
         PaperItemizerData paperitemizerData = new PaperItemizerData();
@@ -79,7 +79,7 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
 
         if (Objects.equals("true", tritonRequestActivator)) {
             Request request = new Request.Builder().url(endpoint)
-                    .post(RequestBody.create(paperitemizerData.toString(), mediaTypeJson)).build();
+                    .post(RequestBody.create(jsonInputRequest, mediaTypeJson)).build();
             coproRequestBuider(entity, request,objectMapper, parentObj);
         } else {
             Request request = new Request.Builder().url(endpoint)
@@ -111,7 +111,6 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
             }
             if (response.isSuccessful()) {
                 String responseBody = response.body().string();
-                ObjectMapper objectMappers = new ObjectMapper();
                 extractedOutputRequest(entity, objectMapper, parentObj, "", "" , responseBody);
 
             } else {

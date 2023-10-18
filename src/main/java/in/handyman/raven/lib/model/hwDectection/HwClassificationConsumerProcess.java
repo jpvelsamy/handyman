@@ -48,9 +48,9 @@ public class HwClassificationConsumerProcess implements CoproProcessor.ConsumerP
 
         List<HwClassificationOutputTable> parentObj = new ArrayList<>();
         String entityFilePath = entity.getFilePath();
-        Long actionId=action.getActionId();
         final String PAPER_CLASSIFICATION_PROCESS="PAPER_CLASSIFICATION";
-        long rootpipelineId= entity.getRootPipelineId();
+        Long rootpipelineId = action.getRootPipelineId();
+        Long  actionId = Long.parseLong(action.getContext().get("actionId")) ;
         String modelPath = action.getModelPath();
         String filePath = String.valueOf(entity.getFilePath());
         String outputDir = String.valueOf(entity.getOutputDir());
@@ -58,7 +58,7 @@ public class HwClassificationConsumerProcess implements CoproProcessor.ConsumerP
 
         //payload
         HwDetectionPayload hwDetectionPayload = new HwDetectionPayload();
-        hwDetectionPayload.setRootPipelineId(Long.valueOf(rootpipelineId));
+        hwDetectionPayload.setRootPipelineId(rootpipelineId);
         hwDetectionPayload.setActionId(actionId);
         hwDetectionPayload.setProcess(PAPER_CLASSIFICATION_PROCESS);
         hwDetectionPayload.setInputFilePath(filePath);
@@ -85,7 +85,7 @@ public class HwClassificationConsumerProcess implements CoproProcessor.ConsumerP
 
         if (Objects.equals("true", tritonRequestActivator)) {
             Request request = new Request.Builder().url(endpoint)
-                    .post(RequestBody.create(hwDetectionPayload.toString(), mediaTypeJson)).build();
+                    .post(RequestBody.create(jsonInputRequest, mediaTypeJson)).build();
             coproRequestBuilder(entity, request, parentObj);
         } else {
             Request request = new Request.Builder().url(endpoint)

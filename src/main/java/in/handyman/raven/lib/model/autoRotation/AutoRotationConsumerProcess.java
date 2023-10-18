@@ -60,9 +60,9 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
 
 
         String rootpipelineId = String.valueOf(entity.getRootPipelineId());
-        String process = String.valueOf(entity.process);
+        String process = "auto rotation";
         String filePath = String.valueOf(entity.getFilePath());
-        Long actionId = action.getActionId();
+        Long  actionId = Long.parseLong(action.getContext().get("actionId")) ;
 
 
         //payload
@@ -99,7 +99,7 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
 
         if (Objects.equals("true", tritonRequestActivator)) {
             Request request = new Request.Builder().url(endpoint)
-                    .post(RequestBody.create(autoRotationRequest.toString(), MEDIA_TYPE_JSON)).build();
+                    .post(RequestBody.create(jsonInputRequest, MEDIA_TYPE_JSON)).build();
             coproRequestBuider(entity, request, parentObj);
         } else {
             Request request = new Request.Builder().url(endpoint)

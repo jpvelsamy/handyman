@@ -62,7 +62,7 @@ public class TemplateDetectionConsumerProcess implements CoproProcessor.Consumer
         List<String> attributes = entity.getQuestions();
         String inputFilePath = entity.getFilePath();
         Long rootPipelineId = entity.getRootPipelineId();
-        Long actionId = action.getActionId();
+        Long actionId = Long.parseLong(action.getContext().get("actionId"));
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -94,7 +94,7 @@ public class TemplateDetectionConsumerProcess implements CoproProcessor.Consumer
 
         if (Objects.equals("true", tritonRequestActivator)) {
             Request request = new Request.Builder().url(endpoint)
-                    .post(RequestBody.create(templateDetectionDataInput.toString(), mediaTypeJSON)).build();
+                    .post(RequestBody.create(jsonInputRequest, mediaTypeJSON)).build();
             coproRequestBuider(entity, request, objectMapper ,outputObjectList);
         } else {
             Request request = new Request.Builder().url(endpoint)
@@ -161,8 +161,8 @@ public class TemplateDetectionConsumerProcess implements CoproProcessor.Consumer
                     handymanException,
                     this.action);
             log.error(aMarker, "The Exception occurred in getting response {}", ExceptionUtil.toString(e));
-        }
 
+        }
 
     }
     private void tritonRequestBuilder(TemplateDetectionInputTable entity, Request request, ObjectMapper objectMapper, List<TemplateDetectionOutputTable> outputObjectList) {
@@ -311,8 +311,10 @@ public class TemplateDetectionConsumerProcess implements CoproProcessor.Consumer
                     handymanException,
                     this.action);
             log.error(aMarker, "The Exception occurred in processing response {}", ExceptionUtil.toString(e));
-        }
-    }
 
+
+        }
+
+    }
 
 }

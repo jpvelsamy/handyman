@@ -2,6 +2,7 @@ package in.handyman.raven.lib.model.pharseMatch;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
@@ -47,11 +48,15 @@ public class PhraseMatchConsumerProcess implements CoproProcessor.ConsumerProces
         List<PhraseMatchOutputTable> parentObj = new ArrayList<>();
         String originId = entity.getOriginId();
         String groupId = entity.getGroupId();
-        String pipelineId = String.valueOf(entity.getRootPipelineId());
+        Long pipelineId = action.getRootPipelineId();
         String processId = String.valueOf(entity.getProcessId());
         String paperNo = String.valueOf(entity.getPaperNo());
-        Long actionId = action.getActionId();
+        Long actionId = Long.parseLong(action.getContext().get("actionId"));
+        String pageContent = String.valueOf(entity.getPageContent());
+
         ObjectMapper objectMapper = new ObjectMapper();
+        Map<String,List<String>> keysToFilterObject = objectMapper.readValue(entity.getTruthPlaceholder(), new TypeReference<Map<String, List<String>>>() {
+        });
 
 
 
@@ -63,10 +68,12 @@ public class PhraseMatchConsumerProcess implements CoproProcessor.ConsumerProces
         data.setOriginId(originId);
         data.setPaperNo(paperNo);
         data.setGroupId(groupId);
+        data.setPageContent(pageContent);
+        data.setKeysToFilter(keysToFilterObject);
+
 
         String jsonInputRequest = objectMapper.writeValueAsString(data);
 
-        PharseMatchRequest requests = new PharseMatchRequest();
         TritonRequest requestBody = new TritonRequest();
         requestBody.setName("PM START");
         requestBody.setShape(List.of(1, 1));
@@ -77,14 +84,14 @@ public class PhraseMatchConsumerProcess implements CoproProcessor.ConsumerProces
         TritonInputRequest tritonInputRequest=new TritonInputRequest();
         tritonInputRequest.setInputs(Collections.singletonList(requestBody));
 
-        String jsonRequest = objectMapper.writeValueAsString(requests);
+        String jsonRequest = objectMapper.writeValueAsString(tritonInputRequest);
 
         String tritonRequestActivator = action.getContext().get("triton.request.activator");
 
 
         if (Objects.equals("true", tritonRequestActivator)) {
             Request request = new Request.Builder().url(endpoint)
-                    .post(RequestBody.create(data.toString(), MediaTypeJSON)).build();
+                    .post(RequestBody.create(jsonInputRequest, MediaTypeJSON)).build();
             coproRequestBuilder(entity,parentObj, request,objectMapper);
         } else {
             Request request = new Request.Builder().url(endpoint)
@@ -199,28 +206,34 @@ public class PhraseMatchConsumerProcess implements CoproProcessor.ConsumerProces
         final Integer paperNo = Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null);
         Long rootPipelineId = entity.getRootPipelineId();
         try {
-            PharseMatchDataItem pharseMatchOutputData = objectMapper.readValue(pharseMatchDataItem, PharseMatchDataItem.class);
+           // PharseMatchDataItem pharseMatchOutputData = objectMapper.readValue(pharseMatchDataItem, PharseMatchDataItem.class);
+            List<PharseMatchDataItem> pharseMatchOutputData = objectMapper.readValue(pharseMatchDataItem, new TypeReference<List<PharseMatchDataItem>>() {
 
-            parentObj.add(
-                    PhraseMatchOutputTable
-                            .builder()
-                            .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
-                            .groupId(Optional.ofNullable(groupId).map(String::valueOf).orElse(null))
-                            .paperNo(paperNo)
-                            .status("COMPLETED")
-                            .stage(actionName)
-                            .message("Completed API call zero shot classifier")
-                            .rootPipelineId(rootPipelineId)
-                            .modelName(modelName)
-                            .truthEntity(pharseMatchOutputData.getTruthEntity())
-                            .isKeyPresent(pharseMatchOutputData.getIsKeyPresent())
-                            .entity(pharseMatchOutputData.getEntity())
-                            .modelVersion(modelVersion)
-                            .build());
+            });
+
+            for (PharseMatchDataItem item : pharseMatchOutputData) {
+
+                parentObj.add(
+                        PhraseMatchOutputTable
+                                .builder()
+                                .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                                .groupId(Optional.ofNullable(groupId).map(String::valueOf).orElse(null))
+                                .paperNo(paperNo)
+                                .status("COMPLETED")
+                                .stage(actionName)
+                                .message("Completed API call zero shot classifier")
+                                .rootPipelineId(rootPipelineId)
+                                .modelName(modelName)
+                                .truthEntity(item.getTruthEntity())
+                                .isKeyPresent(String.valueOf(item.getIsKeyPresent()))
+                                .entity(item.getEntity())
+                                .modelVersion(modelVersion)
+                                .build());
+            }
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
-}
+    }
 

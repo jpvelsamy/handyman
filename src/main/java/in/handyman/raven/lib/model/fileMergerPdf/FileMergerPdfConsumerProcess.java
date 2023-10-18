@@ -1,4 +1,5 @@
 package in.handyman.raven.lib.model.fileMergerPdf;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -7,17 +8,8 @@ import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.access.ResourceAccess;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.CoproProcessor;
-
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-
-
 import in.handyman.raven.lib.model.FileMergerPdf;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import okhttp3.*;
 import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
@@ -25,7 +17,12 @@ import org.slf4j.Marker;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class FileMergerPdfConsumerProcess implements CoproProcessor.ConsumerProcess<FileMergerpdfInputEntity, FileMergerpdfOutputEntity> {
@@ -72,7 +69,7 @@ public class FileMergerPdfConsumerProcess implements CoproProcessor.ConsumerProc
                   final Long tenantId=entity.getTenantId();
                   final Long group_id= entity.getGroupId();
                   final String fileId=entity.getFileId();
-                  final Long actionId =action.getActionId();
+                  final Long actionId =Long.parseLong(action.getContext().get("actionId"));
                   String fileMerger = "FILE_MERGER";
                   final String outputFileName = entity.getOutputFileName();
                   log.info(aMarker, "file path string {}", filePathString);
@@ -104,18 +101,26 @@ public class FileMergerPdfConsumerProcess implements CoproProcessor.ConsumerProc
                   tritonInputRequest.setInputs(Collections.singletonList(requestBody));
 
                   String jsonRequest = objectMapper.writeValueAsString(tritonInputRequest);
-                  String tritonRequestActivator = action.getContext().get("triton.request.activator");
 
+
+                  String tritonRequestActivator = action.getContext().get("triton.request.activator");
 
                   if (Objects.equals("true", tritonRequestActivator)) {
                     Request request = new Request.Builder().url(endpoint)
-                            .post(RequestBody.create(fileMergerPayload.toString(), mediaTypeJSON)).build();
+                            .post(RequestBody.create(jsonInputRequest, mediaTypeJSON)).build();
                     coproRequestBuilder(entity, request, parentObj);
                   } else {
                     Request request = new Request.Builder().url(endpoint)
                             .post(RequestBody.create(jsonRequest, mediaTypeJSON)).build();
                     tritonRequestBuilder(entity, request, parentObj);
                   }
+
+
+                  if (log.isInfoEnabled()) {
+                    log.info("input object node in the consumer fileMerger  inputFilePath {}", filePathString);
+                  }
+
+
                   if (log.isInfoEnabled()) {
                     log.info("input object node in the consumer fileMerger coproURL {}, inputFilePath {}", endpoint, filePathString);
                   }
@@ -139,26 +144,22 @@ public class FileMergerPdfConsumerProcess implements CoproProcessor.ConsumerProc
     }
 
   private void coproRequestBuilder(FileMergerpdfInputEntity entity, Request request, List<FileMergerpdfOutputEntity> parentObj) {
-      try (Response response = new OkHttpClient().newCall(request).execute()) {
-        String responseBody = Objects.requireNonNull(response.body()).string();
-        if (response.isSuccessful()) {
-          FileMergerResponse modelResponse = mapper.readValue(responseBody, FileMergerResponse.class);
+    try (Response response = new OkHttpClient().newCall(request).execute()) {
+      String responseBody = Objects.requireNonNull(response.body()).string();
+      if (response.isSuccessful()) {
 
-          if (modelResponse.getOutputs() != null && !modelResponse.getOutputs().isEmpty()) {
-            modelResponse.getOutputs().forEach(o -> o.getData().forEach(fileMergerDataItem -> {
-              extractOutputDataRequest(entity, fileMergerDataItem, parentObj, "", "");
-            }));
-          }
-        } else {
-          // Handle non-successful response here
-          log.error(aMarker, "Non-successful response received: {}", response.code());
-        }
-      } catch (IOException e) {
-          throw new RuntimeException(e);
+        extractedOutputDataRequest(entity, responseBody, parentObj, "", "");
       }
+          else {
+        // Handle non-successful response here
+        log.error(aMarker, "Non-successful response received: {}", response.code());
+      }
+
+  } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
+
   }
-
-
 
   private void tritonRequestBuilder(FileMergerpdfInputEntity entity, Request request, List<FileMergerpdfOutputEntity> parentObj) throws IOException {
     try (Response response = new OkHttpClient().newCall(request).execute()) {
@@ -168,7 +169,7 @@ public class FileMergerPdfConsumerProcess implements CoproProcessor.ConsumerProc
 
         if (modelResponse.getOutputs() != null && !modelResponse.getOutputs().isEmpty()) {
           modelResponse.getOutputs().forEach(o -> o.getData().forEach(fileMergerDataItem -> {
-            extractOutputDataRequest(entity, fileMergerDataItem, parentObj, "", "");
+            extractedOutputDataRequest(entity, fileMergerDataItem, parentObj,  "", "");
           }));
         }
       } else {
@@ -178,7 +179,11 @@ public class FileMergerPdfConsumerProcess implements CoproProcessor.ConsumerProc
     }
   }
 
-  private void extractOutputDataRequest(FileMergerpdfInputEntity entity, String fileMergerDataItem, List<FileMergerpdfOutputEntity> parentObj, String modelName, String modelVersion) {
+  private void extractedOutputDataRequest(FileMergerpdfInputEntity entity, String fileMergerDataItem, List<FileMergerpdfOutputEntity> parentObj, String modelName, String modelVersion) {
+    Long rootPipelineId =entity.getRootPipelineId();
+    Long tenantId=entity.getTenantId();
+    Long group_id= entity.getGroupId();
+    String outputFileName = entity.getOutputFileName();
     try {
       FileMergerDataItem fileMergerDataItem1 = mapper.readValue(fileMergerDataItem, new TypeReference<>() {
       });
@@ -191,12 +196,13 @@ public class FileMergerPdfConsumerProcess implements CoproProcessor.ConsumerProc
               .message("file merger macro completed")
               .createdOn(Timestamp.valueOf(LocalDateTime.now()))
               .lastUpdatedOn(Timestamp.valueOf(LocalDateTime.now()))
-              .rootPipelineId(entity.getRootPipelineId())
-              .tenantId(entity.getTenantId())
-              .originId(entity.getOriginId())
-              .groupId(entity.getGroupId())
+              .rootPipelineId(rootPipelineId)
               .modelName(modelName)
-              .fileName(entity.getOutputFileName())
+              .tenantId(tenantId)
+              .originId(entity.getOriginId())
+              .groupId(group_id)
+              .modelName(modelName)
+              .fileName(outputFileName)
               .processedFilePath(fileMergerDataItem1.getProcessedFilePath())
               .modelVersion(modelVersion)
               .build());
@@ -211,8 +217,8 @@ public class FileMergerPdfConsumerProcess implements CoproProcessor.ConsumerProc
               .message("file merger macro failed")
               .createdOn(Timestamp.valueOf(LocalDateTime.now()))
               .lastUpdatedOn(Timestamp.valueOf(LocalDateTime.now()))
-              .rootPipelineId(entity.getRootPipelineId())
-              .tenantId(entity.getTenantId())
+              .rootPipelineId(rootPipelineId)
+              .tenantId(tenantId)
               .modelName(modelName)
               .modelVersion(modelVersion)
               .build());
@@ -227,8 +233,8 @@ public class FileMergerPdfConsumerProcess implements CoproProcessor.ConsumerProc
               .message("file merger macro failed")
               .createdOn(Timestamp.valueOf(LocalDateTime.now()))
               .lastUpdatedOn(Timestamp.valueOf(LocalDateTime.now()))
-              .rootPipelineId(entity.getRootPipelineId())
-              .tenantId(entity.getTenantId())
+              .rootPipelineId(rootPipelineId)
+              .tenantId(tenantId)
               .modelName(modelName)
               .modelVersion(modelVersion)
               .build());

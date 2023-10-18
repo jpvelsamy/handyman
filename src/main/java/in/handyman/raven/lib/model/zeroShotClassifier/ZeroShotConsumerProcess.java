@@ -51,10 +51,10 @@ import java.util.concurrent.TimeUnit;
 
             String originId = entity.getOriginId();
             String groupId = entity.getGroupId();
-            String rootPipelineId = String.valueOf(entity.getRootPipelineId());
+            Long rootPipelineId = action.getRootPipelineId();
             String processId = String.valueOf(entity.getProcessId());
             String paperNo = String.valueOf(entity.getPaperNo());
-            Long actionId = action.getActionId();
+            Long actionId = Long.parseLong(action.getContext().get("actionId"));
             String pageContent = String.valueOf(entity.getPageContent());
 
 
@@ -95,7 +95,7 @@ import java.util.concurrent.TimeUnit;
 
             if (Objects.equals("true", tritonRequestActivator)) {
                 Request request = new Request.Builder().url(endpoint)
-                        .post(RequestBody.create(data.toString(), MediaTypeJSON)).build();
+                        .post(RequestBody.create(jsonInputRequest, MediaTypeJSON)).build();
                 coproRequestBuilder(entity,parentObj, request,objectMapper);
             } else {
                 Request request = new Request.Builder().url(endpoint)
