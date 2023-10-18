@@ -62,7 +62,7 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
         String rootpipelineId = String.valueOf(entity.getRootPipelineId());
         String process = "auto rotation";
         String filePath = String.valueOf(entity.getFilePath());
-        Long  actionId = Long.parseLong(action.getContext().get("actionId")) ;
+        Long  actionId = action.getActionId();
 
 
         //payload

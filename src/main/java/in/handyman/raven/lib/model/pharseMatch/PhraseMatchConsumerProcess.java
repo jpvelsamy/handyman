@@ -51,7 +51,7 @@ public class PhraseMatchConsumerProcess implements CoproProcessor.ConsumerProces
         Long pipelineId = action.getRootPipelineId();
         String processId = String.valueOf(entity.getProcessId());
         String paperNo = String.valueOf(entity.getPaperNo());
-        Long actionId = Long.parseLong(action.getContext().get("actionId"));
+        Long actionId = action.getActionId();;
         String pageContent = String.valueOf(entity.getPageContent());
 
         ObjectMapper objectMapper = new ObjectMapper();

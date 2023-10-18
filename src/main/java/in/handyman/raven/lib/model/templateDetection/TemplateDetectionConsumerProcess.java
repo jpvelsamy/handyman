@@ -62,7 +62,7 @@ public class TemplateDetectionConsumerProcess implements CoproProcessor.Consumer
         List<String> attributes = entity.getQuestions();
         String inputFilePath = entity.getFilePath();
         Long rootPipelineId = entity.getRootPipelineId();
-        Long actionId = Long.parseLong(action.getContext().get("actionId"));
+        Long actionId = action.getActionId();;
 
         ObjectMapper objectMapper = new ObjectMapper();
 

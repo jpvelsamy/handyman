@@ -54,7 +54,7 @@ import java.util.concurrent.TimeUnit;
             Long rootPipelineId = action.getRootPipelineId();
             String processId = String.valueOf(entity.getProcessId());
             String paperNo = String.valueOf(entity.getPaperNo());
-            Long actionId = Long.parseLong(action.getContext().get("actionId"));
+            Long actionId = action.getActionId();
             String pageContent = String.valueOf(entity.getPageContent());
 
 

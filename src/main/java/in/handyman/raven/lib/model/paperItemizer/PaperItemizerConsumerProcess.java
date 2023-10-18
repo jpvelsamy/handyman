@@ -52,7 +52,7 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
         String inputFilePath = entity.getFilePath();
         Long rootPipelineId = entity.getRootPipelineId();
         final String paperItemizerProcessName = "PAPER_ITEMIZER";
-        Long  actionId = Long.parseLong(action.getContext().get("actionId")) ;
+        Long  actionId = action.getActionId() ;
         ObjectMapper objectMapper = new ObjectMapper();
 //payload
         PaperItemizerData paperitemizerData = new PaperItemizerData();
