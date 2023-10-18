@@ -87,7 +87,7 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
 
         if (Objects.equals("true", tritonRequestActivator)) {
             Request request = new Request.Builder().url(endpoint)
-                    .post(RequestBody.create(dataExtractionData.toString(), mediaType)).build();
+                    .post(RequestBody.create(jsonInputRequest, mediaType)).build();
             coproRequestBuilder(entity, request, parentObj, originId, groupId);
         } else {
             Request request = new Request.Builder().url(endpoint)
