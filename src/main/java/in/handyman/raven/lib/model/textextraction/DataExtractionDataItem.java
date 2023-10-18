@@ -13,6 +13,8 @@ public class DataExtractionDataItem {
 
 
     private String pageContent;
+    private String filePath;
+    private String fileName;
 
     }
 
