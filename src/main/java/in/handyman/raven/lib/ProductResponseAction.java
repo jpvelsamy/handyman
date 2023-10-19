@@ -60,7 +60,7 @@ public class ProductResponseAction implements IActionExecution {
             jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
             log.info(aMarker, "Product Response Action for {} has been started", productResponse.getName());
             final String insertQuery = "INSERT INTO " + productResponse.getResultTable() +
-                    "(process_id,group_Id,alchemy_origin_id,pipeline_origin_id,product_response, tenant_id,root_pipeline_id,status,stage,message) " +
+                    "(process_id,group_Id,origin_id,product_response, tenant_id,root_pipeline_id,status,stage,message) " +
                     " VALUES(?,?,?,?,?,?,?,?,?,?)";
             final List<URL> urls = Optional.ofNullable(action.getContext().get("alchemy.product.response.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
                 try {
@@ -120,12 +120,12 @@ public class ProductResponseAction implements IActionExecution {
         public List<ProductResponseAction.ProductResponseOutputTable> process(URL endpoint, ProductResponseAction.ProductResponseInputTable entity) throws Exception {
 
             List<ProductResponseAction.ProductResponseOutputTable> parentObj = new ArrayList<>();
-            String originId = entity.getAlchemyOriginId();
             Long rootPipelineId=entity.getRootPipelineId();
 
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), "");
 
-            URL url = new URL(endpoint.toString() + "/" + entity.getAlchemyRootPipelineId() + "/" + entity.getAlchemyOriginId() + "/?tenantId=" + this.tenantId);
+            String originId = entity.getOriginId();
+            URL url = new URL(endpoint.toString() + "/" + entity.getTransactionId() + "/" + originId + "/?tenantId=" + this.tenantId);
             Request request = new Request.Builder().url(url)
                     .addHeader("accept", "*/*")
                     .addHeader("Authorization", "Bearer " + authToken)
@@ -133,7 +133,6 @@ public class ProductResponseAction implements IActionExecution {
                     .post(requestBody)
                     .build();
 
-            String pipelineOriginId = entity.getAlchemyOriginId();
             try (Response response = httpclient.newCall(request).execute()) {
                 if (response.isSuccessful()) {
                     AlchemyApiPayload alchemyApiPayload = mapper.readValue(Objects.requireNonNull(response.body()).string(), AlchemyApiPayload.class);
@@ -146,8 +145,7 @@ public class ProductResponseAction implements IActionExecution {
                                 .tenantId(tenantId)
                                 .groupId(entity.getGroupId())
                                 .productResponse(String.valueOf(alchemyApiPayload.getPayload()))
-                                .alchemyOriginId(entity.getAlchemyOriginId())
-                                .pipelineOriginId(entity.getPipelineOriginId())
+                                .originId(originId)
                                 .rootPipelineId(rootPipelineId)
                                 .stage("PRODUCT_OUBOUND")
                                 .status("COMPLETED")
@@ -160,8 +158,7 @@ public class ProductResponseAction implements IActionExecution {
                             .processId(entity.getProcessId())
                             .tenantId(tenantId)
                             .groupId(entity.getGroupId())
-                            .alchemyOriginId(entity.getAlchemyOriginId())
-                            .pipelineOriginId(entity.getPipelineOriginId())
+                            .originId(originId)
                             .rootPipelineId(rootPipelineId)
                             .stage("PRODUCT_OUBOUND")
                             .status("FAILED")
@@ -171,7 +168,7 @@ public class ProductResponseAction implements IActionExecution {
             } catch (Exception e) {
                 log.error(aMarker, "The Exception occurred in product response action", e);
                 HandymanException handymanException = new HandymanException(e);
-                HandymanException.insertException("Exception occurred in Product Response action for originId - " + pipelineOriginId, handymanException, this.action);
+                HandymanException.insertException("Exception occurred in Product Response action for originId - " + originId, handymanException, this.action);
             }
             return parentObj;
         }
@@ -182,14 +179,12 @@ public class ProductResponseAction implements IActionExecution {
     @Data
     @Builder
     public static class ProductResponseInputTable implements CoproProcessor.Entity {
-        private String alchemyOriginId;
-        private String alchemyRootPipelineId;
+        private String originId;
+        private String transactionId;
         private Integer processId;
         private Long groupId;
-        private Long tenant_id;
+        private Long tenantId;
         private Long rootPipelineId;
-        private String pipelineOriginId;
-
         @Override
         public List<Object> getRowData() {
             return null;
@@ -203,9 +198,8 @@ public class ProductResponseAction implements IActionExecution {
 
         private Integer processId;
         private Long groupId;
-        private String alchemyOriginId;
-        private String pipelineOriginId;
         private String productResponse;
+        private String originId;
         private Long tenantId;
         private Long rootPipelineId;
         private String status;
@@ -214,7 +208,7 @@ public class ProductResponseAction implements IActionExecution {
 
         @Override
         public List<Object> getRowData() {
-            return Stream.of(this.processId, this.groupId, this.alchemyOriginId, this.pipelineOriginId,this.productResponse, this.tenantId, this.rootPipelineId,this.stage,this.stage,this.message).collect(Collectors.toList());
+            return Stream.of(this.processId, this.groupId, this.originId,this.productResponse, this.tenantId, this.rootPipelineId,this.stage,this.stage,this.message).collect(Collectors.toList());
         }
     }
 }
