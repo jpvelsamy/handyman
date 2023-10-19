@@ -66,7 +66,7 @@ public class PhraseMatchConsumerProcess implements CoproProcessor.ConsumerProces
         data.setActionId(actionId);
         data.setProcess(entity.getProcessId());
         data.setOriginId(originId);
-        data.setPaperNo(paperNo);
+        data.setPaperNo(Long.valueOf(paperNo));
         data.setGroupId(groupId);
         data.setPageContent(pageContent);
         data.setKeysToFilter(keysToFilterObject);
