@@ -19,7 +19,7 @@ public class PharseMatchData {
         private Long actionId;
         private String process;
         private String originId;
-        private String paperNo;
+        private Long paperNo;
         private String groupId;
         private Map<String, List<String>> keysToFilter;
         private String pageContent;

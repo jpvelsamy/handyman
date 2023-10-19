@@ -124,11 +124,11 @@ public class PhraseMatchPaperFilterAction implements IActionExecution {
 
             //payload
             PharseMatchData data = new PharseMatchData();
-            data.setRootPipelineId("1");
+            data.setRootPipelineId(action.getRootPipelineId());
             data.setActionId(actionId);
             data.setProcess(entity.getProcessId());
             data.setOriginId(originId);
-            data.setPaperNo(paperNo);
+            data.setPaperNo(Long.valueOf(paperNo));
             data.setGroupId(groupId);
             data.setPageContent(entity.getPageContent());
 
