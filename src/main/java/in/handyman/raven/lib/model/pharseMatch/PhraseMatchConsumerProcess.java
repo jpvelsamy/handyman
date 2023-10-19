@@ -62,7 +62,7 @@ public class PhraseMatchConsumerProcess implements CoproProcessor.ConsumerProces
 
         //payload
         PharseMatchData data = new PharseMatchData();
-        data.setRootPipelineId("1");
+        data.setRootPipelineId(action.getRootPipelineId());
         data.setActionId(actionId);
         data.setProcess(entity.getProcessId());
         data.setOriginId(originId);
@@ -108,7 +108,6 @@ public class PhraseMatchConsumerProcess implements CoproProcessor.ConsumerProces
         try (Response response = httpclient.newCall(request).execute()) {
             String responseBody = Objects.requireNonNull(response.body()).string();
             if (response.isSuccessful()) {
-
                             extractedOutputDataRequest(entity, parentObj, responseBody, objectMapper, "", "");
 
                 } else {

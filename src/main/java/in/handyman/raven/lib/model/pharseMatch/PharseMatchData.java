@@ -15,7 +15,7 @@ import java.util.Map;
 public class PharseMatchData {
 
 
-        private String rootPipelineId;
+        private Long rootPipelineId;
         private Long actionId;
         private String process;
         private String originId;
