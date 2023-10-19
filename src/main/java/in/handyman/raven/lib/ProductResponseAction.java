@@ -60,8 +60,8 @@ public class ProductResponseAction implements IActionExecution {
             jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
             log.info(aMarker, "Product Response Action for {} has been started", productResponse.getName());
             final String insertQuery = "INSERT INTO " + productResponse.getResultTable() +
-                    "(process_id,group_Id,origin_id,product_response, tenant_id,root_pipeline_id,status,stage,message) " +
-                    " VALUES(?,?,?,?,?,?,?,?,?,?)";
+                    "(process_id,group_id,origin_id,product_response, tenant_id,root_pipeline_id,status,stage,message) " +
+                    " VALUES(?,?,?,?,?,?,?,?,?)";
             final List<URL> urls = Optional.ofNullable(action.getContext().get("alchemy.product.response.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
                 try {
                     return new URL(s1);
