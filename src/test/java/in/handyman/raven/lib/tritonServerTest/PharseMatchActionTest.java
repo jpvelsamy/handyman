@@ -27,10 +27,10 @@ public class PharseMatchActionTest {
                         "                        from (select te.sor_container_id  as sor_container_id,\n" +
                         "                        te.truth_entity as truth_entity,te.sor_truth_entity_id,\n" +
                         "                        jsonb_agg(st.truth_entity) as keys_to_filter\n" +
-                        "                        from sor_meta.sor_truth_entity_placeholder st\n" +
-                        "                        join sor_meta.sor_truth_entity te on te.truth_entity= st.truth_entity\n" +
+                        "                        from sor_meta.truth_entity_placeholder st\n" +
+                        "                        join sor_meta.truth_entity te on te.truth_entity= st.truth_entity\n" +
                         "                        group by te.sor_container_id,te.sor_truth_entity_id,te.truth_entity )t")
-                .resourceConn("intics_agadia_db_conn")
+                .resourceConn("intics_zio_db_conn")
                 .build();
 
 
