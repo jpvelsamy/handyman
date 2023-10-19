@@ -62,8 +62,8 @@ public class PhraseMatchConsumerProcess implements CoproProcessor.ConsumerProces
 
         //payload
         PharseMatchData data = new PharseMatchData();
-        data.setRootPipelineId(action.getRootPipelineId());
-        data.setActionId(actionId);
+        data.setRootPipelineId(Math.toIntExact(action.getRootPipelineId()));
+        data.setActionId(Math.toIntExact(actionId));
         data.setProcess(entity.getProcessId());
         data.setOriginId(originId);
         data.setPaperNo(Long.valueOf(paperNo));

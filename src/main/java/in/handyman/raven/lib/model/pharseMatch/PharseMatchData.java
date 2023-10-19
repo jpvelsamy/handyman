@@ -15,8 +15,8 @@ import java.util.Map;
 public class PharseMatchData {
 
 
-        private Long rootPipelineId;
-        private Long actionId;
+        private Integer rootPipelineId;
+        private Integer actionId;
         private String process;
         private String originId;
         private Long paperNo;
