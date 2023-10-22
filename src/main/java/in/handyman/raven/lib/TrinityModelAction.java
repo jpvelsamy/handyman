@@ -165,7 +165,6 @@ public class TrinityModelAction implements IActionExecution {
                     tritonRequestBuilder(node,filePath,paperType,questions,jdbi,mapper);
                 }
 
-                tritonRequestBuilder(node, filePath, paperType, questions, jdbi,mapper);
             } catch (JsonProcessingException e) {
 
                 jdbi.useTransaction(handle -> handle.createUpdate("INSERT INTO macro." + trinityModel.getResponseAs() + "_error (file_path,error_message, action_id, root_pipeline_id,process_id) VALUES(:filePath,:errorMessage, " + action.getActionId() + ", " + action.getRootPipelineId() + "," + action.getPipelineId() + ");")

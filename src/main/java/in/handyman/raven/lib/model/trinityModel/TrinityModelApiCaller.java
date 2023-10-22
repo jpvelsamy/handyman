@@ -139,7 +139,7 @@ public class TrinityModelApiCaller {
         String jsonRequest = objectMapper.writeValueAsString(trinityModelRequest);
 
         final Request request = new Request.Builder().url(node)
-                .post(RequestBody.create(jsonRequest, MediaTypeJSON)).build();
+                .post(RequestBody.create(jsonInputRequest, MediaTypeJSON)).build();
         log.info("Request URL : {} Question List size {}", node, questions.size());
         try (Response response = httpclient.newCall(request).execute()) {
             String responseBody = Objects.requireNonNull(response.body()).string();

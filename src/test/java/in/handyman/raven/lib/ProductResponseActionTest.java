@@ -29,22 +29,22 @@ class ProductResponseActionTest {
     @Test
     void execute() throws Exception {
 
-        URL url = new URL("http://localhost:8189/alchemy/api/v1/transaction/product/response/TRZ-17/ORIGIN-3?tenantId=1");
+        URL url = new URL("http://localhost:8189/alchemy/api/v1/response/TRZ-26/INT-36?tenantId=1");
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), "");
 
         Request request = new Request.Builder().url(url)
                 .addHeader("accept", "*/*")
-                .addHeader("Authorization", "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJpc3MiOiJJbnRpY3NBSSBBbGNoZW15IiwiZXhwIjoxNjk1MDA0MTg4LCJpYXQiOjE2OTQ5NjA5ODgsImVtYWlsIjoiYWdhZGlhQGludGljcy5haSJ9.Zg6X5t6DsyV5asVMP6NYgRavXohl2FV33Tr8NgGN0jw")
+                .addHeader("Authorization", "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJpc3MiOiJJbnRpY3NBSSBBbGNoZW15IiwiZXhwIjoxNjk3ODM3MTk0LCJpYXQiOjE2OTc3NTA3OTQsImVtYWlsIjoiZGpAaW50aWNzLmFpIn0.OxBLAc4BQHeyQBoDjuAzaqea5ShEKrckgrjKhQ9iWAs")
                 .addHeader("Content-Type", "application/json")
                 .post(requestBody)
                 .build();
 
         ActionExecutionAudit actionExecutionAudit=new ActionExecutionAudit();
 
-        actionExecutionAudit.getContext().put("alchemy.product.response.url","http://localhost:8189/alchemy/api/v1/transaction/product/response");
-        actionExecutionAudit.getContext().put("alchemyAuth.token","eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJpc3MiOiJJbnRpY3NBSSBBbGNoZW15IiwiZXhwIjoxNjk1MDYxMDAyLCJpYXQiOjE2OTUwMTc4MDIsImVtYWlsIjoiYWdhZGlhQGludGljcy5haSJ9.cJZqcGvaG1ehkhoR09h5GOASHv5otLrCRRzGyHG_LSc");
-        actionExecutionAudit.getContext().put("alchemyAuth.tenantId","1");
-        actionExecutionAudit.getContext().put("gen_group_id.group_id","1");
+        actionExecutionAudit.getContext().put("alchemy.product.response.url","http://localhost:8189/alchemy/api/v1/response");
+        actionExecutionAudit.getContext().put("alchemyAuth.token","eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJpc3MiOiJJbnRpY3NBSSBBbGNoZW15IiwiZXhwIjoxNjk3ODM3MTk0LCJpYXQiOjE2OTc3NTA3OTQsImVtYWlsIjoiZGpAaW50aWNzLmFpIn0.OxBLAc4BQHeyQBoDjuAzaqea5ShEKrckgrjKhQ9iWAs");
+        actionExecutionAudit.getContext().put("alchemyAuth.tenantId","8");
+        actionExecutionAudit.getContext().put("gen_group_id.group_id","33");
         actionExecutionAudit.getContext().put("read.batch.size","1");
         actionExecutionAudit.getContext().put("write.batch.size","1");
 
@@ -52,11 +52,12 @@ class ProductResponseActionTest {
                 .tenantId(1L)
                 .condition(true)
                 .name("alchemy info action")
-                .querySet("SELECT ap.alchemy_origin_id, 'TRZ-30' as alchemy_root_pipeline_id\n" +
-                        "            FROM alchemy_migration.alchemy_migration_payload_queue ampq join alchemy_migration.alchemy_papers ap on ampq.origin_id = ap.pipeline_origin_id\n" +
-                        "            where status = 'IN_PROGRESS' and ampq.group_id = 2 group by ap.alchemy_origin_id;")
+                .querySet("SELECT ampq.origin_id, 'TRZ-26' as transaction_id, ampq.producer_process_id as process_id, '33' as group_id,\n" +
+                        "            ampq.tenant_id, ampq.root_pipeline_id\n" +
+                        "            FROM alchemy_migration.alchemy_migration_payload_queue ampq\n" +
+                        "            where status = 'IN_PROGRESS' and ampq.group_id = '33' and ampq.tenant_id = 8")
                 .resourceConn("intics_zio_db_conn")
-                .token("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJpc3MiOiJJbnRpY3NBSSBBbGNoZW15IiwiZXhwIjoxNjk1MDYxMDAyLCJpYXQiOjE2OTUwMTc4MDIsImVtYWlsIjoiYWdhZGlhQGludGljcy5haSJ9.cJZqcGvaG1ehkhoR09h5GOASHv5otLrCRRzGyHG_LSc")
+                .token("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJpc3MiOiJJbnRpY3NBSSBBbGNoZW15IiwiZXhwIjoxNjk3ODM3MTk0LCJpYXQiOjE2OTc3NTA3OTQsImVtYWlsIjoiZGpAaW50aWNzLmFpIn0.OxBLAc4BQHeyQBoDjuAzaqea5ShEKrckgrjKhQ9iWAs")
                 .build();
 
 //        try (Response response = httpclient.newCall(request).execute()) {
