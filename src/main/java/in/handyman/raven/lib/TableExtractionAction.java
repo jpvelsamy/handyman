@@ -181,7 +181,7 @@ public class TableExtractionAction implements IActionExecution {
                     JSONObject parentResponse = new JSONObject(responseParse);
                     JSONArray filePathArray = new JSONArray(parentResponse.get("csvTablesPath").toString());
 
-                    JSONArray tableResponseArray = new JSONArray(parentResponse.get("table_response").toString());
+                    //JSONArray tableResponseArray = new JSONArray(parentResponse.get("table_response").toString());
                     log.info(aMarker, "coproProcessor consumer process response body filePathArray {}", filePathArray);
                     filePathArray.forEach(s -> {
                         Map<String, Object> processedJsonNode;
