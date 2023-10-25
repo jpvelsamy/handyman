@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.PreparedBatch;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -58,20 +59,7 @@ public class TrinityModelApiCaller {
 
         String jsonInputRequest = objectMapper.writeValueAsString(trinityModelPayload);
 
-        TritonRequest tritonRequest = new TritonRequest();
-
-        if(Objects.equals(paperType,"Printed")){
-            tritonRequest.setShape(List.of(1, 1));
-            tritonRequest.setName("ERNIE START");
-            tritonRequest.setDatatype("BYTES");
-            tritonRequest.setData(Collections.singletonList(jsonInputRequest));
-        } else if (Objects.equals(paperType,"Handwritten")) {
-            tritonRequest.setShape(List.of(1, 1));
-            tritonRequest.setName("DONUT START");
-            tritonRequest.setDatatype("BYTES");
-            tritonRequest.setData(Collections.singletonList(jsonInputRequest));
-            
-        }
+        TritonRequest tritonRequest = getTritonRequestPaperType(paperType, jsonInputRequest);
 
 
         TrinityModelRequest trinityModelRequest = new TrinityModelRequest();
@@ -80,7 +68,7 @@ public class TrinityModelApiCaller {
         String jsonRequest = objectMapper.writeValueAsString(trinityModelRequest);
 
         final Request request = new Request.Builder().url(node)
-                .post(RequestBody.create(jsonInputRequest, MediaTypeJSON)).build();
+                .post(RequestBody.create(jsonRequest, MediaTypeJSON)).build();
         log.info("Request URL : {} Question List size {}", node, questions.size());
         try (Response response = httpclient.newCall(request).execute()) {
             String responseBody = Objects.requireNonNull(response.body()).string();
@@ -96,6 +84,25 @@ public class TrinityModelApiCaller {
             log.error("Failed to execute the rest api call");
             throw new HandymanException("Failed to execute the rest api call " + node, e);
         }
+    }
+
+    @NotNull
+    private static TritonRequest getTritonRequestPaperType(String paperType, String jsonInputRequest) {
+        TritonRequest tritonRequest = new TritonRequest();
+
+        if(Objects.equals(paperType,"Printed")){
+            tritonRequest.setShape(List.of(1, 1));
+            tritonRequest.setName("ERNIE START");
+            tritonRequest.setDatatype("BYTES");
+            tritonRequest.setData(Collections.singletonList(jsonInputRequest));
+        } else if (Objects.equals(paperType,"Handwritten")) {
+            tritonRequest.setShape(List.of(1, 1));
+            tritonRequest.setName("DONUT START");
+            tritonRequest.setDatatype("BYTES");
+            tritonRequest.setData(Collections.singletonList(jsonInputRequest));
+
+        }
+        return tritonRequest;
     }
 
     public String computeCopro(final String inputPath, final String paperType, final List<String> questions, ActionExecutionAudit action) throws JsonProcessingException {
@@ -116,27 +123,6 @@ public class TrinityModelApiCaller {
 
 
         String jsonInputRequest = objectMapper.writeValueAsString(trinityModelPayload);
-
-        TritonRequest tritonRequest = new TritonRequest();
-
-        if(Objects.equals(paperType,"Printed")){
-            tritonRequest.setShape(List.of(1, 1));
-            tritonRequest.setName("ERNIE START");
-            tritonRequest.setDatatype("BYTES");
-            tritonRequest.setData(Collections.singletonList(jsonInputRequest));
-        } else if (Objects.equals(paperType,"Handwritten")) {
-            tritonRequest.setShape(List.of(1, 1));
-            tritonRequest.setName("DONUT START");
-            tritonRequest.setDatatype("BYTES");
-            tritonRequest.setData(Collections.singletonList(jsonInputRequest));
-
-        }
-
-
-        TrinityModelRequest trinityModelRequest = new TrinityModelRequest();
-        trinityModelRequest.setInputs(Collections.singletonList(tritonRequest));
-
-        String jsonRequest = objectMapper.writeValueAsString(trinityModelRequest);
 
         final Request request = new Request.Builder().url(node)
                 .post(RequestBody.create(jsonInputRequest, MediaTypeJSON)).build();

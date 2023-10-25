@@ -181,7 +181,7 @@ public class TemplateDetectionConsumerProcess implements CoproProcessor.Consumer
                 if (templateDetectionResponse.getOutputs() != null && !templateDetectionResponse.getOutputs().isEmpty()) {
                     templateDetectionResponse.getOutputs().forEach(output -> {
                         output.getData().forEach(templateDetectionData -> {
-                            extractOutputDataRequest(entity,  responseBody, outputObjectList, "", ",", objectMapper);
+                            extractOutputDataRequest(entity,  templateDetectionData, outputObjectList, templateDetectionResponse.getModelName(), templateDetectionResponse.getModelVersion(), objectMapper);
 
                         });
                     });
