@@ -26,6 +26,8 @@ public class QrExtraction implements IActionContext {
 
   private String resourceConn;
 
+  private String endPoint;
+
   private String processId;
 
   private String outputTable;

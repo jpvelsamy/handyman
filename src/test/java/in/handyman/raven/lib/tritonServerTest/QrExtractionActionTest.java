@@ -1,8 +1,8 @@
 package in.handyman.raven.lib.tritonServerTest;
 
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
-import in.handyman.raven.lib.model.QrExtraction;
 import in.handyman.raven.lib.QrExtractionAction;
+import in.handyman.raven.lib.model.QrExtraction;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +20,8 @@ public class QrExtractionActionTest {
                 .name("qr-extraction")
                 .resourceConn("intics_agadia_db_conn")
                 .processId("1234")
+                .endPoint("${copro.qr-attribution.url}")
+                .endPoint("${copro.qr-attribution.url}")
                 .outputTable("qr_extraction.qr_extraction_result_1234")
                 .querySet("SELECT '/data/output/pdf_to_image/SYNT_166838894_c1/SYNT_166838894_c1_1.jpg' as file_path, 'INT-1' as origin_id, 1 as file_id, 1 as paper_no, 1 as group_id, 1 as root_pipeline_id")
                 .build();

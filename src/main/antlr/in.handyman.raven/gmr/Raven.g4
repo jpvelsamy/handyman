@@ -795,6 +795,7 @@ pixelClassifierUrgencyTriage:
 qrExtraction:
 	'qr-extraction' 'as' name=STRING
 	'on-resource-conn' resourceConn=STRING
+	'copro-url' endPoint=STRING
 	'process-id' processId=STRING
 	'output-table' outputTable=STRING
 	'using' '{' querySet=STRING '}' ('on-condition' condition=expression)* ;

@@ -20,6 +20,7 @@ public class QrInputEntity implements CoproProcessor.Entity {
     private Integer paperNo;
     private String fileId;
     private Long rootPipelineId;
+    private Long tenantId;
 
     @Override
     public List<Object> getRowData() {

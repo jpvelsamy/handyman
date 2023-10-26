@@ -34,11 +34,14 @@ public class QrOutputEntity implements CoproProcessor.Entity {
     private String decodeType;
     private String modelName;
     private String modelVersion;
+    private Long tenantId;
 
 
     @Override
     public List<Object> getRowData() {
-        return Stream.of(this.originId, this.groupId, this.paperNo, this.createdOn, this.qrFormat, this.qrFormatId, this.extractedValue, this.fileId, this.b_box, this.angle, this.confidenceScore, this.status, this.stage, this.message,this.decodeType, this.modelName, this.modelVersion,this.rootPipelineId).collect(Collectors.toList());
+        return Stream.of(this.originId, this.groupId, this.paperNo, this.createdOn, this.qrFormat, this.qrFormatId, this.extractedValue,
+                this.fileId, this.b_box, this.angle, this.confidenceScore, this.status, this.stage, this.message,this.decodeType, this.modelName,
+                this.modelVersion,this.rootPipelineId,this.tenantId).collect(Collectors.toList());
     }
 
 }

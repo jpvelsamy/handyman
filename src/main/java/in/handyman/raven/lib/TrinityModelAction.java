@@ -35,12 +35,13 @@ import java.util.stream.Collectors;
         actionName = "TrinityModel"
 )
 public class TrinityModelAction implements IActionExecution {
-    public static final String COLUMN_LIST = "process_id,file_path,question, predicted_attribution_value,b_box, image_dpi , image_width , image_height , extracted_image_unit , action_id, root_pipeline_id,status,stage,paper_type, score,model_name,model_version";
-    public static final String CREATE_TABLE_COLUMN = "id bigserial not null, file_path text,question text, predicted_attribution_value text , score float8 NULL, b_box json null, image_dpi int8 null, image_width int8 null, image_height int8 null, extracted_image_unit varchar null, action_id bigint, root_pipeline_id bigint,process_id bigint, created_on timestamp not null default now(),status varchar NULL,stage varchar NULL ,paper_type varchar NULL";
-    public static final String CREATE_ERROR_TABLE_COLUMN = "id bigserial not null, file_path text,error_message text,  action_id bigint, root_pipeline_id bigint,process_id bigint, created_on timestamp not null default now() ";
+    public static final String COLUMN_LIST = "process_id,file_path,question, predicted_attribution_value,b_box, image_dpi , image_width , image_height , extracted_image_unit , action_id, root_pipeline_id,status,stage,paper_type, score,model_name,model_version,tenant_id";
+    public static final String CREATE_TABLE_COLUMN = "id bigserial not null, file_path text,question text, predicted_attribution_value text , score float8 NULL, b_box json null, image_dpi int8 null, image_width int8 null, image_height int8 null, extracted_image_unit varchar null, action_id bigint, root_pipeline_id bigint,process_id bigint, created_on timestamp not null default now(),status varchar NULL,stage varchar NULL ,paper_type varchar NULL,tenant_id int8 null";
+    public static final String CREATE_ERROR_TABLE_COLUMN = "id bigserial not null, file_path text,error_message text,  action_id bigint, root_pipeline_id bigint,process_id bigint, created_on timestamp not null default now() ,tenant_id int8 null";
     private final ActionExecutionAudit action;
 
     private final Logger log;
+    private final Long tenantId;
 
     private final TrinityModel trinityModel;
 
@@ -54,6 +55,7 @@ public class TrinityModelAction implements IActionExecution {
         this.trinityModel = (TrinityModel) trinityModel;
         this.action = action;
         this.log = log;
+        this.tenantId= Long.valueOf(action.getContext().get("tenant_id"));
         this.aMarker = MarkerFactory.getMarker(" TrinityModel:" + this.trinityModel.getName());
         httpClientTimeout = Optional.ofNullable(action.getContext().get("okhttp.client.timeout")).orElse("100");
     }
@@ -157,7 +159,7 @@ public class TrinityModelAction implements IActionExecution {
                 }
                 String tritonRequestActivator = action.getContext().get("triton.request.activator");
 
-                if (Objects.equals("true", tritonRequestActivator)) {
+                if (Objects.equals("false", tritonRequestActivator)) {
 
                     coproRequestBuilder(node,filePath,paperType,questions,jdbi,mapper);
                 } else {
@@ -185,18 +187,18 @@ public class TrinityModelAction implements IActionExecution {
         TrinityModelResponse trinityModelResponse = objectMapper.readValue(trinityModelResultLineItems, new TypeReference<>() {
         });
         trinityModelResponse.getOutputs().forEach(trinityModelOutput -> trinityModelOutput.getData().forEach(trinityModelResultLineItem -> {
-            extractedOuputDataRequest(trinityModelResultLineItem, jdbi, filePath, paperType, trinityModelResponse.getModelName(),trinityModelResponse.getModelVersion(),objectMapper);
+            extractedOuputDataRequest(trinityModelResultLineItem, jdbi, filePath,tenantId, paperType, trinityModelResponse.getModelName(),trinityModelResponse.getModelVersion(),objectMapper);
 
         }));
     }
 
     private void coproRequestBuilder(String node, String filePath, String paperType, List<String> questions, Jdbi jdbi,ObjectMapper mapper) throws JsonProcessingException {
         final String trinityModelResultLineItems = new TrinityModelApiCaller(this, node).computeCopro(filePath, paperType, questions, action);
-        extractedOuputDataRequest(trinityModelResultLineItems, jdbi, filePath, paperType,"","",mapper);
+        extractedOuputDataRequest(trinityModelResultLineItems, jdbi, filePath, tenantId,paperType,"","",mapper);
 
     }
 
-    private void extractedOuputDataRequest(String trinityModelDataItems,Jdbi jdbi, String filePath, String paperType,String modelName,String modelVersion,ObjectMapper objectMapper) {
+    private void extractedOuputDataRequest(String trinityModelDataItems,Jdbi jdbi, String filePath,Long tenantId, String paperType,String modelName,String modelVersion,ObjectMapper objectMapper) {
 
         try {
 
@@ -207,7 +209,7 @@ public class TrinityModelAction implements IActionExecution {
 
             log.info(aMarker, "completed {}", trinityModelDataItem.getAttributes().size());
             jdbi.useTransaction(handle -> {
-                final PreparedBatch batch = handle.prepareBatch("INSERT INTO macro." + trinityModel.getResponseAs() + " (" + COLUMN_LIST + ") VALUES(" + action.getPipelineId() + ",:filePath,:question,:predictedAttributionValue, :bBoxes::json, :imageDpi, :imageWidth, :imageHeight , :extractedImageUnit, " + action.getActionId() + "," + action.getRootPipelineId() + ",:status,:stage,:paperType, :scores, :modelName, :modelVersion);");
+                final PreparedBatch batch = handle.prepareBatch("INSERT INTO macro." + trinityModel.getResponseAs() + " (" + COLUMN_LIST + ") VALUES(" + action.getPipelineId() + ",:filePath,:question,:predictedAttributionValue, :bBoxes::json, :imageDpi, :imageWidth, :imageHeight , :extractedImageUnit, " + action.getActionId() + "," + action.getRootPipelineId() + ",:status,:stage,:paperType, :scores, :modelName, :modelVersion,:tenantId);");
 
                 Lists.partition(trinityModelDataItem.getAttributes(), 100).forEach(resultLineItems -> {
                     log.info(aMarker, "inserting into trinity model_action {}", resultLineItems.size());
@@ -226,6 +228,7 @@ public class TrinityModelAction implements IActionExecution {
                                 .bind("stage", "VQA_TRANSACTION")
                                 .bind("modelName", modelName)
                                 .bind("modelVersion", modelVersion)
+                                .bind("tenantId", tenantId)
                                 .add();
 
                     });

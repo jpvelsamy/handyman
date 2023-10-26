@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class QrExtractionData {
-    private String rootPipelineId;
+    private Long rootPipelineId;
     private Long actionId;
     private String process;
     private String inputFilePath;
