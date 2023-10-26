@@ -33,74 +33,91 @@ import java.util.stream.Collectors;
         actionName = "PaperItemizer"
 )
 public class PaperItemizerAction implements IActionExecution {
-    private final ActionExecutionAudit action;
+  private final ActionExecutionAudit action;
 
-    private final Logger log;
+  private final Logger log;
 
-    private final PaperItemizer paperItemizer;
+  private final PaperItemizer paperItemizer;
 
-    private final Marker aMarker;
+  private final Marker aMarker;
 
-    public PaperItemizerAction(final ActionExecutionAudit action, final Logger log,
-                               final Object paperItemizer) {
-        this.paperItemizer = (PaperItemizer) paperItemizer;
-        this.action = action;
-        this.log = log;
-        this.aMarker = MarkerFactory.getMarker(" PaperItemizer:" + this.paperItemizer.getName());
+  public PaperItemizerAction(final ActionExecutionAudit action, final Logger log,
+                             final Object paperItemizer) {
+    this.paperItemizer = (PaperItemizer) paperItemizer;
+    this.action = action;
+    this.log = log;
+    this.aMarker = MarkerFactory.getMarker(" PaperItemizer:" + this.paperItemizer.getName());
+  }
+
+  @Override
+  public void execute() {
+    try {
+      log.info(aMarker, "paper itemizer Action has been started {}", paperItemizer);
+
+      final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(paperItemizer.getResourceConn());
+      jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
+      final String outputDir = Optional.ofNullable(paperItemizer.getOutputDir()).map(String::valueOf).orElse(null);
+      log.info(aMarker, "paper itemizer Action output directory {}", outputDir);
+      //5. build insert prepare statement with output table columns
+      final String insertQuery = "INSERT INTO " + paperItemizer.getResultTable() +
+              "(origin_id,group_id,tenant_id,template_id,processed_file_path,paper_no, status,stage,message,created_on,process_id,root_pipeline_id,model_name,model_version) " +
+              " VALUES(?,?, ?,?, ?,?, ?,?,?,? ,?,  ?,?,?)";
+      log.info(aMarker, "paper itemizer Insert query {}", insertQuery);
+
+      //3. initiate copro processor and copro urls
+      String endpoint = paperItemizer.getEndpoint();
+      List<URL>  urls=extractCoproEndPoints(endpoint);
+
+      final CoproProcessor<PaperItemizerInputTable, PaperItemizerOutputTable> coproProcessor =
+              new CoproProcessor<>(new LinkedBlockingQueue<>(),
+                      PaperItemizerOutputTable.class,
+                      PaperItemizerInputTable.class,
+                      jdbi, log,
+                      new PaperItemizerInputTable(), urls, action);
+
+      log.info(aMarker, "paper itemizer copro coproProcessor initialization  {}", coproProcessor);
+
+      //4. call the method start producer from coproprocessor
+      Integer readBatchSize = Integer.valueOf(action.getContext().get("read.batch.size"));
+      Integer consumerApiCount = Integer.valueOf(action.getContext().get("paper.itemizer.consumer.API.count"));
+      Integer writeBatchSize = Integer.valueOf(action.getContext().get("write.batch.size"));
+
+      coproProcessor.startProducer(paperItemizer.getQuerySet(), readBatchSize);
+      log.info(aMarker, "paper itemizer copro coproProcessor startProducer called read batch size {}", readBatchSize);
+      Thread.sleep(1000);
+      coproProcessor.startConsumer(insertQuery, consumerApiCount, writeBatchSize, new PaperItemizerConsumerProcess(log, aMarker, outputDir, action));
+      log.info(aMarker, "paper itemizer copro coproProcessor startConsumer called consumer count {} write batch count {} ", consumerApiCount, writeBatchSize);
+
+    } catch (Exception ex) {
+      log.error(aMarker, "error in execute method for paper itemizer  ", ex);
+      throw new HandymanException("error in execute method for paper itemizer", ex, action);
     }
+  }
 
-    @Override
-    public void execute() {
+  private List<URL> extractCoproEndPoints(String endpoint) {
+    final List<URL> urls ;
+    if(endpoint.isEmpty() && endpoint.isBlank()){
+      urls = Optional.of(endpoint).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
         try {
-            log.info(aMarker, "paper itemizer Action has been started {}", paperItemizer);
-
-            final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(paperItemizer.getResourceConn());
-            jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
-            final String outputDir = Optional.ofNullable(paperItemizer.getOutputDir()).map(String::valueOf).orElse(null);
-            log.info(aMarker, "paper itemizer Action output directory {}", outputDir);
-            //5. build insert prepare statement with output table columns
-            final String insertQuery = "INSERT INTO " + paperItemizer.getResultTable() +
-                    "(origin_id,group_id,tenant_id,template_id,processed_file_path,paper_no, status,stage,message,created_on,process_id,root_pipeline_id,model_name,model_version) " +
-                    " VALUES(?,?, ?,?, ?,?, ?,?,?,? ,?,  ?,?,?)";
-            log.info(aMarker, "paper itemizer Insert query {}", insertQuery);
-
-            //3. initiate copro processor and copro urls
-            final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.paper-itemizer.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
-                try {
-                    return new URL(s1);
-                } catch (MalformedURLException e) {
-                    log.error("Error in processing the URL ", e);
-                    throw new HandymanException("Error in processing the URL", e, action);
-                }
-            }).collect(Collectors.toList())).orElse(Collections.emptyList());
-            log.info(aMarker, "paper itemizer copro urls {}", urls);
-
-            final CoproProcessor<PaperItemizerInputTable, PaperItemizerOutputTable> coproProcessor =
-                    new CoproProcessor<>(new LinkedBlockingQueue<>(),
-                            PaperItemizerOutputTable.class,
-                            PaperItemizerInputTable.class,
-                            jdbi, log,
-                            new PaperItemizerInputTable(), urls, action);
-
-            log.info(aMarker, "paper itemizer copro coproProcessor initialization  {}", coproProcessor);
-
-            //4. call the method start producer from coproprocessor
-            coproProcessor.startProducer(paperItemizer.getQuerySet(), Integer.valueOf(action.getContext().get("read.batch.size")));
-            log.info(aMarker, "paper itemizer copro coproProcessor startProducer called read batch size {}", action.getContext().get("read.batch.size"));
-            Thread.sleep(1000);
-            coproProcessor.startConsumer(insertQuery, Integer.valueOf(action.getContext().get("paper.itemizer.consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")), new PaperItemizerConsumerProcess(log, aMarker, outputDir, action));
-            log.info(aMarker, "paper itemizer copro coproProcessor startConsumer called consumer count {} write batch count {} ", Integer.valueOf(action.getContext().get("paper.itemizer.consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")));
-
-        } catch (Exception ex) {
-            log.error(aMarker, "error in execute method for paper itemizer  ", ex);
-            throw new HandymanException("error in execute method for paper itemizer", ex, action);
+          return new URL(s1);
+        } catch (MalformedURLException e) {
+          log.error("Error in processing the URL ", e);
+          throw new HandymanException("Error in processing the URL", e, action);
         }
-    }
+      }).collect(Collectors.toList())).orElse(Collections.emptyList());
+      log.info(aMarker, "paper itemizer copro urls {}", urls);
+    }else{
+      log.info(aMarker, "paper itemizer copro url not found");
+      return Collections.emptyList();
 
-    @Override
-    public boolean executeIf() throws Exception {
-        return paperItemizer.getCondition();
     }
+    return urls;
+  }
+
+  @Override
+  public boolean executeIf() throws Exception {
+    return paperItemizer.getCondition();
+  }
 
 }
 

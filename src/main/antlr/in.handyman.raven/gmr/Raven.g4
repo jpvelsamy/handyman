@@ -791,6 +791,7 @@ qrExtraction:
 paperItemizer:
 	'paperItemizer' 'as' name=STRING
 	'outputDir' outputDir=STRING
+	'copro-url' endpoint=STRING
 	'result-table' resultTable=STRING
 	'processId' processId=STRING
 	'resource-conn' resourceConn=STRING

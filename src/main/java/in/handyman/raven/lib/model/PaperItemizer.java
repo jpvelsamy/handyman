@@ -26,6 +26,8 @@ public class PaperItemizer implements IActionContext {
 
   private String outputDir;
 
+  private String endpoint;
+
   private String resultTable;
 
   private String processId;

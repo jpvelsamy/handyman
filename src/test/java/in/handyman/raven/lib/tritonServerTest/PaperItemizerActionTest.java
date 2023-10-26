@@ -23,6 +23,7 @@ class PaperItemizerActionTest {
                 .condition(true)
                 .processId("138980184199100180")
                 .resultTable("info.")
+                .endpoint("${copro.paper-itemizer.url}")
                 .outputDir("/home/anandh.andrews@zucisystems.com/W-space/pr1-lambdas/agadia/output/")
                 .querySet("  SELECT a.origin_id, a.group_id ,c.file_path,b.tenant_id,b.document_id as template_id,a.producer_process_id as process_id \n" +
                         " from info.preprocess_payload_queue a \n" +
@@ -49,6 +50,7 @@ class PaperItemizerActionTest {
                 .resourceConn("intics_zio_db_conn")
                 .condition(true)
                 .processId("138980184199100180")
+                .endpoint("${copro.paper-itemizer.url}")
                 .resultTable("info.paper_itemizer")
                 .outputDir("/data/output")
                 .querySet("SELECT 'INT-1' AS origin_id, 1 AS group_id, '/data/multipart-files/139164742559210010/144313556-7-Bill-of-Landing.pdf' AS file_path, 1 AS tenant_id, 'TMP-1' AS template_id, '138980184199100180' AS process_id \n")
@@ -64,27 +66,6 @@ class PaperItemizerActionTest {
 
         PaperItemizerAction paperItemizerAction = new PaperItemizerAction(actionExecutionAudit, log, paperItemizer);
         paperItemizerAction.execute();
-    }
-
-    @Test
-    void testJsonBody() throws JsonProcessingException {
-//        String jsonString="{\"model_name\":\"paper-iterator-service\",\"model_version\":\"1\",\"outputs\":[{\"name\":\"PAPER ITERATOR END\",\"datatype\":\"BYTES\",\"shape\":[1],\"data\":[\"{'itemizedPapers': ['/data/output/pdf_to_image/SYNT_166838894_c1/SYNT_166838894_c1_0.jpg', '/data/output/pdf_to_image/SYNT_166838894_c1/SYNT_166838894_c1_1.jpg']}\"]}]}";
-//      ObjectMapper objectMapper=new ObjectMapper();
-//        PaperItemizerResponse paperItemizerResponse = objectMapper.readValue(jsonString, PaperItemizerResponse.class);
-//        System.out.println(paperItemizerResponse.getOutputs().toString());
-
-        String inputJsonString="\"{'itemizedPapers': ['/data/output/pdf_to_image/SYNT_166838894_c1/SYNT_166838894_c1_0.jpg', '/data/output/pdf_to_image/SYNT_166838894_c1/SYNT_166838894_c1_1.jpg']}\"";
-        ObjectMapper objectMapper1=new ObjectMapper();
-        PaperItemizerDataItem paperItemizerResponseData = objectMapper1.readValue(inputJsonString, PaperItemizerDataItem.class);
-        System.out.println(paperItemizerResponseData.getItemizedPapers().toString());
-
-    }
-
-    @Data
-    class ObjectDef {
-        private String f1;
-        private String f2;
-
     }
 }
 
