@@ -51,6 +51,7 @@ public class PhraseMatchConsumerProcess implements CoproProcessor.ConsumerProces
         Long pipelineId = action.getRootPipelineId();
         String processId = String.valueOf(entity.getProcessId());
         String paperNo = String.valueOf(entity.getPaperNo());
+        Long tenantId=entity.getTenantId();
         Long actionId = action.getActionId();;
         String pageContent = String.valueOf(entity.getPageContent());
 
@@ -89,7 +90,7 @@ public class PhraseMatchConsumerProcess implements CoproProcessor.ConsumerProces
         String tritonRequestActivator = action.getContext().get("triton.request.activator");
 
 
-        if (Objects.equals("true", tritonRequestActivator)) {
+        if (Objects.equals("false", tritonRequestActivator)) {
             Request request = new Request.Builder().url(endpoint)
                     .post(RequestBody.create(jsonInputRequest, MediaTypeJSON)).build();
             coproRequestBuilder(entity,parentObj, request,objectMapper);
@@ -104,6 +105,7 @@ public class PhraseMatchConsumerProcess implements CoproProcessor.ConsumerProces
 
     private void coproRequestBuilder(PhraseMatchInputTable entity, List<PhraseMatchOutputTable> parentObj, Request request, ObjectMapper objectMapper) {
         final Integer paperNo = Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null);
+        Long tenantId=entity.getTenantId();
         Long rootPipelineId = entity.getRootPipelineId();
         try (Response response = httpclient.newCall(request).execute()) {
             String responseBody = Objects.requireNonNull(response.body()).string();
@@ -117,6 +119,7 @@ public class PhraseMatchConsumerProcess implements CoproProcessor.ConsumerProces
                                     .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                                     .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).orElse(null))
                                     .status("FAILED")
+                                    .tenantId(tenantId)
                                     .paperNo(paperNo)
                                     .stage(actionName)
                                     .message(Optional.of(responseBody).map(String::valueOf).orElse(null))
@@ -133,6 +136,7 @@ public class PhraseMatchConsumerProcess implements CoproProcessor.ConsumerProces
                             .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).orElse(null))
                             .status("FAILED")
                             .paperNo(paperNo)
+                            .tenantId(tenantId)
                             .stage(actionName)
                             .message(exception.getMessage())
                             .rootPipelineId(rootPipelineId)
@@ -148,7 +152,7 @@ public class PhraseMatchConsumerProcess implements CoproProcessor.ConsumerProces
 
 
     private void tritonRequestBuilder( PhraseMatchInputTable entity, List<PhraseMatchOutputTable> parentObj, Request request) {
-
+        Long tenantId=entity.getTenantId();
         final Integer paperNo = Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null);
         Long rootPipelineId = entity.getRootPipelineId();
         try (Response response = httpclient.newCall(request).execute()) {
@@ -170,6 +174,7 @@ public class PhraseMatchConsumerProcess implements CoproProcessor.ConsumerProces
                                 .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                                 .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).orElse(null))
                                 .status("FAILED")
+                                .tenantId(tenantId)
                                 .paperNo(paperNo)
                                 .stage(actionName)
                                 .message(Optional.of(responseBody).map(String::valueOf).orElse(null))
@@ -185,6 +190,7 @@ public class PhraseMatchConsumerProcess implements CoproProcessor.ConsumerProces
                             .originId(Optional.ofNullable(entity.getOriginId()).map(String::valueOf).orElse(null))
                             .groupId(Optional.ofNullable(entity.getGroupId()).map(String::valueOf).orElse(null))
                             .status("FAILED")
+                            .tenantId(tenantId)
                             .paperNo(paperNo)
                             .stage(actionName)
                             .message(exception.getMessage())
@@ -200,7 +206,7 @@ public class PhraseMatchConsumerProcess implements CoproProcessor.ConsumerProces
     private static void extractedOutputDataRequest(PhraseMatchInputTable entity, List<PhraseMatchOutputTable> parentObj, String pharseMatchDataItem, ObjectMapper objectMapper, String modelName, String modelVersion) {
         String originId = entity.getOriginId();
         String groupId = entity.getGroupId();
-
+        Long tenantId=entity.getTenantId();
 
         final Integer paperNo = Optional.ofNullable(entity.getPaperNo()).map(String::valueOf).map(Integer::parseInt).orElse(null);
         Long rootPipelineId = entity.getRootPipelineId();
@@ -219,6 +225,7 @@ public class PhraseMatchConsumerProcess implements CoproProcessor.ConsumerProces
                                 .groupId(Optional.ofNullable(groupId).map(String::valueOf).orElse(null))
                                 .paperNo(paperNo)
                                 .status("COMPLETED")
+                                .tenantId(tenantId)
                                 .stage(actionName)
                                 .message("Completed API call zero shot classifier")
                                 .rootPipelineId(rootPipelineId)

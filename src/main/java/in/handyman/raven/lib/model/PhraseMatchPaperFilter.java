@@ -28,12 +28,15 @@ public class PhraseMatchPaperFilter implements IActionContext {
 
   private String processID;
 
-  private String querySet;
+  private String endPoint;
 
   private String threadCount;
 
   private String readBatchSize;
+
   private String writeBatchSize;
+
+  private String querySet;
 
   private Boolean condition = true;
 }

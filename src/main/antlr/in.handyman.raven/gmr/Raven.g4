@@ -658,6 +658,7 @@ phraseMatchPaperFilter:
     'phrase-match-paper-filter' 'as' name=STRING
     'on-resource-conn' resourceConn=STRING
     'for-process-id' processID=STRING
+    'copro-url' endPoint=STRING
     'thread-count' threadCount=STRING
     'read-batch-size' readBatchSize=STRING
     'write-batch-size' writeBatchSize=STRING

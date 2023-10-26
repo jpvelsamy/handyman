@@ -23,6 +23,7 @@ import java.util.Map;
         private String truthPlaceholder;
         private String processId;
         private Long rootPipelineId;
+        private Long tenantId;
 
         @Override
         public List<Object> getRowData() {
