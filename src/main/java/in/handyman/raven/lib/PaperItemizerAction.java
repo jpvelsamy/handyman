@@ -33,6 +33,10 @@ import java.util.stream.Collectors;
         actionName = "PaperItemizer"
 )
 public class PaperItemizerAction implements IActionExecution {
+    public static final String READ_BATCH_SIZE = "read.batch.size";
+    public static final String PAPER_ITEMIZER_CONSUMER_API_COUNT = "paper.itemizer.consumer.API.count";
+    public static final String WRITE_BATCH_SIZE = "write.batch.size";
+    public static final String INSERT_COLUMNS = "origin_id,group_id,tenant_id,template_id,processed_file_path,paper_no, status,stage,message,created_on,process_id,root_pipeline_id,model_name,model_version";
     private final ActionExecutionAudit action;
 
     private final Logger log;
@@ -60,7 +64,7 @@ public class PaperItemizerAction implements IActionExecution {
             log.info(aMarker, "paper itemizer Action output directory {}", outputDir);
             //5. build insert prepare statement with output table columns
             final String insertQuery = "INSERT INTO " + paperItemizer.getResultTable() +
-                    "(origin_id,group_id,tenant_id,template_id,processed_file_path,paper_no, status,stage,message,created_on,process_id,root_pipeline_id,model_name,model_version) " +
+                    "(" + INSERT_COLUMNS + ") " +
                     " VALUES(?,?, ?,?, ?,?, ?,?,?,? ,?,  ?,?,?)";
             log.info(aMarker, "paper itemizer Insert query {}", insertQuery);
 
@@ -78,9 +82,9 @@ public class PaperItemizerAction implements IActionExecution {
             log.info(aMarker, "paper itemizer copro coproProcessor initialization  {}", coproProcessor);
 
             //4. call the method start producer from coproprocessor
-            Integer readBatchSize = Integer.valueOf(action.getContext().get("read.batch.size"));
-            Integer consumerApiCount = Integer.valueOf(action.getContext().get("paper.itemizer.consumer.API.count"));
-            Integer writeBatchSize = Integer.valueOf(action.getContext().get("write.batch.size"));
+            Integer readBatchSize = Integer.valueOf(action.getContext().get(READ_BATCH_SIZE));
+            Integer consumerApiCount = Integer.valueOf(action.getContext().get(PAPER_ITEMIZER_CONSUMER_API_COUNT));
+            Integer writeBatchSize = Integer.valueOf(action.getContext().get(WRITE_BATCH_SIZE));
 
             coproProcessor.startProducer(paperItemizer.getQuerySet(), readBatchSize);
             log.info(aMarker, "paper itemizer copro coproProcessor startProducer called read batch size {}", readBatchSize);
