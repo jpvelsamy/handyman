@@ -1,7 +1,7 @@
 package in.handyman.raven.lib.tritonServerTest;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
-import in.handyman.raven.lib.model.HwDetection;
 import in.handyman.raven.lib.HwDetectionAction;
+import in.handyman.raven.lib.model.HwDetection;
 import org.junit.jupiter.api.Test;
 
 import static org.reflections.Reflections.log;

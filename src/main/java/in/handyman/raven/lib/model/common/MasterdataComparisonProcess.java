@@ -27,7 +27,6 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static in.handyman.raven.lib.HwDetectionAction.httpClientTimeout;
 import static in.handyman.raven.lib.MasterdataComparisonAction.MediaTypeJSON;
 
 public class MasterdataComparisonProcess implements CoproProcessor.ConsumerProcess<MasterDataInputTable, MasterDataOutputTable> {
@@ -36,9 +35,9 @@ public class MasterdataComparisonProcess implements CoproProcessor.ConsumerProce
     public final ActionExecutionAudit action;
     final ObjectMapper mapper;
     private final OkHttpClient httpclient = new OkHttpClient.Builder()
-            .connectTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
-            .writeTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
-            .readTimeout(Long.parseLong(httpClientTimeout), TimeUnit.MINUTES)
+            .connectTimeout(100, TimeUnit.MINUTES)
+            .writeTimeout(100, TimeUnit.MINUTES)
+            .readTimeout(100, TimeUnit.MINUTES)
             .build();
     String URI;
 

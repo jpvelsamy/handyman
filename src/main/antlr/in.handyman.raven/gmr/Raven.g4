@@ -745,6 +745,8 @@ hwDetection:
     'hwDetection' 'as' name=STRING
     'on-resource-conn' resourceConn=STRING
     'outputDir' directoryPath=STRING
+    'copro-url' endPoint=STRING
+    'output-table' outputTable=STRING
     'modelPath' modelPath=STRING
     'using'  '{'
         querySet=STRING

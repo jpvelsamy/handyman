@@ -37,6 +37,15 @@ import java.util.stream.Collectors;
         actionName = "HwDetection"
 )
 public class HwDetectionAction implements IActionExecution {
+  public static final String READ_BATCH_SIZE = "read.batch.size";
+  public static final String PAPER_CLASSIFICATION_CONSUMER_API_COUNT = "paper.classification.consumer.API.count";
+  public static final String WRITE_BATCH_SIZE = "write.batch.size";
+  public static final String PAPER_CLASSIFICATION = "paper_classification";
+  public static final String INSERT_INTO = "INSERT INTO ";
+  public static final String PAPER_CLASSIFICATION_RESULT = "paper_classification_result";
+  public static final String INSERT_INTO_COLUMNS = "created_on, created_user_id, last_updated_on, last_updated_user_id, tenant_id, origin_id, paper_no, template_id, model_id, document_type, status, stage, message, group_id, root_pipeline_id, confidence_score,model_name,model_version";
+  public static final String INSERT_INTO_VALUES = "now(),?,now(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?";
+  public static final String OKHTTP_CLIENT_TIMEOUT = "okhttp.client.timeout";
   private final ActionExecutionAudit action;
 
   private final Logger log;
@@ -51,21 +60,24 @@ public class HwDetectionAction implements IActionExecution {
     this.hwDetection = (HwDetection) hwDetection;
     this.action = action;
     this.log = log;
-    this.httpClientTimeout = action.getContext().get("okhttp.client.timeout");
+    this.httpClientTimeout = action.getContext().get(OKHTTP_CLIENT_TIMEOUT);
     this.aMarker = MarkerFactory.getMarker(" HwDetection:" + this.hwDetection.getName());
   }
 
   @Override
   public void execute() throws Exception {
-
+    Integer readBatchSize = Integer.valueOf(action.getContext().get(READ_BATCH_SIZE));
+    Integer consumerCount = Integer.valueOf(action.getContext().get(PAPER_CLASSIFICATION_CONSUMER_API_COUNT));
+    Integer writeBatchSize = Integer.valueOf(action.getContext().get(WRITE_BATCH_SIZE));
+    HwClassificationConsumerProcess hwClassificationConsumerProcess = new HwClassificationConsumerProcess(log, aMarker, action);
     try {
       final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(hwDetection.getResourceConn());
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL));
 
       log.info(aMarker, "Handwritten Classification Action for {} has been started", hwDetection.getName());
-      final String insertQuery = "INSERT INTO paper_classification.paper_classification_result(created_on, created_user_id, last_updated_on, last_updated_user_id, tenant_id, origin_id, paper_no, template_id, model_id, document_type, status, stage, message, group_id, root_pipeline_id, confidence_score,model_name,model_version)" +
-              "values(now(),?,now(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-      final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.hw-detection.url")).map(s -> Arrays.stream(s.split(",")).map(url -> {
+      final String insertQuery = INSERT_INTO +  hwDetection.getOutputTable()+ "(" + INSERT_INTO_COLUMNS + ")" +
+              "values(" + INSERT_INTO_VALUES + ")";
+      final List<URL> urls = Optional.ofNullable(hwDetection.getEndPoint()).map(s -> Arrays.stream(s.split(",")).map(url -> {
         try {
           return new URL(url);
         } catch (MalformedURLException e) {
@@ -80,10 +92,12 @@ public class HwDetectionAction implements IActionExecution {
                       HwClassificationInputTable.class,
                       jdbi, log,
                       new HwClassificationInputTable(), urls, action);
-      coproProcessor.startProducer(hwDetection.getQuerySet(), Integer.valueOf(action.getContext().get("read.batch.size")));
-      log.info("hwdetection read batch size {} and queryset from macro {} ", Integer.valueOf(action.getContext().get("read.batch.size")), hwDetection.getQuerySet());
+
+      coproProcessor.startProducer(hwDetection.getQuerySet(), readBatchSize);
+      log.info("hwdetection read batch size {} and queryset from macro {} ", readBatchSize, hwDetection.getQuerySet());
       Thread.sleep(1000);
-      coproProcessor.startConsumer(insertQuery, Integer.valueOf(action.getContext().get("paper.classification.consumer.API.count")), Integer.valueOf(action.getContext().get("write.batch.size")), new HwClassificationConsumerProcess(log, aMarker, action));
+
+      coproProcessor.startConsumer(insertQuery, consumerCount, writeBatchSize, hwClassificationConsumerProcess);
       log.info(aMarker, " Handwritten Classification has been completed {}  ", hwDetection.getName());
     } catch (Exception e) {
       action.getContext().put(hwDetection.getName() + ".isSuccessful", "false");

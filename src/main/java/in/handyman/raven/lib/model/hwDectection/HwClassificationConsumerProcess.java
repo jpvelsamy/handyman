@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 import static in.handyman.raven.lib.HwDetectionAction.httpClientTimeout;
 
 public class HwClassificationConsumerProcess implements CoproProcessor.ConsumerProcess<HwClassificationInputTable,HwClassificationOutputTable> {
+    public static final String TRITON_REQUEST_ACTIVATOR = "triton.request.activator";
     private final Logger log;
     private final Marker aMarker;
     private final String STAGE="PAPER_CLASSIFICATION";
@@ -48,7 +49,6 @@ public class HwClassificationConsumerProcess implements CoproProcessor.ConsumerP
 
         List<HwClassificationOutputTable> parentObj = new ArrayList<>();
         String entityFilePath = entity.getFilePath();
-        final String PAPER_CLASSIFICATION_PROCESS="PAPER_CLASSIFICATION";
         Long rootpipelineId = action.getRootPipelineId();
         Long  actionId = Long.parseLong(action.getContext().get("actionId")) ;
         String modelPath = action.getModelPath();
@@ -60,7 +60,7 @@ public class HwClassificationConsumerProcess implements CoproProcessor.ConsumerP
         HwDetectionPayload hwDetectionPayload = new HwDetectionPayload();
         hwDetectionPayload.setRootPipelineId(rootpipelineId);
         hwDetectionPayload.setActionId(actionId);
-        hwDetectionPayload.setProcess(PAPER_CLASSIFICATION_PROCESS);
+        hwDetectionPayload.setProcess(STAGE);
         hwDetectionPayload.setInputFilePath(filePath);
         hwDetectionPayload.setOutputDir(outputDir);
         hwDetectionPayload.setModelPath(modelPath);
@@ -80,10 +80,10 @@ public class HwClassificationConsumerProcess implements CoproProcessor.ConsumerP
         String jsonRequest = objectMapper.writeValueAsString(tritonInputRequest);
 
 
-        String tritonRequestActivator = action.getContext().get("triton.request.activator");
+        String tritonRequestActivator = action.getContext().get(TRITON_REQUEST_ACTIVATOR);
 
 
-        if (Objects.equals("true", tritonRequestActivator)) {
+        if (Objects.equals("false", tritonRequestActivator)) {
             Request request = new Request.Builder().url(endpoint)
                     .post(RequestBody.create(jsonInputRequest, mediaTypeJson)).build();
             coproRequestBuilder(entity, request, parentObj);

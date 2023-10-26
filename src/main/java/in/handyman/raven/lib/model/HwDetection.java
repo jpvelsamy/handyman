@@ -28,6 +28,10 @@ public class HwDetection implements IActionContext {
 
   private String directoryPath;
 
+  private String endPoint;
+
+  private String outputTable;
+
   private String modelPath;
 
   private String querySet;
