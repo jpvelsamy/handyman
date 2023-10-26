@@ -13,6 +13,7 @@ import in.handyman.raven.util.ExceptionUtil;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.argument.Arguments;
 import org.jdbi.v3.core.argument.NullArgument;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -111,16 +112,7 @@ public class TemplateDetectionAction implements IActionExecution {
                 }
             }).collect(Collectors.toList())).orElse(Collections.emptyList());
 
-            final TemplateDetectionInputTable templateDetectionInputTable = new TemplateDetectionInputTable();
-            final CoproProcessor<TemplateDetectionInputTable, TemplateDetectionOutputTable> coproProcessor =
-                    new CoproProcessor<>(new LinkedBlockingQueue<>(),
-                            TemplateDetectionOutputTable.class,
-                            TemplateDetectionInputTable.class,
-                            jdbi, log,
-                            templateDetectionInputTable, urls, action);
-
-
-            coproProcessor.startProducer(querysetStr, readBatchSize);
+            final CoproProcessor<TemplateDetectionInputTable, TemplateDetectionOutputTable> coproProcessor = getTemplateDetectionCoproProcessor(jdbi, urls, querysetStr);
             log.info(aMarker, "Copro processor start compose completed {}", nameStr);
             Thread.sleep(threadSleepTime);
             final TemplateDetectionConsumerProcess templateDetectionConsumerProcess = new TemplateDetectionConsumerProcess(log, aMarker, action, this);
@@ -134,10 +126,45 @@ public class TemplateDetectionAction implements IActionExecution {
 
     }
 
+    @NotNull
+    private CoproProcessor<TemplateDetectionInputTable, TemplateDetectionOutputTable> getTemplateDetectionCoproProcessor(Jdbi jdbi, List<URL> urls, String querysetStr) {
+        final TemplateDetectionInputTable templateDetectionInputTable = new TemplateDetectionInputTable();
+        final CoproProcessor<TemplateDetectionInputTable, TemplateDetectionOutputTable> coproProcessor =
+                new CoproProcessor<>(new LinkedBlockingQueue<>(),
+                        TemplateDetectionOutputTable.class,
+                        TemplateDetectionInputTable.class,
+                        jdbi, log,
+                        templateDetectionInputTable, urls, action);
+
+
+        coproProcessor.startProducer(querysetStr, readBatchSize);
+        return coproProcessor;
+    }
+
     @Override
     public boolean executeIf() throws Exception {
         return templateDetection.getCondition();
     }
+    private List<URL> extractCoproEndPoints(String endpoint) {
+        final List<URL> urls;
+        if (endpoint.isEmpty() && endpoint.isBlank()) {
+            urls = Optional.of(endpoint).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
+                try {
+                    return new URL(s1);
+                } catch (MalformedURLException e) {
+                    log.error("Error in processing the URL ", e);
+                    throw new HandymanException("Error in processing the URL", e, action);
+                }
+            }).collect(Collectors.toList())).orElse(Collections.emptyList());
+            log.info(aMarker, "paper itemizer copro urls {}", urls);
+        } else {
+            log.info(aMarker, "paper itemizer copro url not found");
+            return Collections.emptyList();
+
+        }
+        return urls;
+    }
+
 
     public Integer getTimeOut() {
         return this.timeout;

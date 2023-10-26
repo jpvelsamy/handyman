@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProcess<PaperItemizerInputTable, PaperItemizerOutputTable> {
 
+    public static final String TRITON_REQUEST_ACTIVATOR = "triton.request.activator";
     private final Logger log;
     private final Marker aMarker;
     private final ObjectMapper mapper = new ObjectMapper();
@@ -72,9 +73,9 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
 
         String jsonRequest = objectMapper.writeValueAsString(tritonInputRequest);
 
-        String tritonRequestActivator = action.getContext().get("triton.request.activator");
+        String tritonRequestActivator = action.getContext().get(TRITON_REQUEST_ACTIVATOR);
 
-        if (Objects.equals("true", tritonRequestActivator)) {
+        if (Objects.equals("false", tritonRequestActivator)) {
             Request request = new Request.Builder().url(endpoint)
                     .post(RequestBody.create(jsonInputRequest, mediaTypeJson)).build();
             coproRequestBuider(entity, request, objectMapper, parentObj);

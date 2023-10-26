@@ -28,6 +28,7 @@ import static org.json.XMLTokener.entity;
 
 public class TemplateDetectionConsumerProcess implements CoproProcessor.ConsumerProcess<TemplateDetectionInputTable, TemplateDetectionOutputTable> {
 
+    public static final String TRITON_REQUEST_ACTIVATOR = "triton.request.activator";
     private final Logger log;
     private final Marker aMarker;
     private final ObjectMapper mapper = new ObjectMapper();
@@ -89,10 +90,10 @@ public class TemplateDetectionConsumerProcess implements CoproProcessor.Consumer
         tritonInputRequest.setInputs(Collections.singletonList(requestBody));
         String jsonRequest = objectMapper.writeValueAsString(tritonInputRequest);
 
-        String tritonRequestActivator = action.getContext().get("triton.request.activator");
+        String tritonRequestActivator = action.getContext().get(TRITON_REQUEST_ACTIVATOR);
 
 
-        if (Objects.equals("true", tritonRequestActivator)) {
+        if (Objects.equals("false", tritonRequestActivator)) {
             Request request = new Request.Builder().url(endpoint)
                     .post(RequestBody.create(jsonInputRequest, mediaTypeJSON)).build();
             coproRequestBuider(entity, request, objectMapper ,outputObjectList);

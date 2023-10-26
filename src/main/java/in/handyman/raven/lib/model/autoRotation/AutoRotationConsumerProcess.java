@@ -22,6 +22,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProcess<AutoRotationInputTable, AutoRotationOutputTable> {
+    public static final String TRITON_REQUEST_ACTIVATOR = "triton.request.activator";
     private final Logger log;
     private final Marker aMarker;
     private final ObjectMapper mapper = new ObjectMapper();
@@ -94,7 +95,7 @@ public class AutoRotationConsumerProcess implements CoproProcessor.ConsumerProce
         if (log.isInfoEnabled()) {
             log.info(aMarker, "Request has been build with the parameters \n URI : {}, with inputFilePath {} and outputDir {}", endpoint, entityFilePath, outputDir);
         }
-        String tritonRequestActivator = action.getContext().get("triton.request.activator");
+        String tritonRequestActivator = action.getContext().get(TRITON_REQUEST_ACTIVATOR);
 
 
         if (Objects.equals("false", tritonRequestActivator)) {
