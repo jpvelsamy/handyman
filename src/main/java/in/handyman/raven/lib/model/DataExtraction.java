@@ -28,11 +28,11 @@ public class DataExtraction implements IActionContext {
 
   private String resultTable;
 
+  private String endPoint;
+
   private String processId;
 
   private String querySet;
 
   private Boolean condition = true;
-
-  private String forkBatchSize;
 }

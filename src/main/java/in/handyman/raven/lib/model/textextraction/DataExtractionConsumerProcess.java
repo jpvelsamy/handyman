@@ -85,7 +85,7 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
 
         String tritonRequestActivator = action.getContext().get("triton.request.activator");
 
-        if (Objects.equals("true", tritonRequestActivator)) {
+        if (Objects.equals("false", tritonRequestActivator)) {
             Request request = new Request.Builder().url(endpoint)
                     .post(RequestBody.create(jsonInputRequest, mediaType)).build();
             coproRequestBuilder(entity, request, parentObj, originId, groupId);
@@ -100,6 +100,11 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
     }
 
     private void coproRequestBuilder(DataExtractionInputTable entity, Request request, List<DataExtractionOutputTable> parentObj, String originId, Integer groupId) {
+        Long tenantId = entity.getTenantId();
+        String templateId = entity.getTemplateId();
+        Long processId = entity.getProcessId();
+        Long rootPipelineId = entity.getRootPipelineId();
+        String templateName = entity.getTemplateName();
         try (Response response = httpclient.newCall(request).execute()) {
             String responseBody = Objects.requireNonNull(response.body()).string();
 
@@ -115,13 +120,13 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
                         .paperNo(entity.getPaperNo())
                         .status(FAILED_STR)
                         .stage(PROCESS_NAME)
-                        .tenantId(entity.getTenantId())
-                        .templateId(entity.getTemplateId())
-                        .processId(entity.getProcessId())
+                        .tenantId(tenantId)
+                        .templateId(templateId)
+                        .processId(processId)
                         .message(response.message())
                         .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                        .rootPipelineId(entity.getRootPipelineId())
-                        .templateName(entity.getTemplateName())
+                        .rootPipelineId(rootPipelineId)
+                        .templateName(templateName)
                         .build());
                 log.error(aMarker, "The Exception occurred in response {}", response.message());
             }
@@ -132,13 +137,13 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
                     .paperNo(entity.getPaperNo())
                     .status(FAILED_STR)
                     .stage(PROCESS_NAME)
-                    .tenantId(entity.getTenantId())
-                    .templateId(entity.getTemplateId())
-                    .processId(entity.getProcessId())
+                    .tenantId(tenantId)
+                    .templateId(templateId)
+                    .processId(processId)
                     .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                     .message(ExceptionUtil.toString(e))
-                    .rootPipelineId(entity.getRootPipelineId())
-                    .templateName(entity.getTemplateName())
+                    .rootPipelineId(rootPipelineId)
+                    .templateName(templateName)
                     .build());
 
             log.error(aMarker, "The Exception occurred {} ", e.toString());
@@ -149,6 +154,11 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
     }
 
     private void tritonRequestBuilder(DataExtractionInputTable entity, Request request, List<DataExtractionOutputTable> parentObj, String originId, Integer groupId) {
+        Long tenantId = entity.getTenantId();
+        String templateId = entity.getTemplateId();
+        Long processId = entity.getProcessId();
+        Long rootPipelineId = entity.getRootPipelineId();
+        String templateName = entity.getTemplateName();
         try (Response response = httpclient.newCall(request).execute()) {
             String responseBody = Objects.requireNonNull(response.body()).string();
 
@@ -169,13 +179,13 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
                         .paperNo(entity.getPaperNo())
                         .status(FAILED_STR)
                         .stage(PROCESS_NAME)
-                        .tenantId(entity.getTenantId())
-                        .templateId(entity.getTemplateId())
-                        .processId(entity.getProcessId())
+                        .tenantId(tenantId)
+                        .templateId(templateId)
+                        .processId(processId)
                         .message(response.message())
                         .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                        .rootPipelineId(entity.getRootPipelineId())
-                        .templateName(entity.getTemplateName())
+                        .rootPipelineId(rootPipelineId)
+                        .templateName(templateName)
                         .build());
                 log.error(aMarker, "The Exception occurred ");
             }
@@ -186,13 +196,13 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
                     .paperNo(entity.getPaperNo())
                     .status(FAILED_STR)
                     .stage(PROCESS_NAME)
-                    .tenantId(entity.getTenantId())
-                    .templateId(entity.getTemplateId())
-                    .processId(entity.getProcessId())
+                    .tenantId(tenantId)
+                    .templateId(templateId)
+                    .processId(processId)
                     .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                     .message(ExceptionUtil.toString(e))
-                    .rootPipelineId(entity.getRootPipelineId())
-                    .templateName(entity.getTemplateName())
+                    .rootPipelineId(rootPipelineId)
+                    .templateName(templateName)
                     .build());
 
             log.error(aMarker, "The Exception occurred ", e);
@@ -207,22 +217,29 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
 
 
         final String flag = (!Objects.isNull(stringDataItem) && stringDataItem.length() > 5) ? "no" : "yes";
+        Integer paperNo = entity.getPaperNo();
+        String filePath = entity.getFilePath();
+        Long tenantId = entity.getTenantId();
+        String templateId = entity.getTemplateId();
+        Long processId = entity.getProcessId();
+        String templateName = entity.getTemplateName();
+        Long rootPipelineId = entity.getRootPipelineId();
         parentObj.add(DataExtractionOutputTable.builder()
-                .filePath(new File(entity.getFilePath()).getAbsolutePath())
+                .filePath(new File(filePath).getAbsolutePath())
                 .extractedText(stringDataItem)
                 .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                 .groupId(groupId)
-                .paperNo(entity.getPaperNo())
+                .paperNo(paperNo)
                 .status("COMPLETED")
                 .stage(PROCESS_NAME)
                 .message("Data extraction macro completed")
                 .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                 .isBlankPage(flag)
-                .tenantId(entity.getTenantId())
-                .templateId(entity.getTemplateId())
-                .processId(entity.getProcessId())
-                .templateName(entity.getTemplateName())
-                .rootPipelineId(entity.getRootPipelineId())
+                .tenantId(tenantId)
+                .templateId(templateId)
+                .processId(processId)
+                .templateName(templateName)
+                .rootPipelineId(rootPipelineId)
                 .modelName(modelName)
                 .modelVersion(modelVersion)
                 .build());
