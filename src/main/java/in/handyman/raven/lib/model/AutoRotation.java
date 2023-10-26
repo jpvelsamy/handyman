@@ -28,11 +28,11 @@ public class AutoRotation implements IActionContext {
 
   private String processId;
 
+  private String endPoint;
+
   private String resourceConn;
 
   private String querySet;
 
   private Boolean condition = true;
-
-  private String forkBatchSize;
 }
