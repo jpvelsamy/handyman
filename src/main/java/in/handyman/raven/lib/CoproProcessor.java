@@ -6,7 +6,6 @@ import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lambda.doa.audit.StatementExecutionAudit;
 import in.handyman.raven.util.CommonQueryUtil;
 import in.handyman.raven.util.ExceptionUtil;
-import in.handyman.raven.util.UniqueID;
 import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.PreparedBatch;
@@ -109,7 +108,7 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
                                 .timeTaken((double) ChronoUnit.SECONDS.between(startTime, LocalDateTime.now()))
                                 .rowsRead(ts.size())
                                 .build();
-                        addAudit(audit2,startTime);
+                        addAudit(audit2, startTime);
                         logger.info("Partition {} added to the queue", integer);
                         try {
                             Thread.sleep(10);
@@ -125,7 +124,7 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
                             .statementContent("CoproProcessor producer completed " + actionExecutionAudit.getActionName())
                             .timeTaken((double) ChronoUnit.SECONDS.between(startTime, LocalDateTime.now()))
                             .build();
-                    addAudit(audit3,startTime);
+                    addAudit(audit3, startTime);
                 } finally {
                     queue.add(stoppingSeed);
                     logger.info("Added stopping seed to the queue");
@@ -153,8 +152,8 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
                                 final List<O> results = new ArrayList<>();
                                 try {
                                     int nodesSize = nodes.size();
-                                    logger.info("Nodes size {} and index value {}", nodesSize,index);
-                                    if(nodesSize != index) {
+                                    logger.info("Nodes size {} and index value {}", nodesSize, index);
+                                    if (nodesSize != index) {
                                         final List<O> list = callable.process(nodes.get(index), take);
                                         results.addAll(list);
                                     }
@@ -182,7 +181,7 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
                                             .rowsProcessed(processedEntity.size())
                                             .statementContent("CoproProcessor consumer for " + actionExecutionAudit.getActionName())
                                             .build();
-                                    addAudit(audit,startTime);
+                                    addAudit(audit, startTime);
                                     processedEntity.clear();
                                 }
                             } else {
@@ -220,7 +219,7 @@ public class CoproProcessor<I, O extends CoproProcessor.Entity> {
                                             .rowsProcessed(processedEntity.size())
                                             .statementContent("CoproProcessor consumer for " + actionExecutionAudit.getActionName())
                                             .build();
-                                    addAudit(audit,startTime);
+                                    addAudit(audit, startTime);
                                 }
                             } catch (Exception e) {
                                 logger.error("Error in executing prepared statement {}", ExceptionUtil.toString(e));

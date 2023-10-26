@@ -1,15 +1,11 @@
 package in.handyman.raven.lib.tritonServerTest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
-import in.handyman.raven.lib.model.PaperItemizer;
 import in.handyman.raven.lib.PaperItemizerAction;
-import in.handyman.raven.lib.model.paperItemizer.PaperItemizerDataItem;
-import in.handyman.raven.lib.model.paperItemizer.PaperItemizerResponse;
-import lombok.Data;
+import in.handyman.raven.lib.model.PaperItemizer;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+
 import java.util.Map;
 
 @Slf4j
@@ -58,8 +54,8 @@ class PaperItemizerActionTest {
         ActionExecutionAudit actionExecutionAudit = new ActionExecutionAudit();
 
         actionExecutionAudit.getContext().putAll(Map.ofEntries(Map.entry("copro.paper-itemizer.url", "http://192.168.10.245:8100/v2/models/paper-iterator-service/versions/1/infer"),
-                Map.entry("gen_group_id.group_id","1"),
-                Map.entry("triton.request.activator","false"),
+                Map.entry("gen_group_id.group_id", "1"),
+                Map.entry("triton.request.activator", "false"),
                 Map.entry("paper.itemizer.consumer.API.count", "1"),
                 Map.entry("read.batch.size", "5"),
                 Map.entry("write.batch.size", "5")));

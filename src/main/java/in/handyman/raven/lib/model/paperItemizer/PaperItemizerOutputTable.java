@@ -33,7 +33,6 @@ public class PaperItemizerOutputTable implements CoproProcessor.Entity {
     private String modelVersion;
 
 
-
     @Override
     public List<Object> getRowData() {
         return Stream.of(this.originId, this.groupId, this.tenantId, this.templateId, this.processedFilePath,

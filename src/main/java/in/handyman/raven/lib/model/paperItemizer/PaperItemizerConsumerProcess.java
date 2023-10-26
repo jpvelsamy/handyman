@@ -18,9 +18,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.json.XMLTokener.entity;
 
 public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProcess<PaperItemizerInputTable, PaperItemizerOutputTable> {
 
@@ -52,7 +49,7 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
         String inputFilePath = entity.getFilePath();
         Long rootPipelineId = entity.getRootPipelineId();
         final String paperItemizerProcessName = "PAPER_ITEMIZER";
-        Long  actionId = action.getActionId() ;
+        Long actionId = action.getActionId();
         ObjectMapper objectMapper = new ObjectMapper();
 //payload
         PaperItemizerData paperitemizerData = new PaperItemizerData();
@@ -80,13 +77,12 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
         if (Objects.equals("true", tritonRequestActivator)) {
             Request request = new Request.Builder().url(endpoint)
                     .post(RequestBody.create(jsonInputRequest, mediaTypeJson)).build();
-            coproRequestBuider(entity, request,objectMapper, parentObj);
+            coproRequestBuider(entity, request, objectMapper, parentObj);
         } else {
             Request request = new Request.Builder().url(endpoint)
                     .post(RequestBody.create(jsonRequest, mediaTypeJson)).build();
-            tritonRequestBuilder(entity, request,objectMapper, parentObj);
+            tritonRequestBuilder(entity, request, objectMapper, parentObj);
         }
-
 
 
         if (log.isInfoEnabled()) {
@@ -111,7 +107,7 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
             }
             if (response.isSuccessful()) {
                 String responseBody = response.body().string();
-                extractedOutputRequest(entity, objectMapper, parentObj, "", "" , responseBody);
+                extractedOutputRequest(entity, objectMapper, parentObj, "", "", responseBody);
 
             } else {
                 parentObj.add(
@@ -151,7 +147,6 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
             log.error(aMarker, "The Exception occurred in request {}", request, exception);
         }
     }
-
 
 
     private void tritonRequestBuilder(PaperItemizerInputTable entity, Request request, ObjectMapper objectMapper, List<PaperItemizerOutputTable> parentObj) {
@@ -219,7 +214,7 @@ public class PaperItemizerConsumerProcess implements CoproProcessor.ConsumerProc
         }
     }
 
-    private void extractedOutputRequest(PaperItemizerInputTable entity, ObjectMapper objectMapper, List<PaperItemizerOutputTable> parentObj, String modelName,String modelVersion, String paperItemizerDataItem) {
+    private void extractedOutputRequest(PaperItemizerInputTable entity, ObjectMapper objectMapper, List<PaperItemizerOutputTable> parentObj, String modelName, String modelVersion, String paperItemizerDataItem) {
         String originId = entity.getOriginId();
         Integer groupId = entity.getGroupId();
         String templateId = entity.getTemplateId();
