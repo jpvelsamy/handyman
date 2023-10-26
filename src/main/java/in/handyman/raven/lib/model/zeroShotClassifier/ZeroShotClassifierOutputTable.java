@@ -15,7 +15,7 @@ import java.util.stream.Stream;
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public class PaperFilteringZeroShotClassifierOutputTable implements CoproProcessor.Entity {
+    public class ZeroShotClassifierOutputTable implements CoproProcessor.Entity {
         private String originId;
         private Integer paperNo;
         private String groupId;
@@ -32,12 +32,12 @@ import java.util.stream.Stream;
         private Long rootPipelineId;
         private String modelName;
         private String modelVersion;
-
+        private Long tenantId;
 
         @Override
         public List<Object> getRowData() {
             return Stream.of(this.originId, this.groupId, this.paperNo, this.entity, this.confidenceScore,
-                    this.truthEntity, this.status, this.stage, this.message, this.rootPipelineId,this.modelName, this.modelVersion).collect(Collectors.toList());
+                    this.truthEntity, this.status, this.stage, this.message, this.rootPipelineId,this.modelName, this.modelVersion,this.tenantId).collect(Collectors.toList());
         }
     }
 

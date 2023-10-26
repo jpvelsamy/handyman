@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.CoproProcessor;
-import in.handyman.raven.lib.model.paperItemizer.PaperItemizerDataItem;
 import in.handyman.raven.lib.model.triton.TritonInputRequest;
 import in.handyman.raven.lib.model.triton.TritonRequest;
 import in.handyman.raven.util.ExceptionUtil;
@@ -15,7 +14,6 @@ import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -23,7 +21,8 @@ import java.util.concurrent.TimeUnit;
 
 
 
-    public class ZeroShotConsumerProcess implements CoproProcessor.ConsumerProcess<PaperFilteringZeroShotClassifierInputTable, PaperFilteringZeroShotClassifierOutputTable> {
+    public class ZeroShotConsumerProcess implements CoproProcessor.ConsumerProcess<ZeroShotClassifierInputTable, ZeroShotClassifierOutputTable> {
+        public static final String TRITON_REQUEST_ACTIVATOR = "triton.request.activator";
         private final Logger log;
         private final Marker aMarker;
         private final ObjectMapper mapper = new ObjectMapper();
@@ -46,8 +45,8 @@ import java.util.concurrent.TimeUnit;
         }
 
         @Override
-        public List<PaperFilteringZeroShotClassifierOutputTable> process(URL endpoint, PaperFilteringZeroShotClassifierInputTable entity) throws JsonProcessingException {
-            List<PaperFilteringZeroShotClassifierOutputTable> parentObj = new ArrayList<>();
+        public List<ZeroShotClassifierOutputTable> process(URL endpoint, ZeroShotClassifierInputTable entity) throws JsonProcessingException {
+            List<ZeroShotClassifierOutputTable> parentObj = new ArrayList<>();
 
             String originId = entity.getOriginId();
             String groupId = entity.getGroupId();
@@ -90,10 +89,10 @@ import java.util.concurrent.TimeUnit;
 
             String jsonRequest = objectMapper.writeValueAsString(tritonInputRequest);
 
-            String tritonRequestActivator = action.getContext().get("triton.request.activator");
+            String tritonRequestActivator = action.getContext().get(TRITON_REQUEST_ACTIVATOR);
 
 
-            if (Objects.equals("true", tritonRequestActivator)) {
+            if (Objects.equals("false", tritonRequestActivator)) {
                 Request request = new Request.Builder().url(endpoint)
                         .post(RequestBody.create(jsonInputRequest, MediaTypeJSON)).build();
                 coproRequestBuilder(entity,parentObj, request,objectMapper);
@@ -106,7 +105,7 @@ import java.util.concurrent.TimeUnit;
             return parentObj;
         }
 
-        private void tritonRequestBuilder(PaperFilteringZeroShotClassifierInputTable entity,List<PaperFilteringZeroShotClassifierOutputTable> parentObj, Request request) {
+        private void tritonRequestBuilder(ZeroShotClassifierInputTable entity, List<ZeroShotClassifierOutputTable> parentObj, Request request) {
             String originId = entity.getOriginId();
             String groupId = entity.getGroupId();
 
@@ -129,7 +128,7 @@ import java.util.concurrent.TimeUnit;
                     }
                 } else {
                     parentObj.add(
-                            PaperFilteringZeroShotClassifierOutputTable
+                            ZeroShotClassifierOutputTable
                                     .builder()
                                     .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                                     .groupId(Optional.ofNullable(groupId).map(String::valueOf).orElse(null))
@@ -143,7 +142,7 @@ import java.util.concurrent.TimeUnit;
                 }
             } catch (Exception exception) {
                 parentObj.add(
-                        PaperFilteringZeroShotClassifierOutputTable
+                        ZeroShotClassifierOutputTable
                                 .builder()
                                 .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                                 .groupId(Optional.ofNullable(groupId).map(String::valueOf).orElse(null))
@@ -159,7 +158,7 @@ import java.util.concurrent.TimeUnit;
             }
         }
 
-        private void coproRequestBuilder(PaperFilteringZeroShotClassifierInputTable entity,List<PaperFilteringZeroShotClassifierOutputTable> parentObj, Request request,ObjectMapper objectMapper) {
+        private void coproRequestBuilder(ZeroShotClassifierInputTable entity, List<ZeroShotClassifierOutputTable> parentObj, Request request, ObjectMapper objectMapper) {
 
             String originId = entity.getOriginId();
             String groupId = entity.getGroupId();
@@ -176,7 +175,7 @@ import java.util.concurrent.TimeUnit;
 
                 } else {
                     parentObj.add(
-                            PaperFilteringZeroShotClassifierOutputTable
+                            ZeroShotClassifierOutputTable
                                     .builder()
                                     .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                                     .groupId(Optional.ofNullable(groupId).map(String::valueOf).orElse(null))
@@ -190,7 +189,7 @@ import java.util.concurrent.TimeUnit;
                 }
             } catch (Exception exception) {
                 parentObj.add(
-                        PaperFilteringZeroShotClassifierOutputTable
+                        ZeroShotClassifierOutputTable
                                 .builder()
                                 .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                                 .groupId(Optional.ofNullable(groupId).map(String::valueOf).orElse(null))
@@ -206,7 +205,7 @@ import java.util.concurrent.TimeUnit;
             }
         }
 
-        private static void extractedOutputDataRequest(PaperFilteringZeroShotClassifierInputTable entity,List<PaperFilteringZeroShotClassifierOutputTable> parentObj, String zeroShotClassifierDataItem, ObjectMapper objectMapper, String modelName, String modelVersion) {
+        private static void extractedOutputDataRequest(ZeroShotClassifierInputTable entity, List<ZeroShotClassifierOutputTable> parentObj, String zeroShotClassifierDataItem, ObjectMapper objectMapper, String modelName, String modelVersion) {
             String originId = entity.getOriginId();
             String groupId = entity.getGroupId();
 
@@ -223,7 +222,7 @@ import java.util.concurrent.TimeUnit;
                             String key = score.getKey();
                             double scoreValue = score.getScore();
 
-                            parentObj.add(PaperFilteringZeroShotClassifierOutputTable
+                            parentObj.add(ZeroShotClassifierOutputTable
                                     .builder()
                                 .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                                 .groupId(Optional.ofNullable(groupId).map(String::valueOf).orElse(null))

@@ -14,7 +14,7 @@ import java.util.List;
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public class PaperFilteringZeroShotClassifierInputTable implements CoproProcessor.Entity {
+    public class ZeroShotClassifierInputTable implements CoproProcessor.Entity {
 
         private String originId;
         private Integer paperNo;
@@ -24,6 +24,7 @@ import java.util.List;
         private String processId;
         private Long rootPipelineId;
         private String keyToFilter;
+        private Long tenantId;
 
         @Override
         public List<Object> getRowData() {
