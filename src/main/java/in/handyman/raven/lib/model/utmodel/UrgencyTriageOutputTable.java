@@ -24,7 +24,7 @@ public class UrgencyTriageOutputTable implements CoproProcessor.Entity {
     private String originId;
     private Integer paperNo;
     private String templateId;
-    private Integer modelId;
+    private Long modelId;
     private String status;
     private String stage;
     private String message;
