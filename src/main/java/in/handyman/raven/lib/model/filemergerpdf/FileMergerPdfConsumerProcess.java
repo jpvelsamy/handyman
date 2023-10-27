@@ -169,7 +169,7 @@ public class FileMergerPdfConsumerProcess implements CoproProcessor.ConsumerProc
 
         if (modelResponse.getOutputs() != null && !modelResponse.getOutputs().isEmpty()) {
           modelResponse.getOutputs().forEach(o -> o.getData().forEach(fileMergerDataItem -> {
-            extractedOutputDataRequest(entity, fileMergerDataItem, parentObj,  "", "");
+            extractedOutputDataRequest(entity, fileMergerDataItem, parentObj,  modelResponse.getModelName(), modelResponse.getModelVersion());
           }));
         }
       } else {
