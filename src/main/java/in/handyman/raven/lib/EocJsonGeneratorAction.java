@@ -6,7 +6,6 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.EocJsonGenerator;
-import in.handyman.raven.util.ExceptionUtil;
 import in.handyman.raven.util.InstanceUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,8 +31,6 @@ import java.util.Objects;
         actionName = "EocJsonGenerator"
 )
 public class EocJsonGeneratorAction implements IActionExecution {
-    private static final MediaType MediaTypeJSON = MediaType
-            .parse("application/json; charset=utf-8");
     private final ActionExecutionAudit action;
 
     private final Logger log;
@@ -61,8 +58,9 @@ public class EocJsonGeneratorAction implements IActionExecution {
       final String eocId = eocJsonGenerator.getEocId();
       final String originId = eocJsonGenerator.getOriginId();
       final String groupId = eocJsonGenerator.getGroupId();
+      final long tenantId = Long.parseLong(action.getContext().get("tenant_id"));
 
-      String apiUrl = urlEncoder(URI + "api/v1/" + documentId + "/docdetaillineitem/" + eocId);
+      String apiUrl = urlEncoder(URI + "api/v1/" + documentId + "/docdetaillineitem/" + eocId + "?tenantId=" + tenantId);
 
         String authtoken = eocJsonGenerator.getAuthtoken();
         Request request = new Request.Builder().url(apiUrl)
