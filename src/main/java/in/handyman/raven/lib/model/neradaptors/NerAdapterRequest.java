@@ -1,4 +1,4 @@
-package in.handyman.raven.lib.model.NerAdaptors;
+package in.handyman.raven.lib.model.neradaptors;
 
 import in.handyman.raven.lib.model.triton.TritonRequest;
 import lombok.AllArgsConstructor;

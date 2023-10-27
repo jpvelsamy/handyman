@@ -1,4 +1,4 @@
-package in.handyman.raven.lib.model.NerAdaptors;
+package in.handyman.raven.lib.model.neradaptors;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import in.handyman.raven.lib.CoproProcessor;

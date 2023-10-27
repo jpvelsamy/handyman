@@ -1,7 +1,6 @@
 package in.handyman.raven.lib.model.templateDetection;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import in.handyman.raven.lib.model.NerAdaptors.NerAdapterOutput;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

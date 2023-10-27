@@ -1,7 +1,6 @@
-package in.handyman.raven.lib.model.NerAdaptors;
+package in.handyman.raven.lib.model.neradaptors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import in.handyman.raven.lib.model.hwDectection.HwDetectionOutput;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

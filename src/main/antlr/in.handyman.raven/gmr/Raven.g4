@@ -872,6 +872,8 @@ drugMatch:
 urgencyTriageModel:
     'urgencyTriageModel' 'as' name=STRING
     'output-dir' outputDir=STRING
+    'copro-url' endPoint=STRING
+    'output-table' outputTable=STRING
     'resource-conn' resourceConn=STRING
     'using'  '{'  querySet=STRING  '}' ('on-condition' condition=expression)*;
 
@@ -998,6 +1000,7 @@ productOutboundZipfile:
 fileMergerPdf:
     'file-merger-pdf' 'as' name=STRING
     'result-table' outputTable=STRING
+    'copro-url' endPoint=STRING
     'resource-conn' resourceConn=STRING
     'output-directory' outputDir=STRING
     'using' '{'

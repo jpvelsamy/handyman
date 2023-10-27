@@ -3,13 +3,12 @@ package in.handyman.raven.lib.adapters;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.interfaces.AdapterInterface;
-import in.handyman.raven.lib.model.NerAdaptors.NerAdapterDataItem;
-import in.handyman.raven.lib.model.NerAdaptors.NerAdapterPayload;
-import in.handyman.raven.lib.model.NerAdaptors.NerAdapterResponse;
+import in.handyman.raven.lib.model.neradaptors.NerAdapterDataItem;
+import in.handyman.raven.lib.model.neradaptors.NerAdapterPayload;
+import in.handyman.raven.lib.model.neradaptors.NerAdapterResponse;
 import in.handyman.raven.lib.model.triton.TritonInputRequest;
 import in.handyman.raven.lib.model.triton.TritonRequest;
 import okhttp3.MediaType;
@@ -77,7 +76,7 @@ public class NameAdapter implements AdapterInterface {
             } else {
                 Request request = new Request.Builder().url(uri)
                         .post(RequestBody.create(jsonRequest, mediaTypeJSON)).build();
-                extractedTritonOuput(httpclient, objectMapper,request);
+                extractedTritonOutput(httpclient, objectMapper,request);
             }
 
 
@@ -88,7 +87,7 @@ public class NameAdapter implements AdapterInterface {
         return isPredictedLabel;
     }
 
-    private void extractedTritonOuput(OkHttpClient httpclient, ObjectMapper objectMapper,Request request) throws IOException {
+    private void extractedTritonOutput(OkHttpClient httpclient, ObjectMapper objectMapper,Request request) throws IOException {
         try (Response response = httpclient.newCall(request).execute()) {
 
             if(response.isSuccessful()){
@@ -108,8 +107,6 @@ public class NameAdapter implements AdapterInterface {
                     });
                 });
             }
-
-
         }
     }
 

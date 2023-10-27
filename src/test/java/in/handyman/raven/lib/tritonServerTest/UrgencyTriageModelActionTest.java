@@ -2,19 +2,19 @@ package in.handyman.raven.lib.tritonServerTest;
 
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.UrgencyTriageModelAction;
-import in.handyman.raven.lib.model.UrgencyTriage;
 import in.handyman.raven.lib.model.UrgencyTriageModel;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
+
 @Slf4j
 public class UrgencyTriageModelActionTest {
 
     @Test
     void tritonServer() throws Exception {
 
-        final UrgencyTriageModel urgencyTriageModel=UrgencyTriageModel.builder()
+        final UrgencyTriageModel urgencyTriageModel = UrgencyTriageModel.builder()
                 .condition(true)
                 .name("urgency triage")
                 .outputDir("/data/output/")
@@ -33,9 +33,8 @@ public class UrgencyTriageModelActionTest {
                 Map.entry("ut.consumer.API.count", "1"),
                 Map.entry("write.batch.size", "5")));
 
-     UrgencyTriageModelAction action1 = new UrgencyTriageModelAction(actionExecutionAudit, log, urgencyTriageModel);
+        UrgencyTriageModelAction action1 = new UrgencyTriageModelAction(actionExecutionAudit, log, urgencyTriageModel);
         action1.execute();
-
 
 
     }

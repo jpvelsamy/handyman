@@ -26,6 +26,10 @@ public class UrgencyTriageModel implements IActionContext {
 
   private String outputDir;
 
+  private String endPoint;
+
+  private String outputTable;
+
   private String resourceConn;
 
   private String querySet;

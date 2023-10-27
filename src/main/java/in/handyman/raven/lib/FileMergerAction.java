@@ -33,6 +33,7 @@ import java.util.Objects;
 )
 public class FileMergerAction implements IActionExecution {
   private static final MediaType MediaTypeJSON = MediaType.parse("application/json; charset=utf-8");
+  public static final String TRITON_REQUEST_ACTIVATOR = "triton.request.activator";
   private final ActionExecutionAudit action;
   private final Logger log;
   private final FileMerger fileMerger;
@@ -79,25 +80,34 @@ public class FileMergerAction implements IActionExecution {
 
     String jsonRequest = mapper.writeValueAsString(tritonInputRequest);
     // BUILD A REQUEST
-    Request request = new Request.Builder().url(URI)
-            .post(RequestBody.create(jsonRequest, MediaTypeJSON)).build();
+
+
+    String tritonRequestActivator = action.getContext().get(TRITON_REQUEST_ACTIVATOR);
+    String name = "file-merger-response";
+    if (Objects.equals("false", tritonRequestActivator)) {
+      Request request = new Request.Builder().url(URI)
+              .post(RequestBody.create(jsonInputRequest, MediaTypeJSON)).build();
+      coproRequestBuilder(httpclient,name,request);
+    } else {
+      Request request = new Request.Builder().url(URI)
+              .post(RequestBody.create(jsonRequest, MediaTypeJSON)).build();
+      tritonRequestBuilder(httpclient,name,request);
+    }
+
 
     if(log.isInfoEnabled()){
       log.info(aMarker, "The request got it successfully the copro url {} ,request body {} and output directory  {}", URI,requestBody,outputDir);
     }
-    String name = "file-merger-response";
+
+  }
+
+  private void tritonRequestBuilder(OkHttpClient httpclient, String name,Request request) {
     try (Response response = httpclient.newCall(request).execute()) {
       FileMergerResponse modelResponse = mapper.readValue(response.body().string(), FileMergerResponse.class);
       if (modelResponse.getOutputs() != null && !modelResponse.getOutputs().isEmpty()){
         modelResponse.getOutputs().forEach(fileMergerOutput -> {
           fileMergerOutput.getData().forEach(responseBody -> {
-            try {
-              action.getContext().put(name, mapper.readTree(responseBody).toString());
-            } catch (JsonProcessingException e) {
-              throw new RuntimeException(e);
-            }
-            action.getContext().put(name.concat(".success"), "true");
-            log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
+            extractedRequestOutput(name, responseBody);
           });
         });
       }
@@ -107,6 +117,32 @@ public class FileMergerAction implements IActionExecution {
       log.error(aMarker, "The Exception {} fileMerger ", e);
       throw new HandymanException("Failed to execute", e, action);
     }
+  }
+
+  private void coproRequestBuilder(OkHttpClient httpclient, String name,Request request) {
+    try (Response response = httpclient.newCall(request).execute()) {
+      String responseBody=response.body().string();
+      if(response.isSuccessful()){
+        extractedRequestOutput(name, responseBody);
+      }else{
+        action.getContext().put(name.concat(".error"), "true");
+      }
+
+    } catch (Exception e) {
+      action.getContext().put(name.concat(".error"), "true");
+      log.error(aMarker, "The Exception {} fileMerger ", e);
+      throw new HandymanException("Failed to execute", e, action);
+    }
+  }
+
+  private void extractedRequestOutput(String name, String responseBody) {
+    try {
+      action.getContext().put(name, mapper.readTree(responseBody).toString());
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+    action.getContext().put(name.concat(".success"), "true");
+    log.info(aMarker, "The Successful Response  {} {}", name, responseBody);
   }
 
 

@@ -1,6 +1,5 @@
-package in.handyman.raven.lib.model.NerAdaptors;
+package in.handyman.raven.lib.model.neradaptors;
 
-import in.handyman.raven.lib.model.hwDectection.HwDetectionDataItem;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

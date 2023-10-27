@@ -1,4 +1,4 @@
-package in.handyman.raven.lib.model.NerAdaptors;
+package in.handyman.raven.lib.model.neradaptors;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

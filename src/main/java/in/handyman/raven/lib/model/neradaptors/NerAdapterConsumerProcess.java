@@ -1,21 +1,21 @@
-package in.handyman.raven.lib.model.NerAdaptors;
+package in.handyman.raven.lib.model.neradaptors;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.*;
 import in.handyman.raven.lib.model.*;
-import in.handyman.raven.lib.model.triton.TritonInputRequest;
-import in.handyman.raven.lib.model.triton.TritonRequest;
 import in.handyman.raven.util.ExceptionUtil;
-import okhttp3.*;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
 import java.net.URL;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
@@ -117,72 +117,72 @@ public class NerAdapterConsumerProcess implements CoproProcessor.ConsumerProcess
         log.info(aMarker, "Build 19-validator vqa score {}", vqaScore);
 
 
-                        if (valConfidenceScore >= 0) {
-                            parentObj.add(
-                                    NerOutputTable
-                                            .builder()
-                                            .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
-                                            .groupId(groupId)
-                                            .sorId(sorId)
-                                            .tenantId(tenantId)
-                                            .processId(processId)
-                                            .paperNo(paperNo)
-                                            .sorItemId(sorItemId)
-                                            .sorItemName(sorKey)
-                                            .question(question)
-                                            .answer(inputValue)
-                                            .vqaScore(vqaScore)
-                                            .weight(weight)
-                                            .createdUserId(createdUserId)
-                                            .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                                            .wordScore(wordScore)
-                                            .charScore(charScore)
-                                            .validatorScoreAllowed(validatorScore)
-                                            .validatorScoreNegative(validatorNegativeScore)
-                                            .confidenceScore(valConfidenceScore)
-                                            .validationName(result.getAllowedAdapter())
-                                            .bBox(result.getBbox())
-                                            .questionId(result.getQuestionId())
-                                            .synonymId(result.getSynonymId())
-                                            .status("COMPLETED")
-                                            .stage("SCALAR_VALIDATION")
-                                            .message("Ner validation macro completed")
-                                            .build());
+        if (valConfidenceScore >= 0) {
+            parentObj.add(
+                    NerOutputTable
+                            .builder()
+                            .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                            .groupId(groupId)
+                            .sorId(sorId)
+                            .tenantId(tenantId)
+                            .processId(processId)
+                            .paperNo(paperNo)
+                            .sorItemId(sorItemId)
+                            .sorItemName(sorKey)
+                            .question(question)
+                            .answer(inputValue)
+                            .vqaScore(vqaScore)
+                            .weight(weight)
+                            .createdUserId(createdUserId)
+                            .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                            .wordScore(wordScore)
+                            .charScore(charScore)
+                            .validatorScoreAllowed(validatorScore)
+                            .validatorScoreNegative(validatorNegativeScore)
+                            .confidenceScore(valConfidenceScore)
+                            .validationName(result.getAllowedAdapter())
+                            .bBox(result.getBbox())
+                            .questionId(result.getQuestionId())
+                            .synonymId(result.getSynonymId())
+                            .status("COMPLETED")
+                            .stage("SCALAR_VALIDATION")
+                            .message("Ner validation macro completed")
+                            .build());
 
 
-    } else {
-        parentObj.add(
-                NerOutputTable
-                        .builder()
-                        .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
-                        .groupId(groupId)
-                        .sorId(sorId)
-                        .tenantId(tenantId)
-                        .processId(processId)
-                        .paperNo(paperNo)
-                        .sorItemId(sorItemId)
-                        .sorItemName(sorKey)
-                        .question(question)
-                        .answer(inputValue)
-                        .vqaScore(vqaScore)
-                        .weight(weight)
-                        .createdUserId(createdUserId)
-                        .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                        .wordScore(wordScore)
-                        .charScore(charScore)
-                        .validatorScoreAllowed(validatorScore)
-                        .validatorScoreNegative(validatorNegativeScore)
-                        .confidenceScore(valConfidenceScore)
-                        .validationName(result.getAllowedAdapter())
-                        .bBox(result.getBbox())
-                        .questionId(result.getQuestionId())
-                        .synonymId(result.getSynonymId())
-                        .status("FAILED")
-                        .stage("SCALAR_VALIDATION")
-                        .message("Confidence Score is less than 0")
-                        .build());
-        log.error(aMarker, "The Exception occurred in confidence score validation by {} ", valConfidenceScore);
-    }
+        } else {
+            parentObj.add(
+                    NerOutputTable
+                            .builder()
+                            .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                            .groupId(groupId)
+                            .sorId(sorId)
+                            .tenantId(tenantId)
+                            .processId(processId)
+                            .paperNo(paperNo)
+                            .sorItemId(sorItemId)
+                            .sorItemName(sorKey)
+                            .question(question)
+                            .answer(inputValue)
+                            .vqaScore(vqaScore)
+                            .weight(weight)
+                            .createdUserId(createdUserId)
+                            .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                            .wordScore(wordScore)
+                            .charScore(charScore)
+                            .validatorScoreAllowed(validatorScore)
+                            .validatorScoreNegative(validatorNegativeScore)
+                            .confidenceScore(valConfidenceScore)
+                            .validationName(result.getAllowedAdapter())
+                            .bBox(result.getBbox())
+                            .questionId(result.getQuestionId())
+                            .synonymId(result.getSynonymId())
+                            .status("FAILED")
+                            .stage("SCALAR_VALIDATION")
+                            .message("Confidence Score is less than 0")
+                            .build());
+            log.error(aMarker, "The Exception occurred in confidence score validation by {} ", valConfidenceScore);
+        }
 
 
         atomicInteger.set(0);

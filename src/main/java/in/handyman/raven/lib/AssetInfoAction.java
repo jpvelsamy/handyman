@@ -29,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.random;
@@ -60,6 +61,8 @@ public class AssetInfoAction implements IActionExecution {
 
     @Override
     public void execute() throws Exception {
+
+        Long tenantId= Long.valueOf(action.getContext().get("tenant_id"));
         try {
             log.info(aMarker, "Asset Info Action for {} has been started", assetInfo.getName());
 
@@ -100,18 +103,18 @@ public class AssetInfoAction implements IActionExecution {
                         }
                         pathList.forEach(path -> {
                             log.info(aMarker, "insert query for each file from dir {}", path);
-                            fileInfos.add(insertQuery(path.toFile()));
+                            fileInfos.add(insertQuery(path.toFile(),tenantId));
                         });
                     } else if (file.isFile()) {
                         log.info(aMarker, "insert query for file {}", file);
-                        fileInfos.add(insertQuery(file));
+                        fileInfos.add(insertQuery(file,tenantId));
                     }
 
                     if (fileInfos.size() == this.writeBatchSize) {
                         log.info(aMarker, "executing  batch {}", fileInfos.size());
                         consumerBatch(jdbi, fileInfos);
                         log.info(aMarker, "executed  batch {}", fileInfos.size());
-                        insertSummaryAudit(jdbi, tableInfos.size(), fileInfos.size(), 0, "batch inserted");
+                        insertSummaryAudit(jdbi, tableInfos.size(), fileInfos.size(), 0, "batch inserted",tenantId);
                         fileInfos.clear();
                         log.info(aMarker, "cleared batch {}", fileInfos.size());
                     }
@@ -125,7 +128,7 @@ public class AssetInfoAction implements IActionExecution {
                 log.info(aMarker, "executing final batch {}", fileInfos.size());
                 consumerBatch(jdbi, fileInfos);
                 log.info(aMarker, "executed final batch {}", fileInfos.size());
-                insertSummaryAudit(jdbi, tableInfos.size(), fileInfos.size(), 0, "final batch inserted");
+                insertSummaryAudit(jdbi, tableInfos.size(), fileInfos.size(), 0, "final batch inserted",tenantId);
                 fileInfos.clear();
                 log.info(aMarker, "cleared final batch {}", fileInfos.size());
             }
@@ -138,7 +141,7 @@ public class AssetInfoAction implements IActionExecution {
         log.info(aMarker, "Asset Info Action for {} has been completed", assetInfo.getName());
     }
 
-    public FileInfo insertQuery(File file) {
+    public FileInfo insertQuery(File file,Long tenantId) {
         FileInfo fileInfoBuilder = new FileInfo();
         try {
             log.info(aMarker, "insert query main caller for the file {}", file);
@@ -156,6 +159,7 @@ public class AssetInfoAction implements IActionExecution {
             String base64ForPathValue = getBase64ForPath(fielAbsolutePath, fileExtension);
             fileInfoBuilder = FileInfo.builder()
                     .fileId(FilenameUtils.removeExtension(file.getName()) + "_" + ((int) (900000 * random() + 100000)))
+                    .tenantId(tenantId)
                     .fileChecksum(sha1Hex)
                     .fileExtension(fileExtension)
                     .fileName(FilenameUtils.removeExtension(file.getName()))
@@ -174,16 +178,17 @@ public class AssetInfoAction implements IActionExecution {
     }
 
     void consumerBatch(final Jdbi jdbi, List<FileInfo> resultQueue) {
+        Long tenantId= Long.valueOf(action.getContext().get("tenant_id"));
         try {
             resultQueue.forEach(insert -> {
                         jdbi.useTransaction(handle -> {
                             try {
-                                handle.createUpdate("INSERT INTO " + assetInfo.getAssetTable() + "(file_id,process_id,root_pipeline_id, file_checksum, file_extension, file_name, file_path, file_size,encode)" +
-                                                "VALUES(:fileId,:processId, :rootPipelineId, :fileChecksum, :fileExtension, :fileName, :filePath, :fileSize,:encode);")
+                                handle.createUpdate("INSERT INTO " + assetInfo.getAssetTable() + "(file_id,process_id,root_pipeline_id, file_checksum, file_extension, file_name, file_path, file_size,encode,tenant_id)" +
+                                                "VALUES(:fileId,:processId, :rootPipelineId, :fileChecksum, :fileExtension, :fileName, :filePath, :fileSize,:encode,:tenantId);")
                                         .bindBean(insert).execute();
                                 log.info(aMarker, "inserted {} into source of origin", insert);
                             } catch (Throwable t) {
-                                insertSummaryAudit(jdbi, 0, 0, 1, "failed in batch for " + insert.getFileName());
+                                insertSummaryAudit(jdbi, 0, 0, 1, "failed in batch for " + insert.getFileName(),tenantId);
                                 log.error(aMarker, "error inserting result {}", resultQueue, t);
                             }
 
@@ -191,25 +196,26 @@ public class AssetInfoAction implements IActionExecution {
                     }
             );
         } catch (Exception e) {
-            insertSummaryAudit(jdbi, 0, 0, resultQueue.size(), "failed in batch insert");
+            insertSummaryAudit(jdbi, 0, 0, resultQueue.size(), "failed in batch insert",tenantId);
             log.error(aMarker, "error inserting result {}", resultQueue, e);
             HandymanException handymanException = new HandymanException(e);
             HandymanException.insertException("error inserting result" + resultQueue, handymanException, action);
         }
     }
 
-    void insertSummaryAudit(final Jdbi jdbi, int rowCount, int executeCount, int errorCount, String comments) {
+    void insertSummaryAudit(final Jdbi jdbi, int rowCount, int executeCount, int errorCount, String comments,Long tenantId) {
         try {
             SanitarySummary summary = new SanitarySummary().builder()
                     .rowCount(rowCount)
                     .correctRowCount(executeCount)
                     .errorRowCount(errorCount)
                     .comments(comments)
+                    .tenantId(tenantId)
                     .build();
             jdbi.useTransaction(handle -> {
                 Update update = handle.createUpdate("  INSERT INTO " + assetInfo.getAuditTable() +
-                        " ( row_count, correct_row_count, error_row_count,comments, created_at) " +
-                        " VALUES(:rowCount, :correctRowCount, :errorRowCount, :comments, NOW());");
+                        " ( row_count, correct_row_count, error_row_count,comments, created_at,tenant_id) " +
+                        " VALUES(:rowCount, :correctRowCount, :errorRowCount, :comments, NOW(),:tenantId);");
                 Update bindBean = update.bindBean(summary);
                 bindBean.execute();
             });
@@ -257,6 +263,7 @@ public class AssetInfoAction implements IActionExecution {
     public static class FileInfo {
         private String fileId;
         private Long processId;
+        private Long tenantId;
         private Long rootPipelineId;
         private String fileChecksum;
         private String fileExtension;
@@ -276,6 +283,7 @@ public class AssetInfoAction implements IActionExecution {
         private int correctRowCount;
         private int errorRowCount;
         private String comments;
+        private Long tenantId;
 
     }
 
@@ -290,7 +298,7 @@ public class AssetInfoAction implements IActionExecution {
         private String createdUserId;
         private String lastUpdatedOn;
         private String lastUpdatedUserId;
-        private String tenantId;
+        private Long tenantId;
         private String filePath;
         private String documentId;
     }
