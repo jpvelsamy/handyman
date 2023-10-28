@@ -49,8 +49,8 @@ public class UrgencyTriageConsumerProcess implements CoproProcessor.ConsumerProc
 
 //payload
         UrgencyTriageModelPayload urgencyTriageModelPayload = new UrgencyTriageModelPayload();
-        urgencyTriageModelPayload.setRootPipelineId(Long.valueOf(String.valueOf(entity.getRootPipelineId())));
-        urgencyTriageModelPayload.setProcess("QR");
+        urgencyTriageModelPayload.setRootPipelineId(entity.getRootPipelineId());
+        urgencyTriageModelPayload.setProcess("UT");
         urgencyTriageModelPayload.setInputFilePath(entity.getInputFilePath());
         urgencyTriageModelPayload.setActionId(action.getActionId());
         String jsonInputRequest = objectMapper.writeValueAsString(urgencyTriageModelPayload);
@@ -91,7 +91,6 @@ public class UrgencyTriageConsumerProcess implements CoproProcessor.ConsumerProc
 
     private void tritonRequestBuilder(UrgencyTriageInputTable entity, Request request, ObjectMapper objectMapper, List<UrgencyTriageOutputTable> parentObj) {
         String createdUserId = entity.getCreatedUserId();
-        String lastUpdatedUserId = entity.getLastUpdatedUserId();
         Long tenantId = entity.getTenantId();
         Long processId = entity.getProcessId();
         Integer groupId = entity.getGroupId();

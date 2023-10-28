@@ -1,6 +1,7 @@
 package in.handyman.raven.lib.model.textextraction;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
@@ -218,35 +219,39 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
 
     private static void extractedOutputDataRequest(DataExtractionInputTable entity, String stringDataItem, List<DataExtractionOutputTable> parentObj, String originId, Integer groupId, String modelName, String modelVersion) throws JsonProcessingException {
 
-        DataExtractionDataItem dataExtractionDataItem=mapper.readValue(stringDataItem,DataExtractionDataItem.class);
-        final String flag = (!Objects.isNull(dataExtractionDataItem.getPageContent()) && dataExtractionDataItem.getPageContent().length() > 5) ? "no" : "yes";
+        List<DataExtractionDataItem> dataExtractionDataItem=mapper.readValue(stringDataItem, new TypeReference<>() {
+        });
+        dataExtractionDataItem.forEach(dataExtractionDataItem1 -> {
+            final String flag = (!Objects.isNull(dataExtractionDataItem1.getPageContent()) && dataExtractionDataItem1.getPageContent().length() > 5) ? "no" : "yes";
 
-        Integer paperNo = entity.getPaperNo();
-        String filePath = entity.getFilePath();
-        Long tenantId = entity.getTenantId();
-        String templateId = entity.getTemplateId();
-        Long processId = entity.getProcessId();
-        String templateName = entity.getTemplateName();
-        Long rootPipelineId = entity.getRootPipelineId();
-        parentObj.add(DataExtractionOutputTable.builder()
-                .filePath(new File(filePath).getAbsolutePath())
-                .extractedText(dataExtractionDataItem.getPageContent())
-                .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
-                .groupId(groupId)
-                .paperNo(paperNo)
-                .status("COMPLETED")
-                .stage(PROCESS_NAME)
-                .message("Data extraction macro completed")
-                .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                .isBlankPage(flag)
-                .tenantId(tenantId)
-                .templateId(templateId)
-                .processId(processId)
-                .templateName(templateName)
-                .rootPipelineId(rootPipelineId)
-                .modelName(modelName)
-                .modelVersion(modelVersion)
-                .build());
+            Integer paperNo = entity.getPaperNo();
+            String filePath = entity.getFilePath();
+            Long tenantId = entity.getTenantId();
+            String templateId = entity.getTemplateId();
+            Long processId = entity.getProcessId();
+            String templateName = entity.getTemplateName();
+            Long rootPipelineId = entity.getRootPipelineId();
+            parentObj.add(DataExtractionOutputTable.builder()
+                    .filePath(new File(filePath).getAbsolutePath())
+                    .extractedText(dataExtractionDataItem1.getPageContent())
+                    .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                    .groupId(groupId)
+                    .paperNo(paperNo)
+                    .status("COMPLETED")
+                    .stage(PROCESS_NAME)
+                    .message("Data extraction macro completed")
+                    .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                    .isBlankPage(flag)
+                    .tenantId(tenantId)
+                    .templateId(templateId)
+                    .processId(processId)
+                    .templateName(templateName)
+                    .rootPipelineId(rootPipelineId)
+                    .modelName(modelName)
+                    .modelVersion(modelVersion)
+                    .build());
+        });
+
     }
 
     private static String extractPageContent(String jsonString) {
