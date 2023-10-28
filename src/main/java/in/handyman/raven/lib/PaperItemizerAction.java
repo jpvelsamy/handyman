@@ -70,7 +70,16 @@ public class PaperItemizerAction implements IActionExecution {
 
             //3. initiate copro processor and copro urls
             String endpoint = paperItemizer.getEndpoint();
-            List<URL> urls = extractCoproEndPoints(endpoint);
+
+            List<URL> urls = Optional.of(endpoint).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
+                        try {
+                            return new URL(s1);
+                        } catch (MalformedURLException e) {
+                            log.error("Error in processing the URL ", e);
+                            throw new HandymanException("Error in processing the URL", e, action);
+                        }
+                    }).collect(Collectors.toList())).orElse(Collections.emptyList());
+            log.info(aMarker, "paper itemizer copro urls {}", urls);;
 
             final CoproProcessor<PaperItemizerInputTable, PaperItemizerOutputTable> coproProcessor =
                     new CoproProcessor<>(new LinkedBlockingQueue<>(),
@@ -97,27 +106,6 @@ public class PaperItemizerAction implements IActionExecution {
             throw new HandymanException("error in execute method for paper itemizer", ex, action);
         }
     }
-
-    private List<URL> extractCoproEndPoints(String endpoint) {
-        final List<URL> urls;
-        if (endpoint.isEmpty() && endpoint.isBlank()) {
-            urls = Optional.of(endpoint).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
-                try {
-                    return new URL(s1);
-                } catch (MalformedURLException e) {
-                    log.error("Error in processing the URL ", e);
-                    throw new HandymanException("Error in processing the URL", e, action);
-                }
-            }).collect(Collectors.toList())).orElse(Collections.emptyList());
-            log.info(aMarker, "paper itemizer copro urls {}", urls);
-        } else {
-            log.info(aMarker, "paper itemizer copro url not found");
-            return Collections.emptyList();
-
-        }
-        return urls;
-    }
-
     @Override
     public boolean executeIf() throws Exception {
         return paperItemizer.getCondition();
