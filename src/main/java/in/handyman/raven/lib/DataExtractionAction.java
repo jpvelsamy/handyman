@@ -50,18 +50,13 @@ public class DataExtractionAction implements IActionExecution {
     private final Logger log;
 
     private final DataExtraction dataExtraction;
-    private static final MediaType MediaTypeJSON = MediaType.parse("application/json; charset=utf-8");
     private final Marker aMarker;
-    private final ObjectMapper mapper = new ObjectMapper();
-    private static String httpClientTimeout = new String();
-
 
     public DataExtractionAction(final ActionExecutionAudit action, final Logger log, final Object dataExtraction) {
         this.dataExtraction = (DataExtraction) dataExtraction;
         this.action = action;
         this.log = log;
         this.aMarker = MarkerFactory.getMarker(" DataExtraction:" + this.dataExtraction.getName());
-        this.httpClientTimeout = action.getContext().get(OKHTTP_CLIENT_TIMEOUT);
     }
 
     @Override

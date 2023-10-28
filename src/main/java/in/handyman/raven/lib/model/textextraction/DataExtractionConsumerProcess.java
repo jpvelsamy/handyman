@@ -36,6 +36,8 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
             .readTimeout(10, TimeUnit.MINUTES)
             .build();
 
+    private static final ObjectMapper mapper = new ObjectMapper();
+
     public DataExtractionConsumerProcess(final Logger log, final Marker aMarker, ActionExecutionAudit action) {
         this.log = log;
         this.aMarker = aMarker;
@@ -108,10 +110,8 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
         try (Response response = httpclient.newCall(request).execute()) {
             String responseBody = Objects.requireNonNull(response.body()).string();
 
-            ObjectMapper mapper=new ObjectMapper();
-            DataExtractionDataItem dataExtractionDataItem=mapper.readValue(responseBody,DataExtractionDataItem.class);
             if (response.isSuccessful()) {
-                extractedOutputDataRequest(entity, dataExtractionDataItem.getPageContent(), parentObj, originId, groupId, "", "");
+                extractedOutputDataRequest(entity, responseBody, parentObj, originId, groupId, "", "");
 
             } else {
                 parentObj.add(DataExtractionOutputTable.builder()
@@ -168,7 +168,11 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
                 if (modelResponse.getOutputs() != null && !modelResponse.getOutputs().isEmpty()) {
                     modelResponse.getOutputs().forEach(o -> {
                         JSONArray jsonArrayObj = new JSONArray(o.getData());
-                        extractedOutputDataRequest(entity, jsonArrayObj.toString(), parentObj, originId, groupId, modelResponse.getModelName(), modelResponse.getModelVersion());
+                        try {
+                            extractedOutputDataRequest(entity, jsonArrayObj.toString(), parentObj, originId, groupId, modelResponse.getModelName(), modelResponse.getModelVersion());
+                        } catch (JsonProcessingException e) {
+                            throw new HandymanException("Exception in extracted output Data request {}",e);
+                        }
 
                     });
                 }
@@ -212,11 +216,11 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
         }
     }
 
-    private static void extractedOutputDataRequest(DataExtractionInputTable entity, String stringDataItem, List<DataExtractionOutputTable> parentObj, String originId, Integer groupId, String modelName, String modelVersion) {
+    private static void extractedOutputDataRequest(DataExtractionInputTable entity, String stringDataItem, List<DataExtractionOutputTable> parentObj, String originId, Integer groupId, String modelName, String modelVersion) throws JsonProcessingException {
 
+        DataExtractionDataItem dataExtractionDataItem=mapper.readValue(stringDataItem,DataExtractionDataItem.class);
+        final String flag = (!Objects.isNull(dataExtractionDataItem.getPageContent()) && dataExtractionDataItem.getPageContent().length() > 5) ? "no" : "yes";
 
-
-        final String flag = (!Objects.isNull(stringDataItem) && stringDataItem.length() > 5) ? "no" : "yes";
         Integer paperNo = entity.getPaperNo();
         String filePath = entity.getFilePath();
         Long tenantId = entity.getTenantId();
@@ -226,7 +230,7 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
         Long rootPipelineId = entity.getRootPipelineId();
         parentObj.add(DataExtractionOutputTable.builder()
                 .filePath(new File(filePath).getAbsolutePath())
-                .extractedText(stringDataItem)
+                .extractedText(dataExtractionDataItem.getPageContent())
                 .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
                 .groupId(groupId)
                 .paperNo(paperNo)
