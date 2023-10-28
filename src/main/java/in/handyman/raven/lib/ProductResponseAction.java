@@ -122,7 +122,7 @@ public class ProductResponseAction implements IActionExecution {
             List<ProductResponseAction.ProductResponseOutputTable> parentObj = new ArrayList<>();
             Long rootPipelineId=entity.getRootPipelineId();
 
-            RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), "");
+            RequestBody requestBody = RequestBody.create("", MediaType.parse("application/json; charset=utf-8"));
 
             String originId = entity.getOriginId();
             URL url = new URL(endpoint.toString() + "/" + entity.getTransactionId() + "/" + originId + "/?tenantId=" + this.tenantId);
