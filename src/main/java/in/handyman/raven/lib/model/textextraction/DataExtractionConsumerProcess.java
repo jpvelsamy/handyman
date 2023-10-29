@@ -218,8 +218,9 @@ public class DataExtractionConsumerProcess implements CoproProcessor.ConsumerPro
 
     private static void extractedOutputDataRequest(DataExtractionInputTable entity, String stringDataItem, List<DataExtractionOutputTable> parentObj, String originId, Integer groupId, String modelName, String modelVersion) throws JsonProcessingException {
 
-        JSONObject parentResponseObject = new JSONObject(stringDataItem);
-        final String contentString = Optional.ofNullable(parentResponseObject.get("pageContent")).map(String::valueOf).orElse(null);
+
+        String parentResponseObject=extractPageContent(stringDataItem);
+        final String contentString = Optional.of(parentResponseObject).map(String::valueOf).orElse(null);
         final String flag = (!Objects.isNull(contentString) && contentString.length() > 5) ? "no" : "yes";
 
         Integer paperNo = entity.getPaperNo();
