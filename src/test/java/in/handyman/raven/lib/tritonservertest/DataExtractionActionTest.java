@@ -38,15 +38,15 @@ class DataExtractionActionTest {
     void tritonServer() throws Exception {
         DataExtraction dataExtraction = DataExtraction.builder()
                 .name("data extraction after copro optimization")
-                .resourceConn("intics_agadia_db_conn")
+                .resourceConn("intics_zio_db_conn")
                 .condition(true)
-                .endPoint("${copro.data-extraction.url}")
+                .endPoint("http://triton.copro.data.extraction:8300/v2/models/text-extractor-service/versions/1/infer")
                 .processId("138980184199100180")
                 .resultTable("info.data_extraction")
-                .querySet("SELECT 1 as process_id, 1 as tenant_id, 1 as template_id, 1 as group_id, 'INT-1' as origin_id, 1 as paper_no, '/data/output/pdf_to_image/SYNT_166838894_c1/SYNT_166838894_c1_0.jpg' as file_path, 1 as root_pipeline_id, 'model' as template_name")
+                .querySet("SELECT 1 as process_id, 1 as tenant_id, 1 as template_id, 1 as group_id, 'INT-1' as origin_id, 1 as paper_no, '/data/output/21/preprocess/autorotation/auto_rotation/Humana_Form_1_0.jpg' as file_path, 1 as root_pipeline_id, 'model' as template_name")
                 .build();
         ActionExecutionAudit actionExecutionAudit = new ActionExecutionAudit();
-        actionExecutionAudit.getContext().put("copro.data-extraction.url", "http://192.168.10.245:8300/v2/models/text-extractor-service/versions/1/infer");
+        actionExecutionAudit.getContext().put("copro.data-extraction.url", "http://triton.copro.data.extraction:8300/v2/models/text-extractor-service/versions/1/infer");
         actionExecutionAudit.setProcessId(138980079308730208L);
         actionExecutionAudit.getContext().putAll(Map.ofEntries(Map.entry("read.batch.size", "5"),
                 Map.entry("okhttp.client.timeout", "20"),
