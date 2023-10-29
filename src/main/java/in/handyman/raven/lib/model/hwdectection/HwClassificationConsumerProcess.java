@@ -2,6 +2,7 @@ package in.handyman.raven.lib.model.hwdectection;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
@@ -176,9 +177,13 @@ public class HwClassificationConsumerProcess implements CoproProcessor.ConsumerP
                 if (hwDetectionResponse.getOutputs() != null && !hwDetectionResponse.getOutputs().isEmpty()) {
                     hwDetectionResponse.getOutputs().forEach(o -> {
                         o.getData().forEach(hwDetectionDataItem -> {
-                            extractOutputDataRequest(entity, responseBody, parentObj,  "", "");
+                            try {
+                                extractOutputDataRequest(entity, responseBody, parentObj, hwDetectionResponse.getModelName(), hwDetectionResponse.getModelVersion());
+                            } catch (JsonProcessingException e) {
+                                throw new RuntimeException(e);
+                            }
 
-                            });
+                        });
                     });
                 }
             }
@@ -223,7 +228,7 @@ public class HwClassificationConsumerProcess implements CoproProcessor.ConsumerP
         }
     }
 
-    private void extractOutputDataRequest(HwClassificationInputTable entity, String responseBody, List<HwClassificationOutputTable> parentObj, String modelName, String modelVersion) {
+    private void extractOutputDataRequest(HwClassificationInputTable entity, String responseBody, List<HwClassificationOutputTable> parentObj, String modelName, String modelVersion) throws JsonProcessingException {
         String createdUserId = entity.getCreatedUserId();
         String lastUpdatedUserId = entity.getLastUpdatedUserId();
         Long tenantId = entity.getTenantId();
@@ -233,18 +238,8 @@ public class HwClassificationConsumerProcess implements CoproProcessor.ConsumerP
         Long modelId = entity.getModelId();
         Integer groupId = entity.getGroupId();
         log.info("copro api response body {}", responseBody);
-        String documentStatus = null;
-        try {
-            documentStatus = Optional.ofNullable(mapper.readTree(responseBody).get("document_status")).map(JsonNode::asText).orElse(null);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        Long score = null;
-        try {
-            score = Optional.ofNullable(mapper.readTree(responseBody).get("confidence_score")).map(JsonNode::asLong).orElse(null);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+
+        HwDetectionDataItem hwDetectionDataItem=mapper.readValue(responseBody, new TypeReference<>() {});
 
         parentObj.add(HwClassificationOutputTable.builder().createdUserId(Optional.ofNullable(createdUserId).map(String::valueOf).orElse(null))
                 .lastUpdatedUserId(Optional.ofNullable(lastUpdatedUserId).map(String::valueOf).orElse(null))
@@ -254,8 +249,8 @@ public class HwClassificationConsumerProcess implements CoproProcessor.ConsumerP
                 .templateId(Optional.ofNullable(templateId).map(String::valueOf).orElse(null))
                 .modelId(Optional.ofNullable(modelId).map(String::valueOf).map(Long::parseLong).orElse(null))
                 .groupId(Optional.ofNullable(groupId).map(String::valueOf).map(Integer::parseInt).orElse(null))
-                .documentType(documentStatus)
-                .confidenceScore(score)
+                .documentType(hwDetectionDataItem.getDocumentStatus())
+                .confidenceScore(hwDetectionDataItem.getConfidenceScore())
                 .status("COMPLETED")
                 .stage(STAGE)
                 .message("Paper Classification Finished")
