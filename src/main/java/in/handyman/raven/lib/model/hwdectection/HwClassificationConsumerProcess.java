@@ -178,7 +178,7 @@ public class HwClassificationConsumerProcess implements CoproProcessor.ConsumerP
                     hwDetectionResponse.getOutputs().forEach(o -> {
                         o.getData().forEach(hwDetectionDataItem -> {
                             try {
-                                extractOutputDataRequest(entity, responseBody, parentObj, hwDetectionResponse.getModelName(), hwDetectionResponse.getModelVersion());
+                                extractOutputDataRequest(entity, hwDetectionDataItem, parentObj, hwDetectionResponse.getModelName(), hwDetectionResponse.getModelVersion());
                             } catch (JsonProcessingException e) {
                                 throw new RuntimeException(e);
                             }
