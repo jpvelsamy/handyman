@@ -18,12 +18,11 @@ public class QrExtractionActionTest {
 
                 .condition(true)
                 .name("qr-extraction")
-                .resourceConn("intics_agadia_db_conn")
+                .resourceConn("intics_zio_db_conn")
                 .processId("1234")
-                .endPoint("${copro.qr-attribution.url}")
-                .endPoint("${copro.qr-attribution.url}")
+                .endPoint("http://192.168.10.248:8700/v2/models/qr-service/versions/1/infer")
                 .outputTable("qr_extraction.qr_extraction_result_1234")
-                .querySet("SELECT '/data/output/pdf_to_image/SYNT_166838894_c1/SYNT_166838894_c1_1.jpg' as file_path, 'INT-1' as origin_id, 1 as file_id, 1 as paper_no, 1 as group_id, 1 as root_pipeline_id")
+                .querySet("SELECT '/data/output/34/preprocess/autorotation/auto_rotation/Humana_Form_1_1.jpg' as file_path, 'ORIGIN-1' as origin_id, 1 as file_id, 1 as paper_no, 1 as group_id, 1 as root_pipeline_id")
                 .build();
 
         ActionExecutionAudit actionExecutionAudit = new ActionExecutionAudit();

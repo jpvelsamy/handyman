@@ -2,6 +2,7 @@ package in.handyman.raven.lib.model.qrextraction;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
@@ -234,6 +235,7 @@ public class QrConsumerProcess implements CoproProcessor.ConsumerProcess<QrInput
         AtomicInteger atomicInteger = new AtomicInteger();
         if (!qrLineItems.isEmpty()) {
             qrLineItems.forEach(qrReader -> {
+                JsonNode qrBoundingBox=mapper.valueToTree(qrReader.getBoundingBox());
                 qrOutputEntities.add(QrOutputEntity.builder()
                         .angle(qrReader.getAngle())
                         .originId(originId)
@@ -247,7 +249,7 @@ public class QrConsumerProcess implements CoproProcessor.ConsumerProcess<QrInput
                         .extractedValue(qrReader.getValue())
                         .confidenceScore(qrReader.getConfidenceScore())
                         .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                        .b_box(qrReader.getBoundingBox().toString())
+                        .b_box(qrBoundingBox.toString())
                         .status("COMPLETED")
                         .stage("QR_EXTRACTION")
                         .message("qr extraction completed")
