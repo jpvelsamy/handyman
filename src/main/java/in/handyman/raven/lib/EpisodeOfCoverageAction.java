@@ -188,7 +188,7 @@ public class EpisodeOfCoverageAction implements IActionExecution {
 
 
     public void OutputQueryExecutor(Jdbi jdbi, String sorItem, Map<String, List<Integer>> stringListMap) {
-
+        Long tenantId = Long.valueOf(action.getContext().get("tenant_id"));
         stringListMap.forEach((s, integers) -> {
             for (Integer integer : integers) {
                 CoverageEntity coverageEntity = CoverageEntity.builder()
@@ -198,12 +198,13 @@ public class EpisodeOfCoverageAction implements IActionExecution {
                         .groupId(Integer.valueOf(episodeOfCoverage.getGroupId()))
                         .createdOn(Timestamp.valueOf(LocalDateTime.now()))
                         .sourceOfPahub(sorItem)
+                        .tenantId(tenantId)
                         .build();
                 try {
                     jdbi.useTransaction(handle -> {
                         handle.createUpdate("INSERT INTO " + episodeOfCoverage.getOutputTable() +
-                                        "(pahub_id, origin_id, source_of_pahub,group_id,created_on, paper_no,status,stage,message)" +
-                                        "VALUES (:pahubId , :originId, :sourceOfPahub ,:groupId,:createdOn, :paperNo, 'COMPLETED', 'SOR_GROUPING', 'sor grouping completed')")
+                                        "(pahub_id, origin_id, source_of_pahub,group_id,created_on, paper_no,status,stage,message,tenant_id)" +
+                                        "VALUES (:pahubId , :originId, :sourceOfPahub ,:groupId,:createdOn, :paperNo, 'COMPLETED', 'SOR_GROUPING', 'sor grouping completed',:tenantId)")
                                 .bindBean(coverageEntity).execute();
                     });
                     log.info(aMarker, "Completed insert for the patient instance {}", coverageEntity);
@@ -231,6 +232,7 @@ public class EpisodeOfCoverageAction implements IActionExecution {
         private String sourceOfPahub;
 
         private Integer paperNo;
+        private Long tenantId;
     }
 
 
