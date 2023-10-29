@@ -95,7 +95,7 @@ public class ZipContentListAction implements IActionExecution {
                 .fileChecksum(fileChecksum)
                 .build();
         jdbi.useTransaction(handle -> {
-          handle.createUpdate("INSERT INTO response.zip_file_content_list (document_id, file_check_sum, file_extension, file_id, file_name," +
+          handle.createUpdate("INSERT INTO eoc_response.zip_file_content_list (document_id, file_check_sum, file_extension, file_id, file_name," +
                           "file_size, origin_id, created_on) " +
                           "VALUES( :documentId, :fileChecksum, :fileExtension, :fileId, :fileName, :fileSize, :originId, :createdOn);")
                   .bindBean(zipContentListDetail).execute();
