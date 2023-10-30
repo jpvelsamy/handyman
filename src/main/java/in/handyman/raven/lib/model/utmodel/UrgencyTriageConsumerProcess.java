@@ -32,6 +32,8 @@ public class UrgencyTriageConsumerProcess implements CoproProcessor.ConsumerProc
             .readTimeout(10, TimeUnit.MINUTES)
             .build();
 
+
+
     public UrgencyTriageConsumerProcess(final Logger log, final Marker aMarker, ActionExecutionAudit action) {
         this.log = log;
         this.aMarker = aMarker;
@@ -53,6 +55,7 @@ public class UrgencyTriageConsumerProcess implements CoproProcessor.ConsumerProc
         urgencyTriageModelPayload.setProcess("UT");
         urgencyTriageModelPayload.setInputFilePath(entity.getInputFilePath());
         urgencyTriageModelPayload.setActionId(action.getActionId());
+        urgencyTriageModelPayload.setOutputDir(outputDir);
         String jsonInputRequest = objectMapper.writeValueAsString(urgencyTriageModelPayload);
 
 
