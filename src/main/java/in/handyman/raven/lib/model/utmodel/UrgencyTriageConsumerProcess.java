@@ -1,6 +1,7 @@
 package in.handyman.raven.lib.model.utmodel;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
@@ -170,7 +171,9 @@ public class UrgencyTriageConsumerProcess implements CoproProcessor.ConsumerProc
         Long modelId = entity.getModelId();
         try {
             UrgencyTriageModelDataItem urgencyTriageModelDataItem1 = objectMapper.readValue(urgencyTriageModelDataItem, UrgencyTriageModelDataItem.class);
-
+            JsonNode qrBoundingBox=objectMapper.valueToTree(urgencyTriageModelDataItem1.getBboxes());
+            Long confScore = urgencyTriageModelDataItem1.getConfidenceScore();
+            String paperType = urgencyTriageModelDataItem1.getPaperType();
             parentObj.add(UrgencyTriageOutputTable.builder()
                     .createdUserId(createdUserId)
                     .lastUpdatedUserId(createdUserId)
@@ -181,9 +184,9 @@ public class UrgencyTriageConsumerProcess implements CoproProcessor.ConsumerProc
                     .paperNo(paperNo)
                     .templateId(templateId)
                     .modelId(modelId)
-                    .utResult(urgencyTriageModelDataItem1.getPaperType())
-                    .confScore(urgencyTriageModelDataItem1.getConfidenceScore())
-                    .bbox(String.valueOf(urgencyTriageModelDataItem1.getBboxes()))
+                    .utResult(paperType)
+                    .confScore(confScore)
+                    .bbox(qrBoundingBox.toString())
                     .status("COMPLETED")
                     .stage("URGENCY_TRIAGE_MODEL")
                     .message("Urgency Triage Finished")
