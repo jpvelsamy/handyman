@@ -105,7 +105,7 @@ public class FileMergerPdfConsumerProcess implements CoproProcessor.ConsumerProc
 
                   String tritonRequestActivator = action.getContext().get("triton.request.activator");
 
-                  if (Objects.equals("true", tritonRequestActivator)) {
+                  if (Objects.equals("false" , tritonRequestActivator)) {
                     Request request = new Request.Builder().url(endpoint)
                             .post(RequestBody.create(jsonInputRequest, mediaTypeJSON)).build();
                     coproRequestBuilder(entity, request, parentObj);
