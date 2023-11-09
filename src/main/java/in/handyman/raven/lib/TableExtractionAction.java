@@ -196,7 +196,7 @@ public class TableExtractionAction implements IActionExecution {
                             try {
                                 log.info(aMarker, "coproProcessor consumer process response body scheme {} and csv file path {}", schemaName, csvFilePathNode);
 
-                                String csvJsonObject = tableDataJson(String.valueOf(csvFilePathNode));
+                                String csvJsonObject = tableDataJson(String.valueOf(csvFilePathNode),action);
                                 Long paperNo = getPaperNobyFileName(String.valueOf(csvFilePathNode));
 
                                 parentObj.add(
@@ -270,9 +270,14 @@ public class TableExtractionAction implements IActionExecution {
         return tableExtraction.getCondition();
     }
 
-    public static String tableDataJson(String filePath) throws JsonProcessingException {
+    public static String tableDataJson(String filePath,ActionExecutionAudit action) throws JsonProcessingException {
         try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
-            reader.readNext();
+            String removeFirstRow=action.getContext().get("table.extraction.header.exclude");
+            if(Objects.equals("true",removeFirstRow))
+            {
+                reader.readNext();
+            }
+
             String[] headers = reader.readNext(); // Read the headers
 
             JSONArray dataArray = new JSONArray(); // Array for data rows

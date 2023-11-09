@@ -68,7 +68,7 @@ class TableExtractionActionTest {
 
         TableExtractionAction tableExtractionAction=new TableExtractionAction(actionExecutionAudit,log,tableExtraction);
 
-        String tableExtractionAction2=tableExtractionAction.tableDataJson("");
+        String tableExtractionAction2=tableExtractionAction.tableDataJson("",actionExecutionAudit);
         System.out.println(tableExtractionAction2);
     }
 }
