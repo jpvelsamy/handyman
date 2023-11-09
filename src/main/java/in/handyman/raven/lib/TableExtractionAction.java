@@ -193,7 +193,7 @@ public class TableExtractionAction implements IActionExecution {
                         parentObj.add(
                                 TableExtractionOutputTable
                                         .builder()
-                                        .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                                        .originId(entity.getOriginId())
                                         .tableResponse(tableResponse)
                                         .processedFilePath(tableOutputResponse1.getCsvTablesPath())
                                         .croppedImage(tableOutputResponse1.getCroppedImage())
