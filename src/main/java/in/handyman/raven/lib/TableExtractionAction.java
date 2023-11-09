@@ -194,6 +194,7 @@ public class TableExtractionAction implements IActionExecution {
                                 TableExtractionOutputTable
                                         .builder()
                                         .originId(entity.getOriginId())
+                                        .paperNo(entity.getPaperNo())
                                         .tableResponse(tableResponse)
                                         .processedFilePath(tableOutputResponse1.getCsvTablesPath())
                                         .croppedImage(tableOutputResponse1.getCroppedImage())
@@ -386,6 +387,7 @@ public class TableExtractionAction implements IActionExecution {
         private String filePath;
         private String outputDir;
         private Long rootPipelineId;
+        private Long paperNo;
 
 
         @Override
