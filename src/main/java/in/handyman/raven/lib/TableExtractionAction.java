@@ -1,6 +1,7 @@
 package in.handyman.raven.lib;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.opencsv.CSVReader;
@@ -11,6 +12,7 @@ import in.handyman.raven.lambda.action.ActionExecution;
 import in.handyman.raven.lambda.action.IActionExecution;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.model.TableExtraction;
+import in.handyman.raven.lib.model.tableextraction.TableOutputResponse;
 import in.handyman.raven.util.UniqueID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -76,8 +78,8 @@ public class TableExtractionAction implements IActionExecution {
             log.info(aMarker, "Table Extraction Action output directory {}", outputDir);
             //5. build insert prepare statement with output table columns
             final String insertQuery = "INSERT INTO " + tableExtraction.getResultTable() +
-                    "(origin_id,group_id,tenant_id,template_id,processed_file_path,paper_no, status,stage,message,created_on,process_id,root_pipeline_id,table_response) " +
-                    " VALUES(?,?, ?,?, ?,?, ?,?,?,? ,?,  ?, ?)";
+                    "(origin_id,group_id,tenant_id,template_id,processed_file_path,paper_no, status,stage,message,created_on,process_id,root_pipeline_id,table_response, bboxes, croppedImage) " +
+                    " VALUES(?,?, ?,?, ?,?, ?,?,?,? ,?,  ?, ? , ?, ?)";
             log.info(aMarker, "table extraction Insert query {}", insertQuery);
 
             //3. initiate copro processor and copro urls
@@ -149,11 +151,11 @@ public class TableExtractionAction implements IActionExecution {
             Long rootPipelineId = action.getRootPipelineId();
             final String tableExtractionProcessName = "TABLE_EXTRACTION";
             Long actionId = action.getActionId();
-            objectNode.put("rootPipelineId", rootPipelineId);
+            objectNode.put("rootPipelineId", 1);
             objectNode.put("process", tableExtractionProcessName);
             objectNode.put("inputFilePath", inputFilePath);
             objectNode.put("outputDir", outputDir);
-            objectNode.put("actionId", actionId);
+            objectNode.put("actionId", 1);
 
             log.info(aMarker, "coproProcessor mapper object node {}", objectNode);
             Request request = new Request.Builder().url(endpoint)
@@ -176,51 +178,39 @@ public class TableExtractionAction implements IActionExecution {
                     log.info(aMarker, "coproProcessor consumer process response with status{}, and message as {}, ", response.isSuccessful(), response.message());
                 if (response.isSuccessful()) {
                     log.info(aMarker, "coproProcessor consumer process response status {}", response.message());
-                    String responseParse = Objects.requireNonNull(response.body()).string();
-                    log.info(aMarker, "coproProcessor consumer process response body {}", responseParse);
-                    JSONObject parentResponse = new JSONObject(responseParse);
-                    JSONArray filePathArray = new JSONArray(parentResponse.get("csvTablesPath").toString());
 
-                    //JSONArray tableResponseArray = new JSONArray(parentResponse.get("table_response").toString());
-                    log.info(aMarker, "coproProcessor consumer process response body filePathArray {}", filePathArray);
-                    filePathArray.forEach(s -> {
-                        Map<String, Object> processedJsonNode;
+                    String responseBody = response.body().string();
+                    List<TableOutputResponse> tableOutputResponses = mapper.readValue(responseBody, new TypeReference<>() {
+                    });
+                    tableOutputResponses.forEach(tableOutputResponse1 -> {
+                        String csvTablesPath = tableOutputResponse1.getCsvTablesPath();
+                        String tableResponse = null;
                         try {
-                            processedJsonNode = mapper.readValue(s.toString(), Map.class);
-                        } catch (IOException e) {
+                            tableResponse = tableDataJson(csvTablesPath, action);
+                        } catch (JsonProcessingException e) {
                             throw new RuntimeException(e);
                         }
-                        log.info(aMarker, "coproProcessor consumer process response body processedJsonNode {}", processedJsonNode);
+                        parentObj.add(
+                                TableExtractionOutputTable
+                                        .builder()
+                                        .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+                                        .tableResponse(tableResponse)
+                                        .processedFilePath(tableOutputResponse1.getCsvTablesPath())
+                                        .croppedImage(tableOutputResponse1.getCroppedImage())
+                                        .bboxes(tableOutputResponse1.getBboxes().asText())
+                                        .groupId(groupId)
+                                        .processId(processId)
+                                        .templateId(templateId)
+                                        .tenantId(tenantId)
+                                        .status("COMPLETED")
+                                        .stage(tableExtractionProcessName)
+                                        .message(response.message())
+                                        .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+                                        .rootPipelineId(rootPipelineId)
+                                        .build());
 
-                        processedJsonNode.forEach((schemaName, csvFilePathNode) -> {
-                            try {
-                                log.info(aMarker, "coproProcessor consumer process response body scheme {} and csv file path {}", schemaName, csvFilePathNode);
-
-                                String csvJsonObject = tableDataJson(String.valueOf(csvFilePathNode),action);
-                                Long paperNo = getPaperNobyFileName(String.valueOf(csvFilePathNode));
-
-                                parentObj.add(
-                                        TableExtractionOutputTable
-                                                .builder()
-                                                .processedFilePath(String.valueOf(s))
-                                                .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
-                                                .groupId(groupId)
-                                                .templateId(templateId)
-                                                .tenantId(tenantId)
-                                                .processId(processId)
-                                                .paperNo(paperNo)
-                                                .status("COMPLETED")
-                                                .stage(tableExtractionProcessName)
-                                                .tableResponse(csvJsonObject)
-                                                .message("Table Extraction macro completed")
-                                                .createdOn(Timestamp.valueOf(LocalDateTime.now()))
-                                                .rootPipelineId(rootPipelineId)
-                                                .build());
-                            } catch (JsonProcessingException e) {
-                                throw new RuntimeException(e);
-                            }
-                        });
                     });
+
                 } else {
                     parentObj.add(
                             TableExtractionOutputTable
@@ -265,16 +255,61 @@ public class TableExtractionAction implements IActionExecution {
 
     }
 
+    private static void extractedOutputResponse(String responseParse, List<TableExtractionOutputTable> parentObj, String originId, Integer groupId, String templateId, Long tenantId, Long processId, String tableExtractionProcessName, Long rootPipelineId) {
+//        JSONObject parentResponse = new JSONObject(responseParse);
+//        JSONArray filePathArray = new JSONArray(parentResponse.get("csvTablesPath").toString());
+//
+//        //JSONArray tableResponseArray = new JSONArray(parentResponse.get("table_response").toString());
+//        log.info(aMarker, "coproProcessor consumer process response body filePathArray {}", filePathArray);
+//        filePathArray.forEach(s -> {
+//            Map<String, Object> processedJsonNode;
+//            try {
+//                processedJsonNode = mapper.readValue(s.toString(), Map.class);
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//            log.info(aMarker, "coproProcessor consumer process response body processedJsonNode {}", processedJsonNode);
+//
+//            processedJsonNode.forEach((schemaName, csvFilePathNode) -> {
+//                try {
+//                    log.info(aMarker, "coproProcessor consumer process response body scheme {} and csv file path {}", schemaName, csvFilePathNode);
+//
+//                    String csvJsonObject = tableDataJson(String.valueOf(csvFilePathNode),action);
+//                    Long paperNo = getPaperNobyFileName(String.valueOf(csvFilePathNode));
+//
+//                    parentObj.add(
+//                            TableExtractionOutputTable
+//                                    .builder()
+//                                    .processedFilePath(String.valueOf(s))
+//                                    .originId(Optional.ofNullable(originId).map(String::valueOf).orElse(null))
+//                                    .groupId(groupId)
+//                                    .templateId(templateId)
+//                                    .tenantId(tenantId)
+//                                    .processId(processId)
+//                                    .paperNo(paperNo)
+//                                    .status("COMPLETED")
+//                                    .stage(tableExtractionProcessName)
+//                                    .tableResponse(csvJsonObject)
+//                                    .message("Table Extraction macro completed")
+//                                    .createdOn(Timestamp.valueOf(LocalDateTime.now()))
+//                                    .rootPipelineId(rootPipelineId)
+//                                    .build());
+//                } catch (JsonProcessingException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
+//        });
+    }
+
     @Override
     public boolean executeIf() throws Exception {
         return tableExtraction.getCondition();
     }
 
-    public static String tableDataJson(String filePath,ActionExecutionAudit action) throws JsonProcessingException {
+    public static String tableDataJson(String filePath, ActionExecutionAudit action) throws JsonProcessingException {
         try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
-            String removeFirstRow=action.getContext().get("table.extraction.header.exclude");
-            if(Objects.equals("true",removeFirstRow))
-            {
+            String removeFirstRow = action.getContext().get("table.extraction.header.exclude");
+            if (Objects.equals("true", removeFirstRow)) {
                 reader.readNext();
             }
 
@@ -372,6 +407,8 @@ public class TableExtractionAction implements IActionExecution {
         private Long processId;
         private String templateId;
         private String processedFilePath;
+        private String croppedImage;
+        private String bboxes;
         private Long paperNo;
         private String status;
         private String stage;
@@ -383,7 +420,7 @@ public class TableExtractionAction implements IActionExecution {
         @Override
         public List<Object> getRowData() {
             return Stream.of(this.originId, this.groupId, this.tenantId, this.templateId, this.processedFilePath,
-                    this.paperNo, this.status, this.stage, this.message, this.createdOn, this.processId, this.rootPipelineId, this.tableResponse).collect(Collectors.toList());
+                    this.paperNo, this.status, this.stage, this.message, this.createdOn, this.processId, this.rootPipelineId, this.tableResponse, this.bboxes, this.croppedImage).collect(Collectors.toList());
         }
     }
 
