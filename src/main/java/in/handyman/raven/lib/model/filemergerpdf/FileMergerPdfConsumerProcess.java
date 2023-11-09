@@ -152,7 +152,7 @@ public class FileMergerPdfConsumerProcess implements CoproProcessor.ConsumerProc
       }
           else {
         // Handle non-successful response here
-        log.error(aMarker, "Non-successful response received: {}", response.code());
+        log.error(aMarker, "Unsuccessful response received in copro: {}", response.code());
       }
 
   } catch (IOException e) {
@@ -169,13 +169,16 @@ public class FileMergerPdfConsumerProcess implements CoproProcessor.ConsumerProc
 
         if (modelResponse.getOutputs() != null && !modelResponse.getOutputs().isEmpty()) {
           modelResponse.getOutputs().forEach(o -> o.getData().forEach(fileMergerDataItem -> {
-            extractedOutputDataRequest(entity, fileMergerDataItem, parentObj,  modelResponse.getModelName(), modelResponse.getModelVersion());
+            extractedOutputDataRequest(entity, fileMergerDataItem, parentObj, modelResponse.getModelName(), modelResponse.getModelVersion());
           }));
         }
       } else {
         // Handle non-successful response here
-        log.error(aMarker, "Non-successful response received: {}", response.code());
+        log.error(aMarker, "Unsuccessful response received in triton: {}", response.code());
       }
+    }
+    catch(Exception e){
+      log.error(aMarker, "Unsuccessful response received in triton: {}", e);
     }
   }
 
