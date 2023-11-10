@@ -127,16 +127,11 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
 
                 moveFileIntoOrigin(truthPaperList1.getFilePath(), originPaperTablePath);
                 String processedJsonNodePath = truthPaperList1.getProcessedFilePath();
+                String cropppedImagePath = truthPaperList1.getCroppedimage();
+                //move table csv file into the output zip folder
+                moveFileIntoOrigin(processedJsonNodePath, originPaperTablePath);
+                moveFileIntoOrigin(cropppedImagePath, originPaperTablePath);
 
-                Map<String, Object> processedFileJsonNode;
-                try {
-                    processedFileJsonNode = mapper.readValue(processedJsonNodePath.toString(), Map.class);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                processedFileJsonNode.forEach((s, o) -> {
-                    moveFileIntoOrigin(o.toString(), originPaperTablePath);
-                });
 
             });
             try {
@@ -336,7 +331,7 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
     }
 
     public List<TruthPaperList> getTruthPaperList(String originId, Jdbi jdbi) {
-        String querySet = "select a.file_path,sot.origin_id,sot.paper_no,ter.processed_file_path,atr.table_response " +
+        String querySet = "select a.file_path,sot.origin_id,sot.paper_no,ter.processed_file_path,atr.table_response ,ter.croppedimage" +
                 "from info.source_of_truth sot" +
                 " join info.asset a on sot.preprocessed_file_id  =a.file_id " +
                 "join alchemy_response.alchemy_table_response atr on atr.pipeline_origin_id=sot.origin_id and atr.paper_no=sot.paper_no " +
@@ -371,5 +366,6 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
         private String originId;
         private String processedFilePath;
         private String tableResponse;
+        private String croppedimage;
     }
 }
