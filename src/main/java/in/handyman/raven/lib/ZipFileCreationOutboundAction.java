@@ -331,7 +331,7 @@ public class ZipFileCreationOutboundAction implements IActionExecution {
     }
 
     public List<TruthPaperList> getTruthPaperList(String originId, Jdbi jdbi) {
-        String querySet = "select a.file_path,sot.origin_id,sot.paper_no,ter.processed_file_path,atr.table_response ,ter.croppedimage" +
+        String querySet = "select a.file_path,sot.origin_id,sot.paper_no,ter.processed_file_path,atr.table_response ,ter.croppedimage " +
                 "from info.source_of_truth sot" +
                 " join info.asset a on sot.preprocessed_file_id  =a.file_id " +
                 "join alchemy_response.alchemy_table_response atr on atr.pipeline_origin_id=sot.origin_id and atr.paper_no=sot.paper_no " +
