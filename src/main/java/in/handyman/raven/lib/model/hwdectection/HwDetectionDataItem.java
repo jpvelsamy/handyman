@@ -17,6 +17,6 @@ public class HwDetectionDataItem {
 
  @JsonProperty("confidence_score")
 
- private Long confidenceScore;
+ private Float confidenceScore;
 
 }

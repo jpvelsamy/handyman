@@ -25,7 +25,7 @@ public class HwClassificationOutputTable implements CoproProcessor.Entity{
     private String templateId;
     private Long modelId;
     private String documentType;
-    private Long confidenceScore;
+    private Float confidenceScore;
     private String status;
     private String stage;
     private String message;
