@@ -172,7 +172,7 @@ public class UrgencyTriageConsumerProcess implements CoproProcessor.ConsumerProc
         try {
             UrgencyTriageModelDataItem urgencyTriageModelDataItem1 = objectMapper.readValue(urgencyTriageModelDataItem, UrgencyTriageModelDataItem.class);
             JsonNode qrBoundingBox=objectMapper.valueToTree(urgencyTriageModelDataItem1.getBboxes());
-            Long confScore = urgencyTriageModelDataItem1.getConfidenceScore();
+            Float confScore = urgencyTriageModelDataItem1.getConfidenceScore();
             String paperType = urgencyTriageModelDataItem1.getPaperType();
             parentObj.add(UrgencyTriageOutputTable.builder()
                     .createdUserId(createdUserId)

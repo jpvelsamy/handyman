@@ -15,7 +15,7 @@ public class UrgencyTriageModelDataItem {
     @JsonProperty("paper_type")
     private String paperType;
     @JsonProperty("confidence_score")
-    private Long confidenceScore;
+    private Float confidenceScore;
     private UrgencyTriageModelBoundingBox bboxes;
 
 }
