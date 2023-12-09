@@ -1,4 +1,4 @@
-package in.handyman.raven.lib.model.integratedNoiseModel;
+package in.handyman.raven.lib.model.NoiseModel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 //import in.handyman.raven.lib.model.qrExtraction.QrExtractionOutput;
@@ -7,15 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

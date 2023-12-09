@@ -19,13 +19,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
 import in.handyman.raven.lib.model.IntegratedNoiseModelApi;
-import in.handyman.raven.lib.model.integratedNoiseModel.NoiseModelConsumerProcess;
-import in.handyman.raven.lib.model.integratedNoiseModel.NoiseModelInputEntity;
-import in.handyman.raven.lib.model.integratedNoiseModel.NoiseModelOutputEnitity;
+import in.handyman.raven.lib.model.NoiseModel.NoiseModelConsumerProcess;
+import in.handyman.raven.lib.model.NoiseModel.NoiseModelInputEntity;
+import in.handyman.raven.lib.model.NoiseModel.NoiseModelOutputEnitity;
 //import in.handyman.raven.lib.model.qrExtraction.QrConsumerProcess;
 //import in.handyman.raven.lib.model.qrExtraction.QrInputEntity;
 //import in.handyman.raven.lib.model.qrExtraction.QrOutputEntity;
@@ -67,7 +66,7 @@ public class IntegratedNoiseModelApiAction implements IActionExecution {
       final Jdbi jdbi = ResourceAccess.rdbmsJDBIConn(integratedNoiseModelApi.getResourceConn());
       jdbi.getConfig(Arguments.class).setUntypedNullArgument(new NullArgument(Types.NULL)); //for handling null values
       //3. initiate Copro processor and Copro urls change the url to integrated noise model
-      final List<URL> urls = Optional.ofNullable(action.getContext().get("copro.noise-detection.url")).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
+      final List<URL> urls = Optional.ofNullable(integratedNoiseModelApi.getEndPoint()).map(s -> Arrays.stream(s.split(",")).map(s1 -> {
         try {
           return new URL(s1);
         } catch (MalformedURLException e) {
@@ -78,10 +77,10 @@ public class IntegratedNoiseModelApiAction implements IActionExecution {
       log.info("Urls for the Integrated noise model :  {}", urls);
       //5. build insert prepare statement with output table columns
 //
-      final String insertQuery = "INSERT INTO " + integratedNoiseModelApi.getOuputTable() +
+      final String insertQuery = "INSERT INTO " + "integrated_noise_model.noise_model_output_table" +
               "(file_id, origin_id, paper_no, process_id, group_id, tenant_id, input_file_path, " +
-              "consolidated_confidence_score, consolidated_class, extracted_value, model1_noise_detection_output, " +
-              "model2_noise_detection_output, model3_noise_detection_output, model4_noise_detection_output," +
+              "consolidated_confidence_score, consolidated_class, noise_models_result, hw_noise_detection_output, " +
+              "check_noise_detection_output, checkbox_mark_detection_output, speckle_noise_detection_output," +
               " created_on, root_pipeline_id,status,stage,message)" +
               "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 

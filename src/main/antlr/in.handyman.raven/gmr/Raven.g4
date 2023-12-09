@@ -144,7 +144,6 @@ action:
     |zipFileCreationOutbound
     |outboundKvpResponse
     |outboundTableResponse
-
     |integratedNoiseModelApi
     );
 
@@ -1039,7 +1038,7 @@ outboundTableResponse:
 
 
 integratedNoiseModelApi:
-	'qr-extraction' 'as' name=STRING
+	'noiseModel' 'as' name=STRING
 	'on-resource-conn' resourceConn=STRING
 	'copro-url' endPoint=STRING
 	'process-id' processId=STRING

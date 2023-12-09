@@ -24,6 +24,7 @@ public class IntegratedNoiseModelApi implements IActionContext {
   private String resourceConn;
 
 //  private String inputTable;
+  private String endPoint;
 
   private String processId;
 
