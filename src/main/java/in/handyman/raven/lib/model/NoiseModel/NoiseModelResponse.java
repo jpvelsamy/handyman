@@ -1,4 +1,4 @@
-package in.handyman.raven.lib.model.integratedNoiseModel;
+package in.handyman.raven.lib.model.NoiseModel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 //import in.handyman.raven.lib.model.qrExtraction.QrExtractionOutput;
