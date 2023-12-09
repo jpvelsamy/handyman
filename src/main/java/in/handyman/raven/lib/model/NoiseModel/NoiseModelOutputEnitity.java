@@ -17,7 +17,6 @@ import java.util.stream.Stream;
 @Builder
 
 public class NoiseModelOutputEnitity implements CoproProcessor.Entity {
-    private String fileId;
     private String originId;
     private Integer paperNo;
     private Integer processId;
@@ -38,7 +37,7 @@ public class NoiseModelOutputEnitity implements CoproProcessor.Entity {
     private String message;
     @Override
     public List<Object> getRowData() {
-        return Stream.of(this.fileId, this.originId, this.paperNo,
+        return Stream.of( this.originId, this.paperNo,
                 this.processId, this.groupId, this.tenantId,this.inputFilePath, this.consolidatedConfidenceScore,
                 this.consolidatedClass,this.noiseModelsResult, this.hwNoiseDetectionOutput,
                 this.checkNoiseDetectionOutput, this.checkboxMarkDetectionOutput,

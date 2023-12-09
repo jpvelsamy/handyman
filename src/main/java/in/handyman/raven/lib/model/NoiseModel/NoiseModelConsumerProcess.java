@@ -142,7 +142,6 @@ public class NoiseModelConsumerProcess implements CoproProcessor.ConsumerProcess
                             .path("speckleNoiseDetection").toString();
 
                     noiseOutputEntities.add(NoiseModelOutputEnitity.builder()
-                            .fileId(fileId)
                             .originId(originId)
                             .paperNo(paperNo)
                             .groupId(groupId)
@@ -169,7 +168,6 @@ public class NoiseModelConsumerProcess implements CoproProcessor.ConsumerProcess
                             .originId(originId)
                             .paperNo(paperNo)
                             .groupId(groupId)
-                            .fileId(fileId)
                             .createdOn(LocalDateTime.now())
                             .rootPipelineId(rootPipelineId)
                             .status("ABSENT")
@@ -183,7 +181,6 @@ public class NoiseModelConsumerProcess implements CoproProcessor.ConsumerProcess
                         .originId(originId)
                         .paperNo(paperNo)
                         .groupId(groupId)
-                        .fileId(fileId)
                         .createdOn(LocalDateTime.now())
                         .rootPipelineId(rootPipelineId)
                         .status("FAILED")
@@ -198,7 +195,6 @@ public class NoiseModelConsumerProcess implements CoproProcessor.ConsumerProcess
                     .originId(originId)
                     .paperNo(paperNo)
                     .groupId(groupId)
-                    .fileId(fileId)
                     .createdOn(LocalDateTime.now())
                     .status("FAILED")
                     .rootPipelineId(rootPipelineId)

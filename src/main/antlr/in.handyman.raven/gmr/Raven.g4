@@ -1036,7 +1036,6 @@ outboundTableResponse:
     		querySet=STRING
     	'}' ('on-condition' condition=expression)* ;
 
-
 integratedNoiseModelApi:
 	'noiseModel' 'as' name=STRING
 	'on-resource-conn' resourceConn=STRING

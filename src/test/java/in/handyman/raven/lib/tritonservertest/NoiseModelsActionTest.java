@@ -20,7 +20,7 @@ public class NoiseModelsActionTest {
                 .name("noise-detection-model")
                 .endPoint("http://0.0.0.0:10199/copro/Noise-Detection")
                 .resourceConn("intics_zio_db_conn")
-                .ouputTable("integrated_noise_model.noise_model_output_table")
+                .outputTable("integrated_noise_model.noise_model_output_table")
                 .querySet("SELECT " +
                         "'/home/christopher.paulraj@zucisystems.com/Downloads/blank_page.png' as input_file_path, " +
                         "'INT-1' as origin_id, " +
