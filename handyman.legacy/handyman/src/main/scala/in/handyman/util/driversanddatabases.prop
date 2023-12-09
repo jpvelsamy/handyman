@@ -1,3 +1,0 @@
-sql4es=in.pazmysaz.essql.jdbc.ESDriver
-es=org.elasticsearch.xpack.sql.jdbc.EsDriver
-mysql=com.mysql.jdbc.Driver

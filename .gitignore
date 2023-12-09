@@ -3,6 +3,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+!**/src/main/antlr/in.handyman.raven/compiler/
 
 ### STS ###
 .apt_generated
@@ -33,6 +34,7 @@ build/
 .vscode/
 /.jpb/
 
-log/
-*.log
 logs/
+*.log
+
+gen/
