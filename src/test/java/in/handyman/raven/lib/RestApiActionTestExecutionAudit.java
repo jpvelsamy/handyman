@@ -91,6 +91,29 @@ class RestApiActionTestExecutionAudit {
     }
 
     @Test
+    public void
+    performanceOptUi()
+    {
+        LContext request = LContext.builder()
+                .pipelineName("root.processor#10")
+                .processLoadType(HRequestResolver.LoadType.FILE.name())
+                .inheritedContext(Map.ofEntries(Map.entry("created_user_id", "-1"),
+                        Map.entry("batch_id","TMP-AGD-001"),
+                        Map.entry("tenant_id","1"),
+                        Map.entry("origin_type","TRANSACTION"),
+                        Map.entry("workspace_id","-1"),
+                        Map.entry("transaction_id","TND-001"),
+                        Map.entry("document_type","INSURANCE"),
+                        Map.entry("document_id","TMP-AGD-001"),
+                        Map.entry("last_updated_user_id","-1"),
+                        Map.entry("dir_path","/home/anandh.andrews@zucisystems.com/intics-workspace/pipeline-ui/testing/input/SYNT_166838894.pdf"),
+                        Map.entry("target_directory_path","/home/anandh.andrews@zucisystems.com/intics-workspace/pipeline-ui/testing/output")))
+                .build();
+        log.info(request.toString());
+        LambdaEngine.start(request);
+    }
+
+    @Test
     public void qrcode()
     {
         LContext request = LContext.builder()
