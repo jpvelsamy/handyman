@@ -1,30 +1,19 @@
-package in.handyman.raven.lib.model.integratedNoiseModel;
+package in.handyman.raven.lib.model.NoiseModel;
 
 
-
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.handyman.raven.exception.HandymanException;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.CoproProcessor;
-import in.handyman.raven.lib.model.qrextraction.QrInputEntity;
-import in.handyman.raven.lib.model.qrextraction.QrOutputEntity;
 import in.handyman.raven.lib.model.triton.TritonInputRequest;
 import in.handyman.raven.lib.model.triton.TritonRequest;
-import jakarta.json.Json;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
 import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
 import java.net.URL;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -65,17 +54,15 @@ public class NoiseModelConsumerProcess implements CoproProcessor.ConsumerProcess
     @Override
     public List<NoiseModelOutputEnitity> process(URL endpoint, NoiseModelInputEntity entity) throws Exception {
         log.info("copro consumer process started");
-       List<NoiseModelOutputEnitity> noiseOutputEntities = new ArrayList<>();
-       // List<NoiseModelOutputEnitity> noiseOutputEntity = new ArrayList<>();
-        String filePath = entity.getFilePath();
+        List<NoiseModelOutputEnitity> noiseOutputEntities = new ArrayList<>();
+        final String filePath = entity.getInputFilePath();
         final String noiseDetectionModel = "NOISE_DETECTION_MODEL";
-        Long rootPipelineId = action.getRootPipelineId();
-        Long actionId = Long.valueOf(action.getContext().get("actionId"));
-
-        ObjectMapper objectMapper = new ObjectMapper();
+        final Long rootPipelineId = entity.getRootPipelineId();
+        final Long actionId =  action.getActionId();
+        final ObjectMapper objectMapper = new ObjectMapper();
         //payload
-        NoiseModelData NoiseModelData = new NoiseModelData();
-        NoiseModelData.setRootPipelineId(1L);
+        final NoiseModelData NoiseModelData = new NoiseModelData();
+        NoiseModelData.setRootPipelineId(rootPipelineId);
         NoiseModelData.setProcess(noiseDetectionModel);
         NoiseModelData.setInputFilePath(filePath);
         NoiseModelData.setActionId(actionId);
@@ -85,7 +72,7 @@ public class NoiseModelConsumerProcess implements CoproProcessor.ConsumerProcess
         NoiseModelData.setGroupId(entity.getGroupId());
         NoiseModelData.setOutputDir(entity.getOutputDir());
         NoiseModelData.setTenantId(entity.getTenantId());
-        String jsonInputRequest = objectMapper.writeValueAsString(NoiseModelData);
+        final String jsonInputRequest = objectMapper.writeValueAsString(NoiseModelData);
 
         TritonRequest requestBody = new TritonRequest();
         requestBody.setName("NOISE-DETECTION");
@@ -96,24 +83,20 @@ public class NoiseModelConsumerProcess implements CoproProcessor.ConsumerProcess
         TritonInputRequest tritonInputRequest = new TritonInputRequest();
         tritonInputRequest.setInputs(Collections.singletonList(requestBody));
 
-        String jsonRequest = objectMapper.writeValueAsString(tritonInputRequest);
+        final String jsonRequest = objectMapper.writeValueAsString(tritonInputRequest);
 
         if (log.isInfoEnabled()) {
             log.info("input object node in the consumer process  inputFilePath {}", filePath);
         }
         String tritonRequestActivator = action.getContext().get(TRITON_REQUEST_ACTIVATOR);
 
-        Request Requests = new Request.Builder().url(endpoint).post(RequestBody.create(jsonRequest, MediaTypeJSON)).build();
+        final Request Requests = new Request.Builder().url(endpoint).post(RequestBody.create(jsonRequest, MediaTypeJSON)).build();
         if (Objects.equals("false", tritonRequestActivator)) {
             Request request = new Request.Builder().url(endpoint)
                     .post(RequestBody.create(jsonInputRequest, MediaTypeJSON)).build();
             coproRequestBuilder(entity, request,  objectMapper, rootPipelineId,noiseOutputEntities);
         }
-//        else {
-//            Request request = new Request.Builder().url(endpoint)
-//                    .post(RequestBody.create(jsonRequest, MediaTypeJSON)).build();
-//            tritonRequestBuilder(entity, request, objectMapper, qrOutputEntities, rootPipelineId);
-//        }
+
         if (log.isInfoEnabled()) {
             log.info("input object node in the consumer process coproURL {}, inputFilePath {}", endpoint, filePath);
         }
@@ -124,7 +107,7 @@ public class NoiseModelConsumerProcess implements CoproProcessor.ConsumerProcess
         Integer paperNo = entity.getPaperNo();
         Integer groupId = entity.getGroupId();
         String fileId = entity.getFileId();
-        String filePath=entity.getFilePath();
+        String filePath=entity.getInputFilePath();
 
         // exectution is after getting resopnse
 
@@ -137,14 +120,11 @@ public class NoiseModelConsumerProcess implements CoproProcessor.ConsumerProcess
 
                 if (rootNode != null && !rootNode.isEmpty()) {
                     Integer processId = rootNode.path("processId").asInt();
-//                    Integer groupId = rootNode.path("groupId").asInt();
                     Integer tenantId = rootNode.path("tenantId").asInt();
                     String inputFilePath = rootNode.path("inputFilePath").asText();
                     String consolidatedClass = rootNode.path("consolidatedClass").asText();
                     Double consolidatedConfidenceScore = rootNode.path("consolidatedConfidenceScore").asDouble();
                     String extractedValue = rootNode.path("noiseModelsResult").toString();
-
-                    //              getting the output of hwnoise model
 
                     String hwClass = rootNode
                             .path("noiseModelsResult")
@@ -160,18 +140,7 @@ public class NoiseModelConsumerProcess implements CoproProcessor.ConsumerProcess
                     String speckleClass = rootNode
                             .path("noiseModelsResult")
                             .path("speckleNoiseDetection").toString();
-                    if (10 > 1) {  //print statements
-                        System.out.println("processId:" + processId);
-                        System.out.println("group_id:" + groupId);
-                        System.out.println("tenant_id:" + tenantId);
-                        System.out.println("input_file_path:" + inputFilePath);
-                        System.out.println("consolidated_class:" + consolidatedClass);
-                        System.out.println("consolidated_confidence_score:" + consolidatedConfidenceScore);
 
-                        System.out.println("checkBoxClass:" + checkBoxClass);
-                        System.out.println("tickNoiseClass:" + tickNoiseClass);
-                        System.out.println("speckleClass:" + speckleClass);
-                    }
                     noiseOutputEntities.add(NoiseModelOutputEnitity.builder()
                             .fileId(fileId)
                             .originId(originId)
@@ -179,14 +148,14 @@ public class NoiseModelConsumerProcess implements CoproProcessor.ConsumerProcess
                             .groupId(groupId)
                             .processId(processId)
                             .tenantId(tenantId)
-                            .inputFilePath(filePath)
+                            .inputFilePath(inputFilePath)
                             .consolidatedConfidenceScore(consolidatedConfidenceScore)
                             .consolidatedClass(consolidatedClass)
-                            .extractedValue(extractedValue)
-                            .model1NoiseDetectionOutput(hwClass)
-                            .model2NoiseDetectionOutput(checkBoxClass)
-                            .model3NoiseDetectionOutput(tickNoiseClass)
-                            .model4NoiseDetectionOutput(speckleClass)
+                            .noiseModelsResult(extractedValue)
+                            .hwNoiseDetectionOutput(hwClass)
+                            .checkNoiseDetectionOutput(checkBoxClass)
+                            .checkboxMarkDetectionOutput(tickNoiseClass)
+                            .speckleNoiseDetectionOutput(speckleClass)
                             .createdOn(LocalDateTime.now())
                             .rootPipelineId(rootPipelineId)
                             .status("COMPLETED")

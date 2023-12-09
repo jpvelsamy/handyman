@@ -4,16 +4,13 @@ package in.handyman.raven.lib.tritonservertest;
 import in.handyman.raven.lambda.doa.audit.ActionExecutionAudit;
 import in.handyman.raven.lib.IntegratedNoiseModelApiAction;
 import in.handyman.raven.lib.model.IntegratedNoiseModelApi;
-import in.handyman.raven.lib.model.QrExtraction;
-import in.handyman.raven.lib.QrExtractionAction;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
 
 import java.util.Map;
 
 @Slf4j
-public class NoiseModelActionTest {
+public class NoiseModelsActionTest {
     @Test
     void tritonServer() throws Exception {
 
@@ -21,12 +18,13 @@ public class NoiseModelActionTest {
                 .condition(true)
                 .processId("123")
                 .name("noise-detection-model")
-                .resourceConn("intics_agadia_db_conn")
+                .endPoint("http://0.0.0.0:10199/copro/Noise-Detection")
+                .resourceConn("intics_zio_db_conn")
                 .ouputTable("integrated_noise_model.noise_model_output_table")
                 .querySet("SELECT " +
-                        "'/home/christopher.paulraj@zucisystems.com/Pictures/database.jpeg' as file_path, " +
+                        "'/home/christopher.paulraj@zucisystems.com/Downloads/blank_page.png' as input_file_path, " +
                         "'INT-1' as origin_id, " +
-                        "'/home/christopher.paulraj@zucisystems.com/Pictures' as output_dir ,"+
+                        "'/home/christopher.paulraj@zucisystems.com/Pictures/output' as output_dir ,"+
                         "1 as file_id, " +
                         "1 as group_id, " +
                         "1 as paper_no, " +
@@ -35,7 +33,7 @@ public class NoiseModelActionTest {
                 .build();
 
         ActionExecutionAudit actionExecutionAudit = new ActionExecutionAudit();
-        actionExecutionAudit.getContext().put("copro.noise-detection.url", "http://0.0.0.0:10193/copro/Noise-Detection/checkbox-noise-detection");
+        actionExecutionAudit.getContext().put("copro.noise-detection.url", "http://0.0.0.0:10199/copro/Noise-Detection");
         actionExecutionAudit.setProcessId(138980079308730208L);
         actionExecutionAudit.getContext().putAll(Map.ofEntries(Map.entry("read.batch.size", "1"),
                 Map.entry("noise.consumer.API.count", "1"),

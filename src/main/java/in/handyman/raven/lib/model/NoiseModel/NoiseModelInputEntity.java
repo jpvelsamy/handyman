@@ -1,4 +1,4 @@
-package in.handyman.raven.lib.model.integratedNoiseModel;
+package in.handyman.raven.lib.model.NoiseModel;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,8 +16,9 @@ import in.handyman.raven.lib.CoproProcessor;
 @Builder
 
 public class NoiseModelInputEntity implements CoproProcessor.Entity {
-
-    private String filePath;
+    private Long rootPipelineId;
+    private Long actionId;
+    private String inputFilePath;
     private Integer groupId;
     private String originId;
     private Integer paperNo;
