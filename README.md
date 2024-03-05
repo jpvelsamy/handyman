@@ -1,23 +1,18 @@
-# Handyman Legacy
 
-## To Clean, Compile and build, run the below maven commands
+# Handyman
 
-1. Inside handyman.legacy
-   > mvn clean compile install package -Dmaven.test.skip=true
-2. Inside handyman.legacy/handyman
-   > mvn clean compile install scala:compile install package -Dmaven.test.skip=true
+## To get the repository clone
 
-## Jar
+ > git clone https://github.com/zucisystems-dev/handyman.git
 
-### Generated jar file available in handyman.legacy/target folder as *handyman.legacy-<version>-SNAPSHOT.jar*
-
-# Handyman Raven
-
-## To Clean, Compile and build, run the below maven commands
-
-1. Inside handyman.raven
-   > mvn clean antlr4:antlr4 test -Dtest=ActionGenerationTest#generate compile install scala:compile install package
-
-## Jar
-
-### Generated jar file available in handyman.raven/target folder as *handyman-raven-vm-<version>-SNAPSHOT.jar*
+## To see the list of branch in the repo (default master)
+ > git branch -a
+ 
+## To change to the particular branch
+ > git checkout {{branch}}
+ 
+## To Clean, Compile and build, run the below maven commands 
+  1. to generate Action Classes
+     > mvn clean antlr4:antlr4 test -Dtest=ActionGenerationTest#generate compile install
+    
+ ### Generated jar file available in target folder as handyman-raven-vm-${project.version}.jar
